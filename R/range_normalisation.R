@@ -14,3 +14,5 @@
 rngnorm <- function(x) {
   (x-min(x))/(max(x)-min(x))
 }
+
+#changing things to test git
