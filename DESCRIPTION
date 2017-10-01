@@ -13,6 +13,8 @@ Description: The powdR package provides a range of tools applicable to X-ray pow
     (XRPD) data. Functionality ranges from peak alignment to full pattern fitting. A library
     of reference patterns is also provided.
 License: What license is it under?
+URL: http://github.com/benmbutler/powdR
+BugReports: http://github.com/benmbutler/powdR/issues
 Encoding: UTF-8
 LazyData: true
 Imports: ggplot2
