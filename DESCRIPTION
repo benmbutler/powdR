@@ -17,6 +17,9 @@ URL: http://github.com/benmbutler/powdR
 BugReports: http://github.com/benmbutler/powdR/issues
 Encoding: UTF-8
 LazyData: true
-Imports: ggplot2
-Suggests: plotly
+Imports:
+  dplyr (>= 0.7.4),
+  reshape(>= 0.8.6),
+  plotly(>= 4.7.0)
+Suggests:
 RoxygenNote: 6.0.1
