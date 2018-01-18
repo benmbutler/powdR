@@ -1,3 +1,15 @@
+#' Fit a background to XRPD data
+#'
+#' \code{xrd.bkg} returns a vector of background counts
+#'
+#' This function bins the data into chunks and takes the minimum counts
+#' from each chunk. A loess polynomial is then fitted between the minimum
+#' values and the polynomial predicted onto the original 2theta scale.
+#'
+#' @param tth the 2theta scale
+#' @param counts the XRPD counts
+#' @param width the bin width
+#' @param res the span of the loess polynomial
 xrd.bkg <- function(tth, counts, width, res) {
 
   #splitting the tth and counts vectors into a list of chunks

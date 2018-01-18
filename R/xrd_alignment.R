@@ -9,6 +9,25 @@ align.optim <- function(a, par, xout, xrd.standard_shorter) {
 
 rng.nm <- function(x){(x-min(x))/(max(x)-min(x))}
 
+
+#' Align XRPD data
+#'
+#' \code{xrd.align} returns a list containing the shift extent (2theta) and a
+#' data frame of the shifted xrpd pattern.
+#'
+#' This function applies a linear alignment to an xrpd sample pattern relative to a
+#' chosen standard. The function using brent optimisation to maximise the correlation
+#' between the 2 patterns. Appropriate choice of internal standard is required for
+#' accurate alignment.
+#'
+#' @param xrd.sample a data frame of the XRPD sample to be aligned. The first column
+#' must be 2theta, and the second must be counts
+#' @param xrd.standard a  data frame of the XRPD sample to be used as the standard. The
+#' first column must be 2theta, and the second must be counts.
+#' @param xmin The minimum 2theta value to be used during alignment
+#' @param xmax the maximum 2theta value to be used during alignment
+#' @param xshift the maximum 2theta shift that can be applied
+#'
 xrd.align <- function(xrd.sample, xrd.standard, xmin, xmax, xshift) {
 
   #I want to apply this function to the lists I've made using a loop
