@@ -414,7 +414,33 @@ xrd.LLD <- function(x, xrd.sample, xrd.lib, int_std) {
 ##### This is the fpf function that depends upon ALL the functions defined above
 
 
-# Full pattern fitting function --------------------------------
+#' Full pattern fitting
+#'
+#' \code{fpf} returns estimates of soil mineral concentraitons using full pattern fitting.
+#'
+#' This function applies full pattern fitting to an XRPD sample to quantify mineral concentrations.
+#' It requires a library of reference patterns with pre-measured reference intensity ratios.
+#'
+#' @param s.dir Path to the sample to be fitted. The file must be in .xy format (space separated)
+#' @param lib The XRPD library. A list containing three elements. The first (\code{XRPD}) is a dataframe
+#' containing all pre-measured reference patterns by column. The second (\code{TTH}) is a vector of the
+#' 2theta measurement intervals for the reference patterns. Third (\code{MINERALS}) is a data frame
+#' containing the unique ID, mineral name, and reference intensity ratio of each pattern in the library.
+#' The order of \code{XRPD} (by column) and \code{MINERALS} (by row) must be identical.
+#' @param instr The specific instrument library to be used. One of \code{c("D8", "D5000", "Xpert")}
+#' @param align_shift The maximum shift that is allowed during initial 2theta alignment (degrees)
+#' @param TTH_min The minimum value of 2theta used during fitting
+#' @param TTH_max The maximum value of 2theta used during fitting
+#' @param delta_lim The tuning parameter used to adjust sensitivity of fit. Must greater than 0 and
+#' less than 100. Lower value = more sensitive. We recommend using 0.01.
+#' @param solver The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead", "CG")}
+#' @param obj.function The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
+#' We recommend Rwp
+#' @param int_std The mineral name (e.g. "Quartz") to be used as internal standard. Must match a mineral
+#' name in the MINERALS table.
+#' @param fpf_shift Optional. The maximum shift applied during full pattern fitting.
+#' @param amorphous Optional. Then name of an amorphous phase to be added to the fitting process. Must
+#' match a name in the MINERALS table.
 fpf <- function(s.dir, lib, instr, align_shift, TTH_min, TTH_max, delta_lim, solver, obj.function, int_std, fpf_shift, amorphous) {
 
   #library(dplyr)

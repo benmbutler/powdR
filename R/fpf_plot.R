@@ -1,3 +1,12 @@
+#' Interactive full pattern fitting plot
+#'
+#' \code{fpf.plot} returns a ggplotly interactive graph.
+#'
+#' This function is for use in combination with the output from \code{fpf}.
+#'
+#' @param x An \code{fpf} output to be plotted
+#' @param plot.width Numeric. Width of the plot output (pixels)
+#' @param plot.height Numeric. Height of the plot output (pixels)
 fpf.plot <- function(x, plot.width, plot.height) {
 
   #library(rJava)

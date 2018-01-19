@@ -27,7 +27,6 @@ rng.nm <- function(x){(x-min(x))/(max(x)-min(x))}
 #' @param xmin The minimum 2theta value to be used during alignment
 #' @param xmax the maximum 2theta value to be used during alignment
 #' @param xshift the maximum 2theta shift that can be applied
-#'
 xrd.align <- function(xrd.sample, xrd.standard, xmin, xmax, xshift) {
 
   #I want to apply this function to the lists I've made using a loop
