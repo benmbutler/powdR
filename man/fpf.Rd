@@ -4,8 +4,8 @@
 \alias{fpf}
 \title{Full pattern fitting}
 \usage{
-fpf(s.dir, lib, instr, align_shift, TTH_min, TTH_max, delta_lim, solver,
-  obj.function, int_std, fpf_shift, amorphous)
+fpf(s.dir, lib, align_shift, TTH_min, TTH_max, delta_lim, solver, obj.function,
+  int_std, fpf_shift, amorphous)
 }
 \arguments{
 \item{s.dir}{Path to the sample to be fitted. The file must be in .xy format (space separated)}
@@ -15,8 +15,6 @@ containing all pre-measured reference patterns by column. The second (\code{TTH}
 2theta measurement intervals for the reference patterns. Third (\code{MINERALS}) is a data frame
 containing the unique ID, mineral name, and reference intensity ratio of each pattern in the library.
 The order of \code{XRPD} (by column) and \code{MINERALS} (by row) must be identical.}
-
-\item{instr}{The specific instrument library to be used. One of \code{c("D8", "D5000", "Xpert")}}
 
 \item{align_shift}{The maximum shift that is allowed during initial 2theta alignment (degrees)}
 

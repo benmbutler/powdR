@@ -271,10 +271,10 @@ min.conc <- function(x, xrd.lib) {
 
   df <- data.frame(minerals, "min_percent" = min_percent)
 
-  dfg <- group_by(df, MIN_NAME)
+  dfg <- dplyr::group_by(df, MIN_NAME)
 
   #The final mineral proportions
-  dfs <- summarise(dfg, total_min = round(sum(min_percent),2), mean_RIR = mean(RIR))
+  dfs <- dplyr::summarise(dfg, total_min = round(sum(min_percent),2), mean_RIR = mean(RIR))
 
   out <- list("df" = df, "dfs" = dfs)
 
@@ -325,10 +325,10 @@ xrd.LLD <- function(x, xrd.sample, xrd.lib, int_std) {
 
   #group the data by mineral name (for cases that different library patterns for a single
   #mineral are included)
-  dfg <- group_by(df, min_name)
+  dfg <- dplyr::group_by(df, min_name)
 
   #summarise the grouped data
-  dfs <- summarise(dfg, total_min = round(sum(min_pc),2), mean_RIR = round(mean(RIR),2))
+  dfs <- dplyr::summarise(dfg, total_min = round(sum(min_pc),2), mean_RIR = round(mean(RIR),2))
 
   #To compute LDD using full patterns, the background signal has to be estimated,
   #this is done using the bkg function I've written
@@ -427,7 +427,6 @@ xrd.LLD <- function(x, xrd.sample, xrd.lib, int_std) {
 #' 2theta measurement intervals for the reference patterns. Third (\code{MINERALS}) is a data frame
 #' containing the unique ID, mineral name, and reference intensity ratio of each pattern in the library.
 #' The order of \code{XRPD} (by column) and \code{MINERALS} (by row) must be identical.
-#' @param instr The specific instrument library to be used. One of \code{c("D8", "D5000", "Xpert")}
 #' @param align_shift The maximum shift that is allowed during initial 2theta alignment (degrees)
 #' @param TTH_min The minimum value of 2theta used during fitting
 #' @param TTH_max The maximum value of 2theta used during fitting
@@ -441,7 +440,7 @@ xrd.LLD <- function(x, xrd.sample, xrd.lib, int_std) {
 #' @param fpf_shift Optional. The maximum shift applied during full pattern fitting.
 #' @param amorphous Optional. Then name of an amorphous phase to be added to the fitting process. Must
 #' match a name in the MINERALS table.
-fpf <- function(s.dir, lib, instr, align_shift, TTH_min, TTH_max, delta_lim, solver, obj.function, int_std, fpf_shift, amorphous) {
+fpf <- function(s.dir, lib, align_shift, TTH_min, TTH_max, delta_lim, solver, obj.function, int_std, fpf_shift, amorphous) {
 
   #library(dplyr)
 
@@ -488,7 +487,7 @@ fpf <- function(s.dir, lib, instr, align_shift, TTH_min, TTH_max, delta_lim, sol
     warning("We recommend internal standards be highly crystalline, strong diffractors e.g. corundum, quartz, sylvite, halite and rutile.")
   }
 
-  xrdlib <- lib[[instr]]
+  xrdlib <- lib
 
   #Make sure that the mineral identified as the internal standard is contained within the reference library
   if (!int_std %in% xrdlib[["MINERALS"]]$MIN_NAME) {

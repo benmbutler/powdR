@@ -32,25 +32,25 @@ fpf.plot <- function(x, plot.width, plot.height) {
                        RESIDUALS = x[["RESIDUALS"]])
 
 
-  pure_patterns_long <- melt(pure_patterns, id = c("TTH"))
+  pure_patterns_long <- reshape::melt(pure_patterns, id = c("TTH"))
 
 
-  g1 <- ggplot() +
+  g1 <- ggplot2::ggplot() +
     geom_line(data = measured,
               aes(x = TTH, y = MEASURED, color = "Measured"), size = 0.35, linetype = "dotted") +
     geom_line(data = pure_patterns_long,
               aes(x = TTH, y = value, color = variable), size = 0.15)
 
-  p1 <- ggplotly(g1, width = plot.width, height = plot.height)
+  p1 <- plotly::ggplotly(g1, width = plot.width, height = plot.height)
 
 
-  g2 <- ggplot() +
+  g2 <- ggplot2::ggplot() +
     geom_line(data = resids,
               aes(x = TTH, y = RESIDUALS, color = "Residuals"), size = 0.15) +
     scale_colour_manual(name = "",
                         values = c("Residuals" = "blue"))
 
-  p2 <- ggplotly(g2, width = plot.width, height = plot.height)
+  p2 <- plotly::ggplotly(g2, width = plot.width, height = plot.height)
 
   p3 <- subplot(p1, p2,
                 nrows = 2,
