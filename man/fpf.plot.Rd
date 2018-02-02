@@ -4,14 +4,10 @@
 \alias{fpf.plot}
 \title{Interactive full pattern fitting plot}
 \usage{
-fpf.plot(x, plot.width, plot.height)
+fpf.plot(x)
 }
 \arguments{
 \item{x}{An \code{fpf} output to be plotted}
-
-\item{plot.width}{Numeric. Width of the plot output (pixels)}
-
-\item{plot.height}{Numeric. Height of the plot output (pixels)}
 }
 \description{
 \code{fpf.plot} returns a ggplotly interactive graph.

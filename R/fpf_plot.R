@@ -5,9 +5,7 @@
 #' This function is for use in combination with the output from \code{fpf}.
 #'
 #' @param x An \code{fpf} output to be plotted
-#' @param plot.width Numeric. Width of the plot output (pixels)
-#' @param plot.height Numeric. Height of the plot output (pixels)
-fpf.plot <- function(x, plot.width, plot.height) {
+fpf.plot <- function(x) {
 
   #library(rJava)
 
@@ -36,23 +34,23 @@ fpf.plot <- function(x, plot.width, plot.height) {
 
 
   g1 <- ggplot2::ggplot() +
-    geom_line(data = measured,
-              aes(x = TTH, y = MEASURED, color = "Measured"), size = 0.35, linetype = "dotted") +
-    geom_line(data = pure_patterns_long,
-              aes(x = TTH, y = value, color = variable), size = 0.15)
+    ggplot2::geom_line(data = measured,
+              ggplot2::aes(x = TTH, y = MEASURED, color = "Measured"), size = 0.35, linetype = "dotted") +
+    ggplot2::geom_line(data = pure_patterns_long,
+              ggplot2::aes(x = TTH, y = value, color = variable), size = 0.15)
 
-  p1 <- plotly::ggplotly(g1, width = plot.width, height = plot.height)
+  p1 <- plotly::ggplotly(g1)
 
 
   g2 <- ggplot2::ggplot() +
-    geom_line(data = resids,
-              aes(x = TTH, y = RESIDUALS, color = "Residuals"), size = 0.15) +
-    scale_colour_manual(name = "",
+    ggplot2::geom_line(data = resids,
+              ggplot2::aes(x = TTH, y = RESIDUALS, color = "Residuals"), size = 0.15) +
+    ggplot2::scale_colour_manual(name = "",
                         values = c("Residuals" = "blue"))
 
-  p2 <- plotly::ggplotly(g2, width = plot.width, height = plot.height)
+  p2 <- plotly::ggplotly(g2)
 
-  p3 <- subplot(p1, p2,
+  p3 <- plotly::subplot(p1, p2,
                 nrows = 2,
                 heights = c(0.5, 0.5),
                 widths = c(1),
