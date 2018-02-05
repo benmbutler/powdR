@@ -2,7 +2,7 @@ Package: powdR
 Type: Package
 Title: X-ray Powder Diffraction Data Analysis
 Version: 0.0.0.9000
-Date: 2017-09-22
+Date: 2018-01-05
 Authors@R: c(
   person("Benjamin", "Butler", email = "benjamin.butler@hutton.ac.uk",
   role = c("aut", "cre")),
@@ -10,8 +10,7 @@ Authors@R: c(
   role = "ctb"))
 Maintainer: Benjamin Butler <benjamin.butler@hutton.ac.uk>
 Description: The powdR package provides a range of tools applicable to X-ray powder diffraction
-    (XRPD) data. Functionality ranges from peak alignment to full pattern fitting. A library
-    of reference patterns is also provided.
+    (XRPD) data. Functionality ranges from peak alignment to full pattern fitting.
 License: What license is it under?
 URL: http://github.com/benmbutler/powdR
 BugReports: http://github.com/benmbutler/powdR/issues
@@ -20,6 +19,6 @@ LazyData: true
 Imports:
   dplyr (>= 0.7.4),
   reshape(>= 0.8.6),
-  plotly(>= 4.7.0)
+  plotly(>= 4.7.1)
 Suggests:
 RoxygenNote: 6.0.1

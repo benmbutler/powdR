@@ -7,16 +7,6 @@
 #' @param x An \code{fpf} output to be plotted
 fpf.plot <- function(x) {
 
-  #library(rJava)
-
-  #This code can be used to access the screen height and width
-  # .jinit()
-  # toolkit <- J("java.awt.Toolkit")
-  # default_toolkit <- .jrcall(toolkit, "getDefaultToolkit")
-  # dim <- .jrcall(default_toolkit, "getScreenSize")
-  # fig.height <- .jcall(dim, "D", "getHeight")
-  # fig.width <- .jcall(dim, "D", "getWidth")
-
   # x needs to be a list output from the fpf function
 
   pure_patterns <- data.frame(TTH = x[["TTH"]],

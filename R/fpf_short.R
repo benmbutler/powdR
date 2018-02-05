@@ -1,9 +1,18 @@
 #This function is specifically for cases where you don't need autoID of the sample. i.e. cases where manual identification has
 #been carried out.
 
-fpf.short <- function(s.dir, xrdlib, int.std, TTH.min, TTH.max, align.shift, solver, obj.function, fpf.shift) {
+fpf.short <- function(smpl, xrdlib, phases, int.std, amorphous, TTH.min, TTH.max, align.shift, solver, obj.function, fpf.shift) {
 
-smpl <- read.csv(file = s.dir, header = FALSE, sep = " ")
+
+#subset xrdlib according to the phases vector
+
+keep_index <- which(xrdlib[["MINERALS"]]$MIN_ID %in% phases)
+
+xrdlib[["XRD"]] <- xrdlib[["XRD"]][, keep_index]
+xrdlib[["MINERALS"]] <- xrdlib[["MINERALS"]][keep_index, ]
+
+#read the sample
+#smpl <- read.csv(file = s.dir, header = FALSE, sep = " ")
 
 xrd.standard_df <- xrdlib[["XRD"]][, which(xrdlib[["MINERALS"]]$MIN_ID == int.std)]
 
@@ -49,12 +58,24 @@ xrdlib[["XRD"]] <- xrdlib[["XRD"]][which(xrdlib[["TTH"]] >= TTH.min & xrdlib[["T
 xrdlib[["TTH"]] <- smpl[, 1]
 
 
+##If amorphous is present in the argument, then extract the pattern to be used
+
+if(!missing(amorphous)) {
+  amorphous_counts <- xrdlib[["XRD"]][, amorphous]
+  amorphous_tth <- xrdlib[["TTH"]]
+  amorphous_xrd <- data.frame("TTH" = amorphous_tth, "COUNTS" = amorphous_counts)
+
+  #remove the amorphous phase from the XRD library
+  xrdlib[["XRD"]] <- xrdlib[["XRD"]][, -which(names(xrdlib[["XRD"]]) == amorphous)]
+}
+
+
 #--------------------------------------------
 #Initial Optimisation
 #--------------------------------------------
 
-x <- rep(0, nrow(xrdlib[["MINERALS"]]))
-names(x) <- xrdlib[["MINERALS"]]$MIN_ID
+x <- rep(0, ncol(xrdlib[["XRD"]]))
+names(x) <- names(xrdlib[["XRD"]])
 
 o <- optim(par = x, fullpat,
            method = solver, pure.patterns = xrdlib[["XRD"]],
@@ -63,8 +84,6 @@ o <- optim(par = x, fullpat,
 #----------------------------------------------
 #Apply shifts
 #----------------------------------------------
-
-#Reoptimise
 
 fpf_aligned <- fpf.align(sample.tth = smpl[,1], sample.counts = smpl[,2],
                          xrd.lib = xrdlib, fpf_shift = fpf.shift,
@@ -79,6 +98,28 @@ xrdlib[["TTH"]] <- smpl[,1]
 o <- optim(par = o$par, fullpat,
            method = solver, pure.patterns = xrdlib[["XRD"]],
            sample.pattern = smpl[, 2], obj = obj.function)
+
+x <- o$par
+
+#Add the amorphous phase
+
+if(!missing(amorphous)) {
+  #Add the amorphous phase to the library
+  amorphous_counts2 <- approx(x = amorphous_tth, y = amorphous_counts,
+                              method = "linear", xout = xrdlib[["TTH"]])[[2]]
+
+  xrdlib$XRD <- data.frame(xrdlib$XRD)
+
+  xrdlib[["XRD"]][amorphous] <- amorphous_counts2
+  #Add an initial parameter to the library for the optimisation
+  x[length(x) + 1] <- 0
+  names(x)[length(x)] <- amorphous
+
+  #reoptimise
+  o <- optim(par = x, fullpat,
+             method = solver, pure.patterns = xrdlib[["XRD"]],
+             sample.pattern = smpl[, 2], obj = obj.function)
+}
 
 #-----------------------------------------------
 # Remove negative parameters

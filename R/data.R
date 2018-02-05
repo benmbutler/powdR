@@ -36,3 +36,15 @@
 #' \item{MINERALS}{A dataframe the mineral ID's, names and RIR's}
 #' }
 "Xpert"
+
+#' Soil samples measured by Xpert
+#'
+#' Two soil samples measured on a Panalytical Xpert. These are used in examples
+#'
+#' @format A list of 2 xy dataframes
+#' \describe{
+#' \item{organic}{An organic soil measured by XRPD}
+#' \item{mineral}{A mineral soil measured by XRPD}
+#' }
+"Xpert_soil"
+

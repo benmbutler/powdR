@@ -4,11 +4,11 @@
 \alias{fpf}
 \title{Full pattern fitting}
 \usage{
-fpf(s.dir, lib, align_shift, TTH_min, TTH_max, delta_lim, solver, obj.function,
-  int_std, fpf_shift, amorphous)
+fpf(smpl, lib, phases, int.std, amorphous, TTH.min, TTH.max, align.shift,
+  solver, obj.function, fpf.shift)
 }
 \arguments{
-\item{s.dir}{Path to the sample to be fitted. The file must be in .xy format (space separated)}
+\item{smpl}{A data frame. First column is 2theta, second column is counts}
 
 \item{lib}{The XRPD library. A list containing three elements. The first (\code{XRPD}) is a dataframe
 containing all pre-measured reference patterns by column. The second (\code{TTH}) is a vector of the
@@ -16,27 +16,40 @@ containing all pre-measured reference patterns by column. The second (\code{TTH}
 containing the unique ID, mineral name, and reference intensity ratio of each pattern in the library.
 The order of \code{XRPD} (by column) and \code{MINERALS} (by row) must be identical.}
 
-\item{align_shift}{The maximum shift that is allowed during initial 2theta alignment (degrees)}
+\item{int.std}{The mineral ID (e.g. "Qzt.662070.Strath.12Mins.P") to be used as internal standard. Must match a mineral
+name in the MINERALS table.}
 
-\item{TTH_min}{The minimum value of 2theta used during fitting}
+\item{amorphous}{Optional. The ID of an amorphous phase (e.g. "ORGANIC.337666")to be added to the fitting process.
+Must match an ID provided in the \code{phases} parameter. Only 1 amorphous phase can be used.}
 
-\item{TTH_max}{The maximum value of 2theta used during fitting}
+\item{TTH.min}{The minimum value of 2theta used during fitting}
 
-\item{delta_lim}{The tuning parameter used to adjust sensitivity of fit. Must greater than 0 and
-less than 100. Lower value = more sensitive. We recommend using 0.01.}
+\item{TTH.max}{The maximum value of 2theta used during fitting}
+
+\item{align.shift}{The maximum shift that is allowed during initial 2theta alignment (degrees)}
 
 \item{solver}{The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead", "CG")}}
 
 \item{obj.function}{The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
 We recommend Rwp}
 
-\item{int_std}{The mineral name (e.g. "Quartz") to be used as internal standard. Must match a mineral
-name in the MINERALS table.}
+\item{fpf.shift}{Optional. The maximum shift applied during full pattern fitting.}
 
-\item{fpf_shift}{Optional. The maximum shift applied during full pattern fitting.}
-
-\item{amorphous}{Optional. Then name of an amorphous phase to be added to the fitting process. Must
-match a name in the MINERALS table.}
+\item{delta_lim}{The tuning parameter used to adjust sensitivity of fit. Must greater than 0 and
+less than 100. Lower value = more sensitive. We recommend using 0.01.}
+}
+\value{
+a list with components:
+\item{TTH}{A vector of the 2theta scale of the fitted data}
+\item{FITTED}{A vector of the fitted XRPD pattern}
+\item{MEASURED}{A vector of the original XRPD measurement}
+\item{RESIDUALS}{A vector of the Residuals of FITTED vs MEASURED}
+\item{MINERALS}{A dataframe of the minerals used to produced FITTED}
+\item{MINERALS_SUMMARY}{The MINERALS dataframe grouped by minerals and summarised (mean)}
+\item{R}{The Rwp of the FITTED vs MEASURED pattern}
+\item{WEIGHTED_PURE_PATTERNS}{A dataframe of reference patterns used to produce FITTED.
+All patterns have been weighted according to the coefficients used in the fit}
+\item{COEFFICIENTS}{A named vector of coefficients used to produce FITTED}
 }
 \description{
 \code{fpf} returns estimates of soil mineral concentraitons using full pattern fitting.
