@@ -4,39 +4,41 @@
 \alias{fpf}
 \title{Full pattern fitting}
 \usage{
-fpf(smpl, lib, phases, int.std, amorphous, TTH.min, TTH.max, align.shift,
-  solver, obj.function, fpf.shift)
+fpf(smpl, lib, phases, std, amorphous, tth, align = 0.1, solver = "BFGS",
+  obj = "Rwp", shift = 0.05)
 }
 \arguments{
 \item{smpl}{A data frame. First column is 2theta, second column is counts}
 
-\item{lib}{The XRPD library. A list containing three elements. The first (\code{XRPD}) is a dataframe
-containing all pre-measured reference patterns by column. The second (\code{TTH}) is a vector of the
-2theta measurement intervals for the reference patterns. Third (\code{MINERALS}) is a data frame
-containing the unique ID, mineral name, and reference intensity ratio of each pattern in the library.
-The order of \code{XRPD} (by column) and \code{MINERALS} (by row) must be identical.}
+\item{lib}{The XRPD library. A list containing three elements. The first (\code{XRPD})
+is a dataframe containing all pre-measured reference patterns by column. The second
+(\code{TTH}) is a vector of the 2theta measurement intervals for the reference patterns.
+Third (\code{MINERALS}) is a data frame containing the unique ID, mineral name, and
+reference intensity ratio of each pattern in the library. The order of \code{XRPD}
+(by column) and \code{MINERALS} (by row) must be identical.}
 
-\item{int.std}{The mineral ID (e.g. "Qzt.662070.Strath.12Mins.P") to be used as internal standard. Must match a mineral
-name in the MINERALS table.}
+\item{phases}{A string of mineral ID's used to subset the library.}
 
-\item{amorphous}{Optional. The ID of an amorphous phase (e.g. "ORGANIC.337666")to be added to the fitting process.
-Must match an ID provided in the \code{phases} parameter. Only 1 amorphous phase can be used.}
+\item{std}{The mineral ID (e.g. "Qzt.662070.Strath.12Mins.P") to be used as internal
+standard. Must match a mineral name in the MINERALS table.}
 
-\item{TTH.min}{The minimum value of 2theta used during fitting}
+\item{amorphous}{Optional. The ID of an amorphous phase (e.g. "ORGANIC.337666")to be
+added to the fitting process. Must match an ID provided in the \code{phases} parameter.
+Only 1 amorphous phase can be used.}
 
-\item{TTH.max}{The maximum value of 2theta used during fitting}
+\item{tth}{A vector defining the minimum and maximum 2theta values to be used during
+fitting}
 
-\item{align.shift}{The maximum shift that is allowed during initial 2theta alignment (degrees)}
+\item{align}{The maximum shift that is allowed during initial 2theta alignment (degrees). Default = 0.1}
 
-\item{solver}{The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead", "CG")}}
+\item{solver}{The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
+"CG")}. Default = "BFGS".}
 
-\item{obj.function}{The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
-We recommend Rwp}
+\item{obj}{The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
+Default = "Rwp". Default = Rwp}
 
-\item{fpf.shift}{Optional. The maximum shift applied during full pattern fitting.}
-
-\item{delta_lim}{The tuning parameter used to adjust sensitivity of fit. Must greater than 0 and
-less than 100. Lower value = more sensitive. We recommend using 0.01.}
+\item{shift}{Optional. The maximum shift applied during full pattern fitting.
+Default = 0.05}
 }
 \value{
 a list with components:
@@ -55,6 +57,37 @@ All patterns have been weighted according to the coefficients used in the fit}
 \code{fpf} returns estimates of soil mineral concentraitons using full pattern fitting.
 }
 \details{
-This function applies full pattern fitting to an XRPD sample to quantify mineral concentrations.
+This function applies full pattern fitting to an XRPD sample to quantify mineral
+concentrations.
 It requires a library of reference patterns with pre-measured reference intensity ratios.
+}
+\examples{
+# Example 1
+# Load the Xpert library
+data(Xpert)
+
+# Load the Xpert soil data to use in example
+data(Xpert_soil)
+
+# define the phases to include in the fit
+xrd_phases <- c("Qzt.662070.Strath.12Mins.P", "Qzt.662074.Qua.10.P", "X996730.QUA.11.P")
+
+# without organic
+#not run
+#fpf_out <-  fpf(smpl = Xpert_soil$mineral,
+#               lib = Xpert,
+#               tth = c(3.5, 69.5),
+#               phases = xrd_phases,
+#               std = "Qzt.662070.Strath.12Mins.P")
+
+# Try fitting the same sample, but including an amorphous phase (organic matter)
+xrd_phases_org <- c("Qzt.662070.Strath.12Mins.P", "Qzt.662074.Qua.10.P",
+                   "X996730.QUA.11.P", "ORGANIC.337666")
+# not run
+# fpf_out_org <-  fpf(smpl = Xpert_soil$mineral,
+#                    lib = Xpert,
+#                    tth = c(3.5, 69.5),
+#                    phases = xrd_phases_org,
+#                    std = "Qzt.662070.Strath.12Mins.P",
+#                    amorphous = "ORGANIC.337666")
 }

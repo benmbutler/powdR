@@ -4,8 +4,8 @@
 \alias{auto.fpf}
 \title{Automated full pattern fitting}
 \usage{
-auto.fpf(smpl, lib, align_shift, TTH_min, TTH_max, delta_lim, solver,
-  obj.function, int_std, fpf_shift, amorphous)
+auto.fpf(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1,
+  solver = "BFGS", obj = "Rwp", shift = 0.05)
 }
 \arguments{
 \item{smpl}{A data frame. First column is 2theta, second column is counts}
@@ -16,32 +16,56 @@ containing all pre-measured reference patterns by column. The second (\code{TTH}
 containing the unique ID, mineral name, and reference intensity ratio of each pattern in the library.
 The order of \code{XRPD} (by column) and \code{MINERALS} (by row) must be identical.}
 
-\item{align_shift}{The maximum shift that is allowed during initial 2theta alignment (degrees)}
+\item{tth}{A vector defining the minimum and maximum 2theta values to be used during
+fitting}
 
-\item{TTH_min}{The minimum value of 2theta used during fitting}
-
-\item{TTH_max}{The maximum value of 2theta used during fitting}
-
-\item{delta_lim}{The tuning parameter used to adjust sensitivity of fit. Must greater than 0 and
-less than 100. Lower value = more sensitive. We recommend using 0.01.}
-
-\item{solver}{The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead", "CG")}}
-
-\item{obj.function}{The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
-We recommend Rwp}
-
-\item{int_std}{The mineral ID (e.g. "Qzt.662070.Strath.12Mins.P") to be used as internal standard. Must match a mineral
+\item{std}{The mineral ID (e.g. "Qzt.662070.Strath.12Mins.P") to be used as internal standard. Must match a mineral
 name in the MINERALS table.}
-
-\item{fpf_shift}{Optional. The maximum shift applied during full pattern fitting.}
 
 \item{amorphous}{Optional. Then name of an amorphous phase to be added to the fitting process. Must
 match an ID in the MINERALS table.}
+
+\item{coarse}{The tuning parameter used to adjust sensitivity of fit. Must greater than 0 and
+less than 100. Lower value = more sensitive. Default = 0.1.}
+
+\item{align}{The maximum shift that is allowed during initial 2theta alignment (degrees). Default = 0.1}
+
+\item{solver}{The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead", "CG")}. Default = \code{"BFGS"}.}
+
+\item{obj}{The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}. Default = \code{"Rwp"}
+We recommend Rwp}
+
+\item{shift}{Optional. The maximum shift applied during full pattern fitting. Default = 0.05}
+
+\item{phases}{A string of unique ID's from the \code{lib} used to subset the reference library.}
 }
 \description{
-\code{auto.fpf} returns estimates of soil mineral concentraitons using full pattern fitting.
+\code{auto.fpf} returns estimates of soil mineral concentraitons using full pattern
+ fitting. This automated version attempts to extract the most appropriate phases
+ from the library.
 }
 \details{
 This function applies full pattern fitting to an XRPD sample to quantify mineral concentrations.
 It requires a library of reference patterns with pre-measured reference intensity ratios.
+}
+\examples{
+# Load the Xpert library
+data(Xpert)
+
+# Load the Xpert soil data to use in example
+data(Xpert_soil)
+# automated without any amorphous phases
+# not run
+# fpf_out <- auto.fpf(smpl = Xpert_soil$mineral,
+#                    lib = Xpert,
+#                    tth = c(3.5, 69.5),
+#                    std = "Qzt.662070.Strath.12Mins.P")
+
+#automated with an amorphous phase (organic matter)
+#not run
+#fpf_out_org <- auto.fpf(smpl = Xpert_soil$mineral,
+#                    lib = Xpert,
+#                    tth = c(3.5, 69.5),
+#                    std = "Qzt.662070.Strath.12Mins.P",
+#                    amorphous = "ORGANIC.337666")
 }

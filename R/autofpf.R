@@ -1,430 +1,8 @@
-#This is the while loop used to pluck phases out of the library
-
-#xrd.lib = an XRD library
-#xrd.sample = a vector of an xrd sample
-#df = a blank data frame with the same number of rows are the length of the library/sample
-
-xrd.autoID <- function(xrd.lib, xrd.sample, delta_lim) {
-
-  lib_length <- ncol(xrd.lib)
-
-  df <- data.frame(matrix(nrow = nrow(xrd.lib)))
-  delta <- 100
-  resid_x <- xrd.sample
-  initial_error <- sqrt(sum(abs(xrd.sample)^2))
-  fit_error <- c()
-  fit_error[1] <- initial_error
-  names(fit_error) <- c("inital")
-  n <- 1
-
-  #This is a while loop that will continue until the conditions is met
-  while (delta > delta_lim) {
-
-    cor_v <- as.numeric(lapply(names(xrd.lib),
-                               function(x) cor(xrd.lib[x], resid_x)))
-
-    #identify the phase with maximum correlation
-    cor_max <- which.max(cor_v)
-    #extract its name
-    v_name <- names(xrd.lib)[cor_max]
-
-    #add this phase to the library to be used in fitting
-    df[n] <- xrd.lib[v_name]
-
-    #add its name
-    names(df)[n] <- v_name
-
-    #remove the identified phase from the original library
-    xrd.lib[v_name] <- NULL
-
-    ## fit pattern mixtures with qr.solve
-    mat <- as.matrix(df)
-    x <- qr.solve(mat, xrd.sample)
-
-    #calculate fitted pattern and residuals
-    fitted_pattern <- apply(sweep(mat, 2, x, "*"), 1, sum)
-    resid_x <- xrd.sample - fitted_pattern
-
-    #Overall error squared
-    err <- sqrt(sum(abs(xrd.sample - fitted_pattern)^2))
-
-    #add 1 to n so that the correct indexes are accessed
-    n <- n + 1
-
-    #add the error to the vector in order to deduce how much improvement there is in the fit
-    fit_error[n] <- err
-    names(fit_error)[n] <- v_name
-
-    #get the current length of the error vector (dependent on the number of iterations of this while loop)
-    l <- length(fit_error)
-
-    #If this conditions is met, it means that all phases from the initial library have been used,
-    #which means the loop has to stop.
-    if (ncol(df) == lib_length) {
-      delta <- 0
-    }  else{
-      #Calculate the percentage difference between the nth and nth-1 iteration
-      delta <- 100 - ((fit_error[l]/fit_error[l - 1])* 100)
-    }
-  }
-
-  # The while loop is always one step behind,
-
-  #calculate the percentage improvment from adding sequential phases to the fit
-  min_v <- c()
-  for (i in 1:(length(fit_error)-1)) {
-    min_v[i] <- 100 - ((fit_error[i+1]/fit_error[i])* 100)
-  }
-
-  #Remove the phase the is below the limit set in the function call
-  remove_index <- which(min_v < delta_lim)
-
-  #remove the column from the library that contains the identified data
-  if (length(which(min_v < delta_lim)) > 0) {
-    mat <- df[,-remove_index]
-  }
-
-  #re-solve
-  x <- qr.solve(mat, xrd.sample)
-
-  out <- list("x" = x, "xrd.lib" = data.frame(mat), "fit.error" = fit_error)
-  return(out)
-
-}
-
-# FULLPAT FUNCTION --------------------------------------
-
-fullpat <- function (par, pure.patterns, sample.pattern, obj)
-{
-
-  if (length(par) == 1) {
-    pure.weights <- par
-    s.mix <- par * pure.patterns
-    d <- sum(abs(sample.pattern - s.mix))
-    return(d)
-  }
-
-  if (length(par) > 1) {
-    #These will be the pure weights already estimated using qr.solve
-    pure.weights <- par
-
-    #This calculates the fitted pattern
-    s.mix <- apply(sweep(pure.patterns, 2, pure.weights, "*"),
-                   1, sum)
-    #This is the objective function that is minimised
-
-    if(obj == "Delta") {
-      d <- sum(abs(sample.pattern - s.mix))
-    }
-
-    if(obj == "R") {
-      d <- sqrt(sum((sample.pattern - s.mix)^2)/sum(sample.pattern^2))
-    }
-
-    if(obj == "Rwp") {
-      d <-  sqrt(sum((1/sample.pattern) * ((sample.pattern - s.mix)^2)) / sum((1/sample.pattern) * (sample.pattern^2)))
-    }
-
-    return(d)
-  }
-}
-
-
-#fpf Alignment ---------------------------------------------------------------
-
-fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weights, amorphous) {
-
-  #create a blank list
-  pure.patterns <- list()
-
-  #Create a new 2theta scale with 4 times the resolution of the original sample
-  sample.pattern <- data.frame(approx(x = sample.tth, y = sample.counts,
-                                      method = "linear", n = length(sample.tth) * 4))
-
-  TTH_long <- sample.pattern[,1]
-  sample_long <- sample.pattern[,2]
-
-  #Do the same for all data in the selected reference library
-  for (i in 1:ncol(xrd.lib[["XRD"]])) {
-    pure.patterns[[i]] <- approx(x = xrd.lib[["TTH"]], y = xrd.lib[["XRD"]][, i],
-                                 method = "linear", n = nrow(xrd.lib[["XRD"]]) * 4)[[2]]
-  }
-
-  #convert from list to data frame
-  pure.patterns <- data.frame(pure.patterns)
-  names(pure.patterns) <- names(data.frame(xrd.lib[["XRD"]]))
-  pure.patterns <- as.matrix(pure.patterns)
-
-
-  #Define a value that will be used to shift the data.
-  TTH_res <- (TTH_long[length(TTH_long)] - TTH_long[1])/(length(TTH_long)-1)
-
-  shift_value <- round(fpf_shift/TTH_res, 0)
-
-  #Shorten the sample pattern and 2theta to account for
-  #the maximum/minimum shifts that might be applied
-  sample_long <- sample_long[((shift_value + 1):(length(sample_long)-shift_value))]
-  TTH_long <- TTH_long[((shift_value + 1):(length(TTH_long) - shift_value))]
-
-
-
-
-  #define an integer vector of positive and negative shifts
-  initial.shift <- c((0 - shift_value):shift_value)
-
-  shifting.length <- nrow(pure.patterns)-shift_value
-
-  #Create a matrix of the shortened length that will be used during alignment
-  shift.mat <- pure.patterns[((shift_value + 1):(shifting.length)), ]
-
-  #define blank lists to be populated during alignment
-  v <- list()
-  vm <- list()
-  vf <- list()
-  d <- list()
-
-  #This vector will be used to identify the optimum shift
-  dmin <- c()
-
-  #This vs matrix will be populated with the aligned patterns
-  vs <- shift.mat
-
-  for (i in 1:ncol(shift.mat)) {
-    for (j in 1:length(initial.shift)) {
-
-      v[[j]] <- pure.patterns[c(((shift_value + 1) + (initial.shift[j])):(shifting.length + (initial.shift[j]))), i]
-
-      #adjusted matrix for each shift
-
-      vm[[j]] <- shift.mat
-      # #add the shifted data
-      vm[[j]][,i] <- v[[j]]
-      #
-      # #compute the fitted pattern
-      #
-      vf[[j]] <- apply(sweep(vm[[j]], 2, pure.weights, "*"), 1, sum)
-      #
-      #compute the error
-      #d[[j]] <- sqrt(sum(abs(sample_long - vf[[j]])^2))
-
-      #Compute the Rwp
-      d[[j]] <- sqrt(sum((1/sample_long) * ((sample_long - vf[[j]])^2)) / sum((1/sample_long) * (sample_long^2)))
-
-      #identify which shifted pattern results in minimum Rwp
-      dmin[[i]] <- which.min(d)
-
-      #Populate a library with the optimumly shifted references
-      vs[, i] <- vm[[which.min(d)]][, i]
-    }
-  }
-
-  #re-approximate the data to the old TTH scale (i.e. reduce by 4 times)
-
-  vs_short <- list()
-
-  #re-approximate the reference library
-  for (i in 1:ncol(vs)) {
-    vs_short[[i]] <- approx(x = 1:nrow(vs), y = vs[ , i], method = "linear", n = (nrow(vs) / 4))[[2]]
-  }
-  #Convert from list to data frame
-  vs_short <- data.frame(vs_short)
-  names(vs_short) <- names(data.frame(vs))
-  #convert to matrix
-  vs_short <- as.matrix(vs_short)
-
-  #reapproximate the sample
-  sample.pattern <- approx(x = TTH_long, y = sample_long, method = "linear", n = (nrow(vs) / 4))[[2]]
-
-  #reapproximate the 2theta
-  TTH_short <- approx(x = TTH_long, y = vs[, 1], method = "linear", n = (nrow(vs) / 4))[[1]]
-
-  vs <- vs_short
-  TTH <- TTH_short
-
-  out <- list("sample" = data.frame("TTH" = TTH, "COUNTS" = sample.pattern),
-              "xrdlib_aligned" = vs)
-
-}
-
-
-min.conc <- function(x, xrd.lib) {
-  #send the coefficients to a dataframe
-  fpf_pc <- data.frame(t(data.frame(x)))
-
-  #Make sure it's ordered
-
-  if (length(x) > 1) {
-  fpf_pc <- fpf_pc[,order(names(fpf_pc))]
-  }
-
-  #compute which of the minerals are within the RIR named vector
-
-  minerals <- xrd.lib[["MINERALS"]]
-
-  minerals <- minerals[which(minerals$MIN_ID %in% names(fpf_pc)),]
-
-  if (length(x) > 1) {
-  minerals <- minerals[order(minerals$MIN_ID),]
-  }
-
-
-  fpf_pc_v <- as.numeric(fpf_pc[1, ])
-  names(fpf_pc_v) <- names(fpf_pc)
-
-  min_percent <- (fpf_pc_v/minerals$RIR)/sum(fpf_pc_v/minerals$RIR)*100
-
-  names(min_percent) <- minerals$MIN_ID
-
-  df <- data.frame(minerals, "min_percent" = min_percent)
-
-  dfg <- dplyr::group_by(df, MIN_NAME)
-
-  #The final mineral proportions
-  dfs <- dplyr::summarise(dfg, total_min = round(sum(min_percent),2), mean_RIR = mean(RIR))
-
-  out <- list("df" = df, "dfs" = dfs)
-
-  return(out)
-}
-
-
-### LLD estimation
-
-xrd.LLD <- function(x, xrd.sample, xrd.lib, int_std) {
-
-  fpf_pc <- data.frame(t(data.frame(x)))
-
-  #compute which of the minerals are within the RIR vector loaded at the start
-
-  RIR <- xrd.lib[["MINERALS"]]$RIR
-  names(RIR) <- xrd.lib[["MINERALS"]]$MIN_ID
-
-  RIR <- RIR[which(names(RIR) %in% names(fpf_pc))]
-
-  #order them alphabetically
-  RIR <- RIR[order(names(RIR), decreasing = FALSE)]
-
-  #Extract the mineral names of the selected phases and order them
-  #alphabetically too
-
-  min_names <- xrd.lib[["MINERALS"]]$MIN_NAME
-  names(min_names) <- xrd.lib[["MINERALS"]]$MIN_ID
-
-  min_names <- min_names[which(names(min_names) %in% names(fpf_pc))]
-  min_names <- min_names[order(names(min_names), decreasing = FALSE)]
-
-  #order the coefficients so that they match the order of RIR's and
-  #minerals names
-  fpf_pc <- fpf_pc[, order(names(fpf_pc), decreasing = FALSE)]
-
-  #create a numeric vector of coefficients
-  fpf_pc_v <- as.numeric(fpf_pc[1, ])
-
-  #calculate the mineral percentages based on the RIR's
-  min_percent <- (fpf_pc_v/RIR)/sum(fpf_pc_v/RIR)*100
-
-  #create a data frame containing the name, ID, percentage and RIR of the data
-  df <- data.frame("min_name" = as.character(min_names),
-                   "min_ID" = names(RIR),
-                   "min_pc" = as.numeric(min_percent),
-                   "RIR" = as.numeric(RIR))
-
-  #group the data by mineral name (for cases that different library patterns for a single
-  #mineral are included)
-  dfg <- dplyr::group_by(df, min_name)
-
-  #summarise the grouped data
-  dfs <- dplyr::summarise(dfg, total_min = round(sum(min_pc),2), mean_RIR = round(mean(RIR),2))
-
-  #To compute LDD using full patterns, the background signal has to be estimated,
-  #this is done using the bkg function I've written
-
-  #apply the bkg function
-  bkg <- xrd.bkg(tth = xrd.sample[,1],
-                 counts = xrd.sample[,2],
-                 width = 50,
-                 res = 0.1)
-
-  #sum of the background
-  bkg <- sum(bkg)
-  sqrt.bkg <- sqrt(bkg)
-
-  #Compute the total signal from the internal standard
-
-  #Get the index's of the internal standard
-  int_std_name = xrd.lib[["MINERALS"]]$MIN_NAME[which(xrd.lib[["MINERALS"]]$MIN_ID == "Qzt.662070.Strath.12Mins.P")]
-
-  int_std_index <- which(min_names == int_std_name)
-  #Order the optimised (because the min_names vector is already ordered)
-  x_ordered <- x[order(names(x), decreasing = FALSE)]
-  #extract the halite coefficients and RIR's
-  int_std_coefficients <- x_ordered[int_std_index]
-  int_std_RIR <- RIR[int_std_index]
-
-  #Get the library of aligned patterns and extract the internal standard patterns from it
-  xrd.lib_df <- data.frame(xrd.lib[["XRD"]][, order(names(data.frame(xrd.lib[["XRD"]])), decreasing = FALSE)])
-  int_std_patterns <- as.matrix(xrd.lib_df[, int_std_index])
-
-  #Calculate the fitted internal standard pattern
-  int_std_fit <- apply(sweep(int_std_patterns, 2, int_std_coefficients, "*"), 1, sum)
-
-  #sum the total counts
-  int_std_counts <- sum(int_std_fit)
-
-  #Get the total internal standard percentage currently optimised
-  int_std_pc <- sum(dfg$min_pc[which(dfg$min_name == int_std_name)])
-
-  if (int_std_pc < 5) {
-    warning("The internal standard is estimated to be lower than 5 wt.% within the sample, which may hinder the accuracy in estimating the lower limit of detection. Consider using an alternative internal standard.")
-  }
-
-  #Estimate the halite LLD (check this equation!!!)
-  int_std_LLD <- (4*sqrt(2*bkg))/(int_std_counts/int_std_pc)
-
-  #Now estimate the LLD for all phases of the fit
-
-  #calculate the weighted RIR which accounts for potentially
-  #different RIR's of the same mineral
-
-  int_std_RIR <- dfs$mean_RIR[which(dfs$min_name == int_std_name)]
-
-  int_std_min_pc <- dfs$total_min[which(dfs$min_name == int_std_name)]
-
-  int_std_min_weight <- int_std_min_pc/sum(int_std_min_pc)
-
-  int_std_RIR <- sum(int_std_RIR * int_std_min_weight)
-
-  #Then calculate the LLD
-  mineral_LLD <- int_std_LLD * (dfg$RIR
-                                /int_std_RIR)^-1
-
-  names(mineral_LLD) <- as.character(dfg$min_name)
-
-  dfg$LLD <- as.numeric(mineral_LLD)
-
-  #Get the index values of phases that are below 0.75 * LLD or named "Background"
-  remove_index <- which(dfg$min_pc < (dfg$LLD*0.9))
-
-
-  #This only runs when there are cases to remove
-  if(length(remove_index) > 0) {
-    x_ordered <- x_ordered[-remove_index]
-    xrd.lib_df <- xrd.lib_df[ ,-remove_index]
-  }
-
-  out <- list("x" = x_ordered, "xrd.lib" = xrd.lib_df)
-
-}
-
-
-#####################################
-
-##### This is the fpf function that depends upon ALL the functions defined above
-
-
 #' Automated full pattern fitting
 #'
-#' \code{auto.fpf} returns estimates of soil mineral concentraitons using full pattern fitting.
+#' \code{auto.fpf} returns estimates of soil mineral concentraitons using full pattern
+#'  fitting. This automated version attempts to extract the most appropriate phases
+#'  from the library.
 #'
 #' This function applies full pattern fitting to an XRPD sample to quantify mineral concentrations.
 #' It requires a library of reference patterns with pre-measured reference intensity ratios.
@@ -435,43 +13,59 @@ xrd.LLD <- function(x, xrd.sample, xrd.lib, int_std) {
 #' 2theta measurement intervals for the reference patterns. Third (\code{MINERALS}) is a data frame
 #' containing the unique ID, mineral name, and reference intensity ratio of each pattern in the library.
 #' The order of \code{XRPD} (by column) and \code{MINERALS} (by row) must be identical.
-#' @param align_shift The maximum shift that is allowed during initial 2theta alignment (degrees)
-#' @param TTH_min The minimum value of 2theta used during fitting
-#' @param TTH_max The maximum value of 2theta used during fitting
-#' @param delta_lim The tuning parameter used to adjust sensitivity of fit. Must greater than 0 and
-#' less than 100. Lower value = more sensitive. We recommend using 0.01.
-#' @param solver The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead", "CG")}
-#' @param obj.function The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
-#' We recommend Rwp
-#' @param int_std The mineral ID (e.g. "Qzt.662070.Strath.12Mins.P") to be used as internal standard. Must match a mineral
+#' @param tth A vector defining the minimum and maximum 2theta values to be used during
+#' fitting
+#' @param phases A string of unique ID's from the \code{lib} used to subset the reference library.
+#' @param std The mineral ID (e.g. "Qzt.662070.Strath.12Mins.P") to be used as internal standard. Must match a mineral
 #' name in the MINERALS table.
-#' @param fpf_shift Optional. The maximum shift applied during full pattern fitting.
 #' @param amorphous Optional. Then name of an amorphous phase to be added to the fitting process. Must
 #' match an ID in the MINERALS table.
-auto.fpf <- function(smpl, lib, align_shift, TTH_min, TTH_max, delta_lim, solver, obj.function, int_std, fpf_shift, amorphous) {
+#' @param coarse The tuning parameter used to adjust sensitivity of fit. Must greater than 0 and
+#' less than 100. Lower value = more sensitive. Default = 0.1.
+#' @param align The maximum shift that is allowed during initial 2theta alignment (degrees). Default = 0.1
+#' @param solver The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead", "CG")}. Default = \code{"BFGS"}.
+#' @param obj The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}. Default = \code{"Rwp"}
+#' We recommend Rwp
+#' @param shift Optional. The maximum shift applied during full pattern fitting. Default = 0.05
+#' @examples
+#' # Load the Xpert library
+#' data(Xpert)
+#'
+#' # Load the Xpert soil data to use in example
+#' data(Xpert_soil)
+#' # automated without any amorphous phases
+#' # not run
+#' # fpf_out <- auto.fpf(smpl = Xpert_soil$mineral,
+#' #                    lib = Xpert,
+#' #                    tth = c(3.5, 69.5),
+#' #                    std = "Qzt.662070.Strath.12Mins.P")
+#'
+#' #automated with an amorphous phase (organic matter)
+#' #not run
+#' #fpf_out_org <- auto.fpf(smpl = Xpert_soil$mineral,
+#' #                    lib = Xpert,
+#' #                    tth = c(3.5, 69.5),
+#' #                    std = "Qzt.662070.Strath.12Mins.P",
+#' #                    amorphous = "ORGANIC.337666")
+auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, solver = "BFGS", obj = "Rwp",  shift = 0.05) {
 
-  #Ensure that the delta_lim argument is more than 0
-  if (delta_lim <= 0) {
-    stop("The delta_lim value must be greater than 0.")
+  #Also warn if coarse is greater than 10 because this would give a strange fit
+  if (coarse >= 10) {
+    warning("A coarse value greater than 10 may not produce an accurate fit.")
   }
 
-  #Also warn if delta_lim is greater than 10 because this would give a strange fit
-  if (delta_lim >= 10) {
-    warning("A delta_lim value greater than 10 may not produce an accurate fit.")
-  }
-
-  #Ensure that the align_shift is greater than 0.
-  if (align_shift <= 0) {
-    stop("The align_shift argument must be greater than 0")
+  #Ensure that the align is greater than 0.
+  if (align <= 0) {
+    stop("The align argument must be greater than 0")
   }
 
   #Create a warning message if the shift is greater than 1, since this confuse the optimisation
-  if (align_shift > 0.5) {
+  if (align > 0.5) {
     warning("Be cautious of large 2theta shifts. These can cause issues in sample alignment.")
   }
 
-  if (fpf_shift > 0.1) {
-    warning("To speed computation and avoid erroneous alignments, the fpf_shift argument should be less than 0.1.")
+  if (shift > 0.1) {
+    warning("To speed computation and avoid erroneous alignments, the shift argument should be less than 0.1.")
   }
 
   #Make only "Nelder-Mead", "BFGS", or "CG" optional for the solver
@@ -479,60 +73,60 @@ auto.fpf <- function(smpl, lib, align_shift, TTH_min, TTH_max, delta_lim, solver
     stop("The solver argument must be one of 'BFGS', 'Nelder Mead' or 'CG'")
   }
 
-  #Make sure that the delta_lim argument is set to be greater than 0, but less than 100
-  if (delta_lim > 100) {
-    stop("The delta_lim argument must be a value greater than 0 and less than 100")
+  #Make sure that the coarse argument is set to be greater than 0, but less than 100
+  if (coarse > 100) {
+    stop("The coarse argument must be a value greater than 0 and less than 100")
   }
 
-  if (delta_lim <= 0) {
-    stop("The delta_lim argument must be a value greater than 0 and less than 100")
+  if (coarse <= 0) {
+    stop("The coarse argument must be a value greater than 0 and less than 100")
   }
 
   #Provide recommendations of which mineral to use as the internal standard
-  #if (!int_std %in% c("Corundum", "Quartz", "Sylvite", "Halite", "Rutile")) {
+  #if (!std %in% c("Corundum", "Quartz", "Sylvite", "Halite", "Rutile")) {
   #  warning("We recommend internal standards be highly crystalline, strong diffractors e.g. corundum, quartz, sylvite, #halite and rutile.")
   #}
 
   xrdlib <- lib
 
   #Make sure that the mineral identified as the internal standard is contained within the reference library
-  if (!int_std %in% xrdlib[["MINERALS"]]$MIN_ID) {
+  if (!std %in% xrdlib[["MINERALS"]]$MIN_ID) {
     stop("The mineral you have specified as the internal standard is not in the reference library")
   }
 
   sample <- smpl
 
   #Make sure that the defined TTH arguments are within the range of the samples and reference library.
-  if (TTH_min < min(sample[,1])) {
-    stop("The TTH_min argument must exceed the minimum 2theta value of the sample")
+  if (tth[1] < min(sample[,1])) {
+    stop("tth[1] must exceed the minimum 2theta value of the sample")
   }
-  if (TTH_max > max(sample[,1])) {
-    stop("The TTH_max argument must be lower than the maximum 2theta value of the sample")
+  if (tth[2] > max(sample[,1])) {
+    stop("tth[2] must be lower than the maximum 2theta value of the sample")
   }
 
-  if (TTH_min < min(xrdlib[["TTH"]])) {
-    stop("The TTH_min argument must be within the 2theta range of the reference library")
+  if (tth[1] < min(xrdlib[["TTH"]])) {
+    stop("tth[1] must be within the 2theta range of the reference library")
   }
-  if (TTH_max > max(xrdlib[["TTH"]])) {
-    stop("The TTH_max argument must be within the 2theta range of the reference library")
+  if (tth[2] > max(xrdlib[["TTH"]])) {
+    stop("tth[2] must be within the 2theta range of the reference library")
   }
   ##############
   #INITIAL SAMPLE ALIGNMENT USING THE xrd.align function
   ##############
 
-  xrd.standard_df <- xrdlib[["XRD"]][, which(xrdlib[["MINERALS"]]$MIN_ID == int_std)]
+  xrd.standard_df <- xrdlib[["XRD"]][, which(xrdlib[["MINERALS"]]$MIN_ID == std)]
 
-  if (length(which(xrdlib[["MINERALS"]]$MIN_ID == int_std)) > 1) {
+  if (length(which(xrdlib[["MINERALS"]]$MIN_ID == std)) > 1) {
     xrd.standard_df <- rowMeans(xrd.standard_df)
   }
 
   xrd.standard <- data.frame(TTH = xrdlib[["TTH"]], COUNTS = xrd.standard_df)
 
   #align the data
-  sample <- xrd.align(xrd.sample = sample, xrd.standard, xmin = TTH_min + (align_shift*2),
-                      xmax = TTH_max - (align_shift*2), xshift = align_shift)
+  sample <- xrd.align(xrd.sample = sample, xrd.standard, xmin = tth[1] + (align*2),
+                      xmax = tth[2] - (align*2), xshift = align)
 
-  if (sqrt(sample[[1]]^2) == align_shift) {
+  if (sqrt(sample[[1]]^2) == align) {
     message("The optimised shift used in alignment is equal to the maximum shift defined in the function call. We advise visual inspection of this alignment.")
   }
 
@@ -559,10 +153,10 @@ auto.fpf <- function(smpl, lib, align_shift, TTH_min, TTH_max, delta_lim, solver
   lib_length <- nrow(xrdlib[["MINERALS"]])
 
   #### decrease 2TH scale to the range defined in the function call
-  sample <- subset(sample, sample[,1] >= TTH_min & sample[,1] <= TTH_max)
+  sample <- subset(sample, sample[,1] >= tth[1] & sample[,1] <= tth[2])
 
   #Subset the XRD dataframe to
-  xrdlib[["XRD"]] <- xrdlib[["XRD"]][which(xrdlib[["TTH"]] >= TTH_min & xrdlib[["TTH"]] <= TTH_max), ]
+  xrdlib[["XRD"]] <- xrdlib[["XRD"]][which(xrdlib[["TTH"]] >= tth[1] & xrdlib[["TTH"]] <= tth[2]), ]
 
   #Replace the TTH in the library with the shortened one
   xrdlib[["TTH"]] <- sample[, 1]
@@ -594,7 +188,7 @@ auto.fpf <- function(smpl, lib, align_shift, TTH_min, TTH_max, delta_lim, solver
 
   #Use the autoID function to select the appropriate samples from the library
   autoID <- xrd.autoID(xrd.lib = xrdlib[["XRD"]],
-                       xrd.sample = sample[,2], delta_lim = delta_lim)
+                       xrd.sample = sample[,2], delta_lim = coarse)
 
   x <- autoID[["x"]]
   xrdlib[["XRD"]] <- autoID[["xrd.lib"]]
@@ -605,17 +199,17 @@ auto.fpf <- function(smpl, lib, align_shift, TTH_min, TTH_max, delta_lim, solver
   #optimise using objective function rather than qr.solve
   o <- optim(par = x, fullpat,
              method = solver, pure.patterns = xrdlib[["XRD"]],
-             sample.pattern = sample[, 2], obj = obj.function)
+             sample.pattern = sample[, 2], obj = obj)
 
 
   #Alignment and then another optimisation ONLY is the fpf.align parameters
   #is included
 
 
-  if(!missing(fpf_shift)) {
+  if(!missing(shift)) {
 
     fpf_aligned <- fpf.align(sample.tth = sample[,1], sample.counts = sample[,2],
-                             xrd.lib = xrdlib, fpf_shift = fpf_shift,
+                             xrd.lib = xrdlib, fpf_shift = shift,
                              pure.weights = o$par)
 
     sample <- fpf_aligned[["sample"]]
@@ -626,7 +220,7 @@ auto.fpf <- function(smpl, lib, align_shift, TTH_min, TTH_max, delta_lim, solver
 
     o <- optim(par = o$par, fullpat,
                method = solver, pure.patterns = xrdlib[["XRD"]],
-               sample.pattern = sample[, 2], obj = obj.function)
+               sample.pattern = sample[, 2], obj = obj)
   }
 
   #Removing negative parameters
@@ -649,7 +243,7 @@ auto.fpf <- function(smpl, lib, align_shift, TTH_min, TTH_max, delta_lim, solver
 
     o <- optim(par = x, fullpat,
                method = solver, pure.patterns = xrdlib[["XRD"]],
-               sample.pattern = sample[,2], obj = obj.function)
+               sample.pattern = sample[,2], obj = obj)
     x <- o$par
     #identify whether any parameters are negative for the next iteration
     negpar <- min(x)
@@ -663,7 +257,7 @@ auto.fpf <- function(smpl, lib, align_shift, TTH_min, TTH_max, delta_lim, solver
 
   #Calculate the LLD and remove any phases below it
   xrd_detectable <- xrd.LLD(x = x, xrd.sample = sample, xrd.lib = xrdlib,
-                            int_std = int_std)
+                            int_std = std)
 
   x <- xrd_detectable[["x"]]
   xrdlib[["XRD"]] <- xrd_detectable[["xrd.lib"]]
@@ -686,7 +280,7 @@ auto.fpf <- function(smpl, lib, align_shift, TTH_min, TTH_max, delta_lim, solver
   #the amorphous phase added
   o <- optim(par = x, fullpat,
              method = solver, control = list(), pure.patterns = xrdlib[["XRD"]],
-             sample.pattern = sample[,2], obj = obj.function)
+             sample.pattern = sample[,2], obj = obj)
 
   fitted_pattern <- apply(sweep(as.matrix(xrdlib[["XRD"]]), 2, o$par, "*"), 1, sum)
 
@@ -721,7 +315,7 @@ auto.fpf <- function(smpl, lib, align_shift, TTH_min, TTH_max, delta_lim, solver
 
       o <- optim(par = x, fullpat,
                  method = solver, control = list(), pure.patterns = xrdlib[["XRD"]],
-                 sample.pattern = sample[,2], obj = obj.function)
+                 sample.pattern = sample[,2], obj = obj)
       x <- o$par
 
       min_concs <- min.conc(x = x, xrd.lib = xrdlib)
@@ -752,6 +346,11 @@ auto.fpf <- function(smpl, lib, align_shift, TTH_min, TTH_max, delta_lim, solver
 
   for (i in 1:ncol(xrd)) {
     xrd[,i] <- xrd[,i] * x[i]
+  }
+
+  #If only 1 pattern is used in the fit, then rename it
+  if (ncol(xrd) == 1) {
+    names(xrd) <- df$MIN_ID[1]
   }
 
   #Define a list that becomes the function output

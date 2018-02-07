@@ -4,14 +4,48 @@
 \alias{fpf.plot}
 \title{Interactive full pattern fitting plot}
 \usage{
-fpf.plot(x)
+fpf.plot(x, d = FALSE, lambda = 1)
 }
 \arguments{
 \item{x}{An \code{fpf} output to be plotted}
+
+\item{d}{(optional) logical parameter specifying whether to compute d spacing.
+Default = FALSE}
+
+\item{lambda}{(required only with \code{d = TRUE}) the wavelength samples were measured at (in Angstroms). Changes x-axis to d-spacing.}
 }
 \description{
 \code{fpf.plot} returns a ggplotly interactive graph.
 }
 \details{
 This function is for use in combination with the output from \code{fpf}.
+}
+\examples{
+# Load the Xpert library
+data(Xpert)
+
+# Load the Xpert soil data to use in example
+data(Xpert_soil)
+
+# define the phases to include in the fit
+xrd_phases <- c("Qzt.662070.Strath.12Mins.P", "Qzt.662074.Qua.10.P", "X996730.QUA.11.P")
+
+# without organic
+#not run
+#fpf_out <-  fpf(smpl = Xpert_soil$mineral,
+#               lib = Xpert,
+#                 int.std = "Qzt.662070.Strath.12Mins.P",
+#                 phases = xrd_phases,
+#                 TTH.min = 4.5,
+#                 TTH.max = 69.5,
+#                 align.shift = 0.1,
+#                 solver = "BFGS",
+#                 obj.function = "Rwp",
+#                 fpf.shift = 0.05)
+
+# Plot data on 2theta scale
+fpf.plot(fpf_out)
+
+# Plot data according to d-spacing
+fpf.plot(fpf_out, d = TRUE, lambda = 1.54060)
 }
