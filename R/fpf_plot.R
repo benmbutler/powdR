@@ -32,10 +32,10 @@
 #' #                 fpf.shift = 0.05)
 #'
 #' # Plot data on 2theta scale
-#' fpf.plot(fpf_out)
+#' # fpf.plot(fpf_out)
 #'
 #' # Plot data according to d-spacing
-#' fpf.plot(fpf_out, d = TRUE, lambda = 1.54060)
+#' # fpf.plot(fpf_out, d = TRUE, lambda = 1.54060)
 fpf.plot <- function(x, d = FALSE, lambda = 1) {
 
   if((d == TRUE & lambda == 1) == TRUE) {

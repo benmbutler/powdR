@@ -44,8 +44,8 @@ xrd_phases <- c("Qzt.662070.Strath.12Mins.P", "Qzt.662074.Qua.10.P", "X996730.QU
 #                 fpf.shift = 0.05)
 
 # Plot data on 2theta scale
-fpf.plot(fpf_out)
+# fpf.plot(fpf_out)
 
 # Plot data according to d-spacing
-fpf.plot(fpf_out, d = TRUE, lambda = 1.54060)
+# fpf.plot(fpf_out, d = TRUE, lambda = 1.54060)
 }
