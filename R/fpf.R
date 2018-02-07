@@ -28,6 +28,9 @@
 #' Default = "Rwp". Default = Rwp
 #' @param shift Optional. The maximum shift applied during full pattern fitting.
 #' Default = 0.05
+#' @param weighting Optional. A column dataframe. First column contains 2theta axis on same scale as that
+#' of the XRD library. Second column contains the weighting of each 2theta variable. If not provided, all variables
+#' are given a weighting of 1.
 #' @return a list with components:
 #' \item{TTH}{A vector of the 2theta scale of the fitted data}
 #' \item{FITTED}{A vector of the fitted XRPD pattern}
@@ -40,7 +43,6 @@
 #' All patterns have been weighted according to the coefficients used in the fit}
 #' \item{COEFFICIENTS}{A named vector of coefficients used to produce FITTED}
 #' @examples
-#' # Example 1
 #' # Load the Xpert library
 #' data(Xpert)
 #'
@@ -68,9 +70,26 @@
 #' #                    phases = xrd_phases_org,
 #' #                    std = "Qzt.662070.Strath.12Mins.P",
 #' #                    amorphous = "ORGANIC.337666")
+#'
+#' # An example of using weighting
+#' weighting <- data.frame(TTH = Xpert$TTH,
+#'                         COUNTS = rep(1, length(Xpert$TTH)))
+#'
+#' # Make all values below TTH = 5 have a weighting of 0
+#' weighting$COUNTS[which(weighting$TTH <= 5)] <- 0
+#'
+#' # Make all values between TTH = 26 and 27 have a weighting of 2
+#' weighting$COUNTS[which(weighting$TTH >= 26 & weighting$TTH <= 27)] <- 10
+
 fpf <- function(smpl, lib, phases, std, amorphous,
                 tth, align = 0.1, solver = "BFGS",
-                obj = "Rwp", shift = 0.05) {
+                obj = "Rwp", shift = 0.05, weighting) {
+
+#Create a weighting vector containing all 1's if no other weighting vector is provided
+  if(missing(weighting)) {
+    weighting <- data.frame(TTH = lib$TTH,
+                            COUNTS = rep(1, length(lib$TTH)))
+  }
 
   #Ensure that the align_shift is greater than 0.
   if (align <= 0) {
@@ -157,8 +176,13 @@ xrdlib[["TTH"]] <- smpl_TTH
 #get the number of patterns in the library
 lib_length <- nrow(xrdlib[["MINERALS"]])
 
+#adjust the weighting to the aligned 2theta scale
+weighting <- data.frame(approx(x = weighting$TTH, y = weighting$COUNTS, xout = xrdlib$TTH))
+
 #### decrease 2TH scale to the range defined in the function call
 smpl <- subset(smpl, smpl[,1] >= tth[1] & smpl[,1] <= tth[2])
+
+weighting <- subset(weighting, weighting$x >= tth[1] & weighting$x <= tth[2])
 
 #Subset the XRD dataframe to
 xrdlib[["XRD"]] <- xrdlib[["XRD"]][which(xrdlib[["TTH"]] >= tth[1] & xrdlib[["TTH"]] <= tth[2]), ]
@@ -198,7 +222,7 @@ names(x) <- names(xrdlib[["XRD"]])
 
 o <- optim(par = x, fullpat,
            method = solver, pure.patterns = xrdlib[["XRD"]],
-           sample.pattern = smpl[, 2], obj = obj)
+           sample.pattern = smpl[, 2], obj = obj, weighting = weighting)
 
 #----------------------------------------------
 #Apply shifts
@@ -206,17 +230,20 @@ o <- optim(par = x, fullpat,
 
 fpf_aligned <- fpf.align(sample.tth = smpl[,1], sample.counts = smpl[,2],
                          xrd.lib = xrdlib, fpf_shift = shift,
-                         pure.weights = o$par)
+                         pure.weights = o$par, weighting = weighting)
 
 smpl <- fpf_aligned[["sample"]]
 xrdlib[["XRD"]] <- fpf_aligned[["xrdlib_aligned"]]
 xrdlib[["TTH"]] <- smpl[,1]
 
+#re-estimate weighting dataframe onto new TTH scale
+weighting <- data.frame(approx(x = weighting$x, y = weighting$y, xout = xrdlib$TTH))
+
 #Re-optimise after shifts
 
 o <- optim(par = o$par, fullpat,
            method = solver, pure.patterns = xrdlib[["XRD"]],
-           sample.pattern = smpl[, 2], obj = obj)
+           sample.pattern = smpl[, 2], obj = obj, weighting = weighting)
 
 x <- o$par
 
@@ -237,7 +264,7 @@ if(!missing(amorphous)) {
   #reoptimise
   o <- optim(par = x, fullpat,
              method = solver, pure.patterns = xrdlib[["XRD"]],
-             sample.pattern = smpl[, 2], obj = obj)
+             sample.pattern = smpl[, 2], obj = obj, weighting = weighting)
 }
 
 #-----------------------------------------------
@@ -262,7 +289,7 @@ while (negpar < 0) {
 
   o <- optim(par = x, fullpat,
              method = solver, pure.patterns = xrdlib[["XRD"]],
-             sample.pattern = smpl[, 2], obj = obj)
+             sample.pattern = smpl[, 2], obj = obj, weighting = weighting)
   x <- o$par
   #identify whether any parameters are negative for the next iteration
   negpar <- min(x)

@@ -5,7 +5,7 @@
 \title{Automated full pattern fitting}
 \usage{
 auto.fpf(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1,
-  solver = "BFGS", obj = "Rwp", shift = 0.05)
+  solver = "BFGS", obj = "Rwp", shift = 0.05, weighting)
 }
 \arguments{
 \item{smpl}{A data frame. First column is 2theta, second column is counts}
@@ -36,6 +36,10 @@ less than 100. Lower value = more sensitive. Default = 0.1.}
 We recommend Rwp}
 
 \item{shift}{Optional. The maximum shift applied during full pattern fitting. Default = 0.05}
+
+\item{weighting}{Optional. A column dataframe. First column contains 2theta axis on same scale as that
+of the XRD library. Second column contains the weighting of each 2theta variable. If not provided, all variables
+are given a weighting of 1.}
 
 \item{phases}{A string of unique ID's from the \code{lib} used to subset the reference library.}
 }
@@ -68,4 +72,14 @@ data(Xpert_soil)
 #                    tth = c(3.5, 69.5),
 #                    std = "Qzt.662070.Strath.12Mins.P",
 #                    amorphous = "ORGANIC.337666")
+
+# An example of using weighting
+weighting <- data.frame(TTH = Xpert$TTH,
+                        COUNTS = rep(1, length(Xpert$TTH)))
+
+# Make all values below TTH = 5 have a weighting of 0
+weighting$COUNTS[which(weighting$TTH <= 5)] <- 0
+
+# Make all values between TTH = 26 and 27 have a weighting of 2
+weighting$COUNTS[which(weighting$TTH >= 26 & weighting$TTH <= 27)] <- 10
 }

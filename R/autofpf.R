@@ -27,6 +27,9 @@
 #' @param obj The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}. Default = \code{"Rwp"}
 #' We recommend Rwp
 #' @param shift Optional. The maximum shift applied during full pattern fitting. Default = 0.05
+#' @param weighting Optional. A column dataframe. First column contains 2theta axis on same scale as that
+#' of the XRD library. Second column contains the weighting of each 2theta variable. If not provided, all variables
+#' are given a weighting of 1.
 #' @examples
 #' # Load the Xpert library
 #' data(Xpert)
@@ -47,7 +50,22 @@
 #' #                    tth = c(3.5, 69.5),
 #' #                    std = "Qzt.662070.Strath.12Mins.P",
 #' #                    amorphous = "ORGANIC.337666")
-auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, solver = "BFGS", obj = "Rwp",  shift = 0.05) {
+#'
+#' # An example of using weighting
+#' weighting <- data.frame(TTH = Xpert$TTH,
+#'                         COUNTS = rep(1, length(Xpert$TTH)))
+#'
+#' # Make all values below TTH = 5 have a weighting of 0
+#' weighting$COUNTS[which(weighting$TTH <= 5)] <- 0
+#'
+#' # Make all values between TTH = 26 and 27 have a weighting of 2
+#' weighting$COUNTS[which(weighting$TTH >= 26 & weighting$TTH <= 27)] <- 10
+auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, solver = "BFGS", obj = "Rwp",  shift = 0.05, weighting) {
+
+  if(missing(weighting)) {
+    weighting <- data.frame(TTH = lib$TTH,
+                            COUNTS = rep(1, length(lib$TTH)))
+  }
 
   #Also warn if coarse is greater than 10 because this would give a strange fit
   if (coarse >= 10) {
@@ -152,8 +170,13 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, 
   #get the number of patterns in the library
   lib_length <- nrow(xrdlib[["MINERALS"]])
 
+  #adjust the weighting to the aligned 2theta scale
+  weighting <- data.frame(approx(x = weighting$TTH, y = weighting$COUNTS, xout = xrdlib$TTH))
+
   #### decrease 2TH scale to the range defined in the function call
   sample <- subset(sample, sample[,1] >= tth[1] & sample[,1] <= tth[2])
+
+  weighting <- subset(weighting, weighting$x >= tth[1] & weighting$x <= tth[2])
 
   #Subset the XRD dataframe to
   xrdlib[["XRD"]] <- xrdlib[["XRD"]][which(xrdlib[["TTH"]] >= tth[1] & xrdlib[["TTH"]] <= tth[2]), ]
@@ -199,7 +222,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, 
   #optimise using objective function rather than qr.solve
   o <- optim(par = x, fullpat,
              method = solver, pure.patterns = xrdlib[["XRD"]],
-             sample.pattern = sample[, 2], obj = obj)
+             sample.pattern = sample[, 2], obj = obj, weighting = weighting)
 
 
   #Alignment and then another optimisation ONLY is the fpf.align parameters
@@ -210,7 +233,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, 
 
     fpf_aligned <- fpf.align(sample.tth = sample[,1], sample.counts = sample[,2],
                              xrd.lib = xrdlib, fpf_shift = shift,
-                             pure.weights = o$par)
+                             pure.weights = o$par, weighting = weighting)
 
     sample <- fpf_aligned[["sample"]]
     xrdlib[["XRD"]] <- fpf_aligned[["xrdlib_aligned"]]
@@ -220,7 +243,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, 
 
     o <- optim(par = o$par, fullpat,
                method = solver, pure.patterns = xrdlib[["XRD"]],
-               sample.pattern = sample[, 2], obj = obj)
+               sample.pattern = sample[, 2], obj = obj, weighting = weighting)
   }
 
   #Removing negative parameters
@@ -243,7 +266,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, 
 
     o <- optim(par = x, fullpat,
                method = solver, pure.patterns = xrdlib[["XRD"]],
-               sample.pattern = sample[,2], obj = obj)
+               sample.pattern = sample[,2], obj = obj, weighting = weighting)
     x <- o$par
     #identify whether any parameters are negative for the next iteration
     negpar <- min(x)
@@ -280,7 +303,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, 
   #the amorphous phase added
   o <- optim(par = x, fullpat,
              method = solver, control = list(), pure.patterns = xrdlib[["XRD"]],
-             sample.pattern = sample[,2], obj = obj)
+             sample.pattern = sample[,2], obj = obj, weighting = weighting)
 
   fitted_pattern <- apply(sweep(as.matrix(xrdlib[["XRD"]]), 2, o$par, "*"), 1, sum)
 
@@ -315,7 +338,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, 
 
       o <- optim(par = x, fullpat,
                  method = solver, control = list(), pure.patterns = xrdlib[["XRD"]],
-                 sample.pattern = sample[,2], obj = obj)
+                 sample.pattern = sample[,2], obj = obj, weighting = weighting)
       x <- o$par
 
       min_concs <- min.conc(x = x, xrd.lib = xrdlib)

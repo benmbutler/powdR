@@ -1,6 +1,6 @@
 #fpf Alignment ---------------------------------------------------------------
 
-fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weights, amorphous) {
+fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weights, weighting) {
 
   #create a blank list
   pure.patterns <- list()
@@ -8,6 +8,9 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
   #Create a new 2theta scale with 4 times the resolution of the original sample
   sample.pattern <- data.frame(approx(x = sample.tth, y = sample.counts,
                                       method = "linear", n = length(sample.tth) * 4))
+
+  weighting <- data.frame(approx(x = weighting[,1], y = weighting[,2],
+                                 method = "linear", n = length(sample.tth) * 4))
 
   TTH_long <- sample.pattern[,1]
   sample_long <- sample.pattern[,2]
@@ -29,12 +32,12 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
 
   shift_value <- round(fpf_shift/TTH_res, 0)
 
-  #Shorten the sample pattern and 2theta to account for
+  #Shorten the sample pattern, 2theta and weighting to account for
   #the maximum/minimum shifts that might be applied
   sample_long <- sample_long[((shift_value + 1):(length(sample_long)-shift_value))]
   TTH_long <- TTH_long[((shift_value + 1):(length(TTH_long) - shift_value))]
 
-
+  weighting <- weighting[((shift_value + 1):(nrow(weighting)-shift_value)), ]
 
 
   #define an integer vector of positive and negative shifts
@@ -76,7 +79,7 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
       #d[[j]] <- sqrt(sum(abs(sample_long - vf[[j]])^2))
 
       #Compute the Rwp
-      d[[j]] <- sqrt(sum((1/sample_long) * ((sample_long - vf[[j]])^2)) / sum((1/sample_long) * (sample_long^2)))
+      d[[j]] <- sqrt(sum((1/sample_long) * ((sample_long - vf[[j]])^2* weighting[,2])) / sum((1/sample_long) * (sample_long^2)))
 
       #identify which shifted pattern results in minimum Rwp
       dmin[[i]] <- which.min(d)

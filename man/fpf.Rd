@@ -5,7 +5,7 @@
 \title{Full pattern fitting}
 \usage{
 fpf(smpl, lib, phases, std, amorphous, tth, align = 0.1, solver = "BFGS",
-  obj = "Rwp", shift = 0.05)
+  obj = "Rwp", shift = 0.05, weighting)
 }
 \arguments{
 \item{smpl}{A data frame. First column is 2theta, second column is counts}
@@ -39,6 +39,10 @@ Default = "Rwp". Default = Rwp}
 
 \item{shift}{Optional. The maximum shift applied during full pattern fitting.
 Default = 0.05}
+
+\item{weighting}{Optional. A column dataframe. First column contains 2theta axis on same scale as that
+of the XRD library. Second column contains the weighting of each 2theta variable. If not provided, all variables
+are given a weighting of 1.}
 }
 \value{
 a list with components:
@@ -62,7 +66,6 @@ concentrations.
 It requires a library of reference patterns with pre-measured reference intensity ratios.
 }
 \examples{
-# Example 1
 # Load the Xpert library
 data(Xpert)
 
@@ -90,4 +93,14 @@ xrd_phases_org <- c("Qzt.662070.Strath.12Mins.P", "Qzt.662074.Qua.10.P",
 #                    phases = xrd_phases_org,
 #                    std = "Qzt.662070.Strath.12Mins.P",
 #                    amorphous = "ORGANIC.337666")
+
+# An example of using weighting
+weighting <- data.frame(TTH = Xpert$TTH,
+                        COUNTS = rep(1, length(Xpert$TTH)))
+
+# Make all values below TTH = 5 have a weighting of 0
+weighting$COUNTS[which(weighting$TTH <= 5)] <- 0
+
+# Make all values between TTH = 26 and 27 have a weighting of 2
+weighting$COUNTS[which(weighting$TTH >= 26 & weighting$TTH <= 27)] <- 10
 }
