@@ -239,6 +239,8 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, 
     xrdlib[["XRD"]] <- fpf_aligned[["xrdlib_aligned"]]
     xrdlib[["TTH"]] <- sample[,1]
 
+    weighting <- fpf_aligned[["weighting"]]
+
     #Re-optimise after shifts
 
     o <- optim(par = o$par, fullpat,

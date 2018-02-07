@@ -109,10 +109,13 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
   #reapproximate the 2theta
   TTH_short <- approx(x = TTH_long, y = vs[, 1], method = "linear", n = (nrow(vs) / 4))[[1]]
 
+  #reapproximate the weighting
+  weighting <- data.frame(approx(x = weighting[,1], y = weighting[,2], method = "linear", n = (nrow(vs) / 4)))
+
   vs <- vs_short
   TTH <- TTH_short
 
   out <- list("sample" = data.frame("TTH" = TTH, "COUNTS" = sample.pattern),
-              "xrdlib_aligned" = vs)
+              "xrdlib_aligned" = vs, "weighting" = weighting)
 
 }
