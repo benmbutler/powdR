@@ -62,7 +62,7 @@ xrd.LLD <- function(x, xrd.sample, xrd.lib, int_std) {
   #Compute the total signal from the internal standard
 
   #Get the index's of the internal standard
-  int_std_name = xrd.lib[["MINERALS"]]$MIN_NAME[which(xrd.lib[["MINERALS"]]$MIN_ID == "Qzt.662070.Strath.12Mins.P")]
+  int_std_name = xrd.lib[["MINERALS"]]$MIN_NAME[which(xrd.lib[["MINERALS"]]$MIN_ID == int_std)]
 
   int_std_index <- which(min_names == int_std_name)
   #Order the optimised (because the min_names vector is already ordered)
