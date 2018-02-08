@@ -14,21 +14,22 @@
 #' reference intensity ratio of each pattern in the library. The order of \code{XRPD}
 #' (by column) and \code{MINERALS} (by row) must be identical.
 #' @param tth A vector defining the minimum and maximum 2theta values to be used during
-#' fitting
-#' @param phases A string of mineral ID's used to subset the library.
+#' fitting.
+#' @param phases A string of mineral ID's used to subset the library. The ID's must match
+#' ID's in the \code{lib$MINERALS$MIND_ID} column.
 #' @param std The mineral ID (e.g. "Qzt.662070.Strath.12Mins.P") to be used as internal
-#' standard. Must match a mineral name in the MINERALS table.
-#' @param amorphous Optional. The ID of an amorphous phase (e.g. "ORGANIC.337666")to be
+#' standard. Must match an ID provided in the \code{phases} parameter.
+#' @param amorphous Optional. The ID of an amorphous phase (e.g. "ORGANIC.337666") to be
 #' added to the fitting process. Must match an ID provided in the \code{phases} parameter.
 #' Only 1 amorphous phase can be used.
-#' @param align The maximum shift that is allowed during initial 2theta alignment (degrees). Default = 0.1
+#' @param align The maximum shift that is allowed during initial 2theta alignment (degrees). Default = 0.1.
 #' @param solver The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
 #' "CG")}. Default = "BFGS".
 #' @param obj The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
-#' Default = "Rwp". Default = Rwp
+#' Default = \code{"Rwp"}.
 #' @param shift Optional. The maximum shift applied during full pattern fitting.
 #' Default = 0.05
-#' @param weighting Optional. A column dataframe. First column contains 2theta axis on same scale as that
+#' @param weighting Optional. A two column dataframe. First column contains 2theta axis on same scale as that
 #' of the XRD library. Second column contains the weighting of each 2theta variable. If not provided, all variables
 #' are given a weighting of 1.
 #' @return a list with components:
@@ -228,6 +229,8 @@ o <- optim(par = x, fullpat,
 #Apply shifts
 #----------------------------------------------
 
+if(shift > 0) {
+
 fpf_aligned <- fpf.align(sample.tth = smpl[,1], sample.counts = smpl[,2],
                          xrd.lib = xrdlib, fpf_shift = shift,
                          pure.weights = o$par, weighting = weighting)
@@ -236,14 +239,15 @@ smpl <- fpf_aligned[["sample"]]
 xrdlib[["XRD"]] <- fpf_aligned[["xrdlib_aligned"]]
 xrdlib[["TTH"]] <- smpl[,1]
 
-#re-estimate weighting dataframe onto new TTH scale
-weighting <- data.frame(approx(x = weighting$x, y = weighting$y, xout = xrdlib$TTH))
+weighting <- fpf_aligned[["weighting"]]
 
 #Re-optimise after shifts
 
 o <- optim(par = o$par, fullpat,
            method = solver, pure.patterns = xrdlib[["XRD"]],
            sample.pattern = smpl[, 2], obj = obj, weighting = weighting)
+
+}
 
 x <- o$par
 

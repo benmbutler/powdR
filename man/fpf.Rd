@@ -17,30 +17,31 @@ Third (\code{MINERALS}) is a data frame containing the unique ID, mineral name, 
 reference intensity ratio of each pattern in the library. The order of \code{XRPD}
 (by column) and \code{MINERALS} (by row) must be identical.}
 
-\item{phases}{A string of mineral ID's used to subset the library.}
+\item{phases}{A string of mineral ID's used to subset the library. The ID's must match
+ID's in the \code{lib$MINERALS$MIND_ID} column.}
 
 \item{std}{The mineral ID (e.g. "Qzt.662070.Strath.12Mins.P") to be used as internal
-standard. Must match a mineral name in the MINERALS table.}
+standard. Must match an ID provided in the \code{phases} parameter.}
 
-\item{amorphous}{Optional. The ID of an amorphous phase (e.g. "ORGANIC.337666")to be
+\item{amorphous}{Optional. The ID of an amorphous phase (e.g. "ORGANIC.337666") to be
 added to the fitting process. Must match an ID provided in the \code{phases} parameter.
 Only 1 amorphous phase can be used.}
 
 \item{tth}{A vector defining the minimum and maximum 2theta values to be used during
-fitting}
+fitting.}
 
-\item{align}{The maximum shift that is allowed during initial 2theta alignment (degrees). Default = 0.1}
+\item{align}{The maximum shift that is allowed during initial 2theta alignment (degrees). Default = 0.1.}
 
 \item{solver}{The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
 "CG")}. Default = "BFGS".}
 
 \item{obj}{The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
-Default = "Rwp". Default = Rwp}
+Default = \code{"Rwp"}.}
 
 \item{shift}{Optional. The maximum shift applied during full pattern fitting.
 Default = 0.05}
 
-\item{weighting}{Optional. A column dataframe. First column contains 2theta axis on same scale as that
+\item{weighting}{Optional. A two column dataframe. First column contains 2theta axis on same scale as that
 of the XRD library. Second column contains the weighting of each 2theta variable. If not provided, all variables
 are given a weighting of 1.}
 }

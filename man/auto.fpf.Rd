@@ -25,23 +25,35 @@ name in the MINERALS table.}
 \item{amorphous}{Optional. Then name of an amorphous phase to be added to the fitting process. Must
 match an ID in the MINERALS table.}
 
-\item{coarse}{The tuning parameter used to adjust sensitivity of fit. Must greater than 0 and
-less than 100. Lower value = more sensitive. Default = 0.1.}
+\item{coarse}{The tuning parameter used to adjust coarseness of fit. Must be greater than 0 and
+less than 100. Low values are more sensitive to minor phases. Default = 0.1.}
 
-\item{align}{The maximum shift that is allowed during initial 2theta alignment (degrees). Default = 0.1}
+\item{align}{The maximum shift that is allowed during initial 2theta alignment (degrees). Default = 0.1.}
 
 \item{solver}{The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead", "CG")}. Default = \code{"BFGS"}.}
 
-\item{obj}{The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}. Default = \code{"Rwp"}
-We recommend Rwp}
+\item{obj}{The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}. Default = \code{"Rwp"}.}
 
-\item{shift}{Optional. The maximum shift applied during full pattern fitting. Default = 0.05}
+\item{shift}{Optional. The maximum shift applied during full pattern fitting. Default = 0.05.}
 
-\item{weighting}{Optional. A column dataframe. First column contains 2theta axis on same scale as that
-of the XRD library. Second column contains the weighting of each 2theta variable. If not provided, all variables
-are given a weighting of 1.}
+\item{weighting}{Optional. A two column dataframe. First column contains 2theta axis on same scale as that
+of the XRD library. Second column contains the weighting of each 2theta variable. If not provided, all
+variables are given a weighting of 1.}
 
 \item{phases}{A string of unique ID's from the \code{lib} used to subset the reference library.}
+}
+\value{
+a list with components:
+\item{TTH}{A vector of the 2theta scale of the fitted data}
+\item{FITTED}{A vector of the fitted XRPD pattern}
+\item{MEASURED}{A vector of the original XRPD measurement}
+\item{RESIDUALS}{A vector of the Residuals of FITTED vs MEASURED}
+\item{MINERALS}{A dataframe of the minerals used to produced FITTED}
+\item{MINERALS_SUMMARY}{The MINERALS dataframe grouped by minerals and summarised (mean)}
+\item{R}{The Rwp of the FITTED vs MEASURED pattern}
+\item{WEIGHTED_PURE_PATTERNS}{A dataframe of reference patterns used to produce FITTED.
+All patterns have been weighted according to the coefficients used in the fit}
+\item{COEFFICIENTS}{A named vector of coefficients used to produce FITTED}
 }
 \description{
 \code{auto.fpf} returns estimates of soil mineral concentraitons using full pattern
