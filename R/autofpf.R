@@ -202,9 +202,9 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, 
   #If amorphous is present in the argument, then extract the patterns to be used
 
   if(!missing(amorphous)) {
-    amorphous_counts <- xrdlib[["XRD"]][, amorphous]
+    amorphous_counts <- xrdlib[["XRD"]][amorphous]
     amorphous_tth <- xrdlib[["TTH"]]
-    amorphous_xrd <- data.frame("TTH" = amorphous_tth, "COUNTS" = amorphous_counts)
+    amorphous_xrd <- data.frame("TTH" = amorphous_tth, amorphous_counts)
   }
 
   if(length(amorphous_index) > 0) {
@@ -258,6 +258,37 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, 
                sample.pattern = sample[, 2], obj = obj, weighting = weighting)
   }
 
+  #Now add amorphous phases and re-optimise
+
+  x <- o$par
+
+  #Add the amorphous phases
+
+  if(!missing(amorphous)) {
+    #Add the amorphous phase to the library
+    amorphous_counts2 <- list()
+
+    for (i in 1:ncol(amorphous_counts)) {
+      amorphous_counts2[[i]] <- approx(x = amorphous_tth, y = amorphous_counts[[i]],
+                                       method = "linear", xout = xrdlib[["TTH"]])[[2]]
+      names(amorphous_counts2)[i] <- names(amorphous_counts)[i]
+    }
+    amorphous_counts2 <- data.frame(amorphous_counts2)
+
+    xrdlib[["XRD"]] <- data.frame(xrdlib[["XRD"]], amorphous_counts2)
+    #Add an initial parameter to the library for the optimisation
+    #Add an initial parameter to the library for the optimisation
+    xa <- rep(0, ncol(amorphous_counts))
+    names(xa) <- names(amorphous_counts)
+
+    x <- c(x, xa)
+
+    o <- optim(par = x, fullpat,
+               method = solver, control = list(), pure.patterns = xrdlib[["XRD"]],
+               sample.pattern = sample[,2], obj = obj, weighting = weighting)
+  }
+
+
   #Removing negative parameters
 
   #setup an initial negpar that is negative so that the following while loop will
@@ -297,19 +328,6 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, 
   x <- xrd_detectable[["x"]]
   xrdlib[["XRD"]] <- xrd_detectable[["xrd.lib"]]
 
-  #Add the amorphous phase
-
-  if(!missing(amorphous)) {
-    #Add the amorphous phase to the library
-    amorphous_counts2 <- approx(x = amorphous_tth, y = amorphous_counts,
-                                method = "linear", xout = xrdlib[["TTH"]])[[2]]
-
-    xrdlib[["XRD"]][amorphous] <- amorphous_counts2
-    #Add an initial parameter to the library for the optimisation
-    x[length(x) + 1] <- 0
-    names(x)[length(x)] <- amorphous
-  }
-
 
   #Re-optimise now that phases below detection limit have been removed and
   #the amorphous phase added
@@ -338,11 +356,11 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, 
 
   if(!missing(amorphous)) {
 
-    if(df$min_percent[which(df$MIN_ID == amorphous)] < 1) {
+    remove_amorphous <- which(df$min_percent[which(df$MIN_ID %in% amorphous)] < 3)
+    if(length(remove_amorphous) > 0) {
       #Remove amorphous phase from library
-      xrdlib[["XRD"]][amorphous] <- NULL
-      x_index <- which(names(x) == amorphous)
-      x <- x[-x_index]
+      xrdlib[["XRD"]] <- xrdlib[["XRD"]][-remove_amorphous]
+      x <- x[-remove_amorphous]
 
       #recompute mineral percentages
 

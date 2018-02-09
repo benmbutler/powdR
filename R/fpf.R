@@ -196,12 +196,12 @@ xrdlib[["TTH"]] <- smpl[, 1]
 ##If amorphous is present in the argument, then extract the pattern to be used
 
 if(!missing(amorphous)) {
-  amorphous_counts <- xrdlib[["XRD"]][, amorphous]
+  amorphous_counts <- xrdlib[["XRD"]][amorphous]
   amorphous_tth <- xrdlib[["TTH"]]
-  amorphous_xrd <- data.frame("TTH" = amorphous_tth, "COUNTS" = amorphous_counts)
+  amorphous_xrd <- data.frame("TTH" = amorphous_tth, amorphous_counts)
 
   #remove the amorphous phase from the XRD library
-  xrdlib[["XRD"]] <- xrdlib[["XRD"]][, -which(names(xrdlib[["XRD"]]) == amorphous)]
+  xrdlib[["XRD"]] <- xrdlib[["XRD"]][, -which(names(xrdlib[["XRD"]]) %in% amorphous)]
 }
 
 #Make sure that ther aren't any other amorphous phases left in the library
@@ -255,15 +255,23 @@ x <- o$par
 
 if(!missing(amorphous)) {
   #Add the amorphous phase to the library
-  amorphous_counts2 <- approx(x = amorphous_tth, y = amorphous_counts,
+  amorphous_counts2 <- list()
+
+  for (i in 1:ncol(amorphous_counts)) {
+  amorphous_counts2[[i]] <- approx(x = amorphous_tth, y = amorphous_counts[[i]],
                               method = "linear", xout = xrdlib[["TTH"]])[[2]]
+  names(amorphous_counts2)[i] <- names(amorphous_counts)[i]
+  }
+  amorphous_counts2 <- data.frame(amorphous_counts2)
 
   xrdlib$XRD <- data.frame(xrdlib$XRD)
 
-  xrdlib[["XRD"]][amorphous] <- amorphous_counts2
+  xrdlib[["XRD"]] <- data.frame(xrdlib[["XRD"]], amorphous_counts2)
   #Add an initial parameter to the library for the optimisation
-  x[length(x) + 1] <- 0
-  names(x)[length(x)] <- amorphous
+  xa <- rep(0, ncol(amorphous_counts))
+  names(xa) <- names(amorphous_counts)
+
+  x <- c(x, xa)
 
   #reoptimise
   o <- optim(par = x, fullpat,
