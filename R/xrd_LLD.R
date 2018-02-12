@@ -1,6 +1,6 @@
 ### LLD estimation
 
-xrd.LLD <- function(x, xrd.sample, xrd.lib, int_std) {
+xrd.LLD <- function(x, xrd.sample, xrd.lib, int_std, lld) {
 
   fpf_pc <- data.frame(t(data.frame(x)))
 
@@ -67,7 +67,8 @@ xrd.LLD <- function(x, xrd.sample, xrd.lib, int_std) {
   int_std_index <- which(min_names == int_std_name)
   #Order the optimised (because the min_names vector is already ordered)
   x_ordered <- x[order(names(x), decreasing = FALSE)]
-  #extract the halite coefficients and RIR's
+
+  #extract the coefficients and RIR's
   int_std_coefficients <- x_ordered[int_std_index]
   int_std_RIR <- RIR[int_std_index]
 
@@ -88,7 +89,7 @@ xrd.LLD <- function(x, xrd.sample, xrd.lib, int_std) {
     warning("The internal standard is estimated to be lower than 5 wt.% within the sample, which may hinder the accuracy in estimating the lower limit of detection. Consider using an alternative internal standard.")
   }
 
-  #Estimate the halite LLD (check this equation!!!)
+  #Estimate the LLD (check this equation!!!)
   int_std_LLD <- (4*sqrt(2*bkg))/(int_std_counts/int_std_pc)
 
   #Now estimate the LLD for all phases of the fit
@@ -113,7 +114,7 @@ xrd.LLD <- function(x, xrd.sample, xrd.lib, int_std) {
   dfg$LLD <- as.numeric(mineral_LLD)
 
   #Get the index values of phases that are below 0.75 * LLD or named "Background"
-  remove_index <- which(dfg$min_pc < (dfg$LLD*0.9))
+  remove_index <- which(dfg$min_pc < (dfg$LLD*lld))
 
 
   #This only runs when there are cases to remove

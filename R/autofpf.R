@@ -29,6 +29,7 @@
 #' @param weighting Optional. A two column dataframe. First column contains 2theta axis on same scale as that
 #' of the XRD library. Second column contains the weighting of each 2theta variable. If not provided, all
 #'variables are given a weighting of 1.
+#' @param lld A parameter used to tune the lower limit of dection computation. Must be between 0 and 1. Default = 0.4.
 #' @return a list with components:
 #' \item{TTH}{A vector of the 2theta scale of the fitted data}
 #' \item{FITTED}{A vector of the fitted XRPD pattern}
@@ -70,11 +71,15 @@
 #'
 #' # Make all values between TTH = 26 and 27 have a weighting of 2
 #' weighting$COUNTS[which(weighting$TTH >= 26 & weighting$TTH <= 27)] <- 10
-auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, solver = "BFGS", obj = "Rwp",  shift = 0.05, weighting) {
+auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, solver = "BFGS", obj = "Rwp",  shift = 0.05, weighting, lld = 0.4) {
 
   if(missing(weighting)) {
     weighting <- data.frame(TTH = lib$TTH,
                             COUNTS = rep(1, length(lib$TTH)))
+  }
+
+  if (lld < 0 | lld > 1) {
+    stop("The lld argument must be between 0 and 1")
   }
 
   #Also warn if coarse is greater than 10 because this would give a strange fit
@@ -323,7 +328,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, 
 
   #Calculate the LLD and remove any phases below it
   xrd_detectable <- xrd.LLD(x = x, xrd.sample = sample, xrd.lib = xrdlib,
-                            int_std = std)
+                            int_std = std, lld = lld)
 
   x <- xrd_detectable[["x"]]
   xrdlib[["XRD"]] <- xrd_detectable[["xrd.lib"]]

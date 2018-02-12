@@ -5,7 +5,7 @@
 \title{Automated full pattern fitting}
 \usage{
 auto.fpf(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1,
-  solver = "BFGS", obj = "Rwp", shift = 0.05, weighting)
+  solver = "BFGS", obj = "Rwp", shift = 0.05, weighting, lld = 0.4)
 }
 \arguments{
 \item{smpl}{A data frame. First column is 2theta, second column is counts}
@@ -39,6 +39,8 @@ less than 100. Low values are more sensitive to minor phases. Default = 0.1.}
 \item{weighting}{Optional. A two column dataframe. First column contains 2theta axis on same scale as that
 of the XRD library. Second column contains the weighting of each 2theta variable. If not provided, all
 variables are given a weighting of 1.}
+
+\item{lld}{A parameter used to tune the lower limit of dection computation. Must be between 0 and 1. Default = 0.4.}
 
 \item{phases}{A string of unique ID's from the \code{lib} used to subset the reference library.}
 }
