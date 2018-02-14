@@ -10,6 +10,7 @@ multi.xrd.align <- function(xrd, xrd.standard, xmin, xmax, xshift) {
 
   for (i in 1:length(xrd)) {
     x <- xrd.align(xrd.sample = xrd[[i]], xrd.standard = quartz,
+    x <- quartz_align(xrd.sample = xrd[[i]], xrd.standard = quartz,
                       xmin = xmin,
                       xmax = xmax,
                       xshift = xshift)
