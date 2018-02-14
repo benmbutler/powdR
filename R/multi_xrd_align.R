@@ -2,14 +2,12 @@
 #This function aligns AND harmonises a list of XRD patterns
 multi.xrd.align <- function(xrd, xrd.standard, xmin, xmax, xshift) {
 
-  quartz <- xrd.standard
-
   xrd_aligned <- list()
   min_tth <- c()
   max_tth <- c()
 
   for (i in 1:length(xrd)) {
-    x <- quartz_align(xrd.sample = xrd[[i]], xrd.standard = quartz,
+    x <- xrd.align(xrd.sample = xrd[[i]], xrd.standard = xrd.standard,
                       xmin = xmin,
                       xmax = xmax,
                       xshift = xshift)
