@@ -1,4 +1,4 @@
-mean_centre <- function(smpl) {
+mean.centre <- function(smpl) {
 
   smpl[[2]] <- sample[[2]] - mean(smpl[[2]])
 

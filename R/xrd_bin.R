@@ -1,4 +1,4 @@
-xrd_bin <- function(smpl, bin.size) {
+xrd.bin <- function(smpl, bin.size) {
 
   tth <- smpl[[1]]
   counts <- smpl[[2]]
