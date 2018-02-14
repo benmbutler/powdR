@@ -14,8 +14,8 @@ multi.xrd.align <- function(xrd, xrd.standard, xmin, xmax, xshift) {
 
     xrd_aligned[[i]] <- x
 
-    min_tth[i] <- min(x[,1])
-    max_tth[i] <- max(x[,1])
+    min_tth[i] <- min(x[[2]][,1])
+    max_tth[i] <- max(x[[2]][,1])
   }
 
   #Define the tth interval that a new scale will be built upon
