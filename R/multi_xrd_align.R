@@ -27,8 +27,8 @@ multi.xrd.align <- function(xrd, xrd.standard, xmin, xmax, xshift) {
   #Harmonise the aligned data to the new 2TH scale
   xrd_harm <- list()
   for (i in 1:length(xrd_aligned)) {
-    xrd_harm[[i]] <- data.frame(approx(x = xrd_aligned[[i]][, 1],
-                                        y = xrd_aligned[[i]][, 2],
+    xrd_harm[[i]] <- data.frame(approx(x = xrd_aligned[[i]][[2]][, 1],
+                                        y = xrd_aligned[[i]][[2]][, 2],
                                         xout = tth))
   }
 
