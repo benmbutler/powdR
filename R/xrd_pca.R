@@ -1,5 +1,4 @@
 #This function carries out PCA on a list of treated xrd patterns
-
 xrd.pca <- function(xrd) {
 
   xrpd_m <- matrix(nrow = length(xrd), ncol = nrow(xrd[[1]]))
@@ -17,12 +16,10 @@ xrd.pca <- function(xrd) {
   #PCA of this data
   xrpd_pca <- prcomp(xrpd_m[,c(1:ncol(xrpd_m))])
 
-
-  #This code extract the cumulative variance explained by the 48 principal components I'm using
+  #Extract the cumulative variance explained by all principal components
   pca_var <- apply(xrpd_pca$x, 2, var)
   props <- pca_var / sum(pca_var)
   xrpd_cum_prop <- cumsum(props)
-
 
   #I want to have a data frame with full names that I can export
   xrpd_pca_out <- data.frame(sample_id, xrpd_pca$x)

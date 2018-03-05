@@ -1,10 +1,7 @@
 xrd.bin <- function(smpl, bin.size) {
 
-  tth <- smpl[[1]]
-  counts <- smpl[[2]]
-
-  #Split the x-axis into chunks
-  x <- split(tth, ceiling(seq_along(tth)/bin.size))
+  #Split the x-axis into chunks defined by bin.size
+  x <- split(smpl[[1]], ceiling(seq_along(smpl[[1]])/bin.size))
 
   #calculate the mean of each chunk
   x_mean <- c()
@@ -12,8 +9,8 @@ xrd.bin <- function(smpl, bin.size) {
     x_mean[i] <- mean(x[[i]])
   }
 
-  #Split the y-axis into chunks
-  y <- split(counts, ceiling(seq_along(counts)/bin.size))
+  #Split the y-axis into chunks defined by bin.size
+  y <- split(smpl[[2]], ceiling(seq_along(smpl[[2]])/bin.size))
 
   #calculate the mean of each chunk
   y_mean <- c()
@@ -21,6 +18,7 @@ xrd.bin <- function(smpl, bin.size) {
     y_mean[i] <- mean(y[[i]])
   }
 
+  #create a dataframe of binned data
   out <- data.frame("TTH" = x_mean,
                     "COUNTS" = y_mean)
 

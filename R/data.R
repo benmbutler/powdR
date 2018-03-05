@@ -60,3 +60,27 @@
 #' \item{MINERALS}{A dataframe the mineral ID's, names and RIR's}
 #' }
 "Xpert_NSIS"
+
+#' D8 library of XRPD patterns relevant to NSIS soils
+#'
+#' The D8 library contains all the reference patterns and reference intensity
+#' ratios needed for full pattern fitting of the NSIS Xpert data.
+#'
+#' @format A list of 3
+#' \describe{
+#' \item{XRD}{A dataframe of all xrd data. Column names denote the reference sample}
+#' \item{TTH}{A vector of 2theta intervals of all measurements in the library}
+#' \item{MINERALS}{A dataframe the mineral ID's, names and RIR's}
+#' }
+"D8_NSIS"
+
+#' Soil samples measured by D8
+#'
+#' Two soil samples measured on a Bruker D8. These are used in examples
+#'
+#' @format A list of 2 xy dataframes
+#' \describe{
+#' \item{organic}{An organic soil measured by XRPD}
+#' \item{mineral}{A mineral soil measured by XRPD}
+#' }
+"D8_soil"

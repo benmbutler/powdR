@@ -3,10 +3,13 @@
 fullpat <- function (par, pure.patterns, sample.pattern, obj, weighting)
 {
 
+#if only 1 pattern is being fitted:
   if (length(par) == 1) {
-    pure.weights <- par
+
+    #calculate fitted pattern
     s.mix <- par * pure.patterns
 
+    #objective functions
     if(obj == "Delta") {
       d <- sum(abs(sample.pattern - s.mix) * weighting[,2])
     }
@@ -22,15 +25,14 @@ fullpat <- function (par, pure.patterns, sample.pattern, obj, weighting)
     return(d)
   }
 
+#if more than 1 pattern is being fitted
   if (length(par) > 1) {
-    #These will be the pure weights already estimated using qr.solve
-    pure.weights <- par
 
     #This calculates the fitted pattern
-    s.mix <- apply(sweep(pure.patterns, 2, pure.weights, "*"),
+    s.mix <- apply(sweep(pure.patterns, 2, par, "*"),
                    1, sum)
-    #This is the objective function that is minimised
 
+    #objective functions
     if(obj == "Delta") {
       d <- sum(abs(sample.pattern - s.mix) * weighting[,2])
     }

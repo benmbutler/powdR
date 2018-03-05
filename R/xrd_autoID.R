@@ -1,4 +1,4 @@
-#This is the while loop used to pluck phases out of the library
+#This is the while loop used to pluck appropriate phases out of the library
 
 #xrd.lib = an XRD library
 #xrd.sample = a vector of an xrd sample
@@ -70,13 +70,13 @@ xrd.autoID <- function(xrd.lib, xrd.sample, delta_lim) {
 
   # The while loop is always one step behind,
 
-  #calculate the percentage improvment from adding sequential phases to the fit
+  #calculate the percentage improvement from adding sequential phases to the fit
   min_v <- c()
   for (i in 1:(length(fit_error)-1)) {
     min_v[i] <- 100 - ((fit_error[i+1]/fit_error[i])* 100)
   }
 
-  #Remove the phase the is below the limit set in the function call
+  #Remove the phase that is below the limit set in the function call
   remove_index <- which(min_v < delta_lim)
 
   #remove the column from the library that contains the identified data

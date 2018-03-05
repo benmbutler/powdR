@@ -1,5 +1,4 @@
 ### LLD estimation
-
 xrd.LLD <- function(x, xrd.sample, xrd.lib, int_std, lld) {
 
   fpf_pc <- data.frame(t(data.frame(x)))

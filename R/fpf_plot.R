@@ -43,19 +43,20 @@ fpf.plot <- function(x, d = FALSE, lambda = 1) {
          in order to calculate d-spacing.")
   }
 
-  # x needs to be a list output from the fpf function
-
+  #Create a dataframe of the weighted pure patterns and fitted pattern
   pure_patterns <- data.frame(TTH = x[["TTH"]],
                               FITTED = x[["FITTED"]],
                               x[["WEIGHTED_PURE_PATTERNS"]])
 
+  #The original measurement
   measured <- data.frame(TTH = x[["TTH"]],
                          MEASURED = x[["MEASURED"]])
 
+  #Residuals
   resids <- data.frame(TTH = x[["TTH"]],
                        RESIDUALS = x[["RESIDUALS"]])
 
-
+  #melt the pure patterns data frame
   pure_patterns_long <- reshape::melt(pure_patterns, id = c("TTH"))
 
 #If wavelength is supplied, then compute d
@@ -65,8 +66,7 @@ fpf.plot <- function(x, d = FALSE, lambda = 1) {
     resids[["d"]] <- lambda/(2*sin((resids$TTH/2)*pi/180))
     pure_patterns_long[["d"]] <- lambda/(2*sin((pure_patterns_long$TTH/2)*pi/180))
 
-
-
+    #and plot
   g1 <- ggplot2::ggplot() +
     ggplot2::geom_line(data = measured,
               ggplot2::aes(x = d, y = MEASURED, color = "Measured"), size = 0.35, linetype = "dotted") +
@@ -74,9 +74,6 @@ fpf.plot <- function(x, d = FALSE, lambda = 1) {
               ggplot2::aes(x = d, y = value, color = variable), size = 0.15) +
     ggplot2::scale_x_reverse() +
     ggplot2::theme(legend.title = ggplot2::element_blank())
-
-  p1 <- plotly::ggplotly(g1)
-
 
   g2 <- ggplot2::ggplot() +
     ggplot2::geom_line(data = resids,
@@ -94,9 +91,6 @@ else {
                        ggplot2::aes(x = TTH, y = value, color = variable), size = 0.15) +
     ggplot2::theme(legend.title = ggplot2::element_blank())
 
-  p1 <- plotly::ggplotly(g1)
-
-
   g2 <- ggplot2::ggplot() +
     ggplot2::geom_line(data = resids,
                        ggplot2::aes(x = TTH, y = RESIDUALS, color = "Residuals"), size = 0.15) +
@@ -104,8 +98,9 @@ else {
                                  values = c("Residuals" = "blue"))
 }
 
+  #Convert to ggplotly
+  p1 <- plotly::ggplotly(g1)
   p2 <- plotly::ggplotly(g2)
-
   p3 <- plotly::subplot(p1, p2,
                 nrows = 2,
                 heights = c(0.5, 0.5),

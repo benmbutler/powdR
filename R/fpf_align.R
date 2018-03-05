@@ -5,42 +5,39 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
   #create a blank list
   pure.patterns <- list()
 
-  #Create a new 2theta scale with 4 times the resolution of the original sample
+  #Create a new sample pattern with 4 times the resolution of the original
   sample.pattern <- data.frame(approx(x = sample.tth, y = sample.counts,
                                       method = "linear", n = length(sample.tth) * 4))
-
+  #new weighting with 4 times the resolution
   weighting <- data.frame(approx(x = weighting[,1], y = weighting[,2],
                                  method = "linear", n = length(sample.tth) * 4))
 
   TTH_long <- sample.pattern[,1]
   sample_long <- sample.pattern[,2]
 
-  #Do the same for all data in the selected reference library
+  #Do the same for all data in the reference library
   for (i in 1:ncol(xrd.lib[["XRD"]])) {
     pure.patterns[[i]] <- approx(x = xrd.lib[["TTH"]], y = xrd.lib[["XRD"]][, i],
                                  method = "linear", n = nrow(xrd.lib[["XRD"]]) * 4)[[2]]
   }
 
-  #convert from list to data frame
+  #convert from list to data frame, to matrix
   pure.patterns <- data.frame(pure.patterns)
   names(pure.patterns) <- names(data.frame(xrd.lib[["XRD"]]))
   pure.patterns <- as.matrix(pure.patterns)
 
-
   #Define a value that will be used to shift the data.
   TTH_res <- (TTH_long[length(TTH_long)] - TTH_long[1])/(length(TTH_long)-1)
-
+  #Round up the number of increments the data can shift by (based on fpf_shift)
   shift_value <- round(fpf_shift/TTH_res, 0)
 
   #Shorten the sample pattern, 2theta and weighting to account for
   #the maximum/minimum shifts that might be applied
   sample_long <- sample_long[((shift_value + 1):(length(sample_long)-shift_value))]
   TTH_long <- TTH_long[((shift_value + 1):(length(TTH_long) - shift_value))]
-
   weighting <- weighting[((shift_value + 1):(nrow(weighting)-shift_value)), ]
 
-
-  #define an integer vector of positive and negative shifts
+  #define an integer sequence of positive and negative shifts
   initial.shift <- c((0 - shift_value):shift_value)
 
   shifting.length <- nrow(pure.patterns)-shift_value
@@ -70,13 +67,9 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
       vm[[j]] <- shift.mat
       # #add the shifted data
       vm[[j]][,i] <- v[[j]]
-      #
+
       # #compute the fitted pattern
-      #
       vf[[j]] <- apply(sweep(vm[[j]], 2, pure.weights, "*"), 1, sum)
-      #
-      #compute the error
-      #d[[j]] <- sqrt(sum(abs(sample_long - vf[[j]])^2))
 
       #Compute the Rwp
       d[[j]] <- sqrt(sum((1/sample_long) * ((sample_long - vf[[j]])^2* weighting[,2])) / sum((1/sample_long) * (sample_long^2)))
@@ -89,18 +82,16 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
     }
   }
 
-  #re-approximate the data to the old TTH scale (i.e. reduce by 4 times)
-
+  #re-approximate the data to the old TTH resolution (i.e. reduce by 4 times)
   vs_short <- list()
 
   #re-approximate the reference library
   for (i in 1:ncol(vs)) {
     vs_short[[i]] <- approx(x = 1:nrow(vs), y = vs[ , i], method = "linear", n = (nrow(vs) / 4))[[2]]
   }
-  #Convert from list to data frame
+  #Convert from list to data frame to matrix
   vs_short <- data.frame(vs_short)
   names(vs_short) <- names(data.frame(vs))
-  #convert to matrix
   vs_short <- as.matrix(vs_short)
 
   #reapproximate the sample

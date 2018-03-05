@@ -43,28 +43,31 @@
 #' \item{COEFFICIENTS}{A named vector of coefficients used to produce FITTED}
 #' @examples
 #' # Load the Xpert library
-#' data(Xpert)
+#' data(D8_NSIS)
 #'
 #' # Load the Xpert soil data to use in example
-#' data(Xpert_soil)
+#' data(D8_soil)
 #' # automated without any amorphous phases
 #' # not run
-#' # fpf_out <- auto.fpf(smpl = Xpert_soil$mineral,
-#' #                    lib = Xpert,
-#' #                    tth = c(3.5, 69.5),
-#' #                    std = "Qzt.662070.Strath.12Mins.P")
+#' # fpf_out <- auto.fpf(smpl = D8_soil$mineral,
+#' #                    lib = D8_NSIS,
+#' #                    tth = c(5.0, 69.5),
+#' #                    std = "QUARTZ.STRATH.P.1142250")
 #'
 #' #automated with an amorphous phase (organic matter)
 #' #not run
-#' #fpf_out_org <- auto.fpf(smpl = Xpert_soil$mineral,
-#' #                    lib = Xpert,
-#' #                    tth = c(3.5, 69.5),
-#' #                    std = "Qzt.662070.Strath.12Mins.P",
-#' #                    amorphous = "ORGANIC.337666")
+#' #fpf_out_org <- auto.fpf(smpl = D8_soil$mineral,
+#' #                    lib = D8_NSIS,
+#' #                    tth = c(5.0, 69.5),
+#' #                    std = "QUARTZ.STRATH.P.1142250",
+#' #                    amorphous = c("ORGANIC.bez.CRAIGLICHT.668085.DEEP",
+#' #                                  "ALL.11.P.997615",
+#' #                                  "FER.2LINE.P.1021047",
+#' #                                  "OBSID.P.AMOR.1.828441.882233"))
 #'
 #' # An example of using weighting
-#' weighting <- data.frame(TTH = Xpert$TTH,
-#'                         COUNTS = rep(1, length(Xpert$TTH)))
+#' weighting <- data.frame(TTH = D8_NSIS$TTH,
+#'                         COUNTS = rep(1, length(D8_NSIS$TTH)))
 #'
 #' # Make all values below TTH = 5 have a weighting of 0
 #' weighting$COUNTS[which(weighting$TTH <= 5)] <- 0
