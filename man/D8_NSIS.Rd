@@ -15,6 +15,6 @@ D8_NSIS
 }
 \description{
 The D8 library contains all the reference patterns and reference intensity
-ratios needed for full pattern fitting of the NSIS Xpert data.
+ratios needed for full pattern fitting of the NSIS D8 data.
 }
 \keyword{datasets}

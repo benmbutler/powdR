@@ -64,7 +64,7 @@
 #' D8 library of XRPD patterns relevant to NSIS soils
 #'
 #' The D8 library contains all the reference patterns and reference intensity
-#' ratios needed for full pattern fitting of the NSIS Xpert data.
+#' ratios needed for full pattern fitting of the NSIS D8 data.
 #'
 #' @format A list of 3
 #' \describe{
