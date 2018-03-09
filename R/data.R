@@ -84,3 +84,17 @@
 #' \item{mineral}{A mineral soil measured by XRPD}
 #' }
 "D8_soil"
+
+#' NSIS topsoil samples
+#'
+#' 204 samples measured on Bruker D8. Data have had aluminium signal
+#' stripped from them, which was an artefact of the sample holders used
+#' on this instrument.
+#'
+#' @format A list of 204 dataframes (named according to the sample ID's),
+#' with each dataframe containing two columns of:
+#' \describe{
+#' \item{tth}{The 2theta measurement intervals}
+#' \item{counts}{The count intensities}
+#' }
+"topsoils"
