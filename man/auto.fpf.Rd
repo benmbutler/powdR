@@ -4,8 +4,8 @@
 \alias{auto.fpf}
 \title{Automated full pattern fitting}
 \usage{
-auto.fpf(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1,
-  solver = "BFGS", obj = "Rwp", shift = 0.05, weighting, lld = 0.4)
+auto.fpf(smpl, lib, tth, std, amorphous, coarse, align, solver, obj, shift,
+  weighting, lld = 0.3)
 }
 \arguments{
 \item{smpl}{A data frame. First column is 2theta, second column is counts}
@@ -67,10 +67,10 @@ This function applies full pattern fitting to an XRPD sample to quantify mineral
 It requires a library of reference patterns with pre-measured reference intensity ratios.
 }
 \examples{
-# Load the Xpert library
+# Load the D8 NSIS library
 data(D8_NSIS)
 
-# Load the Xpert soil data to use in example
+# Load the D8 soil data to use in example
 data(D8_soil)
 # automated without any amorphous phases
 # not run

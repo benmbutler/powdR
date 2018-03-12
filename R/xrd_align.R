@@ -10,9 +10,6 @@ align.optim <- function(a, par, xout, xrd.standard_shorter) {
   return(res4)
 }
 
-rng.nm <- function(x){(x-min(x))/(max(x)-min(x))}
-
-
 #' Align XRPD data
 #'
 #' \code{xrd.align} returns a list containing the shift extent (2theta) and a

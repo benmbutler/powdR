@@ -15,14 +15,14 @@
 #' (by column) and \code{MINERALS} (by row) must be identical.
 #' @param tth A vector defining the minimum and maximum 2theta values to be used during
 #' fitting.
-#' @param phases A string of mineral ID's used to subset the library. The ID's must match
-#' ID's in the \code{lib$MINERALS$MIND_ID} column.
+#' @param crystalline A string of mineral ID's used to subset crystalline phases from the
+#' library. The ID's must match ID's in the \code{lib$MINERALS$MIND_ID} column.
 #' @param std The mineral ID (e.g. "Qzt.662070.Strath.12Mins.P") to be used as internal
 #' standard. Must match an ID provided in the \code{phases} parameter.
-#' @param amorphous Optional. The ID of an amorphous phase (e.g. "ORGANIC.337666") to be
-#' added to the fitting process. Must match an ID provided in the \code{phases} parameter.
-#' Only 1 amorphous phase can be used.
-#' @param align The maximum shift that is allowed during initial 2theta alignment (degrees). Default = 0.1.
+#' @param amorphous Optional. The ID's of amorphous phases (e.g. "ORGANIC.337666") to be
+#' added to the fitting process.
+#' @param align The maximum shift that is allowed during initial 2theta alignment (degrees).
+#' Default = 0.1.
 #' @param solver The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
 #' "CG")}. Default = "BFGS".
 #' @param obj The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
@@ -51,26 +51,25 @@
 #' data(Xpert_soil)
 #'
 #' # define the phases to include in the fit
-#' xrd_phases <- c("Qzt.662070.Strath.12Mins.P", "Qzt.662074.Qua.10.P", "X996730.QUA.11.P")
+#' c_phases <- c("Qzt.662070.Strath.12Mins.P", "Qzt.662074.Qua.10.P", "X996730.QUA.11.P")
 #'
 #' # without organic
 #' #not run
 #' #fpf_out <-  fpf(smpl = Xpert_soil$mineral,
 #' #               lib = Xpert,
 #' #               tth = c(3.5, 69.5),
-#' #               phases = xrd_phases,
+#' #               crystalline = c_phases,
 #' #               std = "Qzt.662070.Strath.12Mins.P")
 #'
 #' # Try fitting the same sample, but including an amorphous phase (organic matter)
-#' xrd_phases_org <- c("Qzt.662070.Strath.12Mins.P", "Qzt.662074.Qua.10.P",
-#'                    "X996730.QUA.11.P", "ORGANIC.337666")
+#' o_phases <- c("ORGANIC.337666", "L.R.organic")
 #' # not run
 #' # fpf_out_org <-  fpf(smpl = Xpert_soil$mineral,
 #' #                    lib = Xpert,
 #' #                    tth = c(3.5, 69.5),
-#' #                    phases = xrd_phases_org,
+#' #                    crystalline = c_phases,
 #' #                    std = "Qzt.662070.Strath.12Mins.P",
-#' #                    amorphous = "ORGANIC.337666")
+#' #                    amorphous = o_phases)
 #'
 #' # An example of using weighting
 #' weighting <- data.frame(TTH = Xpert$TTH,
@@ -82,9 +81,31 @@
 #' # Make all values between TTH = 26 and 27 have a weighting of 2
 #' weighting$COUNTS[which(weighting$TTH >= 26 & weighting$TTH <= 27)] <- 10
 
-fpf <- function(smpl, lib, phases, std, amorphous,
-                tth, align = 0.1, solver = "BFGS",
-                obj = "Rwp", shift = 0.05, weighting) {
+fpf <- function(smpl, lib, crystalline, std, amorphous,
+                tth, align, solver, obj, shift, weighting) {
+
+  #Create defaults for values that aren't specified.
+
+  if(missing(align)) {
+    align = 0.1
+  }
+
+  if(missing(solver)) {
+    solver = "BFGS"
+  }
+
+  if(missing(obj)) {
+    obj = "Rwp"
+  }
+
+  if(missing(shift)) {
+    shift = 0.05
+  }
+
+  #create an empty vector if amorphous is not used
+  if(missing(amorphous)) {
+    amorphous <- c()
+  }
 
 #Create a weighting vector containing all 1's if no other weighting vector is provided
   if(missing(weighting)) {
@@ -135,15 +156,21 @@ if (tth[2] > max(xrdlib[["TTH"]])) {
 
 #subset xrdlib according to the phases vector
 
-keep_index <- which(xrdlib[["MINERALS"]]$MIN_ID %in% phases)
+keep_index <- which(xrdlib[["MINERALS"]]$MIN_ID %in% c(crystalline, amorphous))
 
 xrdlib[["XRD"]] <- xrdlib[["XRD"]][, keep_index]
 xrdlib[["MINERALS"]] <- xrdlib[["MINERALS"]][keep_index, ]
 
-#read the sample
-#smpl <- read.csv(file = s.dir, header = FALSE, sep = " ")
+
+#if only one phase is being used, make sure it's a dataframe and named correctly
+if (length(c(crystalline, amorphous)) == 1) {
+  xrdlib[["XRD"]] <- data.frame("phase" = xrdlib[["XRD"]])
+  names(xrdlib[["XRD"]]) <- c(crystalline, amorphous)
+}
+
 
 xrd.standard_df <- xrdlib[["XRD"]][, which(xrdlib[["MINERALS"]]$MIN_ID == std)]
+
 
 xrd.standard <- data.frame(TTH = xrdlib[["TTH"]], COUNTS = xrd.standard_df)
 
@@ -164,9 +191,9 @@ xrd_ref_names <- xrdlib[["MINERALS"]]$MIN_ID
 #Ensure that sample in the reference library are on the same scale as the sample
 
 xrdlib[["XRD"]] <- data.frame(lapply(names(xrdlib[["XRD"]]),
-                                     function(n) approx(x = xrdlib[["TTH"]],
-                                                        y = unname(unlist(xrdlib[["XRD"]][n])),
-                                                        xout = smpl_TTH)[[2]]))
+                                       function(n) approx(x = xrdlib[["TTH"]],
+                                                          y = unname(unlist(xrdlib[["XRD"]][n])),
+                                                          xout = smpl_TTH)[[2]]))
 
 names(xrdlib[["XRD"]]) <- xrd_ref_names
 
@@ -185,17 +212,15 @@ smpl <- subset(smpl, smpl[,1] >= tth[1] & smpl[,1] <= tth[2])
 
 weighting <- subset(weighting, weighting$x >= tth[1] & weighting$x <= tth[2])
 
-#Subset the XRD dataframe to
+#Subset the XRD dataframe too
 xrdlib[["XRD"]] <- xrdlib[["XRD"]][which(xrdlib[["TTH"]] >= tth[1] & xrdlib[["TTH"]] <= tth[2]), ]
 
 #Replace the TTH in the library with the shortened one
 xrdlib[["TTH"]] <- smpl[, 1]
 
-
-
 ##If amorphous is present in the argument, then extract the pattern to be used
 
-if(!missing(amorphous)) {
+if(length(amorphous) > 0) {
   amorphous_counts <- xrdlib[["XRD"]][amorphous]
   amorphous_tth <- xrdlib[["TTH"]]
   amorphous_xrd <- data.frame("TTH" = amorphous_tth, amorphous_counts)
@@ -204,15 +229,21 @@ if(!missing(amorphous)) {
   xrdlib[["XRD"]] <- xrdlib[["XRD"]][, -which(names(xrdlib[["XRD"]]) %in% amorphous)]
 }
 
-#Make sure that ther aren't any other amorphous phases left in the library
+#Make sure that there aren't any other amorphous phases left in the library
 
-amorphous_index <- which(xrdlib[["MINERALS"]]$AMORPHOUS == 1)
+#amorphous_index <- which(xrdlib[["MINERALS"]]$AMORPHOUS == 1)
 
 #remove them if they've been identified
-if(length(amorphous_index) > 0) {
-  xrdlib[["XRD"]] <- xrdlib[["XRD"]][, -amorphous_index]
-}
+#if(length(amorphous_index) > 0) {
+#  xrdlib[["XRD"]] <- xrdlib[["XRD"]][, -amorphous_index]
+#}
 
+
+#if only one phase is being used, make sure it's a dataframe and named correctly
+if (is.vector(xrdlib[["XRD"]])) {
+  xrdlib[["XRD"]] <- data.frame("phase" = xrdlib[["XRD"]])
+  names(xrdlib[["XRD"]]) <- crystalline
+}
 
 #--------------------------------------------
 #Initial Optimisation
@@ -253,7 +284,7 @@ x <- o$par
 
 #Add the amorphous phase
 
-if(!missing(amorphous)) {
+if(length(amorphous) > 0) {
   #Add the amorphous phase to the library
   amorphous_counts2 <- list()
 
@@ -262,7 +293,13 @@ if(!missing(amorphous)) {
                               method = "linear", xout = xrdlib[["TTH"]])[[2]]
   names(amorphous_counts2)[i] <- names(amorphous_counts)[i]
   }
+
+  if (length(amorphous_counts2) == 1) {
+    amorphous_counts2 <- data.frame("amorphous" = amorphous_counts2[[1]])
+    names(amorphous_counts2) <- amorphous
+  } else {
   amorphous_counts2 <- data.frame(amorphous_counts2)
+  }
 
   xrdlib$XRD <- data.frame(xrdlib$XRD)
 

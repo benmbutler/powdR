@@ -42,10 +42,10 @@
 #' All patterns have been weighted according to the coefficients used in the fit}
 #' \item{COEFFICIENTS}{A named vector of coefficients used to produce FITTED}
 #' @examples
-#' # Load the Xpert library
+#' # Load the D8 NSIS library
 #' data(D8_NSIS)
 #'
-#' # Load the Xpert soil data to use in example
+#' # Load the D8 soil data to use in example
 #' data(D8_soil)
 #' # automated without any amorphous phases
 #' # not run
@@ -74,7 +74,34 @@
 #'
 #' # Make all values between TTH = 26 and 27 have a weighting of 2
 #' weighting$COUNTS[which(weighting$TTH >= 26 & weighting$TTH <= 27)] <- 10
-auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse = 0.1, align = 0.1, solver = "BFGS", obj = "Rwp",  shift = 0.05, weighting, lld = 0.4) {
+auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
+                     solver, obj,  shift, weighting, lld = 0.3) {
+
+  #Create defaults for values that aren't specified.
+
+  if(missing(coarse)) {
+    coarse = 0.1
+  }
+
+  if(missing(align)) {
+    align = 0.1
+  }
+
+  if(missing(solver)) {
+    solver = "BFGS"
+  }
+
+  if(missing(obj)) {
+    obj = "Rwp"
+  }
+
+  if(missing(shift)) {
+    shift = 0.05
+  }
+
+  if(missing(lld)) {
+    lld = 0.3
+  }
 
   if(missing(weighting)) {
     weighting <- data.frame(TTH = lib$TTH,

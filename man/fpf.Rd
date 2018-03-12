@@ -4,8 +4,8 @@
 \alias{fpf}
 \title{Full pattern fitting}
 \usage{
-fpf(smpl, lib, phases, std, amorphous, tth, align = 0.1, solver = "BFGS",
-  obj = "Rwp", shift = 0.05, weighting)
+fpf(smpl, lib, crystalline, std, amorphous, tth, align, solver, obj, shift,
+  weighting)
 }
 \arguments{
 \item{smpl}{A data frame. First column is 2theta, second column is counts}
@@ -17,20 +17,20 @@ Third (\code{MINERALS}) is a data frame containing the unique ID, mineral name, 
 reference intensity ratio of each pattern in the library. The order of \code{XRPD}
 (by column) and \code{MINERALS} (by row) must be identical.}
 
-\item{phases}{A string of mineral ID's used to subset the library. The ID's must match
-ID's in the \code{lib$MINERALS$MIND_ID} column.}
+\item{crystalline}{A string of mineral ID's used to subset crystalline phases from the
+library. The ID's must match ID's in the \code{lib$MINERALS$MIND_ID} column.}
 
 \item{std}{The mineral ID (e.g. "Qzt.662070.Strath.12Mins.P") to be used as internal
 standard. Must match an ID provided in the \code{phases} parameter.}
 
-\item{amorphous}{Optional. The ID of an amorphous phase (e.g. "ORGANIC.337666") to be
-added to the fitting process. Must match an ID provided in the \code{phases} parameter.
-Only 1 amorphous phase can be used.}
+\item{amorphous}{Optional. The ID's of amorphous phases (e.g. "ORGANIC.337666") to be
+added to the fitting process.}
 
 \item{tth}{A vector defining the minimum and maximum 2theta values to be used during
 fitting.}
 
-\item{align}{The maximum shift that is allowed during initial 2theta alignment (degrees). Default = 0.1.}
+\item{align}{The maximum shift that is allowed during initial 2theta alignment (degrees).
+Default = 0.1.}
 
 \item{solver}{The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
 "CG")}. Default = "BFGS".}
@@ -74,26 +74,25 @@ data(Xpert)
 data(Xpert_soil)
 
 # define the phases to include in the fit
-xrd_phases <- c("Qzt.662070.Strath.12Mins.P", "Qzt.662074.Qua.10.P", "X996730.QUA.11.P")
+c_phases <- c("Qzt.662070.Strath.12Mins.P", "Qzt.662074.Qua.10.P", "X996730.QUA.11.P")
 
 # without organic
 #not run
 #fpf_out <-  fpf(smpl = Xpert_soil$mineral,
 #               lib = Xpert,
 #               tth = c(3.5, 69.5),
-#               phases = xrd_phases,
+#               crystalline = c_phases,
 #               std = "Qzt.662070.Strath.12Mins.P")
 
 # Try fitting the same sample, but including an amorphous phase (organic matter)
-xrd_phases_org <- c("Qzt.662070.Strath.12Mins.P", "Qzt.662074.Qua.10.P",
-                   "X996730.QUA.11.P", "ORGANIC.337666")
+o_phases <- c("ORGANIC.337666", "L.R.organic")
 # not run
 # fpf_out_org <-  fpf(smpl = Xpert_soil$mineral,
 #                    lib = Xpert,
 #                    tth = c(3.5, 69.5),
-#                    phases = xrd_phases_org,
+#                    crystalline = c_phases,
 #                    std = "Qzt.662070.Strath.12Mins.P",
-#                    amorphous = "ORGANIC.337666")
+#                    amorphous = o_phases)
 
 # An example of using weighting
 weighting <- data.frame(TTH = Xpert$TTH,

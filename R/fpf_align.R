@@ -22,9 +22,15 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
   }
 
   #convert from list to data frame, to matrix
+  if (length(pure.patterns) == 1) {
+    pure.patterns <- data.frame("phase" = pure.patterns[[1]])
+    names(pure.patterns) <- names(xrd.lib[["XRD"]])
+    pure.patterns <- as.matrix(pure.patterns)
+  } else {
   pure.patterns <- data.frame(pure.patterns)
   names(pure.patterns) <- names(data.frame(xrd.lib[["XRD"]]))
   pure.patterns <- as.matrix(pure.patterns)
+  }
 
   #Define a value that will be used to shift the data.
   TTH_res <- (TTH_long[length(TTH_long)] - TTH_long[1])/(length(TTH_long)-1)
@@ -44,6 +50,12 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
 
   #Create a matrix of the shortened length that will be used during alignment
   shift.mat <- pure.patterns[((shift_value + 1):(shifting.length)), ]
+
+  if (ncol(pure.patterns) == 1) {
+    shift.mat <- data.frame("phase" = shift.mat)
+    names(shift.mat) <- names(xrd.lib[["XRD"]])
+    shift.mat <- as.matrix(shift.mat)
+  }
 
   #define blank lists to be populated during alignment
   v <- list()
@@ -90,9 +102,16 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
     vs_short[[i]] <- approx(x = 1:nrow(vs), y = vs[ , i], method = "linear", n = (nrow(vs) / 4))[[2]]
   }
   #Convert from list to data frame to matrix
+
+if (length(vs_short) == 1) {
+  vs_short <- data.frame("phase" = vs_short[[1]])
+  names(vs_short) <- names(data.frame(vs))
+  vs_short <- as.matrix(vs_short)
+} else {
   vs_short <- data.frame(vs_short)
   names(vs_short) <- names(data.frame(vs))
   vs_short <- as.matrix(vs_short)
+}
 
   #reapproximate the sample
   sample.pattern <- approx(x = TTH_long, y = sample_long, method = "linear", n = (nrow(vs) / 4))[[2]]
