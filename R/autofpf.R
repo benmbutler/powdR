@@ -194,10 +194,6 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
 
   xrd.standard_df <- xrdlib[["XRD"]][, which(xrdlib[["MINERALS"]]$MIN_ID == std)]
 
-  if (length(which(xrdlib[["MINERALS"]]$MIN_ID == std)) > 1) {
-    xrd.standard_df <- rowMeans(xrd.standard_df)
-  }
-
   xrd.standard <- data.frame(TTH = xrdlib[["TTH"]], COUNTS = xrd.standard_df)
 
   #align the data
@@ -341,18 +337,22 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
 
   #Removing negative parameters
 
+  #Sometimes amorphous phases can end up removed here when they should actually be included
+
   #setup an initial negpar that is negative so that the following while loop will
   #run until no negative parameters are found
   negpar <- -0.1
 
+  if (!missing(amorphous)) {
+
   while (negpar < 0) {
     #use the most recently optimised coefficients
     x <- o$par
-    #check for any negative parameters
-    remove_index <- which(x < 0)
+    #check for any negative parameters, but ensure that amorphous phases are retained
+    remove_index <- which(x < 0 & !names(x) %in% amorphous)
 
     #remove the column from the library that contains the identified data
-    if (length(which(x < 0)) > 0) {
+    if (length(remove_index) > 0) {
       xrdlib[["XRD"]] <- xrdlib[["XRD"]][, -remove_index]
       x <- x[-remove_index]
     }
@@ -362,25 +362,78 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
                sample.pattern = sample[,2], obj = obj, weighting = weighting)
     x <- o$par
     #identify whether any parameters are negative for the next iteration
-    negpar <- min(x)
+    negpar <- min(x[-which(names(x) %in% amorphous)])
+  }
+
+  } else {
+
+    while (negpar < 0) {
+      #use the most recently optimised coefficients
+      x <- o$par
+      #check for any negative parameters, but ensure that amorphous phases are retained
+      remove_index <- which(x < 0)
+
+      #remove the column from the library that contains the identified data
+      if (length(remove_index) > 0) {
+        xrdlib[["XRD"]] <- xrdlib[["XRD"]][, -remove_index]
+        x <- x[-remove_index]
+      }
+
+      o <- optim(par = x, fullpat,
+                 method = solver, pure.patterns = xrdlib[["XRD"]],
+                 sample.pattern = sample[,2], obj = obj, weighting = weighting)
+      x <- o$par
+      #identify whether any parameters are negative for the next iteration
+      negpar <- min(x)
+    }
+
   }
 
   #Now that some negative parameters have been removed, the detection limits
   #of the remaining phases are estimated.
 
-  # Removing phases based on detection limits (note that the amorphous
-  #phase still hasn't been added yet!)
+  # Removing phases based on detection limits
 
   #Calculate the LLD and remove any phases below it
   xrd_detectable <- xrd.LLD(x = x, xrd.sample = sample, xrd.lib = xrdlib,
                             int_std = std, lld = lld)
 
-  x <- xrd_detectable[["x"]]
-  xrdlib[["XRD"]] <- xrd_detectable[["xrd.lib"]]
+  #Omit the other phases but make sure amorphous phases are retained in specified
 
 
-  #Re-optimise now that phases below detection limit have been removed and
-  #the amorphous phase added
+  if (!missing(amorphous)) {
+
+    remove_index <- which(names(xrd_detectable[["x"]]) %in% amorphous)
+
+  if (length(remove_index) > 0) {
+  x <- c(xrd_detectable[["x"]][-remove_index],
+         x[which(names(x) %in% amorphous)])
+
+  xrdlib[["XRD"]] <- data.frame(xrd_detectable[["xrd.lib"]]
+                                [, -remove_index],
+                                xrdlib[["XRD"]][, which(names(xrdlib[["XRD"]]) %in% amorphous)])
+
+  names(xrdlib[["XRD"]]) <- names(x)
+
+  } else {
+    x <- c(xrd_detectable[["x"]],
+           x[which(names(x) %in% amorphous)])
+
+    xrdlib[["XRD"]] <- data.frame(xrd_detectable[["xrd.lib"]],
+                                  xrdlib[["XRD"]][, which(names(xrdlib[["XRD"]]) %in% amorphous)])
+
+    names(xrdlib[["XRD"]]) <- names(x)
+  }
+
+  } else {
+
+   x <- xrd_detectable[["x"]]
+   xrdlib[["XRD"]] <- xrd_detectable[["xrd.lib"]]
+
+  }
+
+
+  #Re-optimise now that phases below detection limit have been removed
   o <- optim(par = x, fullpat,
              method = solver, control = list(), pure.patterns = xrdlib[["XRD"]],
              sample.pattern = sample[,2], obj = obj, weighting = weighting)
@@ -401,14 +454,14 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
 
 
   #######
-  #LASTLLLLLY I NEED TO REMOVE THE AMORPHOUS PHASE IF IT IS BELOW A SET THRESHOLD
-  #This threshold is set to 1 % for the moment
+  #Remove amorphous phases if below amorphous_lld
 
   if(!missing(amorphous)) {
 
-    remove_amorphous <- which(df$AMORPHOUS == 1 & df$min_percent < amorphous_lld)
+    remove_amorphous <- which(names(x) %in% df$MIN_ID[which(df$AMORPHOUS == 1 &
+                                                              df$min_percent < amorphous_lld)])
 
-    if(length(remove_amorphous) > 0) {
+    while (length(remove_amorphous) > 0) {
       #Remove amorphous phase from library
       xrdlib[["XRD"]] <- xrdlib[["XRD"]][-remove_amorphous]
       x <- x[-remove_amorphous]
@@ -430,6 +483,9 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
 
       fitted_pattern <- apply(sweep(as.matrix(xrdlib[["XRD"]]), 2, x, "*"), 1, sum)
       resid_x <- sample[, 2] - fitted_pattern
+
+      remove_amorphous <- which(names(x) %in% df$MIN_ID[which(df$AMORPHOUS == 1 &
+                                                                df$min_percent < amorphous_lld)])
     }
   }
 
