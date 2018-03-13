@@ -29,7 +29,10 @@
 #' @param weighting Optional. A two column dataframe. First column contains 2theta axis on same scale as that
 #' of the XRD library. Second column contains the weighting of each 2theta variable. If not provided, all
 #'variables are given a weighting of 1.
-#' @param lld A parameter used to tune the lower limit of dection computation. Must be between 0 and 1. Default = 0.4.
+#' @param lld Optional parameter used to tune the lower limit of dection computation.
+#' Must be between 0 and 1. Default = 0.3.
+#' @param amorphous_lld Optional parameter used to exclude amorphous phases if they are below the
+#' specified \code{amorphous_lld} (percent). Must be between 0 and 100. Default = 0.
 #' @return a list with components:
 #' \item{TTH}{A vector of the 2theta scale of the fitted data}
 #' \item{FITTED}{A vector of the fitted XRPD pattern}
@@ -75,7 +78,7 @@
 #' # Make all values between TTH = 26 and 27 have a weighting of 2
 #' weighting$COUNTS[which(weighting$TTH >= 26 & weighting$TTH <= 27)] <- 10
 auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
-                     solver, obj,  shift, weighting, lld = 0.3) {
+                     solver, obj,  shift, weighting, lld, amorphous_lld) {
 
   #Create defaults for values that aren't specified.
 
@@ -110,6 +113,18 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
 
   if (lld < 0 | lld > 1) {
     stop("The lld argument must be between 0 and 1")
+  }
+
+  if(!missing(amorphous)) {
+
+    if(missing(amorphous_lld)) {
+      amorphous_lld <- 0
+    }
+
+    if (amorphous_lld < 0 | amorphous_lld > 100) {
+    stop("The amorphous_lld argument must be between 0 and 100")
+    }
+
   }
 
   #Also warn if coarse is greater than 10 because this would give a strange fit
@@ -391,7 +406,8 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
 
   if(!missing(amorphous)) {
 
-    remove_amorphous <- which(df$min_percent[which(df$MIN_ID %in% amorphous)] < 3)
+    remove_amorphous <- which(df$AMORPHOUS == 1 & df$min_percent < amorphous_lld)
+
     if(length(remove_amorphous) > 0) {
       #Remove amorphous phase from library
       xrdlib[["XRD"]] <- xrdlib[["XRD"]][-remove_amorphous]

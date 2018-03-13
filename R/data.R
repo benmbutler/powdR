@@ -98,3 +98,11 @@
 #' \item{counts}{The count intensities}
 #' }
 "topsoils"
+
+#' NSIS soil attributes
+#'
+#' Soil attributes and properties of 1439 Scottish soils
+#'
+#' @format A dataframe
+"NSIS"
+

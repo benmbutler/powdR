@@ -5,7 +5,7 @@
 \title{Automated full pattern fitting}
 \usage{
 auto.fpf(smpl, lib, tth, std, amorphous, coarse, align, solver, obj, shift,
-  weighting, lld = 0.3)
+  weighting, lld, amorphous_lld)
 }
 \arguments{
 \item{smpl}{A data frame. First column is 2theta, second column is counts}
@@ -40,7 +40,11 @@ less than 100. Low values are more sensitive to minor phases. Default = 0.1.}
 of the XRD library. Second column contains the weighting of each 2theta variable. If not provided, all
 variables are given a weighting of 1.}
 
-\item{lld}{A parameter used to tune the lower limit of dection computation. Must be between 0 and 1. Default = 0.4.}
+\item{lld}{Optional parameter used to tune the lower limit of dection computation.
+Must be between 0 and 1. Default = 0.3.}
+
+\item{amorphous_lld}{Optional parameter used to exclude amorphous phases if they are below the
+specified \code{amorphous_lld} (percent). Must be between 0 and 100. Default = 0.}
 
 \item{phases}{A string of unique ID's from the \code{lib} used to subset the reference library.}
 }
