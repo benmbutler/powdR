@@ -54,22 +54,24 @@
 #' c_phases <- c("Qzt.662070.Strath.12Mins.P", "Qzt.662074.Qua.10.P", "X996730.QUA.11.P")
 #'
 #' # without organic
-#' #not run
-#' #fpf_out <-  fpf(smpl = Xpert_soil$mineral,
-#' #               lib = Xpert,
-#' #               tth = c(3.5, 69.5),
-#' #               crystalline = c_phases,
-#' #               std = "Qzt.662070.Strath.12Mins.P")
+#' \dontrun{
+#' fpf_out <-  fpf(smpl = Xpert_soil$mineral,
+#'                lib = Xpert,
+#'                tth = c(3.5, 69.5),
+#'                crystalline = c_phases,
+#'                std = "Qzt.662070.Strath.12Mins.P")
+#' }
 #'
 #' # Try fitting the same sample, but including an amorphous phase (organic matter)
 #' o_phases <- c("ORGANIC.337666", "L.R.organic")
-#' # not run
-#' # fpf_out_org <-  fpf(smpl = Xpert_soil$mineral,
-#' #                    lib = Xpert,
-#' #                    tth = c(3.5, 69.5),
-#' #                    crystalline = c_phases,
-#' #                    std = "Qzt.662070.Strath.12Mins.P",
-#' #                    amorphous = o_phases)
+#' \dontrun{
+#' fpf_out_org <-  fpf(smpl = Xpert_soil$mineral,
+#'                    lib = Xpert,
+#'                    tth = c(3.5, 69.5),
+#'                    crystalline = c_phases,
+#'                    std = "Qzt.662070.Strath.12Mins.P",
+#'                    amorphous = o_phases)
+#' }
 #'
 #' # An example of using weighting
 #' weighting <- data.frame(TTH = Xpert$TTH,
@@ -107,7 +109,7 @@ fpf <- function(smpl, lib, crystalline, std, amorphous,
     amorphous <- c()
   }
 
-#Create a weighting vector containing all 1's if no other weighting vector is provided
+  #Create a weighting vector containing all 1's if no other weighting vector is provided
   if(missing(weighting)) {
     weighting <- data.frame(TTH = lib$TTH,
                             COUNTS = rep(1, length(lib$TTH)))
@@ -118,13 +120,14 @@ fpf <- function(smpl, lib, crystalline, std, amorphous,
     stop("The align argument must be greater than 0")
   }
 
-  #Create a warning message if the shift is greater than 1, since this confuse the optimisation
+  #Create a warning message if the shift is greater than 0.5, since this can confuse the optimisation
   if (align > 0.5) {
     warning("Be cautious of large 2theta shifts. These can cause issues in sample alignment.")
   }
 
   if (shift > 0.1) {
-    warning("To speed computation and avoid erroneous alignments, the shift argument should be less than 0.1.")
+    warning("To speed computation and avoid erroneous alignments, the shift argument should be
+            less than 0.1.")
   }
 
   #Make only "Nelder-Mead", "BFGS", or "CG" optional for the solver
@@ -132,80 +135,79 @@ fpf <- function(smpl, lib, crystalline, std, amorphous,
     stop("The solver argument must be one of 'BFGS', 'Nelder Mead' or 'CG'")
   }
 
-xrdlib <- lib
-
-#Make sure that the mineral identified as the internal standard is contained within the reference library
-if (!std %in% xrdlib[["MINERALS"]]$MIN_ID) {
+  #Make sure that the mineral identified as the internal standard is contained within the reference library
+  if (!std %in% lib$MINERALS$MIN_ID) {
   stop("The mineral you have specified as the internal standard is not in the reference library")
-}
+  }
 
-#Make sure that the defined TTH arguments are within the range of the samples and reference library.
-if (tth[1] < min(smpl[,1])) {
+  #Make sure that the defined tth arguments are within the range of the samples and reference library.
+  if (tth[1] < min(smpl[,1])) {
   stop("tth[1] must exceed the minimum 2theta value of the sample")
-}
-if (tth[2] > max(smpl[,1])) {
+  }
+  if (tth[2] > max(smpl[,1])) {
   stop("tth[2] must be lower than the maximum 2theta value of the sample")
-}
+  }
 
-if (tth[1] < min(xrdlib[["TTH"]])) {
+  if (tth[1] < min(lib$TTH)) {
   stop("tth[1] must be within the 2theta range of the reference library")
-}
-if (tth[2] > max(xrdlib[["TTH"]])) {
+  }
+  if (tth[2] > max(lib$TTH)) {
   stop("tth[2] must be within the 2theta range of the reference library")
-}
+  }
 
-#subset xrdlib according to the phases vector
+#subset lib according to the phases vector
 
-keep_index <- which(xrdlib[["MINERALS"]]$MIN_ID %in% c(crystalline, amorphous))
+keep <- which(lib$MINERALS$MIN_ID %in% c(crystalline, amorphous))
 
-xrdlib[["XRD"]] <- xrdlib[["XRD"]][, keep_index]
-xrdlib[["MINERALS"]] <- xrdlib[["MINERALS"]][keep_index, ]
+lib$XRD <- lib$XRD[, keep]
+lib$MINERALS <- lib$MINERALS[keep, ]
 
 
 #if only one phase is being used, make sure it's a dataframe and named correctly
 if (length(c(crystalline, amorphous)) == 1) {
-  xrdlib[["XRD"]] <- data.frame("phase" = xrdlib[["XRD"]])
-  names(xrdlib[["XRD"]]) <- c(crystalline, amorphous)
+  lib$XRD <- data.frame("phase" = lib$XRD)
+  names(lib$XRD) <- c(crystalline, amorphous)
 }
 
 
-xrd.standard_df <- xrdlib[["XRD"]][, which(xrdlib[["MINERALS"]]$MIN_ID == std)]
+xrd.standard_df <- lib$XRD[, which(lib$MINERALS$MIN_ID == std)]
 
 
-xrd.standard <- data.frame(TTH = xrdlib[["TTH"]], COUNTS = xrd.standard_df)
+xrd.standard <- data.frame(TTH = lib$TTH, COUNTS = xrd.standard_df)
 
 #align the data
 smpl <- xrd.align(xrd.sample = smpl, xrd.standard, xmin = tth[1] + (align*2),
                     xmax = tth[2] - (align*2), xshift = align)
 
 if (sqrt(smpl[[1]]^2) == align) {
-  message("The optimised shift used in alignment is equal to the maximum shift defined in the function call. We advise visual inspection of this alignment.")
+  message("The optimised shift used in alignment is equal to the maximum shift defined
+          in the function call. We advise visual inspection of this alignment.")
 }
 
 smpl <- smpl[[2]]
 #Define a 2TH scale to harmonise all data to
 smpl_TTH <- smpl[, 1]
 
-xrd_ref_names <- xrdlib[["MINERALS"]]$MIN_ID
+xrd_ref_names <- lib$MINERALS$MIN_ID
 
 #Ensure that sample in the reference library are on the same scale as the sample
 
-xrdlib[["XRD"]] <- data.frame(lapply(names(xrdlib[["XRD"]]),
-                                       function(n) approx(x = xrdlib[["TTH"]],
-                                                          y = unname(unlist(xrdlib[["XRD"]][n])),
+lib$XRD <- data.frame(lapply(names(lib$XRD),
+                                       function(n) approx(x = lib$TTH,
+                                                          y = unname(unlist(lib$XRD[n])),
                                                           xout = smpl_TTH)[[2]]))
 
-names(xrdlib[["XRD"]]) <- xrd_ref_names
+names(lib$XRD) <- xrd_ref_names
 
 #Replace the library TTH with that of the sample
 
-xrdlib[["TTH"]] <- smpl_TTH
+lib$TTH <- smpl_TTH
 
 #get the number of patterns in the library
-lib_length <- nrow(xrdlib[["MINERALS"]])
+lib_length <- nrow(lib$MINERALS)
 
 #adjust the weighting to the aligned 2theta scale
-weighting <- data.frame(approx(x = weighting$TTH, y = weighting$COUNTS, xout = xrdlib$TTH))
+weighting <- data.frame(approx(x = weighting$TTH, y = weighting$COUNTS, xout = lib$TTH))
 
 #### decrease 2TH scale to the range defined in the function call
 smpl <- subset(smpl, smpl[,1] >= tth[1] & smpl[,1] <= tth[2])
@@ -213,47 +215,37 @@ smpl <- subset(smpl, smpl[,1] >= tth[1] & smpl[,1] <= tth[2])
 weighting <- subset(weighting, weighting$x >= tth[1] & weighting$x <= tth[2])
 
 #Subset the XRD dataframe too
-xrdlib[["XRD"]] <- xrdlib[["XRD"]][which(xrdlib[["TTH"]] >= tth[1] & xrdlib[["TTH"]] <= tth[2]), ]
+lib$XRD <- lib$XRD[which(lib$TTH >= tth[1] & lib$TTH <= tth[2]), ]
 
 #Replace the TTH in the library with the shortened one
-xrdlib[["TTH"]] <- smpl[, 1]
+lib$TTH <- smpl[, 1]
 
 ##If amorphous is present in the argument, then extract the pattern to be used
 
 if(length(amorphous) > 0) {
-  amorphous_counts <- xrdlib[["XRD"]][amorphous]
-  amorphous_tth <- xrdlib[["TTH"]]
+  amorphous_counts <- lib$XRD[amorphous]
+  amorphous_tth <- lib$TTH
   amorphous_xrd <- data.frame("TTH" = amorphous_tth, amorphous_counts)
 
   #remove the amorphous phase from the XRD library
-  xrdlib[["XRD"]] <- xrdlib[["XRD"]][, -which(names(xrdlib[["XRD"]]) %in% amorphous)]
+  lib$XRD <- lib$XRD[, -which(names(lib$XRD) %in% amorphous)]
 }
 
-#Make sure that there aren't any other amorphous phases left in the library
-
-#amorphous_index <- which(xrdlib[["MINERALS"]]$AMORPHOUS == 1)
-
-#remove them if they've been identified
-#if(length(amorphous_index) > 0) {
-#  xrdlib[["XRD"]] <- xrdlib[["XRD"]][, -amorphous_index]
-#}
-
-
 #if only one phase is being used, make sure it's a dataframe and named correctly
-if (is.vector(xrdlib[["XRD"]])) {
-  xrdlib[["XRD"]] <- data.frame("phase" = xrdlib[["XRD"]])
-  names(xrdlib[["XRD"]]) <- crystalline
+if (is.vector(lib$XRD)) {
+  lib$XRD <- data.frame("phase" = lib$XRD)
+  names(lib$XRD) <- crystalline
 }
 
 #--------------------------------------------
 #Initial Optimisation
 #--------------------------------------------
 
-x <- rep(0, ncol(xrdlib[["XRD"]]))
-names(x) <- names(xrdlib[["XRD"]])
+x <- rep(0, ncol(lib$XRD))
+names(x) <- names(lib$XRD)
 
 o <- optim(par = x, fullpat,
-           method = solver, pure.patterns = xrdlib[["XRD"]],
+           method = solver, pure.patterns = lib$XRD,
            sample.pattern = smpl[, 2], obj = obj, weighting = weighting)
 
 #----------------------------------------------
@@ -263,19 +255,19 @@ o <- optim(par = x, fullpat,
 if(shift > 0) {
 
 fpf_aligned <- fpf.align(sample.tth = smpl[,1], sample.counts = smpl[,2],
-                         xrd.lib = xrdlib, fpf_shift = shift,
+                         xrd.lib = lib, fpf_shift = shift,
                          pure.weights = o$par, weighting = weighting)
 
 smpl <- fpf_aligned[["sample"]]
-xrdlib[["XRD"]] <- fpf_aligned[["xrdlib_aligned"]]
-xrdlib[["TTH"]] <- smpl[,1]
+lib$XRD <- fpf_aligned[["xrdlib_aligned"]]
+lib$TTH <- smpl[,1]
 
 weighting <- fpf_aligned[["weighting"]]
 
 #Re-optimise after shifts
 
 o <- optim(par = o$par, fullpat,
-           method = solver, pure.patterns = xrdlib[["XRD"]],
+           method = solver, pure.patterns = lib$XRD,
            sample.pattern = smpl[, 2], obj = obj, weighting = weighting)
 
 }
@@ -290,7 +282,7 @@ if(length(amorphous) > 0) {
 
   for (i in 1:ncol(amorphous_counts)) {
   amorphous_counts2[[i]] <- approx(x = amorphous_tth, y = amorphous_counts[[i]],
-                              method = "linear", xout = xrdlib[["TTH"]])[[2]]
+                              method = "linear", xout = lib$TTH)[[2]]
   names(amorphous_counts2)[i] <- names(amorphous_counts)[i]
   }
 
@@ -301,9 +293,9 @@ if(length(amorphous) > 0) {
   amorphous_counts2 <- data.frame(amorphous_counts2)
   }
 
-  xrdlib$XRD <- data.frame(xrdlib$XRD)
+  lib$XRD <- data.frame(lib$XRD)
 
-  xrdlib[["XRD"]] <- data.frame(xrdlib[["XRD"]], amorphous_counts2)
+  lib$XRD <- data.frame(lib$XRD, amorphous_counts2)
   #Add an initial parameter to the library for the optimisation
   xa <- rep(0, ncol(amorphous_counts))
   names(xa) <- names(amorphous_counts)
@@ -312,7 +304,7 @@ if(length(amorphous) > 0) {
 
   #reoptimise
   o <- optim(par = x, fullpat,
-             method = solver, pure.patterns = xrdlib[["XRD"]],
+             method = solver, pure.patterns = lib$XRD,
              sample.pattern = smpl[, 2], obj = obj, weighting = weighting)
 }
 
@@ -328,16 +320,16 @@ while (negpar < 0) {
   #use the most recently optimised coefficients
   x <- o$par
   #check for any negative parameters
-  remove_index <- which(x < 0)
+  omit <- which(x < 0)
 
   #remove the column from the library that contains the identified data
   if (length(which(x < 0)) > 0) {
-    xrdlib[["XRD"]] <- xrdlib[["XRD"]][, -remove_index]
-    x <- x[-remove_index]
+    lib$XRD <- lib$XRD[, -omit]
+    x <- x[-omit]
   }
 
   o <- optim(par = x, fullpat,
-             method = solver, pure.patterns = xrdlib[["XRD"]],
+             method = solver, pure.patterns = lib$XRD,
              sample.pattern = smpl[, 2], obj = obj, weighting = weighting)
   x <- o$par
   #identify whether any parameters are negative for the next iteration
@@ -345,12 +337,12 @@ while (negpar < 0) {
 }
 
 #compute fitted pattern and residuals
-fitted_pattern <- apply(sweep(as.matrix(xrdlib[["XRD"]]), 2, x, "*"), 1, sum)
+fitted_pattern <- apply(sweep(as.matrix(lib$XRD), 2, x, "*"), 1, sum)
 
 resid_x <- smpl[, 2] - fitted_pattern
 
 #compute grouped mineral concentrations
-min_concs <- min.conc(x = x, xrd.lib = xrdlib)
+min_concs <- min.conc(x = x, xrd.lib = lib)
 
 df <- min_concs[[1]]
 dfs <- min_concs[[2]]
@@ -368,7 +360,7 @@ sample_squared <- smpl[,2]^2
 
 R_fit <- sqrt(sum((1/smpl[,2]) * ((smpl[,2] - fitted_pattern)^2)) / sum((1/smpl[,2]) * (smpl[,2]^2)))
 
-xrd <- data.frame(xrdlib[["XRD"]])
+xrd <- data.frame(lib$XRD)
 
 for (i in 1:ncol(xrd)) {
   xrd[,i] <- xrd[,i] * x[i]

@@ -77,22 +77,24 @@ data(Xpert_soil)
 c_phases <- c("Qzt.662070.Strath.12Mins.P", "Qzt.662074.Qua.10.P", "X996730.QUA.11.P")
 
 # without organic
-#not run
-#fpf_out <-  fpf(smpl = Xpert_soil$mineral,
-#               lib = Xpert,
-#               tth = c(3.5, 69.5),
-#               crystalline = c_phases,
-#               std = "Qzt.662070.Strath.12Mins.P")
+\dontrun{
+fpf_out <-  fpf(smpl = Xpert_soil$mineral,
+               lib = Xpert,
+               tth = c(3.5, 69.5),
+               crystalline = c_phases,
+               std = "Qzt.662070.Strath.12Mins.P")
+}
 
 # Try fitting the same sample, but including an amorphous phase (organic matter)
 o_phases <- c("ORGANIC.337666", "L.R.organic")
-# not run
-# fpf_out_org <-  fpf(smpl = Xpert_soil$mineral,
-#                    lib = Xpert,
-#                    tth = c(3.5, 69.5),
-#                    crystalline = c_phases,
-#                    std = "Qzt.662070.Strath.12Mins.P",
-#                    amorphous = o_phases)
+\dontrun{
+fpf_out_org <-  fpf(smpl = Xpert_soil$mineral,
+                   lib = Xpert,
+                   tth = c(3.5, 69.5),
+                   crystalline = c_phases,
+                   std = "Qzt.662070.Strath.12Mins.P",
+                   amorphous = o_phases)
+}
 
 # An example of using weighting
 weighting <- data.frame(TTH = Xpert$TTH,
