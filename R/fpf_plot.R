@@ -24,8 +24,8 @@
 #' #               lib = Xpert,
 #' #                 int.std = "Qzt.662070.Strath.12Mins.P",
 #' #                 phases = xrd_phases,
-#' #                 TTH.min = 4.5,
-#' #                 TTH.max = 69.5,
+#' #                 tth.min = 4.5,
+#' #                 tth.max = 69.5,
 #' #                 align.shift = 0.1,
 #' #                 solver = "BFGS",
 #' #                 obj.function = "Rwp",
@@ -44,32 +44,32 @@ fpf.plot <- function(x, d = FALSE, lambda = 1) {
   }
 
   #Create a dataframe of the weighted pure patterns and fitted pattern
-  pure_patterns <- data.frame(TTH = x[["TTH"]],
-                              FITTED = x[["FITTED"]],
-                              x[["WEIGHTED_PURE_PATTERNS"]])
+  pure_patterns <- data.frame(tth = x$tth,
+                              FITTED = x$fitted,
+                              x$weighted_pure_patterns)
 
   #The original measurement
-  measured <- data.frame(TTH = x[["TTH"]],
-                         MEASURED = x[["MEASURED"]])
+  measured <- data.frame(tth = x$tth,
+                         Measured = x$measured)
 
   #Residuals
-  resids <- data.frame(TTH = x[["TTH"]],
-                       RESIDUALS = x[["RESIDUALS"]])
+  resids <- data.frame(tth = x$tth,
+                       Residuals = x$residuals)
 
   #melt the pure patterns data frame
-  pure_patterns_long <- reshape::melt(pure_patterns, id = c("TTH"))
+  pure_patterns_long <- reshape::melt(pure_patterns, id = c("tth"))
 
 #If wavelength is supplied, then compute d
   if(d == TRUE) {
-    pure_patterns[["d"]] <- lambda/(2*sin((pure_patterns$TTH/2)*pi/180))
-    measured[["d"]] <- lambda/(2*sin((measured$TTH/2)*pi/180))
-    resids[["d"]] <- lambda/(2*sin((resids$TTH/2)*pi/180))
-    pure_patterns_long[["d"]] <- lambda/(2*sin((pure_patterns_long$TTH/2)*pi/180))
+    pure_patterns[["d"]] <- lambda/(2*sin((pure_patterns$tth/2)*pi/180))
+    measured[["d"]] <- lambda/(2*sin((measured$tth/2)*pi/180))
+    resids[["d"]] <- lambda/(2*sin((resids$tth/2)*pi/180))
+    pure_patterns_long[["d"]] <- lambda/(2*sin((pure_patterns_long$tth/2)*pi/180))
 
     #and plot
   g1 <- ggplot2::ggplot() +
     ggplot2::geom_line(data = measured,
-              ggplot2::aes(x = d, y = MEASURED, color = "Measured"), size = 0.35, linetype = "dotted") +
+              ggplot2::aes(x = d, y = Measured, color = "Measured"), size = 0.35, linetype = "dotted") +
     ggplot2::geom_line(data = pure_patterns_long,
               ggplot2::aes(x = d, y = value, color = variable), size = 0.15) +
     ggplot2::scale_x_reverse() +
@@ -77,7 +77,7 @@ fpf.plot <- function(x, d = FALSE, lambda = 1) {
 
   g2 <- ggplot2::ggplot() +
     ggplot2::geom_line(data = resids,
-              ggplot2::aes(x = d, y = RESIDUALS, color = "Residuals"), size = 0.15) +
+              ggplot2::aes(x = d, y = Residuals, color = "Residuals"), size = 0.15) +
     ggplot2::scale_colour_manual(name = "",
                         values = c("Residuals" = "blue")) +
     ggplot2::scale_x_reverse()
@@ -86,14 +86,14 @@ fpf.plot <- function(x, d = FALSE, lambda = 1) {
 else {
   g1 <- ggplot2::ggplot() +
     ggplot2::geom_line(data = measured,
-                       ggplot2::aes(x = TTH, y = MEASURED, color = "Measured"), size = 0.35, linetype = "dotted") +
+                       ggplot2::aes(x = tth, y = Measured, color = "Measured"), size = 0.35, linetype = "dotted") +
     ggplot2::geom_line(data = pure_patterns_long,
-                       ggplot2::aes(x = TTH, y = value, color = variable), size = 0.15) +
+                       ggplot2::aes(x = tth, y = value, color = variable), size = 0.15) +
     ggplot2::theme(legend.title = ggplot2::element_blank())
 
   g2 <- ggplot2::ggplot() +
     ggplot2::geom_line(data = resids,
-                       ggplot2::aes(x = TTH, y = RESIDUALS, color = "Residuals"), size = 0.15) +
+                       ggplot2::aes(x = tth, y = Residuals, color = "Residuals"), size = 0.15) +
     ggplot2::scale_colour_manual(name = "",
                                  values = c("Residuals" = "blue"))
 }

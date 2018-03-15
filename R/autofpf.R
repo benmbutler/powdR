@@ -230,7 +230,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
   weighting <- data.frame(approx(x = weighting$TTH, y = weighting$COUNTS, xout = xrdlib$TTH))
 
   #### decrease 2TH scale to the range defined in the function call
-  sample <- subset(sample, sample[,1] >= tth[1] & sample[,1] <= tth[2])
+  sample <- sample[which(sample[[1]] >= tth[1] & sample[[1]] <= tth[2]), ]
 
   weighting <- subset(weighting, weighting$x >= tth[1] & weighting$x <= tth[2])
 

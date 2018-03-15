@@ -106,9 +106,9 @@ xrd.align <- function(xrd.sample, xrd.standard, xmin, xmax, xshift) {
                                                method = "linear",
                                                xout = TTH_constant_short))
 
-  names(xrd.sample_aligned_harm) <- c("TTH", "COUNTS")
+  names(xrd.sample_aligned_harm) <- c("tth", "counts")
 
-  out <- list("SHIFT" = xrd.sample_optim, "ALIGNED" = xrd.sample_aligned_harm)
+  out <- list("shift" = xrd.sample_optim, "aligned" = xrd.sample_aligned_harm)
 
   return(out)
 }

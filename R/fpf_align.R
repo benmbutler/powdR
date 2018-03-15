@@ -16,19 +16,19 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
   sample_long <- sample.pattern[,2]
 
   #Do the same for all data in the reference library
-  for (i in 1:ncol(xrd.lib[["XRD"]])) {
-    pure.patterns[[i]] <- approx(x = xrd.lib[["TTH"]], y = xrd.lib[["XRD"]][, i],
-                                 method = "linear", n = nrow(xrd.lib[["XRD"]]) * 4)[[2]]
+  for (i in 1:ncol(xrd.lib$xrd)) {
+    pure.patterns[[i]] <- approx(x = xrd.lib$tth, y = xrd.lib$xrd[, i],
+                                 method = "linear", n = nrow(xrd.lib$xrd) * 4)[[2]]
   }
 
   #convert from list to data frame, to matrix
   if (length(pure.patterns) == 1) {
     pure.patterns <- data.frame("phase" = pure.patterns[[1]])
-    names(pure.patterns) <- names(xrd.lib[["XRD"]])
+    names(pure.patterns) <- names(xrd.lib$xrd)
     pure.patterns <- as.matrix(pure.patterns)
   } else {
   pure.patterns <- data.frame(pure.patterns)
-  names(pure.patterns) <- names(data.frame(xrd.lib[["XRD"]]))
+  names(pure.patterns) <- names(data.frame(xrd.lib$xrd))
   pure.patterns <- as.matrix(pure.patterns)
   }
 
@@ -53,7 +53,7 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
 
   if (ncol(pure.patterns) == 1) {
     shift.mat <- data.frame("phase" = shift.mat)
-    names(shift.mat) <- names(xrd.lib[["XRD"]])
+    names(shift.mat) <- names(xrd.lib$xrd)
     shift.mat <- as.matrix(shift.mat)
   }
 
@@ -125,7 +125,7 @@ if (length(vs_short) == 1) {
   vs <- vs_short
   TTH <- TTH_short
 
-  out <- list("sample" = data.frame("TTH" = TTH, "COUNTS" = sample.pattern),
+  out <- list("sample" = data.frame("tth" = TTH, "counts" = sample.pattern),
               "xrdlib_aligned" = vs, "weighting" = weighting)
 
 }

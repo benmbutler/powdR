@@ -19,8 +19,8 @@ xrd.bin <- function(smpl, bin.size) {
   }
 
   #create a dataframe of binned data
-  out <- data.frame("TTH" = x_mean,
-                    "COUNTS" = y_mean)
+  out <- data.frame("tth" = x_mean,
+                    "counts" = y_mean)
 
   return(out)
 }

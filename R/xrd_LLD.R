@@ -1,49 +1,49 @@
-### LLD estimation
-xrd.LLD <- function(x, xrd.sample, xrd.lib, int_std, lld) {
+### lld estimation
+xrd.lld <- function(x, xrd.sample, xrd.lib, int_std, lld) {
 
   fpf_pc <- data.frame(t(data.frame(x)))
 
-  #compute which of the minerals are within the RIR vector loaded at the start
+  #compute which of the minerals are within the rir vector loaded at the start
 
-  RIR <- xrd.lib[["MINERALS"]]$RIR
-  names(RIR) <- xrd.lib[["MINERALS"]]$MIN_ID
+  rir <- xrd.lib$minerals$rir
+  names(rir) <- xrd.lib$minerals$min_id
 
-  RIR <- RIR[which(names(RIR) %in% names(fpf_pc))]
+  rir <- rir[which(names(rir) %in% names(fpf_pc))]
 
   #order them alphabetically
-  RIR <- RIR[order(names(RIR), decreasing = FALSE)]
+  rir <- rir[order(names(rir), decreasing = FALSE)]
 
   #Extract the mineral names of the selected phases and order them
   #alphabetically too
 
-  min_names <- xrd.lib[["MINERALS"]]$MIN_NAME
-  names(min_names) <- xrd.lib[["MINERALS"]]$MIN_ID
+  min_names <- xrd.lib$minerals$min_name
+  names(min_names) <- xrd.lib$minerals$min_id
 
   min_names <- min_names[which(names(min_names) %in% names(fpf_pc))]
   min_names <- min_names[order(names(min_names), decreasing = FALSE)]
 
-  #order the coefficients so that they match the order of RIR's and
+  #order the coefficients so that they match the order of rir's and
   #minerals names
   fpf_pc <- fpf_pc[, order(names(fpf_pc), decreasing = FALSE)]
 
   #create a numeric vector of coefficients
   fpf_pc_v <- as.numeric(fpf_pc[1, ])
 
-  #calculate the mineral percentages based on the RIR's
-  min_percent <- (fpf_pc_v/RIR)/sum(fpf_pc_v/RIR)*100
+  #calculate the mineral percentages based on the rir's
+  min_percent <- (fpf_pc_v/rir)/sum(fpf_pc_v/rir)*100
 
-  #create a data frame containing the name, ID, percentage and RIR of the data
+  #create a data frame containing the name, ID, percentage and rir of the data
   df <- data.frame("min_name" = as.character(min_names),
-                   "min_ID" = names(RIR),
+                   "min_id" = names(rir),
                    "min_pc" = as.numeric(min_percent),
-                   "RIR" = as.numeric(RIR))
+                   "rir" = as.numeric(rir))
 
   #group the data by mineral name (for cases that different library patterns for a single
   #mineral are included)
   dfg <- dplyr::group_by(df, min_name)
 
   #summarise the grouped data
-  dfs <- dplyr::summarise(dfg, total_min = round(sum(min_pc),2), mean_RIR = round(mean(RIR),2))
+  dfs <- dplyr::summarise(dfg, total_min = round(sum(min_pc),2), mean_rir = round(mean(rir),2))
 
   #To compute LDD using full patterns, the background signal has to be estimated,
   #this is done using the bkg function I've written
@@ -61,18 +61,18 @@ xrd.LLD <- function(x, xrd.sample, xrd.lib, int_std, lld) {
   #Compute the total signal from the internal standard
 
   #Get the index's of the internal standard
-  int_std_name = xrd.lib[["MINERALS"]]$MIN_NAME[which(xrd.lib[["MINERALS"]]$MIN_ID == int_std)]
+  int_std_name = xrd.lib$minerals$min_name[which(xrd.lib$minerals$min_id == int_std)]
 
   int_std_index <- which(min_names == int_std_name)
   #Order the optimised (because the min_names vector is already ordered)
   x_ordered <- x[order(names(x), decreasing = FALSE)]
 
-  #extract the coefficients and RIR's
+  #extract the coefficients and rir's
   int_std_coefficients <- x_ordered[int_std_index]
-  int_std_RIR <- RIR[int_std_index]
+  int_std_rir <- rir[int_std_index]
 
   #Get the library of aligned patterns and extract the internal standard patterns from it
-  xrd.lib_df <- data.frame(xrd.lib[["XRD"]][, order(names(data.frame(xrd.lib[["XRD"]])), decreasing = FALSE)])
+  xrd.lib_df <- data.frame(xrd.lib$xrd[, order(names(data.frame(xrd.lib$xrd)), decreasing = FALSE)])
   int_std_patterns <- as.matrix(xrd.lib_df[, int_std_index])
 
   #Calculate the fitted internal standard pattern
@@ -88,32 +88,32 @@ xrd.LLD <- function(x, xrd.sample, xrd.lib, int_std, lld) {
     warning("The internal standard is estimated to be lower than 5 wt.% within the sample, which may hinder the accuracy in estimating the lower limit of detection. Consider using an alternative internal standard.")
   }
 
-  #Estimate the LLD (check this equation!!!)
-  int_std_LLD <- (4*sqrt(2*bkg))/(int_std_counts/int_std_pc)
+  #Estimate the lld (check this equation!!!)
+  int_std_lld <- (4*sqrt(2*bkg))/(int_std_counts/int_std_pc)
 
-  #Now estimate the LLD for all phases of the fit
+  #Now estimate the lld for all phases of the fit
 
-  #calculate the weighted RIR which accounts for potentially
-  #different RIR's of the same mineral
+  #calculate the weighted rir which accounts for potentially
+  #different rir's of the same mineral
 
-  int_std_RIR <- dfs$mean_RIR[which(dfs$min_name == int_std_name)]
+  int_std_rir <- dfs$mean_rir[which(dfs$min_name == int_std_name)]
 
   int_std_min_pc <- dfs$total_min[which(dfs$min_name == int_std_name)]
 
   int_std_min_weight <- int_std_min_pc/sum(int_std_min_pc)
 
-  int_std_RIR <- sum(int_std_RIR * int_std_min_weight)
+  int_std_rir <- sum(int_std_rir * int_std_min_weight)
 
-  #Then calculate the LLD
-  mineral_LLD <- int_std_LLD * (dfg$RIR
-                                /int_std_RIR)^-1
+  #Then calculate the lld
+  mineral_lld <- int_std_lld * (dfg$rir
+                                /int_std_rir)^-1
 
-  names(mineral_LLD) <- as.character(dfg$min_name)
+  names(mineral_lld) <- as.character(dfg$min_name)
 
-  dfg$LLD <- as.numeric(mineral_LLD)
+  dfg$lld <- as.numeric(mineral_lld)
 
-  #Get the index values of phases that are below 0.75 * LLD or named "Background"
-  remove_index <- which(dfg$min_pc < (dfg$LLD*lld))
+  #Get the index values of phases that are below 0.75 * lld or named "Background"
+  remove_index <- which(dfg$min_pc < (dfg$lld*lld))
 
 
   #This only runs when there are cases to remove

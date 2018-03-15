@@ -6,26 +6,26 @@ min.conc <- function(x, xrd.lib) {
   }
 
   #Restrict the xrd library to minerals within the names of fpf_pc
-  minerals <- xrd.lib[["MINERALS"]]
+  minerals <- xrd.lib$minerals
 
-  minerals <- minerals[which(minerals$MIN_ID %in% names(x)),]
+  minerals <- minerals[which(minerals$min_id %in% names(x)),]
 
   #Order to the same as fpf_pc
   if (length(x) > 1) {
-    minerals <- minerals[order(minerals$MIN_ID),]
+    minerals <- minerals[order(minerals$min_id),]
   }
 
-  min_percent <- (x/minerals$RIR)/sum(x/minerals$RIR)*100
+  min_percent <- (x/minerals$rir)/sum(x/minerals$rir)*100
 
-  names(min_percent) <- minerals$MIN_ID
+  names(min_percent) <- minerals$min_id
 
   df <- data.frame(minerals, "min_percent" = min_percent)
 
   #group the data by mineral name (e.g. quartz or chlorite)
-  dfg <- dplyr::group_by(df, MIN_NAME)
+  dfg <- dplyr::group_by(df, min_name)
 
   #Summarise to get the total mineral concentration of each mineral
-  dfs <- dplyr::summarise(dfg, total_min = round(sum(min_percent),2), mean_RIR = mean(RIR))
+  dfs <- dplyr::summarise(dfg, total_min = round(sum(min_percent),2), mean_rir = mean(rir))
 
   out <- list("df" = df, "dfs" = dfs)
 

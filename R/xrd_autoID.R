@@ -4,7 +4,7 @@
 #xrd.sample = a vector of an xrd sample
 #df = a blank data frame with the same number of rows are the length of the library/sample
 
-xrd.autoID <- function(xrd.lib, xrd.sample, delta_lim) {
+xrd.autoid <- function(xrd.lib, xrd.sample, delta_lim) {
 
   lib_length <- ncol(xrd.lib)
 
