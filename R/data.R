@@ -106,3 +106,29 @@
 #' @format A dataframe
 "NSIS"
 
+
+#' Example soil XRPD data
+#'
+#' 3 soil samples from different parents materials measured by XRPD on a
+#' Bruker D8.
+#'
+#' @format A list of 3 dataframes (named according to rock type),
+#' with each dataframe containing two columns of:
+#' \describe{
+#' \item{tth}{The 2theta measurement intervals}
+#' \item{counts}{The count intensities}
+#' }
+"soils"
+
+#' D8 library of XRPD patterns relevant to the soils dataset
+#'
+#' The D8 library contains a range of reference patterns and reference intensity
+#' ratios needed for full pattern fitting of the \code{soils} data.
+#'
+#' @format A list of 3
+#' \describe{
+#' \item{xrd}{A dataframe of all xrd data. Column names denote the reference sample}
+#' \item{tth}{A vector of 2theta intervals of all measurements in the library}
+#' \item{minerals}{A dataframe the mineral ID's, names and RIR's}
+#' }
+"D8_small"
