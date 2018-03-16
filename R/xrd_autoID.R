@@ -1,9 +1,28 @@
-#This is the while loop used to pluck appropriate phases out of the library
-
-#xrd.lib = an XRD library
-#xrd.sample = a vector of an xrd sample
-#df = a blank data frame with the same number of rows are the length of the library/sample
-
+#' Automated selection of crystalline phases for quantitative analysis
+#'
+#' \code{xrd.autoid} is used as part of \code{auto.fpf}. It uses \code{qr.solve} to
+#' rapidly select appropriate phases from a reference library based on the correlation
+#' to the residuals of the fit.
+#'
+#' @param xrd.lib an dataframe containing XRPD reference patterns (counts only, by column)
+#' @param xrd.sample a vector of the sample counts
+#' @param delta_lim a tuning parameter used to adjust the coarseness of the selection.
+#' High values (e.g. 2) will select fewer phases than low values (e.g. 0.01).
+#'
+#' @return a list with components:
+#' \item{x}{named vector of coefficients derived from qr.solve for each mineral selected}
+#' \item{xrd.lib}{data frame of selected reference patterns}
+#' \item{fit.error}{the trend in total fit error associated with the sequential addition of
+#' phases to the library}
+#'
+#' @examples
+#' data(D8_soil)
+#' data(D8_NSIS)
+#'
+#' soil <- D8_soil$mineral
+#'
+#' auto_select <- xrd.autoid(xrd.lib = D8_NSIS$xrd, xrd.sample = soil$counts, delta_lim = 1)
+#' plot(auto_select$fit.error)
 xrd.autoid <- function(xrd.lib, xrd.sample, delta_lim) {
 
   lib_length <- ncol(xrd.lib)

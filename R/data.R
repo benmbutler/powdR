@@ -5,9 +5,9 @@
 #'
 #' @format A list of 3
 #' \describe{
-#' \item{XRD}{A dataframe of all xrd data. Column names denote the reference sample}
-#' \item{TTH}{A vector of 2theta intervals of all measurements in the library}
-#' \item{MINERALS}{A dataframe the mineral ID's, names and RIR's}
+#' \item{xrd}{A dataframe of all xrd data. Column names denote the reference sample}
+#' \item{tth}{A vector of 2theta intervals of all measurements in the library}
+#' \item{minerals}{A dataframe the mineral ID's, names and RIR's}
 #' }
 "D8"
 
@@ -18,9 +18,9 @@
 #'
 #' @format A list of 3
 #' \describe{
-#' \item{XRD}{A dataframe of all xrd data. Column names denote the reference sample}
-#' \item{TTH}{A vector of 2theta intervals of all measurements in the library}
-#' \item{MINERALS}{A dataframe the mineral ID's, names and RIR's}
+#' \item{xrd}{A dataframe of all xrd data. Column names denote the reference sample}
+#' \item{tth}{A vector of 2theta intervals of all measurements in the library}
+#' \item{minerals}{A dataframe the mineral ID's, names and RIR's}
 #' }
 "D5000"
 
@@ -31,9 +31,9 @@
 #'
 #' @format A list of 3
 #' \describe{
-#' \item{XRD}{A dataframe of all xrd data. Column names denote the reference sample}
-#' \item{TTH}{A vector of 2theta intervals of all measurements in the library}
-#' \item{MINERALS}{A dataframe the mineral ID's, names and RIR's}
+#' \item{xrd}{A dataframe of all xrd data. Column names denote the reference sample}
+#' \item{tth}{A vector of 2theta intervals of all measurements in the library}
+#' \item{minerals}{A dataframe the mineral ID's, names and RIR's}
 #' }
 "Xpert"
 
@@ -55,9 +55,9 @@
 #'
 #' @format A list of 3
 #' \describe{
-#' \item{XRD}{A dataframe of all xrd data. Column names denote the reference sample}
-#' \item{TTH}{A vector of 2theta intervals of all measurements in the library}
-#' \item{MINERALS}{A dataframe the mineral ID's, names and RIR's}
+#' \item{xrd}{A dataframe of all xrd data. Column names denote the reference sample}
+#' \item{tth}{A vector of 2theta intervals of all measurements in the library}
+#' \item{minerals}{A dataframe the mineral ID's, names and RIR's}
 #' }
 "Xpert_NSIS"
 
@@ -68,9 +68,9 @@
 #'
 #' @format A list of 3
 #' \describe{
-#' \item{XRD}{A dataframe of all xrd data. Column names denote the reference sample}
-#' \item{TTH}{A vector of 2theta intervals of all measurements in the library}
-#' \item{MINERALS}{A dataframe the mineral ID's, names and RIR's}
+#' \item{xrd}{A dataframe of all xrd data. Column names denote the reference sample}
+#' \item{tth}{A vector of 2theta intervals of all measurements in the library}
+#' \item{minerals}{A dataframe the mineral ID's, names and RIR's}
 #' }
 "D8_NSIS"
 

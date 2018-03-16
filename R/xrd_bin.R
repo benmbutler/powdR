@@ -1,3 +1,20 @@
+#' Bin XRPD data
+#'
+#' \code{xrd.bin} applies binning to an XRPD dataframe using a specified bin width.
+#'
+#' The original values within an XRPD dataframe (2theta and counts) which fall within a
+#' given bin width are replaced by their means for that interval.
+#'
+#' @param smpl a data frame of the XRPD sample to be binned.
+#' @param bin.size the number of data points to be used in each bin
+#'
+#' @return a binned XRPD data frame (2theta and counts)
+#'
+#' @examples
+#' data(D8_soil)
+#'
+#' xrd <- D8_soil$mineral
+#' binned <- xrd.bin(smpl = xrd, bin.size = 5)
 xrd.bin <- function(smpl, bin.size) {
 
   #Split the x-axis into chunks defined by bin.size
@@ -23,4 +40,5 @@ xrd.bin <- function(smpl, bin.size) {
                     "counts" = y_mean)
 
   return(out)
+
 }

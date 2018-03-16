@@ -1,6 +1,6 @@
 #' Fit a background to XRPD data
 #'
-#' \code{xrd.bkg} returns a vector of background counts
+#' \code{xrd.bkg} fits a background to xrpd data
 #'
 #' This function bins the data into chunks and takes the minimum counts
 #' from each chunk. A loess polynomial is then fitted between the minimum
@@ -10,6 +10,16 @@
 #' @param counts the XRPD counts
 #' @param width the bin width
 #' @param res the span of the loess polynomial
+#'
+#' @return a vector of the fitted background
+#'
+#' @examples
+#' data(D8_soil)
+#' xrd <- D8_soil$mineral
+#' background <- xrd.bkg(tth = xrd$tth, counts = xrd$counts, width = 50, res = 0.1)
+#'
+#' plot(xrd, type = "l")
+#' lines(x = xrd$tth, y = background, col = "red")
 xrd.bkg <- function(tth, counts, width, res) {
 
   #splitting the tth and counts vectors into a list of chunks

@@ -29,20 +29,22 @@
 #' Default = \code{"Rwp"}.
 #' @param shift Optional. The maximum shift applied during full pattern fitting.
 #' Default = 0.05
-#' @param weighting Optional. A two column dataframe. First column contains 2theta axis on same scale as that
-#' of the xrd library. Second column contains the weighting of each 2theta variable. If not provided, all variables
-#' are given a weighting of 1.
+#' @param weighting Optional. A two column dataframe. First column contains 2theta axis on
+#' same scale as that of the xrd library. Second column contains the weighting of each 2theta
+#' variable. If not provided, all variables are given a weighting of 1.
+#'
 #' @return a list with components:
-#' \item{tth}{A vector of the 2theta scale of the fitted data}
-#' \item{fitted}{A vector of the fitted XRPD pattern}
-#' \item{measured}{A vector of the original XRPD measurement}
-#' \item{residuals}{A vector of the Residuals of fitted vs measured}
-#' \item{minerals}{A dataframe of the minerals used to produced fitted}
-#' \item{minerals_summary}{The minerals dataframe grouped by minerals and summarised (mean)}
-#' \item{rwp}{The Rwp of the fitted vs mesaured pattern}
-#' \item{weighted_pure_patterns}{A dataframe of reference patterns used to produce fitted.
+#' \item{tth}{a vector of the 2theta scale of the fitted data}
+#' \item{fitted}{a vector of the fitted XRPD pattern}
+#' \item{measured}{a vector of the original XRPD measurement}
+#' \item{residuals}{a vector of the Residuals of fitted vs measured}
+#' \item{minerals}{a dataframe of the minerals used to produce the fitted pattern}
+#' \item{minerals_summary}{the minerals dataframe grouped by minerals and summarised (mean)}
+#' \item{rwp}{the Rwp of the fitted vs mesaured pattern}
+#' \item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 #' All patterns have been weighted according to the coefficients used in the fit}
-#' \item{coefficients}{A named vector of coefficients used to produce fitted}
+#' \item{coefficients}{a named vector of coefficients used to produce the fitted pattern}
+#'
 #' @examples
 #' # Load the Xpert library
 #' data(Xpert)

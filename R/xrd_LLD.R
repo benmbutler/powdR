@@ -1,36 +1,46 @@
-### lld estimation
+#' Estimation of lower limits of detection in XRPD data
+#'
+#' \code{xrd.lld} uses full patterns and their reference intensity ratios to esimate
+#' the lower limit of detection for crystalline phases.
+#'
+#' @param x a named vector of parameters from \code{fullpat}
+#' @param xrd.sample an XRPD data frame of the sample (2theta, counts)
+#' @param xrd.lib a library of XRPD reference patterns
+#' @param int_std the ID of a reference pattern to use as the internal standard
+#' @param lld a positive tuning parameter used to adjust the lower limit of detection.
+#'
+#' @return a list with components:
+#' \item{x}{named vector of coefficients derived from full pattern fitting}
+#' \item{xrd.lib}{data frame of reference patterns that are computed to be present in
+#' detectable concentrations}
 xrd.lld <- function(x, xrd.sample, xrd.lib, int_std, lld) {
 
-  fpf_pc <- data.frame(t(data.frame(x)))
-
   #compute which of the minerals are within the rir vector loaded at the start
-
   rir <- xrd.lib$minerals$rir
   names(rir) <- xrd.lib$minerals$min_id
 
-  rir <- rir[which(names(rir) %in% names(fpf_pc))]
+  rir <- rir[which(names(rir) %in% names(x))]
 
   #order them alphabetically
   rir <- rir[order(names(rir), decreasing = FALSE)]
 
   #Extract the mineral names of the selected phases and order them
   #alphabetically too
-
   min_names <- xrd.lib$minerals$min_name
   names(min_names) <- xrd.lib$minerals$min_id
 
-  min_names <- min_names[which(names(min_names) %in% names(fpf_pc))]
+  min_names <- min_names[which(names(min_names) %in% names(x))]
   min_names <- min_names[order(names(min_names), decreasing = FALSE)]
 
   #order the coefficients so that they match the order of rir's and
   #minerals names
-  fpf_pc <- fpf_pc[, order(names(fpf_pc), decreasing = FALSE)]
+  x <- x[order(names(x), decreasing = FALSE)]
 
   #create a numeric vector of coefficients
-  fpf_pc_v <- as.numeric(fpf_pc[1, ])
+  x_v <- unname(x)
 
   #calculate the mineral percentages based on the rir's
-  min_percent <- (fpf_pc_v/rir)/sum(fpf_pc_v/rir)*100
+  min_percent <- (x_v/rir)/sum(x_v/rir)*100
 
   #create a data frame containing the name, ID, percentage and rir of the data
   df <- data.frame("min_name" = as.character(min_names),
@@ -85,7 +95,9 @@ xrd.lld <- function(x, xrd.sample, xrd.lib, int_std, lld) {
   int_std_pc <- sum(dfg$min_pc[which(dfg$min_name == int_std_name)])
 
   if (int_std_pc < 5) {
-    warning("The internal standard is estimated to be lower than 5 wt.% within the sample, which may hinder the accuracy in estimating the lower limit of detection. Consider using an alternative internal standard.")
+    warning("The internal standard is estimated to be lower than 5 wt.% within the sample, which may hinder
+            the accuracy in estimating the lower limit of detection. Consider using an alternative internal
+            standard.")
   }
 
   #Estimate the lld (check this equation!!!)
@@ -112,9 +124,8 @@ xrd.lld <- function(x, xrd.sample, xrd.lib, int_std, lld) {
 
   dfg$lld <- as.numeric(mineral_lld)
 
-  #Get the index values of phases that are below 0.75 * lld or named "Background"
+  #Get the index values of phases that are below lld or named "Background"
   remove_index <- which(dfg$min_pc < (dfg$lld*lld))
-
 
   #This only runs when there are cases to remove
   if(length(remove_index) > 0) {

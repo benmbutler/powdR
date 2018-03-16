@@ -1,4 +1,4 @@
-#This function is used by the xrd.align function below
+#This function is used by the xrd.align and multi.xrd.align functions
 align.optim <- function(a, par, xout, xrd.standard_shorter) {
 
   res1 <- a
@@ -27,6 +27,31 @@ align.optim <- function(a, par, xout, xrd.standard_shorter) {
 #' @param xmin The minimum 2theta value to be used during alignment
 #' @param xmax the maximum 2theta value to be used during alignment
 #' @param xshift the maximum 2theta shift that can be applied
+#'
+#' @return a list with components:
+#' \item{shift}{the 2theta shift applied to the sample}
+#' \item{aligned}{a dataframe of the aligned sample (2theta and counts)}
+#'
+#' @examples
+#' data(D8_soil)
+#' data(D8)
+#'
+#' #Create a quartz standard from the D8 library
+#' quartz <- data.frame(tth = D8$tth, counts = D8$xrd$QUARTZ.STRATH.P.1142250)
+#'
+#' #Create a soil XRPD pattern to align
+#' soil <- D8_soil$mineral
+#'
+#' #Plot unaligned data. Note that rng.nm is used to normalise count intensities
+#' plot(x = quartz$tth, y = rng.nm(quartz$counts), xlim = c(26, 27), type = "l")
+#' lines(x = soil$tth, y = rng.nm(soil$counts), col = "red")
+#'
+#' #Align the soil sample to the quartz
+#' soil_a <- xrd.align(xrd.sample = soil, xrd.standard = quartz, xmin = 10,
+#'                      xmax = 60, xshift = 0.2)
+#' #Replot
+#' plot(x = quartz$tth, y = rng.nm(quartz$counts), xlim = c(26, 27), type = "l")
+#' lines(x = soil_a$aligned$tth, y = rng.nm(soil_a$aligned$counts), col = "red")
 xrd.align <- function(xrd.sample, xrd.standard, xmin, xmax, xshift) {
 
   #Apply the range normalisation to samples and standard

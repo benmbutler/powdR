@@ -1,3 +1,13 @@
+#' Calculate mineral concentrations from optimised parameters and reference
+#' intensity ratios
+#'
+#' \code{min.conc} returns a two dataframes detailing the mineral concentrations
+#' within a sample analysed by XRPD. \code{min.conc} is used within the \code{fpf}
+#' and \code{auto.fpf} functions.
+#'
+#' @param x a named vector of optimised parameters from \code{fullpat}
+#' @param xrd.lib an xrd library containing the reference intensity ratios,
+#' mineral id's and mineral names
 min.conc <- function(x, xrd.lib) {
 
   #Make sure x is ordered if there are more than 1 phases in the library

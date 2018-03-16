@@ -6,9 +6,9 @@
 \title{D5000 library of XRPD patterns}
 \format{A list of 3
 \describe{
-\item{XRD}{A dataframe of all xrd data. Column names denote the reference sample}
-\item{TTH}{A vector of 2theta intervals of all measurements in the library}
-\item{MINERALS}{A dataframe the mineral ID's, names and RIR's}
+\item{xrd}{A dataframe of all xrd data. Column names denote the reference sample}
+\item{tth}{A vector of 2theta intervals of all measurements in the library}
+\item{minerals}{A dataframe the mineral ID's, names and RIR's}
 }}
 \usage{
 D5000

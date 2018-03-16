@@ -1,5 +1,22 @@
-# FULLPAT FUNCTION --------------------------------------
-
+#' Objective measures to be minimised during full pattern fitting
+#'
+#' \code{fullpat} is a function that gets optimised during full
+#' pattern fitting when using \code{fpf} and \code{auto.fpf}. Three
+#' objective functions are available for minimisation: Delta, R, and
+#' Rwp. We recommend Rwp.
+#'
+#' @param par a named vector of parameters to be optimised
+#' @param pure.patterns a dataframe of pure patterns (counts only).
+#' The ith column in the dataframe relates to the ith parameter of the
+#' \code{par} vector
+#' @param sample.pattern a vector of the measured pattern (counts only)
+#' to be fitted.
+#' @param obj the objective function to be minimised. One of "Delta",
+#' "R" and "Rwp". See page 247 of Bish & Post (1989), Modern Powder
+#' Diffraction.
+#' @param weighting a weighting pattern (2theta and counts) specifying
+#' which regions to emphasise during full pattern fitting. Use with
+#' caution
 fullpat <- function (par, pure.patterns, sample.pattern, obj, weighting)
 {
 

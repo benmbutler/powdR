@@ -1,13 +1,15 @@
 #' Interactive full pattern fitting plot
 #'
-#' \code{fpf.plot} returns a ggplotly interactive graph.
+#' \code{fpf.plot} returns a ggplotly object.
 #'
-#' This function is for use in combination with the output from \code{fpf}.
+#' This function is for use in combination with the output from \code{fpf} or \code{auto.fpf}.
 #'
-#' @param x An \code{fpf} output to be plotted
+#' @param x An \code{fpf} or \code{auto.fpf} output to be plotted
 #' @param d (optional) logical parameter specifying whether to compute d spacing.
 #' Default = FALSE
-#' @param lambda (required only with \code{d = TRUE}) the wavelength samples were measured at (in Angstroms). Changes x-axis to d-spacing.
+#' @param wavelength (required only with \code{d = TRUE}) the wavelength samples were measured at
+#' (in Angstroms). Changes x-axis to d-spacing.
+#'
 #' @examples
 #' # Load the Xpert library
 #' data(Xpert)
@@ -19,27 +21,35 @@
 #' xrd_phases <- c("Qzt.662070.Strath.12Mins.P", "Qzt.662074.Qua.10.P", "X996730.QUA.11.P")
 #'
 #' # without organic
-#' #not run
-#' #fpf_out <-  fpf(smpl = Xpert_soil$mineral,
-#' #               lib = Xpert,
-#' #                 int.std = "Qzt.662070.Strath.12Mins.P",
-#' #                 phases = xrd_phases,
-#' #                 tth.min = 4.5,
-#' #                 tth.max = 69.5,
-#' #                 align.shift = 0.1,
-#' #                 solver = "BFGS",
-#' #                 obj.function = "Rwp",
-#' #                 fpf.shift = 0.05)
+#' \dontrun{
+#' fpf_out <-  fpf(smpl = Xpert_soil$mineral,
+#'                lib = Xpert,
+#'                int.std = "Qzt.662070.Strath.12Mins.P",
+#'                phases = xrd_phases,
+#'                tth = c(4.5, 69.5))
+#' }
 #'
 #' # Plot data on 2theta scale
-#' # fpf.plot(fpf_out)
+#' \dontrun{
+#' fpf.plot(fpf_out)
+#' }
 #'
-#' # Plot data according to d-spacing
-#' # fpf.plot(fpf_out, d = TRUE, lambda = 1.54060)
-fpf.plot <- function(x, d = FALSE, lambda = 1) {
+#' # Plot data d-spacing scale
+#' \dontrun{
+#' fpf.plot(fpf_out, d = TRUE, wavelength = 1.54060)
+#' }
+fpf.plot <- function(x, d, wavelength) {
 
-  if((d == TRUE & lambda == 1) == TRUE) {
-    stop("Please provide the wavelength (lambda) of the XRPD measurements
+  if(missing(d)) {
+    d <- FALSE
+  }
+
+  if(missing(wavelength)) {
+    wavelength <- 1
+  }
+
+  if((d == TRUE & wavelength == 1) == TRUE) {
+    stop("Please provide the wavelength of the XRPD measurements
          in order to calculate d-spacing.")
   }
 
@@ -61,10 +71,10 @@ fpf.plot <- function(x, d = FALSE, lambda = 1) {
 
 #If wavelength is supplied, then compute d
   if(d == TRUE) {
-    pure_patterns[["d"]] <- lambda/(2*sin((pure_patterns$tth/2)*pi/180))
-    measured[["d"]] <- lambda/(2*sin((measured$tth/2)*pi/180))
-    resids[["d"]] <- lambda/(2*sin((resids$tth/2)*pi/180))
-    pure_patterns_long[["d"]] <- lambda/(2*sin((pure_patterns_long$tth/2)*pi/180))
+    pure_patterns[["d"]] <- wavelength/(2*sin((pure_patterns$tth/2)*pi/180))
+    measured[["d"]] <- wavelength/(2*sin((measured$tth/2)*pi/180))
+    resids[["d"]] <- wavelength/(2*sin((resids$tth/2)*pi/180))
+    pure_patterns_long[["d"]] <- wavelength/(2*sin((pure_patterns_long$tth/2)*pi/180))
 
     #and plot
   g1 <- ggplot2::ggplot() +

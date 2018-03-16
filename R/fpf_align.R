@@ -1,5 +1,14 @@
-#fpf Alignment ---------------------------------------------------------------
-
+#' Alignment during full pattern fitting
+#'
+#' \code{fpf.align} applies small 2theta shifts during full pattern
+#' fitting to enhance alignment of the selected mineral phases.
+#'
+#' @param sample.tth a vector of 2theta measurement intervals
+#' @param counts a vector of counts
+#' @param xrd.lib a library of reference xrd patterns
+#' @param fpf_shift the maximum shift that can be applied
+#' @param weighting a dataframe specifying the weighting that
+#' can be used to emphasise different 2theta regions
 fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weights, weighting) {
 
   #create a blank list
@@ -12,8 +21,8 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
   weighting <- data.frame(approx(x = weighting[,1], y = weighting[,2],
                                  method = "linear", n = length(sample.tth) * 4))
 
-  TTH_long <- sample.pattern[,1]
-  sample_long <- sample.pattern[,2]
+  TTH_long <- sample.pattern[[1]]
+  sample_long <- sample.pattern[[2]]
 
   #Do the same for all data in the reference library
   for (i in 1:ncol(xrd.lib$xrd)) {
@@ -84,7 +93,8 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
       vf[[j]] <- apply(sweep(vm[[j]], 2, pure.weights, "*"), 1, sum)
 
       #Compute the Rwp
-      d[[j]] <- sqrt(sum((1/sample_long) * ((sample_long - vf[[j]])^2* weighting[,2])) / sum((1/sample_long) * (sample_long^2)))
+      d[[j]] <- sqrt(sum((1/sample_long) * ((sample_long - vf[[j]])^2* weighting[,2])) /
+                       sum((1/sample_long) * (sample_long^2)))
 
       #identify which shifted pattern results in minimum Rwp
       dmin[[i]] <- which.min(d)

@@ -1,4 +1,44 @@
-#Align and harmonise a list of xy XRD patterns
+#' Align and harmonise multiple XRPD patterns
+#'
+#' \code{multi.xrd.align} takes a list of XRPD data and aligns them
+#' relative to a chosen standard. It uses an optimisation routine that
+#' computes a suitable linear shift. After all samples have been aligned,
+#' the function harmonises the data to a single 2theta scale.
+#'
+#' @param xrd a list XRPD dataframes (2theta and counts)
+#' @param xrd.standard a dataframe of the chosen standard that each
+#' sample is aligned to (2theta and counts)
+#' @param xmin the minimum 2theta value used during alignment
+#' @param xmax the maximum 2theta value used during alignment
+#' @param xshift the maximum (positive and negative) 2theta shift
+#' that is allowed during alignment
+#'
+#' @return a list of aligned and harmonised XRPD data
+#'
+#' @examples
+#' # Load soil xrd data
+#' data(D8_soil)
+#'
+#' #Load D8 library
+#' data(D8)
+#'
+#' #Create a standard quartz pattern to align to
+#' quartz <- data.frame(tth = D8$tth, counts = D8$xrd$QUARTZ.STRATH.P.1142250)
+#'
+#' #Plot the main quartz peak prior to alignment (scale the counts using rng.nm)
+#' plot(x = D8_soil$organic$tth, y = rng.nm(D8_soil$organic$counts),
+#'      xlim = c(26, 27), type = "l")
+#' lines(x = D8_soil$mineral$tth, y = rng.nm(D8_soil$mineral$counts), col = "red")
+#' lines(x = quartz$tth, y = rng.nm(quartz$counts), col = "blue")
+#'
+#' #align data
+#' aligned <- multi.xrd.align(xrd = D8_soil, xrd.standard = quartz, xmin = 10,
+#'                            xmax = 60, xshift = 0.2)
+#' #replot data
+#' plot(x = aligned$organic$tth, y = rng.nm(aligned$organic$counts),
+#'      xlim = c(26, 27), type = "l")
+#' lines(x = aligned$mineral$tth, y = rng.nm(aligned$mineral$counts), col = "red")
+#' lines(x = quartz$tth, y = rng.nm(quartz$counts), col = "blue")
 multi.xrd.align <- function(xrd, xrd.standard, xmin, xmax, xshift) {
 
   #Aligned data will end up in this list
@@ -36,6 +76,7 @@ multi.xrd.align <- function(xrd, xrd.standard, xmin, xmax, xshift) {
                                        y = xrd_aligned[[i]][[2]][, 2],
                                        method = "linear",
                                        xout = tth))
+    names(xrd_harm[[i]]) <- c("tth", "counts")
   }
 
   #preserve names

@@ -19,6 +19,11 @@ first column must be 2theta, and the second must be counts.}
 
 \item{xshift}{the maximum 2theta shift that can be applied}
 }
+\value{
+a list with components:
+\item{shift}{the 2theta shift applied to the sample}
+\item{aligned}{a dataframe of the aligned sample (2theta and counts)}
+}
 \description{
 \code{xrd.align} returns a list containing the shift extent (2theta) and a
 data frame of the shifted xrpd pattern.
@@ -28,4 +33,25 @@ This function applies a linear alignment to an xrpd sample pattern relative to a
 chosen standard. The function using brent optimisation to maximise the correlation
 between the 2 patterns. Appropriate choice of internal standard is required for
 accurate alignment.
+}
+\examples{
+data(D8_soil)
+data(D8)
+
+#Create a quartz standard from the D8 library
+quartz <- data.frame(tth = D8$tth, counts = D8$xrd$QUARTZ.STRATH.P.1142250)
+
+#Create a soil XRPD pattern to align
+soil <- D8_soil$mineral
+
+#Plot unaligned data. Note that rng.nm is used to normalise count intensities
+plot(x = quartz$tth, y = rng.nm(quartz$counts), xlim = c(26, 27), type = "l")
+lines(x = soil$tth, y = rng.nm(soil$counts), col = "red")
+
+#Align the soil sample to the quartz
+soil_a <- xrd.align(xrd.sample = soil, xrd.standard = quartz, xmin = 10,
+                     xmax = 60, xshift = 0.2)
+#Replot
+plot(x = quartz$tth, y = rng.nm(quartz$counts), xlim = c(26, 27), type = "l")
+lines(x = soil_a$aligned$tth, y = rng.nm(soil_a$aligned$counts), col = "red")
 }

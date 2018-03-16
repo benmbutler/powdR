@@ -15,11 +15,22 @@ xrd.bkg(tth, counts, width, res)
 
 \item{res}{the span of the loess polynomial}
 }
+\value{
+a vector of the fitted background
+}
 \description{
-\code{xrd.bkg} returns a vector of background counts
+\code{xrd.bkg} fits a background to xrpd data
 }
 \details{
 This function bins the data into chunks and takes the minimum counts
 from each chunk. A loess polynomial is then fitted between the minimum
 values and the polynomial predicted onto the original 2theta scale.
+}
+\examples{
+data(D8_soil)
+xrd <- D8_soil$mineral
+background <- xrd.bkg(tth = xrd$tth, counts = xrd$counts, width = 50, res = 0.1)
+
+plot(xrd, type = "l")
+lines(x = xrd$tth, y = background, col = "red")
 }

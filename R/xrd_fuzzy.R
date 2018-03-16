@@ -1,10 +1,22 @@
-xrd.fuzzy <- function(xrpd.pca, sample.id, nclust, it) {
+#' Fuzzy clustering of XRPD data based on first three principal components
+#'
+#' \code{xrd.fuzzy} Applies the Fuzzy c-means clustering algorith from package
+#' e1071 (\code{cmeans}) to the first three principal components of an XRPD
+#' data set.
+#'
+#' @param pca a dataframe containing PC1, PC2 and PC3 scores
+#' @param sample.id the sample ID's to be assigned to each row of the pca dataframe
+#' @param nclust the number of clusters to compute
+#' @param it the maximum number of iterations
+#'
+#' @return a dataframe containing cluster assignments and membership coefficients
+xrd.fuzzy <- function(pca, sample.id, nclust, it) {
 
-  PC1 <- xrpd.pca$PC1
+  PC1 <- pca$PC1
 
-  PC2 <- xrpd.pca$PC2
+  PC2 <- pca$PC2
 
-  PC3 <- xrpd.pca$PC3
+  PC3 <- pca$PC3
 
   PC.Matrix <- cbind(PC1, PC2, PC3)
 

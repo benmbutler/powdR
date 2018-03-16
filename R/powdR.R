@@ -1,7 +1,7 @@
 #' powdR: A package for quantitative mineralogy.
 #'
-#' The powdR package provides a host of functions relevant to XRPD data sets,
-#' including peak alignment and full pattern fitting.
+#' The powdR package provides a host of functions for digital mineralogy,
+#' including peak alignment, full pattern fitting and cluster analysis.
 #' @docType package
 #' @name powdR
 NULL

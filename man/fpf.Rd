@@ -12,13 +12,13 @@ fpf(smpl, lib, crystalline, std, amorphous, tth, align, solver, obj, shift,
 
 \item{lib}{The XRPD library. A list containing three elements. The first (\code{XRPD})
 is a dataframe containing all pre-measured reference patterns by column. The second
-(\code{TTH}) is a vector of the 2theta measurement intervals for the reference patterns.
-Third (\code{MINERALS}) is a data frame containing the unique ID, mineral name, and
+(\code{tth}) is a vector of the 2theta measurement intervals for the reference patterns.
+Third (\code{minerals}) is a data frame containing the unique ID, mineral name, and
 reference intensity ratio of each pattern in the library. The order of \code{XRPD}
-(by column) and \code{MINERALS} (by row) must be identical.}
+(by column) and \code{minerals} (by row) must be identical.}
 
 \item{crystalline}{A string of mineral ID's used to subset crystalline phases from the
-library. The ID's must match ID's in the \code{lib$MINERALS$MIND_ID} column.}
+library. The ID's must match ID's in the \code{lib$minerals$MIND_ID} column.}
 
 \item{std}{The mineral ID (e.g. "Qzt.662070.Strath.12Mins.P") to be used as internal
 standard. Must match an ID provided in the \code{phases} parameter.}
@@ -41,22 +41,22 @@ Default = \code{"Rwp"}.}
 \item{shift}{Optional. The maximum shift applied during full pattern fitting.
 Default = 0.05}
 
-\item{weighting}{Optional. A two column dataframe. First column contains 2theta axis on same scale as that
-of the XRD library. Second column contains the weighting of each 2theta variable. If not provided, all variables
-are given a weighting of 1.}
+\item{weighting}{Optional. A two column dataframe. First column contains 2theta axis on
+same scale as that of the xrd library. Second column contains the weighting of each 2theta
+variable. If not provided, all variables are given a weighting of 1.}
 }
 \value{
 a list with components:
-\item{TTH}{A vector of the 2theta scale of the fitted data}
-\item{FITTED}{A vector of the fitted XRPD pattern}
-\item{MEASURED}{A vector of the original XRPD measurement}
-\item{RESIDUALS}{A vector of the Residuals of FITTED vs MEASURED}
-\item{MINERALS}{A dataframe of the minerals used to produced FITTED}
-\item{MINERALS_SUMMARY}{The MINERALS dataframe grouped by minerals and summarised (mean)}
-\item{R}{The Rwp of the FITTED vs MEASURED pattern}
-\item{WEIGHTED_PURE_PATTERNS}{A dataframe of reference patterns used to produce FITTED.
+\item{tth}{a vector of the 2theta scale of the fitted data}
+\item{fitted}{a vector of the fitted XRPD pattern}
+\item{measured}{a vector of the original XRPD measurement}
+\item{residuals}{a vector of the Residuals of fitted vs measured}
+\item{minerals}{a dataframe of the minerals used to produce the fitted pattern}
+\item{minerals_summary}{the minerals dataframe grouped by minerals and summarised (mean)}
+\item{rwp}{the Rwp of the fitted vs mesaured pattern}
+\item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 All patterns have been weighted according to the coefficients used in the fit}
-\item{COEFFICIENTS}{A named vector of coefficients used to produce FITTED}
+\item{coefficients}{a named vector of coefficients used to produce the fitted pattern}
 }
 \description{
 \code{fpf} returns estimates of soil mineral concentraitons using full pattern fitting.
@@ -97,12 +97,12 @@ fpf_out_org <-  fpf(smpl = Xpert_soil$mineral,
 }
 
 # An example of using weighting
-weighting <- data.frame(TTH = Xpert$TTH,
-                        COUNTS = rep(1, length(Xpert$TTH)))
+weighting <- data.frame(tth = Xpert$tth,
+                        counts = rep(1, length(Xpert$tth)))
 
-# Make all values below TTH = 5 have a weighting of 0
-weighting$COUNTS[which(weighting$TTH <= 5)] <- 0
+# Make all values below tth = 5 have a weighting of 0
+weighting$counts[which(weighting$tth <= 5)] <- 0
 
-# Make all values between TTH = 26 and 27 have a weighting of 2
-weighting$COUNTS[which(weighting$TTH >= 26 & weighting$TTH <= 27)] <- 10
+# Make all values between tth = 26 and 27 have a weighting of 2
+weighting$counts[which(weighting$tth >= 26 & weighting$tth <= 27)] <- 10
 }

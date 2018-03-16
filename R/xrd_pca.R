@@ -1,4 +1,34 @@
-#This function carries out PCA on a list of treated xrd patterns
+#' Principal component analysis and pre-treatment of XRPD data
+#'
+#' \code{xrd.pca} allows for principal components analysis to be applied to
+#' XRPD subjected to various pre-treatment options.
+#'
+#' Four pre-treament options are available. These include peak alignment using
+#' \code{multi.xrd.align}, binning using the \code{xrd.bin}, square root transform,
+#' and normalisation using \code{mean.centre}.
+#'
+#' @param xrd a list of XRPD dataframe (2theta and counts)
+#' @param align logical. If TRUE then alignment will be applied
+#' @param align.standard required if align = TRUE. Specifies the XRPD
+#' dataframe to be used as the standard for alignment
+#' @param align.xmin required if align = TRUE. Specifies the minimum 2theta
+#' value used during alignment
+#' @param align.xmax required if align = TRUE. Specifies the maximum 2theta
+#' value used during alignment
+#' @param align.xshift required if align = TRUE. Specifies the xmaximum (positive
+#' and negative) 2theta shift that can be used during alignment
+#' @param bin logical. If TRUE then binning will be applied
+#' @param bin.width required if bin = TRUE. Specifies the bin width to be used
+#' @param square.root logical. If TRUE then the count intensities of all XRPD data
+#' will be square root transformed
+#' @param normalise logical. If TRUE then all XRPD data will be mean centred using
+#' \code{mean.centre}
+#'
+#' @return a list with components:
+#' \item{pca}{a dataframe of PCA scores}
+#' \item{pca_variance}{a vector of the cumulative proportion of variance explained
+#' by each principal component}
+#' \item{xrd}{a list of the treated XRPD data}
 xrd.pca <- function(xrd, align, align.standard, align.xmin, align.xmax, align.xshift,
                     bin, bin.width, square.root, normalise) {
 
@@ -60,14 +90,12 @@ xrd.pca <- function(xrd, align, align.standard, align.xmin, align.xmax, align.xs
   }
 
   if (normalise == TRUE) {
-
     xrd <- lapply(xrd, mean.centre)
-
   }
-
 
   xrpd_m <- matrix(nrow = length(xrd), ncol = nrow(xrd[[1]]))
 
+  #Extract the counts only from the treated data
   for (i in 1:length(xrd)) {
     xrpd_m[i,] <- xrd[[i]][,2]
   }
