@@ -15,7 +15,6 @@
 #' The order of \code{XRPD} (by column) and \code{MINERALS} (by row) must be identical.
 #' @param tth A vector defining the minimum and maximum 2theta values to be used during
 #' fitting
-#' @param phases A string of unique ID's from the \code{lib} used to subset the reference library.
 #' @param std The mineral ID (e.g. "Qzt.662070.Strath.12Mins.P") to be used as internal standard. Must match a mineral
 #' name in the MINERALS table.
 #' @param amorphous Optional. Then name of an amorphous phase to be added to the fitting process. Must
@@ -47,32 +46,30 @@
 #' \item{coefficients}{a named vector of coefficients used to produce the fitted pattern}
 #'
 #' @examples
-#' # Load the D8 NSIS library
-#' data(D8_NSIS)
+#' # Load the minerals library
+#' data(minerals)
 #'
-#' # Load the D8 soil data to use in example
-#' data(D8_soil)
+#' # Load the soils data
+#' data(soils)
+#'
 #' # automated without any amorphous phases
 #' \dontrun{
-#' fpf_out <- auto.fpf(smpl = D8_soil$mineral,
-#'                     lib = D8_NSIS,
-#'                     tth = c(5.0, 69.5),
+#' fpf_out <- auto.fpf(smpl = soils$sandstone,
+#'                     lib = minerals,
+#'                     tth = c(4.5, 69.5),
 #'                     std = "QUARTZ.STRATH.P.1142250")
 #' }
 #' #automated with an amorphous phase (organic matter)
 #' \dontrun{
-#' fpf_out_org <- auto.fpf(smpl = D8_soil$mineral,
-#'                     lib = D8_NSIS,
-#'                     tth = c(5.0, 69.5),
+#' fpf_out_org <- auto.fpf(smpl = soils$sandstone,
+#'                     lib = minerals,
+#'                     tth = c(4.5, 69.5),
 #'                     std = "QUARTZ.STRATH.P.1142250",
-#'                     amorphous = c("ORGANIC.bez.CRAIGLICHT.668085.DEEP",
-#'                                   "ALL.11.P.997615",
-#'                                   "FER.2LINE.P.1021047",
-#' }                                 "OBSID.P.AMOR.1.828441.882233"))
-#'
+#'                     amorphous = "ORGANIC.bez.CRAIGLICHT.668085.DEEP")
+#' }
 #' # An example of using weighting
-#' weighting <- data.frame(tth = D8_NSIS$tth,
-#'                         counts = rep(1, length(D8_NSIS$tth)))
+#' weighting <- data.frame(tth = minerals$tth,
+#'                         counts = rep(1, length(minerals$tth)))
 #'
 #' # Make all values below tth = 5 have a weighting of 0
 #' weighting$counts[which(weighting$tth <= 5)] <- 0

@@ -14,8 +14,8 @@
 #' @return a vector of the fitted background
 #'
 #' @examples
-#' data(D8_soil)
-#' xrd <- D8_soil$mineral
+#' data(soils)
+#' xrd <- soils$sandstone
 #' background <- xrd.bkg(tth = xrd$tth, counts = xrd$counts, width = 50, res = 0.1)
 #'
 #' plot(xrd, type = "l")

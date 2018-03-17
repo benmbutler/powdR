@@ -11,9 +11,9 @@
 #' @return a binned XRPD data frame (2theta and counts)
 #'
 #' @examples
-#' data(D8_soil)
+#' data(soils)
 #'
-#' xrd <- D8_soil$mineral
+#' xrd <- soils$sandstone
 #' binned <- xrd.bin(smpl = xrd, bin.size = 5)
 xrd.bin <- function(smpl, bin.size) {
 

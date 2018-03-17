@@ -29,27 +29,30 @@ computes a suitable linear shift. After all samples have been aligned,
 the function harmonises the data to a single 2theta scale.
 }
 \examples{
-# Load soil xrd data
-data(D8_soil)
+# Load soils xrd data
+data(soils)
 
-#Load D8 library
-data(D8)
+#Load minerals library
+data(minerals)
 
 #Create a standard quartz pattern to align to
-quartz <- data.frame(tth = D8$tth, counts = D8$xrd$QUARTZ.STRATH.P.1142250)
+quartz <- data.frame(tth = minerals$tth,
+                     counts = minerals$xrd$QUARTZ.STRATH.P.1142250)
 
 #Plot the main quartz peak prior to alignment (scale the counts using rng.nm)
-plot(x = D8_soil$organic$tth, y = rng.nm(D8_soil$organic$counts),
+plot(x = soils$sandstone$tth, y = rng.nm(soils$sandstone$counts),
      xlim = c(26, 27), type = "l")
-lines(x = D8_soil$mineral$tth, y = rng.nm(D8_soil$mineral$counts), col = "red")
+lines(x = soils$granite$tth, y = rng.nm(soils$granite$counts), col = "red")
+lines(x = soils$limestone$tth, y = rng.nm(soils$limestone$counts), col = "green")
 lines(x = quartz$tth, y = rng.nm(quartz$counts), col = "blue")
 
 #align data
-aligned <- multi.xrd.align(xrd = D8_soil, xrd.standard = quartz, xmin = 10,
+aligned <- multi.xrd.align(xrd = soils, xrd.standard = quartz, xmin = 10,
                            xmax = 60, xshift = 0.2)
 #replot data
-plot(x = aligned$organic$tth, y = rng.nm(aligned$organic$counts),
+plot(x = aligned$sandstone$tth, y = rng.nm(aligned$sandstone$counts),
      xlim = c(26, 27), type = "l")
-lines(x = aligned$mineral$tth, y = rng.nm(aligned$mineral$counts), col = "red")
+lines(x = aligned$granite$tth, y = rng.nm(aligned$granite$counts), col = "red")
+lines(x = aligned$limestone$tth, y = rng.nm(aligned$limestone$counts), col = "green")
 lines(x = quartz$tth, y = rng.nm(quartz$counts), col = "blue")
 }

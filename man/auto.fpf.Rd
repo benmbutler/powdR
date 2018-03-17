@@ -45,8 +45,6 @@ Must be between 0 and 1. Default = 0.3.}
 
 \item{amorphous_lld}{Optional parameter used to exclude amorphous phases if they are below the
 specified \code{amorphous_lld} (percent). Must be between 0 and 100. Default = 0.}
-
-\item{phases}{A string of unique ID's from the \code{lib} used to subset the reference library.}
 }
 \value{
 a list with components:
@@ -71,32 +69,30 @@ This function applies full pattern fitting to an XRPD sample to quantify mineral
 It requires a library of reference patterns with pre-measured reference intensity ratios.
 }
 \examples{
-# Load the D8 NSIS library
-data(D8_NSIS)
+# Load the minerals library
+data(minerals)
 
-# Load the D8 soil data to use in example
-data(D8_soil)
+# Load the soils data
+data(soils)
+
 # automated without any amorphous phases
 \dontrun{
-fpf_out <- auto.fpf(smpl = D8_soil$mineral,
-                    lib = D8_NSIS,
-                    tth = c(5.0, 69.5),
+fpf_out <- auto.fpf(smpl = soils$sandstone,
+                    lib = minerals,
+                    tth = c(4.5, 69.5),
                     std = "QUARTZ.STRATH.P.1142250")
 }
 #automated with an amorphous phase (organic matter)
 \dontrun{
-fpf_out_org <- auto.fpf(smpl = D8_soil$mineral,
-                    lib = D8_NSIS,
-                    tth = c(5.0, 69.5),
+fpf_out_org <- auto.fpf(smpl = soils$sandstone,
+                    lib = minerals,
+                    tth = c(4.5, 69.5),
                     std = "QUARTZ.STRATH.P.1142250",
-                    amorphous = c("ORGANIC.bez.CRAIGLICHT.668085.DEEP",
-                                  "ALL.11.P.997615",
-                                  "FER.2LINE.P.1021047",
-}                                 "OBSID.P.AMOR.1.828441.882233"))
-
+                    amorphous = "ORGANIC.bez.CRAIGLICHT.668085.DEEP")
+}
 # An example of using weighting
-weighting <- data.frame(tth = D8_NSIS$tth,
-                        counts = rep(1, length(D8_NSIS$tth)))
+weighting <- data.frame(tth = minerals$tth,
+                        counts = rep(1, length(minerals$tth)))
 
 # Make all values below tth = 5 have a weighting of 0
 weighting$counts[which(weighting$tth <= 5)] <- 0

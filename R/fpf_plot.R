@@ -11,22 +11,23 @@
 #' (in Angstroms). Changes x-axis to d-spacing.
 #'
 #' @examples
-#' # Load the Xpert library
-#' data(Xpert)
+#' # Load the minerals library
+#' data(minerals)
 #'
-#' # Load the Xpert soil data to use in example
-#' data(Xpert_soil)
+#' # Load the soils data
+#' data(soils)
 #'
 #' # define the phases to include in the fit
-#' xrd_phases <- c("Qzt.662070.Strath.12Mins.P", "Qzt.662074.Qua.10.P", "X996730.QUA.11.P")
+#' c_phases <- c("FEL.10.P.969175", "KAO.76.P.791169",
+#' "OLIG.5.P.969178", "QUA.10.P.1002643", "QUARTZ.STRATH.P.1142250")
 #'
-#' # without organic
 #' \dontrun{
-#' fpf_out <-  fpf(smpl = Xpert_soil$mineral,
-#'                lib = Xpert,
-#'                int.std = "Qzt.662070.Strath.12Mins.P",
-#'                phases = xrd_phases,
-#'                tth = c(4.5, 69.5))
+#' fpf_out <-  fpf(smpl = soils$sandstone,
+#'                lib = minerals,
+#'                tth = c(4.5, 69.5),
+#'                crystalline = c_phases,
+#'                std = "QUARTZ.STRATH.P.1142250",
+#'                amorphous = ORGANIC.bez.CRAIGLICHT.668085.DEEP)
 #' }
 #'
 #' # Plot data on 2theta scale

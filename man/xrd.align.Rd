@@ -35,14 +35,15 @@ between the 2 patterns. Appropriate choice of internal standard is required for
 accurate alignment.
 }
 \examples{
-data(D8_soil)
-data(D8)
+data(soils)
+data(minerals)
 
-#Create a quartz standard from the D8 library
-quartz <- data.frame(tth = D8$tth, counts = D8$xrd$QUARTZ.STRATH.P.1142250)
+#Create a quartz standard from the minerals library
+quartz <- data.frame(tth = minerals$tth,
+                     counts = minerals$xrd$QUARTZ.STRATH.P.1142250)
 
 #Create a soil XRPD pattern to align
-soil <- D8_soil$mineral
+soil <- soils$sandstone
 
 #Plot unaligned data. Note that rng.nm is used to normalise count intensities
 plot(x = quartz$tth, y = rng.nm(quartz$counts), xlim = c(26, 27), type = "l")

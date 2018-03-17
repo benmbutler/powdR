@@ -8,10 +8,10 @@
 #'
 #' @examples
 #' # Load soil xrd data
-#' data(D8_soil)
+#' data(soils)
 #'
-#' #Use second sample in list (mineral soil)
-#' xrd <- D8_soil[[2]]
+#' #Use sandstone sample
+#' xrd <- soils$sandstone
 #'
 #' xrd$d <- d.spacing(x = xrd$tth, wavelength = 1.5406)
 d.spacing <- function(x, wavelength) {

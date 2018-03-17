@@ -46,45 +46,44 @@
 #' \item{coefficients}{a named vector of coefficients used to produce the fitted pattern}
 #'
 #' @examples
-#' # Load the Xpert library
-#' data(Xpert)
+#' #Load the minerals library
+#' data(minerals)
 #'
-#' # Load the Xpert soil data to use in example
-#' data(Xpert_soil)
+#' # Load the soils data
+#' data(soils)
 #'
 #' # define the phases to include in the fit
-#' c_phases <- c("Qzt.662070.Strath.12Mins.P", "Qzt.662074.Qua.10.P", "X996730.QUA.11.P")
+#' c_phases <- c("FEL.10.P.969175", "KAO.76.P.791169",
+#' "OLIG.5.P.969178", "QUA.10.P.1002643", "QUARTZ.STRATH.P.1142250")
 #'
 #' # without organic
 #' \dontrun{
-#' fpf_out <-  fpf(smpl = Xpert_soil$mineral,
-#'                lib = Xpert,
-#'                tth = c(3.5, 69.5),
+#' fpf_out <-  fpf(smpl = soils$sandstone,
+#'                lib = minerals,
+#'                tth = c(4.5, 69.5),
 #'                crystalline = c_phases,
-#'                std = "Qzt.662070.Strath.12Mins.P")
+#'                std = "QUARTZ.STRATH.P.1142250")
 #' }
 #'
 #' # Try fitting the same sample, but including an amorphous phase (organic matter)
-#' o_phases <- c("ORGANIC.337666", "L.R.organic")
 #' \dontrun{
-#' fpf_out_org <-  fpf(smpl = Xpert_soil$mineral,
-#'                    lib = Xpert,
-#'                    tth = c(3.5, 69.5),
+#' fpf_out_org <-  fpf(smpl = soils$sandstone,
+#'                    lib = minerals,
+#'                    tth = c(4.5, 69.5),
 #'                    crystalline = c_phases,
-#'                    std = "Qzt.662070.Strath.12Mins.P",
-#'                    amorphous = o_phases)
+#'                    std = "QUARTZ.STRATH.P.1142250",
+#'                    amorphous = ORGANIC.bez.CRAIGLICHT.668085.DEEP)
 #' }
 #'
 #' # An example of using weighting
-#' weighting <- data.frame(tth = Xpert$tth,
-#'                         counts = rep(1, length(Xpert$tth)))
+#' weighting <- data.frame(tth = minerals$tth,
+#'                         counts = rep(1, length(minerals$tth)))
 #'
 #' # Make all values below tth = 5 have a weighting of 0
 #' weighting$counts[which(weighting$tth <= 5)] <- 0
 #'
 #' # Make all values between tth = 26 and 27 have a weighting of 2
 #' weighting$counts[which(weighting$tth >= 26 & weighting$tth <= 27)] <- 10
-
 fpf <- function(smpl, lib, crystalline, std, amorphous,
                 tth, align, solver, obj, shift, weighting) {
 

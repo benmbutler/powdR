@@ -10,10 +10,10 @@
 #'
 #' @examples
 #' # Load soil xrd data
-#' data(D8_soil)
+#' data(soils)
 #'
-#' #Use second sample in list (mineral soil)
-#' xrd <- D8_soil[[2]]
+#' #Use the sandstone soil
+#' xrd <- soils$sandstone
 #'
 #' xrd$counts <- mean.centre(xrd)
 mean.centre <- function(smpl) {

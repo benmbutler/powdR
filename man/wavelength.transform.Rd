@@ -25,9 +25,9 @@ measurements were made.
 }
 \examples{
 # Load soil xrd data
-data(D8_soil)
+data(soils)
 
-xrd <- D8_soil$mineral
+xrd <- soils$sandstone
 
 #This was measured using Cu radiation (wavelength = 1.54056 Angstroms),
 #and will be converted to Co radiation (wavelength = 1.78897 Angstroms)

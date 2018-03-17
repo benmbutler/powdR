@@ -16,12 +16,13 @@
 #' phases to the library}
 #'
 #' @examples
-#' data(D8_soil)
-#' data(D8_NSIS)
+#' data(soils)
+#' data(minerals)
 #'
-#' soil <- D8_soil$mineral
+#' soil <- soils$sandstone
 #'
-#' auto_select <- xrd.autoid(xrd.lib = D8_NSIS$xrd, xrd.sample = soil$counts, delta_lim = 1)
+#' auto_select <- xrd.autoid(xrd.lib = minerals$xrd, xrd.sample = soil$counts,
+#'                           delta_lim = 1)
 #' plot(auto_select$fit.error)
 xrd.autoid <- function(xrd.lib, xrd.sample, delta_lim) {
 

@@ -22,8 +22,8 @@ The original values within an XRPD dataframe (2theta and counts) which fall with
 given bin width are replaced by their means for that interval.
 }
 \examples{
-data(D8_soil)
+data(soils)
 
-xrd <- D8_soil$mineral
+xrd <- soils$sandstone
 binned <- xrd.bin(smpl = xrd, bin.size = 5)
 }
