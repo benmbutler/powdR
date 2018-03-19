@@ -27,7 +27,7 @@ xrd.bkg <- function(tth, counts, width, res) {
   counts_cut <- split(counts, ceiling(seq_along(counts)/width))
 
   #Extract the median and min values of these chunks
-  tth_cut_min <- unname(unlist(lapply(tth_cut, median)))
+  tth_cut_min <- unname(unlist(lapply(tth_cut, stats::median)))
   counts_cut_min <- unname(unlist(lapply(counts_cut, min)))
 
   #add the first and last data points of the original so that
@@ -36,10 +36,10 @@ xrd.bkg <- function(tth, counts, width, res) {
   counts_cut_min <- c(counts[1], counts_cut_min, counts[length(counts)])
 
   #local polynomial smoothing
-  bkg.loess <- loess(counts_cut_min ~ tth_cut_min, span = res)
+  bkg.loess <- stats::loess(counts_cut_min ~ tth_cut_min, span = res)
 
   #predict onto original tth resolution
-  bkg.out <- predict(bkg.loess, tth)
+  bkg.out <- stats::predict(bkg.loess, tth)
 
   return(bkg.out)
 }

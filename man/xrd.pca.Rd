@@ -32,7 +32,7 @@ and negative) 2theta shift that can be used during alignment}
 will be square root transformed}
 
 \item{normalise}{logical. If TRUE then all XRPD data will be mean centred using
-\code{mean.centre}}
+\code{mc}}
 }
 \value{
 a list with components:
@@ -48,5 +48,5 @@ XRPD subjected to various pre-treatment options.
 \details{
 Four pre-treament options are available. These include peak alignment using
 \code{multi.xrd.align}, binning using the \code{xrd.bin}, square root transform,
-and normalisation using \code{mean.centre}.
+and normalisation using \code{mc}.
 }

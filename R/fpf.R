@@ -72,7 +72,7 @@
 #'                    tth = c(4.5, 69.5),
 #'                    crystalline = c_phases,
 #'                    std = "QUARTZ.STRATH.P.1142250",
-#'                    amorphous = ORGANIC.bez.CRAIGLICHT.668085.DEEP)
+#'                    amorphous = "ORGANIC.bez.CRAIGLICHT.668085.DEEP")
 #' }
 #'
 #' # An example of using weighting
@@ -195,7 +195,7 @@ xrd_ref_names <- lib$minerals$min_id
 
 #Ensure that sample in the reference library are on the same scale as the sample
 lib$xrd <- data.frame(lapply(names(lib$xrd),
-                                       function(n) approx(x = lib$tth,
+                                       function(n) stats::approx(x = lib$tth,
                                                           y = unname(unlist(lib$xrd[n])),
                                                           xout = smpl_tth)[[2]]))
 
@@ -205,7 +205,7 @@ names(lib$xrd) <- xrd_ref_names
 lib$tth <- smpl_tth
 
 #adjust the weighting to the aligned 2theta scale
-weighting <- data.frame(approx(x = weighting[[1]], y = weighting[[2]], xout = lib$tth))
+weighting <- data.frame(stats::approx(x = weighting[[1]], y = weighting[[2]], xout = lib$tth))
 
 #### decrease 2TH scale to the range defined in the function call
 smpl <- smpl[which(smpl$tth >= tth[[1]] & smpl[[1]] <= tth[2]), ]
@@ -242,7 +242,7 @@ if (is.vector(lib$xrd)) {
 x <- rep(0, ncol(lib$xrd))
 names(x) <- names(lib$xrd)
 
-o <- optim(par = x, fullpat,
+o <- stats::optim(par = x, fullpat,
            method = solver, pure.patterns = lib$xrd,
            sample.pattern = smpl[, 2], obj = obj, weighting = weighting)
 
@@ -264,7 +264,7 @@ weighting <- fpf_aligned[["weighting"]]
 
 #Re-optimise after shifts
 
-o <- optim(par = o$par, fullpat,
+o <- stats::optim(par = o$par, fullpat,
            method = solver, pure.patterns = lib$xrd,
            sample.pattern = smpl[, 2], obj = obj, weighting = weighting)
 
@@ -279,7 +279,7 @@ if(length(amorphous) > 0) {
   amorphous_counts2 <- list()
 
   for (i in 1:ncol(amorphous_counts)) {
-  amorphous_counts2[[i]] <- approx(x = amorphous_tth, y = amorphous_counts[[i]],
+  amorphous_counts2[[i]] <- stats::approx(x = amorphous_tth, y = amorphous_counts[[i]],
                               method = "linear", xout = lib$tth)[[2]]
   names(amorphous_counts2)[i] <- names(amorphous_counts)[i]
   }
@@ -301,7 +301,7 @@ if(length(amorphous) > 0) {
   x <- c(x, xa)
 
   #reoptimise
-  o <- optim(par = x, fullpat,
+  o <- stats::optim(par = x, fullpat,
              method = solver, pure.patterns = lib$xrd,
              sample.pattern = smpl[, 2], obj = obj, weighting = weighting)
 }
@@ -326,7 +326,7 @@ while (negpar < 0) {
     x <- x[-omit]
   }
 
-  o <- optim(par = x, fullpat,
+  o <- stats::optim(par = x, fullpat,
              method = solver, pure.patterns = lib$xrd,
              sample.pattern = smpl[, 2], obj = obj, weighting = weighting)
   x <- o$par
@@ -340,7 +340,7 @@ fitted_pattern <- apply(sweep(as.matrix(lib$xrd), 2, x, "*"), 1, sum)
 resid_x <- smpl[, 2] - fitted_pattern
 
 #compute grouped mineral concentrations
-min_concs <- min.conc(x = x, xrd.lib = lib)
+min_concs <- qminerals(x = x, xrd.lib = lib)
 
 df <- min_concs[[1]]
 dfs <- min_concs[[2]]

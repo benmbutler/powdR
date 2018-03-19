@@ -93,7 +93,7 @@ fpf_out_org <-  fpf(smpl = soils$sandstone,
                    tth = c(4.5, 69.5),
                    crystalline = c_phases,
                    std = "QUARTZ.STRATH.P.1142250",
-                   amorphous = ORGANIC.bez.CRAIGLICHT.668085.DEEP)
+                   amorphous = "ORGANIC.bez.CRAIGLICHT.668085.DEEP")
 }
 
 # An example of using weighting

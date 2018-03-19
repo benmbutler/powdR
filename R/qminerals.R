@@ -1,14 +1,14 @@
-#' Calculate mineral concentrations from optimised parameters and reference
+#' Quanity mineral concentrations from optimised parameters and reference
 #' intensity ratios
 #'
-#' \code{min.conc} returns a two dataframes detailing the mineral concentrations
+#' \code{qminerals} returns a two dataframes detailing the mineral concentrations
 #' within a sample analysed by XRPD. \code{min.conc} is used within the \code{fpf}
 #' and \code{auto.fpf} functions.
 #'
 #' @param x a named vector of optimised parameters from \code{fullpat}
 #' @param xrd.lib an xrd library containing the reference intensity ratios,
 #' mineral id's and mineral names
-min.conc <- function(x, xrd.lib) {
+qminerals <- function(x, xrd.lib) {
 
   #Make sure x is ordered if there are more than 1 phases in the library
   if (length(x) > 1) {
@@ -31,11 +31,12 @@ min.conc <- function(x, xrd.lib) {
 
   df <- data.frame(minerals, "min_percent" = min_percent)
 
-  #group the data by mineral name (e.g. quartz or chlorite)
-  dfg <- dplyr::group_by(df, min_name)
+  dfs_mean_rir <- stats::aggregate(rir ~ min_name, data = df, FUN = mean)
+  dfs_total_min <- stats::aggregate(min_percent ~ min_name, data = df, FUN = sum)
 
-  #Summarise to get the total mineral concentration of each mineral
-  dfs <- dplyr::summarise(dfg, total_min = round(sum(min_percent),2), mean_rir = mean(rir))
+  dfs <- data.frame("min_name" = dfs_mean_rir$min_name,
+                    "total_min" = round(dfs_total_min$min_percent, 2),
+                    "mean_rir" = round(dfs_mean_rir$rir, 2))
 
   out <- list("df" = df, "dfs" = dfs)
 

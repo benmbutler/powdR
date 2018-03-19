@@ -10,14 +10,16 @@ fpf.align(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weights,
 \arguments{
 \item{sample.tth}{a vector of 2theta measurement intervals}
 
+\item{sample.counts}{a vector of count intensities}
+
 \item{xrd.lib}{a library of reference xrd patterns}
 
 \item{fpf_shift}{the maximum shift that can be applied}
 
+\item{pure.weights}{a named vector of optimised parameters for full pattern fitting}
+
 \item{weighting}{a dataframe specifying the weighting that
 can be used to emphasise different 2theta regions}
-
-\item{counts}{a vector of counts}
 }
 \description{
 \code{fpf.align} applies small 2theta shifts during full pattern

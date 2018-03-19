@@ -5,7 +5,7 @@
 #'
 #' Four pre-treament options are available. These include peak alignment using
 #' \code{multi.xrd.align}, binning using the \code{xrd.bin}, square root transform,
-#' and normalisation using \code{mean.centre}.
+#' and normalisation using \code{mc}.
 #'
 #' @param xrd a list of XRPD dataframe (2theta and counts)
 #' @param align logical. If TRUE then alignment will be applied
@@ -22,7 +22,7 @@
 #' @param square.root logical. If TRUE then the count intensities of all XRPD data
 #' will be square root transformed
 #' @param normalise logical. If TRUE then all XRPD data will be mean centred using
-#' \code{mean.centre}
+#' \code{mc}
 #'
 #' @return a list with components:
 #' \item{pca}{a dataframe of PCA scores}
@@ -90,7 +90,7 @@ xrd.pca <- function(xrd, align, align.standard, align.xmin, align.xmax, align.xs
   }
 
   if (normalise == TRUE) {
-    xrd <- lapply(xrd, mean.centre)
+    xrd <- lapply(xrd, mc)
   }
 
   xrpd_m <- matrix(nrow = length(xrd), ncol = nrow(xrd[[1]]))
@@ -107,10 +107,10 @@ xrd.pca <- function(xrd, align, align.standard, align.xmin, align.xmax, align.xs
   sample_id <- names(xrd)
 
   #PCA of this data
-  xrpd_pca <- prcomp(xrpd_m[,c(1:ncol(xrpd_m))])
+  xrpd_pca <- stats::prcomp(xrpd_m[,c(1:ncol(xrpd_m))])
 
   #Extract the cumulative variance explained by all principal components
-  pca_var <- apply(xrpd_pca$x, 2, var)
+  pca_var <- apply(xrpd_pca$x, 2, stats::var)
   props <- pca_var / sum(pca_var)
   xrpd_cum_prop <- cumsum(props)
 

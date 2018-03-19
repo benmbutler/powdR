@@ -11,7 +11,7 @@ Authors@R: c(
 Maintainer: Benjamin Butler <benjamin.butler@hutton.ac.uk>
 Description: The powdR package provides a range of tools applicable to X-ray powder diffraction
     (XRPD) data. Functionality ranges from peak alignment to full pattern fitting.
-License: What license is it under?
+License: GPL-2 | file LICENSE
 URL: http://github.com/benmbutler/powdR
 BugReports: http://github.com/benmbutler/powdR/issues
 Depends:
@@ -23,7 +23,8 @@ Imports:
   reshape (>= 0.8.6),
   plotly (>= 4.7.1),
   e1071 (>= 1.6),
-  NISTunits (>= 1.0.1)
+  NISTunits (>= 1.0.1),
+  ggplot2 (>= 2.2.1),
+  stats (>= 3.4.3)
 Suggests:
-  testthat
 RoxygenNote: 6.0.1

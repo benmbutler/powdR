@@ -205,7 +205,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
   #Ensure that sample in the reference library are on the same scale as the sample
 
   lib$xrd <- data.frame(lapply(names(lib$xrd),
-                                       function(n) approx(x = lib$tth,
+                                       function(n) stats::approx(x = lib$tth,
                                                           y = unname(unlist(lib$xrd[n])),
                                                           xout = smpl_tth)[[2]]))
 
@@ -219,7 +219,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
   lib_length <- nrow(lib$minerals)
 
   #adjust the weighting to the aligned 2theta scale
-  weighting <- data.frame(approx(x = weighting$tth, y = weighting$counts, xout = lib$tth))
+  weighting <- data.frame(stats::approx(x = weighting$tth, y = weighting$counts, xout = lib$tth))
 
   #### decrease 2TH scale to the range defined in the function call
   smpl <- smpl[which(smpl[[1]] >= tth[1] & smpl[[1]] <= tth[2]), ]
@@ -251,7 +251,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
 
   #Removing library patterns that have a standard deviation of 0
 
-  flat_ref <- which(unlist(lapply(lib$xrd, sd)) == 0)
+  flat_ref <- which(unlist(lapply(lib$xrd, stats::sd)) == 0)
   if(length(flat_ref) > 0) {
     lib$xrd <- lib$xrd[, -flat_ref]
     lib$minerals <- lib$minerals[-flat_ref, ]
@@ -268,7 +268,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
   #OPTIMISATION
 
   #optimise using objective function rather than qr.solve
-  o <- optim(par = x, fullpat,
+  o <- stats::optim(par = x, fullpat,
              method = solver, pure.patterns = lib$xrd,
              sample.pattern = smpl[, 2], obj = obj, weighting = weighting)
 
@@ -291,7 +291,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
 
     #Re-optimise after shifts
 
-    o <- optim(par = o$par, fullpat,
+    o <- stats::optim(par = o$par, fullpat,
                method = solver, pure.patterns = lib$xrd,
                sample.pattern = smpl[, 2], obj = obj, weighting = weighting)
   }
@@ -307,7 +307,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
     amorphous_counts2 <- list()
 
     for (i in 1:ncol(amorphous_counts)) {
-      amorphous_counts2[[i]] <- approx(x = amorphous_tth, y = amorphous_counts[[i]],
+      amorphous_counts2[[i]] <- stats::approx(x = amorphous_tth, y = amorphous_counts[[i]],
                                        method = "linear", xout = lib$tth)[[2]]
       names(amorphous_counts2)[i] <- names(amorphous_counts)[i]
     }
@@ -321,7 +321,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
 
     x <- c(x, xa)
 
-    o <- optim(par = x, fullpat,
+    o <- stats::optim(par = x, fullpat,
                method = solver, control = list(), pure.patterns = lib$xrd,
                sample.pattern = smpl[,2], obj = obj, weighting = weighting)
   }
@@ -349,7 +349,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
       x <- x[-remove_index]
     }
 
-    o <- optim(par = x, fullpat,
+    o <- stats::optim(par = x, fullpat,
                method = solver, pure.patterns = lib$xrd,
                sample.pattern = smpl[,2], obj = obj, weighting = weighting)
     x <- o$par
@@ -371,7 +371,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
         x <- x[-remove_index]
       }
 
-      o <- optim(par = x, fullpat,
+      o <- stats::optim(par = x, fullpat,
                  method = solver, pure.patterns = lib$xrd,
                  sample.pattern = smpl[,2], obj = obj, weighting = weighting)
       x <- o$par
@@ -426,7 +426,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
 
 
   #Re-optimise now that phases below detection limit have been removed
-  o <- optim(par = x, fullpat,
+  o <- stats::optim(par = x, fullpat,
              method = solver, control = list(), pure.patterns = lib$xrd,
              sample.pattern = smpl[,2], obj = obj, weighting = weighting)
 
@@ -439,7 +439,7 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
 
   #Calculate mineral concentrations after amorphous phase was added
 
-  min_concs <- min.conc(x = x, xrd.lib = lib)
+  min_concs <- qminerals(x = x, xrd.lib = lib)
 
   df <- min_concs[[1]]
   dfs <- min_concs[[2]]
@@ -462,12 +462,12 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
 
       #reoptimise
 
-      o <- optim(par = x, fullpat,
+      o <- stats::optim(par = x, fullpat,
                  method = solver, control = list(), pure.patterns = lib$xrd,
                  sample.pattern = smpl[,2], obj = obj, weighting = weighting)
       x <- o$par
 
-      min_concs <- min.conc(x = x, xrd.lib = lib)
+      min_concs <- qminerals(x = x, xrd.lib = lib)
       df <- min_concs[[1]]
       dfs <- min_concs[[2]]
 

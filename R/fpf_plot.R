@@ -80,15 +80,15 @@ fpf.plot <- function(x, d, wavelength) {
     #and plot
   g1 <- ggplot2::ggplot() +
     ggplot2::geom_line(data = measured,
-              ggplot2::aes(x = d, y = Measured, color = "Measured"), size = 0.35, linetype = "dotted") +
+              ggplot2::aes_(x = ~d, y = ~Measured, color = "Measured"), size = 0.35, linetype = "dotted") +
     ggplot2::geom_line(data = pure_patterns_long,
-              ggplot2::aes(x = d, y = value, color = variable), size = 0.15) +
+              ggplot2::aes_(x = ~d, y = ~value, color = ~variable), size = 0.15) +
     ggplot2::scale_x_reverse() +
     ggplot2::theme(legend.title = ggplot2::element_blank())
 
   g2 <- ggplot2::ggplot() +
     ggplot2::geom_line(data = resids,
-              ggplot2::aes(x = d, y = Residuals, color = "Residuals"), size = 0.15) +
+              ggplot2::aes_(x = ~d, y = ~Residuals, color = "Residuals"), size = 0.15) +
     ggplot2::scale_colour_manual(name = "",
                         values = c("Residuals" = "blue")) +
     ggplot2::scale_x_reverse()
@@ -97,14 +97,14 @@ fpf.plot <- function(x, d, wavelength) {
 else {
   g1 <- ggplot2::ggplot() +
     ggplot2::geom_line(data = measured,
-                       ggplot2::aes(x = tth, y = Measured, color = "Measured"), size = 0.35, linetype = "dotted") +
+                       ggplot2::aes_(x = ~tth, y = ~Measured, color = "Measured"), size = 0.35, linetype = "dotted") +
     ggplot2::geom_line(data = pure_patterns_long,
-                       ggplot2::aes(x = tth, y = value, color = variable), size = 0.15) +
+                       ggplot2::aes_(x = ~tth, y = ~value, color = ~variable), size = 0.15) +
     ggplot2::theme(legend.title = ggplot2::element_blank())
 
   g2 <- ggplot2::ggplot() +
     ggplot2::geom_line(data = resids,
-                       ggplot2::aes(x = tth, y = Residuals, color = "Residuals"), size = 0.15) +
+                       ggplot2::aes_(x = ~tth, y = ~Residuals, color = "Residuals"), size = 0.15) +
     ggplot2::scale_colour_manual(name = "",
                                  values = c("Residuals" = "blue"))
 }

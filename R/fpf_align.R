@@ -4,9 +4,10 @@
 #' fitting to enhance alignment of the selected mineral phases.
 #'
 #' @param sample.tth a vector of 2theta measurement intervals
-#' @param counts a vector of counts
+#' @param sample.counts a vector of count intensities
 #' @param xrd.lib a library of reference xrd patterns
 #' @param fpf_shift the maximum shift that can be applied
+#' @param pure.weights a named vector of optimised parameters for full pattern fitting
 #' @param weighting a dataframe specifying the weighting that
 #' can be used to emphasise different 2theta regions
 fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weights, weighting) {
@@ -15,10 +16,10 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
   pure.patterns <- list()
 
   #Create a new sample pattern with 4 times the resolution of the original
-  sample.pattern <- data.frame(approx(x = sample.tth, y = sample.counts,
+  sample.pattern <- data.frame(stats::approx(x = sample.tth, y = sample.counts,
                                       method = "linear", n = length(sample.tth) * 4))
   #new weighting with 4 times the resolution
-  weighting <- data.frame(approx(x = weighting[,1], y = weighting[,2],
+  weighting <- data.frame(stats::approx(x = weighting[,1], y = weighting[,2],
                                  method = "linear", n = length(sample.tth) * 4))
 
   TTH_long <- sample.pattern[[1]]
@@ -26,7 +27,7 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
 
   #Do the same for all data in the reference library
   for (i in 1:ncol(xrd.lib$xrd)) {
-    pure.patterns[[i]] <- approx(x = xrd.lib$tth, y = xrd.lib$xrd[, i],
+    pure.patterns[[i]] <- stats::approx(x = xrd.lib$tth, y = xrd.lib$xrd[, i],
                                  method = "linear", n = nrow(xrd.lib$xrd) * 4)[[2]]
   }
 
@@ -109,7 +110,7 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
 
   #re-approximate the reference library
   for (i in 1:ncol(vs)) {
-    vs_short[[i]] <- approx(x = 1:nrow(vs), y = vs[ , i], method = "linear", n = (nrow(vs) / 4))[[2]]
+    vs_short[[i]] <- stats::approx(x = 1:nrow(vs), y = vs[ , i], method = "linear", n = (nrow(vs) / 4))[[2]]
   }
   #Convert from list to data frame to matrix
 
@@ -124,13 +125,13 @@ if (length(vs_short) == 1) {
 }
 
   #reapproximate the sample
-  sample.pattern <- approx(x = TTH_long, y = sample_long, method = "linear", n = (nrow(vs) / 4))[[2]]
+  sample.pattern <- stats::approx(x = TTH_long, y = sample_long, method = "linear", n = (nrow(vs) / 4))[[2]]
 
   #reapproximate the 2theta
-  TTH_short <- approx(x = TTH_long, y = vs[, 1], method = "linear", n = (nrow(vs) / 4))[[1]]
+  TTH_short <- stats::approx(x = TTH_long, y = vs[, 1], method = "linear", n = (nrow(vs) / 4))[[1]]
 
   #reapproximate the weighting
-  weighting <- data.frame(approx(x = weighting[,1], y = weighting[,2], method = "linear", n = (nrow(vs) / 4)))
+  weighting <- data.frame(stats::approx(x = weighting[,1], y = weighting[,2], method = "linear", n = (nrow(vs) / 4)))
 
   vs <- vs_short
   TTH <- TTH_short

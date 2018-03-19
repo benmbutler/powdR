@@ -1,6 +1,6 @@
 #' Mean centre XRPD data
 #'
-#' \code{mean.centre} takes XRPD data (2theta and counts) and
+#' \code{mc} takes XRPD data (2theta and counts) and
 #' mean centres it by subtracting the mean count intensity from
 #' each measurement interval in the counts vector. This can act
 #' as a form of data normalisation that may be useful when
@@ -15,8 +15,8 @@
 #' #Use the sandstone soil
 #' xrd <- soils$sandstone
 #'
-#' xrd$counts <- mean.centre(xrd)
-mean.centre <- function(smpl) {
+#' xrd$counts <- mc(xrd)
+mc <- function(smpl) {
 
   smpl[[2]] <- smpl[[2]] - mean(smpl[[2]])
 

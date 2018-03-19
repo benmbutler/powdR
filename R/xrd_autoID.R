@@ -41,7 +41,7 @@ xrd.autoid <- function(xrd.lib, xrd.sample, delta_lim) {
   while (delta > delta_lim) {
 
     cor_v <- as.numeric(lapply(names(xrd.lib),
-                               function(x) cor(xrd.lib[x], resid_x)))
+                               function(x) stats::cor(xrd.lib[x], resid_x)))
 
     #identify the phase with maximum correlation
     cor_max <- which.max(cor_v)

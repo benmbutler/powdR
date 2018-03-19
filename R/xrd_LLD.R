@@ -48,12 +48,12 @@ xrd.lld <- function(x, xrd.sample, xrd.lib, int_std, lld) {
                    "min_pc" = as.numeric(min_percent),
                    "rir" = as.numeric(rir))
 
-  #group the data by mineral name (for cases that different library patterns for a single
-  #mineral are included)
-  dfg <- dplyr::group_by(df, min_name)
+  dfs_mean_rir <- stats::aggregate(rir ~ min_name, data = df, FUN = mean)
+  dfs_total_min <- stats::aggregate(min_percent ~ min_name, data = df, FUN = sum)
 
-  #summarise the grouped data
-  dfs <- dplyr::summarise(dfg, total_min = round(sum(min_pc),2), mean_rir = round(mean(rir),2))
+  dfs <- data.frame("min_name" = dfs_mean_rir$min_name,
+                    "total_min" = round(dfs_total_min$min_percent, 2),
+                    "mean_rir" = round(dfs_mean_rir$rir, 2))
 
   #To compute LDD using full patterns, the background signal has to be estimated,
   #this is done using the bkg function I've written
@@ -92,7 +92,7 @@ xrd.lld <- function(x, xrd.sample, xrd.lib, int_std, lld) {
   int_std_counts <- sum(int_std_fit)
 
   #Get the total internal standard percentage currently optimised
-  int_std_pc <- sum(dfg$min_pc[which(dfg$min_name == int_std_name)])
+  int_std_pc <- sum(df$min_pc[which(df$min_name == int_std_name)])
 
   if (int_std_pc < 5) {
     warning("The internal standard is estimated to be lower than 5 wt.% within the sample, which may hinder
@@ -117,15 +117,15 @@ xrd.lld <- function(x, xrd.sample, xrd.lib, int_std, lld) {
   int_std_rir <- sum(int_std_rir * int_std_min_weight)
 
   #Then calculate the lld
-  mineral_lld <- int_std_lld * (dfg$rir
+  mineral_lld <- int_std_lld * (df$rir
                                 /int_std_rir)^-1
 
-  names(mineral_lld) <- as.character(dfg$min_name)
+  names(mineral_lld) <- as.character(df$min_name)
 
-  dfg$lld <- as.numeric(mineral_lld)
+  df$lld <- as.numeric(mineral_lld)
 
   #Get the index values of phases that are below lld or named "Background"
-  remove_index <- which(dfg$min_pc < (dfg$lld*lld))
+  remove_index <- which(df$min_pc < (df$lld*lld))
 
   #This only runs when there are cases to remove
   if(length(remove_index) > 0) {
