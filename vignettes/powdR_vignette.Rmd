@@ -1,0 +1,172 @@
+---
+title: "powdR: Tools for digital mineralogy"
+author: "Benjamin Butler"
+date: "`r Sys.Date()`"
+output:
+      rmarkdown::html_vignette:
+        fig_caption: yes
+        fig_width: 9
+        fig_height: 6
+vignette: >
+  %\VignetteIndexEntry{powdR: Tools for digital mineralogy}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+`powdR` contains a range of functions for manipulation and analysis of X-ray powder diffraction (XRPD) data. In particular, the functions `fpf` and `auto.fpf` apply full pattern fitting to XRPD data for quantitative mineralogy. This full pattern fitting approach is particularly suitable for samples involving disordered or amorphous phases (e.g. clay minerals and organic matter in soil).
+
+## Peak alignment
+
+A common experimental aberration of XRPD measurements relates to the small shifts in peak alignment that arise due to sample displacement and transparency. Here, three unaligned soil XRPD measurements are used to illustrate these small shifts.
+
+```{r, fig.show='hold', fig.cap = "Figure 1: Unaligned data. Zoom in upon the major peak at 2theta = 25.5 to view the misalignment. Note that all 3 patterns have have had their count intensities normalised using the rng.nm function. ",message = FALSE, warning = FALSE}
+library(plotly)
+library(powdR)
+
+data(soils)
+
+plot(x = soils$sandstone$tth, y = rng.nm(soils$sandstone$counts),
+     xlim = c(25.5, 27.5), xlab = expression(paste("2", theta)),
+     ylab = "rng.nm(Counts)", lwd = 1, type = "l", col = "blue")
+lines(x = soils$limestone$tth, y = rng.nm(soils$limestone$counts),
+      col = "green")
+lines(x = soils$granite$tth, y = rng.nm(soils$granite$counts),
+      col = "red")
+```
+
+The `powdR` package has two alignment functions that apply a simple linear shift to the data to align samples to a chosen standard:
+
+- `xrd.align`
+- `multi.xrd.align`
+
+## `xrd.align`
+
+The `xrd.align` function takes a single XRPD measurement and aligns it relative to a chosen standard. The chosen standard should be a mineral with strong diffracting power. For the case of soils, quartz is usually used.
+
+```{r, fig.show='hold', fig.cap = "**Figure 2:** Use of `xrd.align` to align an XRPD measurement to a quartz standard.", message = FALSE, warning = FALSE}
+data(minerals)
+
+#create a quartz pattern from the minerals library
+quartz <- data.frame(tth = minerals$tth, counts = minerals$xrd$QUA.1)
+
+#align the sandstone pattern relative to the quartz standard
+sandstone_a <- xrd.align(xrd.sample = soils$sandstone, xrd.standard = quartz,
+                         xmin = 10, xmax = 60, xshift = 0.2)
+
+#print the shift applied to the sandstone data
+sandstone_a[[1]]
+
+#plot
+plot(x = soils$sandstone$tth, y = rng.nm(soils$sandstone$counts),
+     xlim = c(25.5, 27.5), xlab = expression(paste("2", theta)),
+     ylab = "rng.nm(Counts)", lwd = 1, type = "l", col = "grey")
+lines(x = quartz$tth, y = rng.nm(quartz$counts),
+      col = "green")
+lines(x = sandstone_a$aligned$tth, y = rng.nm(sandstone_a$aligned$counts),
+      col = "red")
+```
+
+## `multi.xrd.align`
+The `xrd.align` function results in an XRPD data frame that is slightly shorter than the original measurement. The extent of shortening depends on the extent of shifting. When applying alignment to multiple XRPD measurements, this can result in data of differing lengths. The `multi.xrd.align` function accounts for these differences in length, and harmonises all alignments to the same 2theta scale which can aid with any subsequent analysis.
+
+```{r, fig.show='hold', fig.cap = "**Figure 3:** The resulting aligned data after use of `multi.xrd.align` to align three XRPD measurements to a quartz standard.", message = FALSE, warning = FALSE}
+#align the sandstone pattern relative to the quartz standard
+multi_a <- multi.xrd.align(xrd = soils, xrd.standard = quartz, xmin = 10,
+                               xmax = 60, xshift = 0.2)
+
+#plot
+plot(x = multi_a$sandstone$tth, y = rng.nm(multi_a$sandstone$counts),
+     xlim = c(25.5, 27.5), xlab = expression(paste("2", theta)),
+     ylab = "rng.nm(Counts)", lwd = 1, type = "l", col = "blue")
+lines(x = multi_a$limestone$tth, y = rng.nm(multi_a$limestone$counts),
+      col = "green")
+lines(x = multi_a$granite$tth, y = rng.nm(multi_a$granite$counts),
+      col = "red")
+
+```
+
+## Full pattern fitting
+A powerful property of XRPD data is that it can provide quantitative estimates of mineral concentrations. Though several methods are available for quantitative mineralogy, here we focus upon full pattern fitting, which is particularly suitable for mineral mixtures containing disordered and amorphous phase. A prime example of such mixtures is soil, where clay minerals represent disordered phases, and organic matter is present as a common X-ray amorphous constituent.
+
+Full pattern fitting is based on the principle that XRPD data is the summation of signals from individual components. The following example will illustrate this by applying the `fpf` function to a soil derived from sandstone. When using  `fpf` and `auto.fpf`, a library of pure standards is required. Phases from the library are selected and their relative contributions optimised until appropriate fit of the observed pattern is achieved. The method is therefore reliant upon a comprehensive library of reference patterns. The method implemented in `powdR` does not use an internal standard, and therefore the mineral assemblage must sum to 100 %.
+
+## `fpf`
+In this example the full pattern fitting process using `fpf` will start by using a single quartz phase, and examining the residuals of the fit.
+
+```{r, fig.show='hold', fig.cap = "**Figure 4:** The resulting full pattern fit on a sandstone soil when `fpf` is applied using a single quartz reference pattern. The top plot displays the measured and fitted pattern, and the bottom plots displays the residuals.", message = FALSE, warning = FALSE}
+#Apply fpf to the sandstone sample, with quartz as the only mineral
+fit <- fpf(smpl = soils$sandstone,
+           lib = minerals,
+           tth = c(4.5, 69.5),
+           crystalline = "QUA.1",
+           std = "QUA.1")
+
+#plot the data to interpret the fit
+fpf.plot(fit)
+```
+
+In this case, the fitted pattern consistently overestimates the quartz peak intensities compared to the measured pattern, but underestimates the background contribution. This can occur when X-ray amorphous phases are present within the sample. The Account for this, an organic matter phase from the reference library will be added, and the fit recomputed.
+
+```{r, fig.show='hold', fig.cap = "**Figure 5:** The resulting full pattern fit on a sandstone soil when `fpf` is applied using reference patterns from quartz and organic matter.", message = FALSE, warning = FALSE}
+#Apply fpf to the sandstone sample, with quartz as the only mineral
+
+fit <- fpf(smpl = soils$sandstone,
+           lib = minerals,
+           tth = c(4.5, 69.5),
+           crystalline = "QUA.1",
+           std = "QUA.1",
+           amorphous = "ORG")
+
+#plot the data to interpret the fit
+fpf.plot(fit)
+```
+
+Now the fit is much improved, highlighting how organic matter is an important component of this pattern. Based on the residuals now, there is a notable peak at 12.3 degrees 2theta, which is often associated with Kaolinite. There are also numerous peaks either side of the main quartz peak at 26.6 degrees 2theta, which are often coincident with feldspar minerals. The next fit will include therefore add kaolinite, plagioclase and potassium feldspar to the process.
+
+```{r, fig.show='hold', fig.cap = "**Figure 6:** The resulting full pattern fit on a sandstone soil when `fpf` is applied using reference patterns from quartz (2 different standards), kaolinite, plagioclase, K-feldspar and organic matter", message = FALSE, warning = FALSE}
+#Apply fpf to the sandstone sample, with quartz as the only mineral
+
+fit <- fpf(smpl = soils$sandstone,
+           lib = minerals,
+           tth = c(4.5, 69.5),
+           crystalline = c("QUA.1",
+                           "QUA.2",
+                           "KAO",
+                           "FEL",
+                           "OLI"),
+           std = "QUA.1",
+           amorphous = "ORG")
+
+#plot the data to interpret the fit
+fpf.plot(fit)
+```
+
+When including all these phases, pretty much all peaks are accounted for. Once the user is satisfied that an appropriate fit has been achieved, the mineral concentrations can be extracted and interpreted by looking at two elements of the output from `fpf`:
+
+- `fit$minerals`
+- `fit$minerals_summary`
+
+```{r}
+#returns individual contributions from each reference pattern
+fit$minerals
+
+#returns summed contributions from each mineral
+fit$minerals_summary
+```
+
+## `auto.fpf`
+As may be obvious from the previous example, the manual identification of minerals in a sample can be time consuming and often require expert input. Given that XRPD datasets can now easily contain hundreds or thousands of measurements, there is a pressing need for automation of the process. The `auto.fpf` function therefore seeks to automate the full pattern fitting process. A pre-requisite for this approach is reproduicble XRPD data, and a comprehensive reference library that covers all crystalline and amorphous phases that may be present in the samples.
+
+`auto.fpf` is computationally intensive, and can take several minutes to run. The computing time, however, is considerably faster than current Excel-based implementations of full pattern fitting, and has the added benefit of reducing the time consuming step of mineral identification. The following example will again use the sandstone soil.
+
+Also a quote using `>`:
+
+> "He who gives up [code] safety for [code] speed deserves neither."
+([via](https://twitter.com/hadleywickham/status/504368538874703872))

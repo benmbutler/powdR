@@ -18,16 +18,16 @@
 #' data(soils)
 #'
 #' # define the phases to include in the fit
-#' c_phases <- c("FEL.10.P.969175", "KAO.76.P.791169",
-#' "OLIG.5.P.969178", "QUA.10.P.1002643", "QUARTZ.STRATH.P.1142250")
+#' c_phases <- c("FEL", "KAO",
+#' "OLI", "QUA.1", "QUA.2")
 #'
 #' \dontrun{
 #' fpf_out <-  fpf(smpl = soils$sandstone,
 #'                lib = minerals,
 #'                tth = c(4.5, 69.5),
 #'                crystalline = c_phases,
-#'                std = "QUARTZ.STRATH.P.1142250",
-#'                amorphous = ORGANIC.bez.CRAIGLICHT.668085.DEEP)
+#'                std = "QUA.1",
+#'                amorphous = "ORG")
 #' }
 #'
 #' # Plot data on 2theta scale
@@ -84,6 +84,8 @@ fpf.plot <- function(x, d, wavelength) {
     ggplot2::geom_line(data = pure_patterns_long,
               ggplot2::aes_(x = ~d, y = ~value, color = ~variable), size = 0.15) +
     ggplot2::scale_x_reverse() +
+    ggplot2::ylab("Counts") +
+    ggplot2::xlab("2theta") +
     ggplot2::theme(legend.title = ggplot2::element_blank())
 
   g2 <- ggplot2::ggplot() +
@@ -91,6 +93,8 @@ fpf.plot <- function(x, d, wavelength) {
               ggplot2::aes_(x = ~d, y = ~Residuals, color = "Residuals"), size = 0.15) +
     ggplot2::scale_colour_manual(name = "",
                         values = c("Residuals" = "blue")) +
+    ggplot2::ylab("Counts") +
+    ggplot2::xlab("2theta") +
     ggplot2::scale_x_reverse()
   }
 #If d is false then just plot a normal 2theta graph
@@ -100,11 +104,15 @@ else {
                        ggplot2::aes_(x = ~tth, y = ~Measured, color = "Measured"), size = 0.35, linetype = "dotted") +
     ggplot2::geom_line(data = pure_patterns_long,
                        ggplot2::aes_(x = ~tth, y = ~value, color = ~variable), size = 0.15) +
+    ggplot2::ylab("Counts") +
+    ggplot2::xlab("2theta")
     ggplot2::theme(legend.title = ggplot2::element_blank())
 
   g2 <- ggplot2::ggplot() +
     ggplot2::geom_line(data = resids,
                        ggplot2::aes_(x = ~tth, y = ~Residuals, color = "Residuals"), size = 0.15) +
+    ggplot2::ylab("Counts") +
+    ggplot2::xlab("2theta") +
     ggplot2::scale_colour_manual(name = "",
                                  values = c("Residuals" = "blue"))
 }

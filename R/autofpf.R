@@ -57,15 +57,15 @@
 #' fpf_out <- auto.fpf(smpl = soils$sandstone,
 #'                     lib = minerals,
 #'                     tth = c(4.5, 69.5),
-#'                     std = "QUARTZ.STRATH.P.1142250")
+#'                     std = "QUA.1")
 #' }
 #' #automated with an amorphous phase (organic matter)
 #' \dontrun{
 #' fpf_out_org <- auto.fpf(smpl = soils$sandstone,
 #'                     lib = minerals,
 #'                     tth = c(4.5, 69.5),
-#'                     std = "QUARTZ.STRATH.P.1142250",
-#'                     amorphous = "ORGANIC.bez.CRAIGLICHT.668085.DEEP")
+#'                     std = "QUA.1",
+#'                     amorphous = "ORG")
 #' }
 #' # An example of using weighting
 #' weighting <- data.frame(tth = minerals$tth,

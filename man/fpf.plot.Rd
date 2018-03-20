@@ -29,16 +29,16 @@ data(minerals)
 data(soils)
 
 # define the phases to include in the fit
-c_phases <- c("FEL.10.P.969175", "KAO.76.P.791169",
-"OLIG.5.P.969178", "QUA.10.P.1002643", "QUARTZ.STRATH.P.1142250")
+c_phases <- c("FEL", "KAO",
+"OLI", "QUA.1", "QUA.2")
 
 \dontrun{
 fpf_out <-  fpf(smpl = soils$sandstone,
                lib = minerals,
                tth = c(4.5, 69.5),
                crystalline = c_phases,
-               std = "QUARTZ.STRATH.P.1142250",
-               amorphous = ORGANIC.bez.CRAIGLICHT.668085.DEEP)
+               std = "QUA.1",
+               amorphous = "ORG")
 }
 
 # Plot data on 2theta scale

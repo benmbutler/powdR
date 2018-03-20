@@ -24,7 +24,7 @@
 #'
 #' #Create a standard quartz pattern to align to
 #' quartz <- data.frame(tth = minerals$tth,
-#'                      counts = minerals$xrd$QUARTZ.STRATH.P.1142250)
+#'                      counts = minerals$xrd$QUA.1)
 #'
 #' #Plot the main quartz peak prior to alignment (scale the counts using rng.nm)
 #' plot(x = soils$sandstone$tth, y = rng.nm(soils$sandstone$counts),

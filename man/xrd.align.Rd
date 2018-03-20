@@ -40,7 +40,7 @@ data(minerals)
 
 #Create a quartz standard from the minerals library
 quartz <- data.frame(tth = minerals$tth,
-                     counts = minerals$xrd$QUARTZ.STRATH.P.1142250)
+                     counts = minerals$xrd$QUA.1)
 
 #Create a soil XRPD pattern to align
 soil <- soils$sandstone
