@@ -1,0 +1,35 @@
+---
+output: github_document
+---
+
+<!-- README.md is generated from README.Rmd. Please edit that file -->
+
+```{r, echo = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>",
+  fig.path = "man/figures/README-"
+)
+```
+
+## Overview
+
+powdR contains a range of tools for digital mineraolgy, centred around the use of full pattern fitting for quantification of mineral concentrations.
+
+## Installation via Github
+
+```{r, eval = FALSE}
+devtools::install_github('benmbutler/powdR')
+
+#alternatively, installation that builds the vignette to help explain
+#the current functionality of powdR
+devtools::install_github('benmbutler/powdR', build_vignettes = TRUE)
+```
+
+## Usage
+
+```{r example}
+library(powdR)
+
+browseVignettes("powdR")
+```
