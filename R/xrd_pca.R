@@ -115,7 +115,7 @@ xrd.pca <- function(xrd, align, align.standard, align.xmin, align.xmax, align.xs
   xrpd_cum_prop <- cumsum(props)
 
   #I want to have a data frame with full names that I can export
-  xrpd_pca_out <- data.frame(sample_id, xrpd_pca$x)
+  xrpd_pca_out <- data.frame(sample_id, xrpd_pca$x, stringsAsFactors = FALSE)
 
   out <- list("pca" = xrpd_pca_out, "pca_variance" = xrpd_cum_prop, "xrd" = xrd)
 

@@ -65,4 +65,4 @@ minerals$minerals
 Also a quote using `>`:
 
 > "He who gives up [code] safety for [code] speed deserves neither."
-([via](https://twitter.com/hadleywickham/status/504368538874703872))
+([Chipera and Bish, 2002](https://journals.iucr.org/j/issues/2002/06/00/hn0141/hn0141.pdf) and [Chipera and Bish, 2002](https://journals.iucr.org/j/issues/2002/06/00/hn0141/hn0141.pdf))

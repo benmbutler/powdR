@@ -29,7 +29,7 @@
 #' of the XRD library. Second column contains the weighting of each 2theta variable. If not provided, all
 #'variables are given a weighting of 1.
 #' @param lld Optional parameter used to tune the lower limit of dection computation.
-#' Must be between 0 and 1. Default = 0.3.
+#' Must be greater than 0. Default = 0.3.
 #' @param amorphous_lld Optional parameter used to exclude amorphous phases if they are below the
 #' specified \code{amorphous_lld} (percent). Must be between 0 and 100. Default = 0.
 #'
