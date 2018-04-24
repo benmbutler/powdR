@@ -34,7 +34,7 @@ qminerals <- function(x, xrd.lib) {
   dfs_mean_rir <- stats::aggregate(rir ~ min_name, data = df, FUN = mean)
   dfs_total_min <- stats::aggregate(min_percent ~ min_name, data = df, FUN = sum)
 
-  dfs <- data.frame("min_name" = dfs_mean_rir$min_name,
+  dfs <- data.frame("min_name" = as.character(dfs_mean_rir$min_name),
                     "total_min" = round(dfs_total_min$min_percent, 2),
                     "mean_rir" = round(dfs_mean_rir$rir, 2))
 
