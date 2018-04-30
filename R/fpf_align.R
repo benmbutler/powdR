@@ -94,10 +94,13 @@ fpf.align <- function(sample.tth, sample.counts, xrd.lib, fpf_shift, pure.weight
       vf[[j]] <- apply(sweep(vm[[j]], 2, pure.weights, "*"), 1, sum)
 
       #Compute the Rwp
-      d[[j]] <- sqrt(sum((1/sample_long) * ((sample_long - vf[[j]])^2* weighting[,2])) /
-                       sum((1/sample_long) * (sample_long^2)))
+      #d[[j]] <- sqrt(sum((1/sample_long) * ((sample_long - vf[[j]])^2* weighting[,2])) /
+      #                 sum((1/sample_long) * (sample_long^2)))
 
-      #identify which shifted pattern results in minimum Rwp
+      #Compute the Delta
+      d[[j]] <- sum(abs(sample_long - vf[[j]]) * weighting[,2])
+
+      #identify which shifted pattern results in minimum Delta
       dmin[[i]] <- which.min(d)
 
       #Populate a library with the optimumly shifted references

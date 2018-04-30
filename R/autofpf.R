@@ -273,9 +273,8 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
              sample.pattern = smpl[, 2], obj = obj, weighting = weighting)
 
 
-  #Alignment and then another optimisation ONLY is the fpf.align parameters
+  #Alignment and then another optimisation ONLY if the shift parameter
   #is included
-
 
   if(shift > 0) {
 
@@ -482,6 +481,32 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
   }
 
 
+  #Remove negative parameters again because some can creep in late-on
+  negpar <- min(o$par)
+
+  if (negpar < 0) {
+
+    while (negpar < 0) {
+      #use the most recently optimised coefficients
+      x <- o$par
+      #check for any negative parameters
+      remove_index <- which(x < 0)
+
+      #remove the column from the library that contains the identified data
+      if (length(remove_index) > 0) {
+        lib$xrd <- lib$xrd[, -remove_index]
+        x <- x[-remove_index]
+      }
+
+      o <- stats::optim(par = x, fullpat,
+                        method = solver, pure.patterns = lib$xrd,
+                        sample.pattern = smpl[,2], obj = obj, weighting = weighting)
+      x <- o$par
+      #identify whether any parameters are negative for the next iteration
+      negpar <- min(x)
+    }
+
+  }
 
   #### Compute the R statistic. This could be used to identify samples
   # that require manual interpretation
