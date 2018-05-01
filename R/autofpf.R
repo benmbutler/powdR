@@ -506,6 +506,14 @@ auto.fpf <- function(smpl, lib, tth, std, amorphous, coarse, align,
       negpar <- min(x)
     }
 
+    #Recompute the mineral concentrations and fitted patterns
+    min_concs <- qminerals(x = x, xrd.lib = lib)
+    df <- min_concs[[1]]
+    dfs <- min_concs[[2]]
+
+    fitted_pattern <- apply(sweep(as.matrix(lib$xrd), 2, x, "*"), 1, sum)
+    resid_x <- smpl[, 2] - fitted_pattern
+
   }
 
   #### Compute the R statistic. This could be used to identify samples
