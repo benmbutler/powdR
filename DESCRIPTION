@@ -20,6 +20,8 @@ Encoding: UTF-8
 LazyData: true
 Imports:
   dplyr (>= 0.7.4),
+  tidyr (>= 0.8.0),
+  zCompositions (>= 1.1.1),
   reshape (>= 0.8.6),
   plotly (>= 4.7.1),
   e1071 (>= 1.6),
