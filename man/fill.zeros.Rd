@@ -15,11 +15,11 @@ and hence calculate limits of detection}
 }
 \value{
 a list with components:
-\item{filled}{a vector of the 2theta scale of the fitted data}
+\item{filled}{a data frame of mineral concentrations with 0's replaced with the limits of detection. Data is 'closed' again after adding the LOD's so that each samples sums to 100 percent}
 \item{figures}{a list of figures showing the fitted background and
 the internal standard. One figure for each sample in the \code{quant}
 input.}
-\item{additions}{a vector indicating the total additions for each
+\item{additions}{a vector indicating the total LOD additions for each
 sample from the 0 replacement.}
 }
 \description{
