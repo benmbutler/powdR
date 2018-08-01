@@ -42,10 +42,13 @@ Making them interactive aids visual interpretation of the fitted patterns, which
 
 ```{r, fig.show='hold', fig.cap = "**Figure 4:** The resulting full pattern fit on a sandstone soil when `fps` is applied using a single quartz reference pattern. The top plot displays the measured and fitted pattern, and the bottom plots displays the residuals.", message = FALSE, warning = FALSE}
 library(powdR)
+
+data(minerals)
+data(soils)
+
 #Apply summation to the sandstone sample, with quartz as the only mineral
 fit <- fps(lib = minerals,
            smpl = soils$sandstone,
-           tth = c(4.5, 69.5),
            refs = "QUA.1",
            std = "QUA.1")
 
@@ -59,7 +62,6 @@ In this case, the fitted pattern consistently overestimates the quartz peak inte
 #Apply fps to the sandstone sample with quartz (crystalline) and organic matter (amorphous)
 fit <- fps(lib = minerals,
            smpl = soils$sandstone,
-           tth = c(4.5, 69.5),
            refs = c("QUA.1", "ORG"),
            std = "QUA.1")
 
@@ -73,7 +75,6 @@ Now the fit is much improved, highlighting how organic matter is an important co
 #Apply fps to the sandstone sample, adding kaolinite, feldspar and oligoclase to the process
 fit <- fps(lib = minerals,
            smpl = soils$sandstone,
-           tth = c(4.5, 69.5),
            refs = c("QUA.1",
                            "QUA.2",
                            "KAO",
