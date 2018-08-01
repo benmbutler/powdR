@@ -3,14 +3,15 @@
 \docType{data}
 \name{minerals}
 \alias{minerals}
-\title{A selection of pure minerals measured on a Bruker D8 arranged into a reference
-library.}
+\title{A selection of pure minerals measured on a Bruker D8 arranged into a powdRlib
+S3 object}
 \format{A list of 3
 \describe{
 \item{xrd}{A dataframe of all xrd data (counts only). Column names denote the
 reference sample}
 \item{tth}{A vector of 2theta intervals of all measurements in the library}
-\item{minerals}{A dataframe the mineral ID's, names and RIR's}
+\item{phases}{A dataframe the phase ID's, names and reference intensity
+ratios (RIR)}
 }}
 \usage{
 minerals

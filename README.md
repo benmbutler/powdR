@@ -3,7 +3,7 @@
 Overview
 --------
 
-powdR contains a range of tools for digital mineraolgy, centred around the use of full pattern fitting for quantification of mineral concentrations.
+powdR is an implementation of the full pattern summation approach to quantitative soil mineralogy.
 
 Installation via Github
 -----------------------
@@ -24,6 +24,5 @@ library(powdR)
 #> powdR: Tools for digital mineralogy
 
 browseVignettes("powdR")
-#> starting httpd help server ...
-#>  done
+#> No vignettes found by browseVignettes("powdR")
 ```

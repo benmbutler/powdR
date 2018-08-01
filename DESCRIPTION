@@ -1,6 +1,6 @@
-Package: powdR
+Package: powdRcran
 Type: Package
-Title: X-ray Powder Diffraction Data Analysis
+Title: Full pattern summation of X-ray powder diffraction data
 Version: 0.0.0.9000
 Date: 2018-01-05
 Authors@R: c(
@@ -9,8 +9,9 @@ Authors@R: c(
   person("Stephen", "Hillier", email = "stephen.hillier@hutton.ac.uk",
   role = "ctb"))
 Maintainer: Benjamin Butler <benjamin.butler@hutton.ac.uk>
-Description: The powdR package provides a range of tools applicable to X-ray powder diffraction
-    (XRPD) data. Functionality ranges from peak alignment to full pattern fitting.
+Description: The powdR package provides an R implementation of the full pattern
+    summation approach for mineral quantification using X-ray powder diffraction
+    data.
 License: GPL-2 | file LICENSE
 URL: http://github.com/benmbutler/powdR
 BugReports: http://github.com/benmbutler/powdR/issues
@@ -19,15 +20,12 @@ Depends:
 Encoding: UTF-8
 LazyData: true
 Imports:
-  dplyr (>= 0.7.4),
-  tidyr (>= 0.8.0),
-  zCompositions (>= 1.1.1),
   reshape (>= 0.8.6),
   plotly (>= 4.7.1),
-  e1071 (>= 1.6),
-  NISTunits (>= 1.0.1),
   ggplot2 (>= 2.2.1),
-  stats (>= 3.4.3)
+  stats (>= 3.4.3),
+  ggpubr(>= 0.1.7),
+  shiny (>= 1.0.5)
 Suggests:
     knitr,
     rmarkdown

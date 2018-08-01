@@ -1,3 +1,3 @@
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage("powdR: Tools for digital mineralogy")
+  packageStartupMessage("powdRcran: full pattern summation of XRPD data")
 }
