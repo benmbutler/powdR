@@ -21,8 +21,9 @@ Usage
 
 ``` r
 library(powdR)
-#> powdR: Tools for digital mineralogy
+#> powdR: full pattern summation of XRPD data
 
 browseVignettes("powdR")
-#> No vignettes found by browseVignettes("powdR")
+#> starting httpd help server ...
+#>  done
 ```
