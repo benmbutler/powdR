@@ -1,5 +1,5 @@
 ---
-title: "powdRcran: full pattern summation of XRPD data"
+title: "powdR: full pattern summation of XRPD data"
 author: "Benjamin Butler"
 date: "`r Sys.Date()`"
 output:
@@ -8,7 +8,7 @@ output:
         fig_width: 7
         fig_height: 6
 vignette: >
-  %\VignetteIndexEntry{powdRcran: full pattern summation of XRPD data}
+  %\VignetteIndexEntry{powdR: full pattern summation of XRPD data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -41,7 +41,7 @@ In this example the full pattern summation process using `fps` will start with a
 Making them interactive aids visual interpretation of the fitted patterns, which can otherwise be difficult in static plots.
 
 ```{r, fig.show='hold', fig.cap = "**Figure 4:** The resulting full pattern fit on a sandstone soil when `fps` is applied using a single quartz reference pattern. The top plot displays the measured and fitted pattern, and the bottom plots displays the residuals.", message = FALSE, warning = FALSE}
-library(powdRcran)
+library(powdR)
 #Apply summation to the sandstone sample, with quartz as the only mineral
 fit <- fps(lib = minerals,
            smpl = soils$sandstone,

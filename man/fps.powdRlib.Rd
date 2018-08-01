@@ -4,7 +4,8 @@
 \alias{fps.powdRlib}
 \title{\code{fps.powdRlib}}
 \usage{
-\method{fps}{powdRlib}(lib, smpl, refs, std, tth, align, res, solver, obj, ...)
+\method{fps}{powdRlib}(lib, smpl, refs, std, tth_align, align, tth_fps, res,
+  solver, obj, ...)
 }
 \arguments{
 \item{lib}{A \code{powdRlib} object representing the reference library.}
@@ -17,11 +18,14 @@ The ID's must match ID's in the \code{lib$phases$phase_id} column.}
 \item{std}{The phase ID (e.g. "QUA.1") to be used as internal
 standard. Must match an ID provided in the \code{phases} parameter.}
 
-\item{tth}{A vector defining the minimum and maximum 2theta values to be used during
-fitting. If not defined, then the full range is used.}
+\item{tth_align}{A vector defining the minimum and maximum 2theta values to be used during
+alignment. If not defined, then the full range is used.}
 
 \item{align}{The maximum shift that is allowed during initial 2theta
 alignment (degrees). Default = 0.1.}
+
+\item{tth_fps}{A vector defining the minimum and maximum 2theta values to be used during
+full pattern summation. If not defined, then the full range is used.}
 
 \item{res}{Optional. An integer used to increase the resolution of the
 supplied XRPD data during alignment. Default = 4.}
@@ -69,19 +73,16 @@ data(soils)
 \dontrun{
 fps_sand <-  fps(lib = minerals,
                  smpl = soils$sandstone,
-                 tth = c(4.5, 69.5),
                  refs = minerals$phases$phase_id,
                  std = "QUA.1")
 
 fps_lime <- fps(lib = minerals,
                 smpl = soils$limestone,
-                tth = c(4.5, 69.5),
                 refs = minerals$phases$phase_id,
                 std = "QUA.1")
 
 fps_granite <- fps(lib = minerals,
                    smpl = soils$granite,
-                   tth = c(4.5, 69.5),
                    refs = minerals$phases$phase_id,
                    std = "QUA.1")
 }

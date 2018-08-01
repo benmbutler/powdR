@@ -40,7 +40,7 @@ shinyServer(function(input, output, session) {
 
   Dataset <- eventReactive(input$BuildLibButton, {
 
-    Dataset <- powdRcran::powdRlib(xrd_table = xrddata(),
+    Dataset <- powdR::powdRlib(xrd_table = xrddata(),
                                    phases_table = phasedata())
 
   })
@@ -201,7 +201,7 @@ shinyServer(function(input, output, session) {
 
         xrdlib2 <- as.list(filedata3())
 
-        fps_out <- powdRcran::fps(smpl = smpl, lib = xrdlib2, tth_fps = input$tth,
+        fps_out <- powdR::fps(smpl = smpl, lib = xrdlib2, tth_fps = input$tth,
                                   std = gsub(".*: ", "", input$selectINT),
                                   refs = gsub(".*: ", "", input$selectPHASES),
                                   align = input$align,

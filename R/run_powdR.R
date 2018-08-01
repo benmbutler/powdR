@@ -20,9 +20,9 @@
 #' @seealso [`runApp`]
 #' @md
 #' @export
-run_powdRcran <- function(...) {
+run_powdR <- function(...) {
 
   # start application
-  app_dir <- system.file(paste0("shiny/"), package = "powdRcran")
+  app_dir <- system.file(paste0("shiny/"), package = "powdR")
   app <- shiny::runApp(app_dir, launch.browser = TRUE,  ...)
 }

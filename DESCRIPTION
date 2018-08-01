@@ -1,4 +1,4 @@
-Package: powdRcran
+Package: powdR
 Type: Package
 Title: Full pattern summation of X-ray powder diffraction data
 Version: 0.0.0.9000

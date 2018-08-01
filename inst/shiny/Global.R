@@ -1,6 +1,6 @@
 ## Global.R
 library(shiny)
-library(powdRcran)
+library(powdR)
 library(plotly)
 
 data(minerals)
