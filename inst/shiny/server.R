@@ -3,11 +3,11 @@
 shinyServer(function(input, output, session) {
 
   #################################
-  ## TAB 1: Reference library manipulation
+  ## TAB 1: Reference library builder
   #################################
 
   observe({
-  #Load the phase .csv file
+  #Load the xrd.csv file
   xrddata <- reactive({
     infile1 <- input$uploadXRD
     if (is.null(infile1)) {
@@ -17,7 +17,7 @@ shinyServer(function(input, output, session) {
     read.csv(infile1$datapath, header = TRUE, stringsAsFactors = FALSE)
   })
 
-  #Load the phase .csv file
+  #Load the phase.csv file
   phasedata <- reactive({
     infile2 <- input$uploadPHASE
     if (is.null(infile2)) {
@@ -27,7 +27,7 @@ shinyServer(function(input, output, session) {
     read.csv(infile2$datapath, header = TRUE, stringsAsFactors = FALSE)
   })
 
-  #Download data
+  #Download the library
   output$download_lib <- downloadHandler(
 
     filename = "xrd.Rdata",
@@ -36,8 +36,10 @@ shinyServer(function(input, output, session) {
 
       save(list=input$name, file=con)
     }
+
   )
 
+  #Create a powdRlib object
   Dataset <- eventReactive(input$BuildLibButton, {
 
     Dataset <- powdR::powdRlib(xrd_table = xrddata(),
@@ -45,6 +47,7 @@ shinyServer(function(input, output, session) {
 
   })
 
+  #Tabulate the minerals in the library
     output$minerals_table <- shiny::renderDataTable({
 
      Dataset()[[3]]
@@ -53,6 +56,8 @@ shinyServer(function(input, output, session) {
 
   })
 
+
+  #Downloads of example data
   output$download_xrd_eg <- downloadHandler(
 
     filename = function() {
@@ -79,6 +84,7 @@ shinyServer(function(input, output, session) {
 
   observe({
 
+  #Load library
   lib_plotter_load <- reactive({
     infile_lib_plotter <- input$loadLIB_plotter
     if (is.null(infile_lib_plotter)) {
@@ -90,6 +96,8 @@ shinyServer(function(input, output, session) {
     return(lpl)
   })
 
+  #Make sure the class of the uploaded data is correct and
+  #if it is, update the selectInput
   if(class(lib_plotter_load()) == "powdRlib") {
   updateSelectInput(session, "selectPHASES_plotter",
                     label = paste("Choose phases from the library to plot."),
@@ -97,6 +105,7 @@ shinyServer(function(input, output, session) {
                     selected = head(lib_plotter_load()[[3]][[1]], 1))
   }
 
+  #Plot phases in the library
   output$lib_plot <- plotly::renderPlotly({
 
   if(class(lib_plotter_load()) == "powdRlib") {
@@ -116,19 +125,17 @@ shinyServer(function(input, output, session) {
   #Update the selectINPUT boxes in the full pattern fitting tab
   observe({
 
-
       x2 <- filedata3()
       x2 <- x2[[3]]
 
       updateSelectInput(session, "selectPHASES",
-                        label = paste("Select the crystalline phases to use in the fitting. Multiple phases can be
-                                      selected using ctrl or shift."),
+                        label = paste("Select the phases to use in the fitting. Multiple
+                                      phases can be selected using ctrl or shift."),
                         choices = paste0(x2[[2]], ": ", x2[[1]]),
                         selected = head(paste0(x2[[2]], ": ", x2[[1]]), 1))
 
 
   })
-
 
   selectPHASESupdate <- reactive({
 
@@ -136,6 +143,8 @@ shinyServer(function(input, output, session) {
 
   })
 
+  #Update the internal standard selectInput so that only phases selected for fitting
+  #are available
   observe({
 
     scu <- as.character(selectPHASESupdate())
@@ -148,15 +157,6 @@ shinyServer(function(input, output, session) {
   })
 
 
-  #output$LoadMyOwn <- renderUI({
-  #  if (!input$selectLIB == "Load my own") return(NULL)
-
-#    fileInput(inputId = "loadLIB",
-#              label = "Choose a .Rdata reference library to load",
-#              multiple = FALSE,
-#              accept = ".Rdata")
-#  })
-
   #Load the .xy sample file
   filedata2 <- reactive({
     infile2 <- input$loadXY
@@ -167,7 +167,7 @@ shinyServer(function(input, output, session) {
     read.csv(infile2$datapath, sep = " ", header = FALSE)
   })
 
-  #If 'load my own is selected', and a library has been uploaded, then create a reactive library
+  #If a library has been uploaded, then create a reactive library
   filedata3 <- reactive({
     infile3 <- input$loadLIB
     if (is.null(infile3)) {
@@ -265,7 +265,7 @@ shinyServer(function(input, output, session) {
       }
     )
 
-    #Download data
+    #Download the whole fps output as .Rdata format
     output$download_fps <- downloadHandler(
 
       filename = "fps.Rdata",

@@ -3,7 +3,7 @@
 Overview
 --------
 
-powdR is an implementation of the full pattern summation approach to quantitative soil mineralogy.
+powdR is an implementation of the full pattern summation approach to quantitative mineralogy.
 
 Installation via Github
 -----------------------

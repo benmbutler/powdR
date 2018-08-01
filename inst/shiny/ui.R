@@ -5,9 +5,7 @@ shinyUI(
              ## TAB 1: REFERENCE LIBRARY BUILDER
              #################################
              tabPanel("Reference Library Builder",
-
                       fluidRow(
-
                         column(4, wellPanel(
                           h3("File upload"),
                           tags$hr(),
@@ -31,7 +29,8 @@ shinyUI(
                                        label = "Download an example .csv file of the XRPD data"),
                           tags$br(),
                           downloadLink(outputId = "download_phases_eg",
-                                         label = "Download an example .csv file of the phase information"),
+                                       label = "Download an example .csv file of the
+                                       phase information"),
                           tags$hr(),
                           h3("Download library"),
                           textInput("name","Provide a name for the new library object.
@@ -56,13 +55,12 @@ shinyUI(
              ## TAB 2: REFERENCE LIBRARY PLOTTER
              #################################
              tabPanel("Reference Library Plotter",
-
                       fluidRow(
-
                         column(6, wellPanel(
                           fileInput(inputId = "loadLIB_plotter",
-                                    label = "Choose a .Rdata reference library to load. Must be a powdRlib object
-                                    created using either the powdRlib function, or via the Reference Library Builder.",
+                                    label = "Choose a .Rdata reference library to load. Must be
+                                    a powdRlib object created using either the powdRlib function,
+                                    or via the Reference Library Builder.",
                                     multiple = FALSE,
                                     accept = ".Rdata")
                           )),
@@ -87,9 +85,7 @@ shinyUI(
              ## TAB 3: Full pattern fitting
              #################################
              tabPanel("Full pattern fitting",
-
                       fluidRow(
-
                         column(3, wellPanel(
                           h3("1. Load a sample for quantification"),
                           fileInput(inputId = "loadXY",
@@ -103,8 +99,8 @@ shinyUI(
                                     multiple = FALSE,
                                     accept = ".Rdata"),
                           selectInput(inputId = "selectPHASES",
-                                      label = "Choose the crystalline phases to use during fitting. Use ctrl or shift
-                                      to select multiple phases.",
+                                      label = "Choose the crystalline phases to use during fitting.
+                                      Use ctrl or shift to select multiple phases.",
                                       choices = c(""),
                                       multiple = TRUE,
                                       selectize = TRUE),
@@ -114,10 +110,12 @@ shinyUI(
                           tags$hr(),
                           h3("3. Adjust fit parameters"),
                           tags$hr(),
-                          sliderInput("tth", withMathJax("Adjust the 2\\(\\theta\\) range for full pattern summation"),
+                          sliderInput("tth", withMathJax("Adjust the 2\\(\\theta\\) range for
+                                                         full pattern summation"),
                                       min = 2, max = 75,
                                       value = c(0, 100), step = 0.1),
-                          sliderInput("align", "Adjust the alignment parameter", min = 0.01, max = 0.2,
+                          sliderInput("align", "Adjust the alignment parameter", min = 0.01,
+                                      max = 0.2,
                                       value = c(0.1)),
                           selectInput(inputId = "selectSolver",
                                       label = "Choose the optimisation routine",
@@ -159,9 +157,10 @@ shinyUI(
 
                         column(6, wellPanel(
                           fileInput(inputId = "loadRESULTS",
-                                    label = "Choose a .Rdata results object to load. Must be a powdRfps object
-                                    created using either the fps function, or exported from the full pattern
-                                    fitting tab of this application.",
+                                    label = "Choose a .Rdata results object to load. Must be a
+                                    powdRfps object created using either the fps function, or
+                                    exported from the full pattern fitting tab of this
+                                    application.",
                                     multiple = FALSE,
                                     accept = ".Rdata")
                         )),
