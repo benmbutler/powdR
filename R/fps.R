@@ -71,19 +71,16 @@
 #' \dontrun{
 #' fps_sand <-  fps(lib = minerals,
 #'                  smpl = soils$sandstone,
-#'                  tth = c(4.5, 69.5),
 #'                  refs = minerals$phases$phase_id,
 #'                  std = "QUA.1")
 #'
 #' fps_lime <- fps(lib = minerals,
 #'                 smpl = soils$limestone,
-#'                 tth = c(4.5, 69.5),
 #'                 refs = minerals$phases$phase_id,
 #'                 std = "QUA.1")
 #'
 #' fps_granite <- fps(lib = minerals,
 #'                    smpl = soils$granite,
-#'                    tth = c(4.5, 69.5),
 #'                    refs = minerals$phases$phase_id,
 #'                    std = "QUA.1")
 #' }
