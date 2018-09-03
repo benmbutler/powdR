@@ -1,20 +1,22 @@
 #' Plotting elements of a powdRfps object
 #'
 #' \code{plot.powdRfps} is designed to provide easy, adaptable plots
-#' of full pattern summation outputs produced from the \code{fps} function.
+#' of full pattern summation outputs produced from \code{\link{fps}}.
 #'
-#' The only mandatory argument is x, which must be a powdRlib object.
+#' The only mandatory argument is \code{x}, which must be a powdRlib object.
+#' When seeking to inspect the results from full pattern summation, interactive
+#' plots are particularly useful and can be specified with the \code{interactive}
+#' argument.
 #'
 #' @param x a powdRlib object
 #' @param d logical. Denotes whether x-axis should be d-spacing. Default = FALSE.
 #' @param wavelength numeric. Wavelength of the measurements to be plotted (in
-#' angstroms), only required when d = TRUE.
+#' angstroms), only required when \code{d = TRUE}.
 #' @param interactive logical. If TRUE then the output will be an interactive
 #' ggplotly object. If FALSE then the output will be a ggplot object.
 #' @param ... other arguments
 #'
 #' @method plot powdRfps
-#' @name plot
 #' @examples
 #' #Load the minerals library
 #' data(minerals)
@@ -144,15 +146,19 @@ plot.powdRfps <- function(x, d, wavelength, interactive, ...) {
 #' Plotting elements of a powdRlib object
 #'
 #' \code{plot.powdRlib} is designed to provide easy, adaptable plots
-#' of an XRPD reference library built using the \code{powdRlib} function.
+#' of an XRPD reference library built using the \code{powdRlib} constructor
+#' function.
 #'
-#' The only mandatory argument is x, which must be a powdRlib object.
+#' The only mandatory argument is x, which must be a powdRlib object. Plots can
+#' be made interactive using the logical \code{interactive} argument.
 #'
 #' @param x a powdRlib object
 #' @param patterns a character string of reference pattern id's to be plotted
-#' @param interactive logical. If TRUE then the output will be an interactive
+#' @param interactive Logical. If TRUE then the output will be an interactive
 #' ggplotly object. If FALSE then the output will be a ggplot object.
 #' @param ... other arguments
+#'
+#' @method plot powdRlib
 #'
 #' @examples
 #' # Load the minerals library

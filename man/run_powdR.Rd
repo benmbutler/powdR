@@ -2,17 +2,15 @@
 % Please edit documentation in R/run_powdR.R
 \name{run_powdR}
 \alias{run_powdR}
-\title{Run the powdRcran shiny app}
+\title{Run the powdR shiny app}
 \usage{
 run_powdR(...)
 }
 \arguments{
-\item{...}{further arguments to pass to \code{\link{runApp}}}
+\item{...}{further arguments to pass to \code{\link[shiny]{runApp}}}
 }
 \description{
-A wrapper for \code{\link{runApp}} to start interactive shiny apps for the R package powdR.
-Via the \code{...} argument further arguments can be directly passed to \code{\link{runApp}}.
-See \code{?shiny::runApp} for further details on valid arguments.
+A wrapper for \code{\link[shiny]{runApp}} to start the interactive shiny apps for powdR.
 }
 \examples{
 
@@ -22,10 +20,4 @@ run_powdR()
 
 }
 
-}
-\seealso{
-\code{\link{runApp}}
-}
-\author{
-Johannes Friedrich, University of Bayreuth (Germany)
 }

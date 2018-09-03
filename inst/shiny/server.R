@@ -122,6 +122,50 @@ shinyServer(function(input, output, session) {
   ## TAB 3: Full pattern fitting
   #################################
 
+  #Downloads of example sandstone data
+  output$download_soil_sand <- downloadHandler(
+
+    filename = function() {
+      paste("sandstone_example_", Sys.Date(), ".xy", sep="")
+    },
+    content = function(file) {
+      write.table(soils$sandstone, file, sep = " ", col.names = FALSE, row.names = FALSE)
+    }
+  )
+
+  #Downloads of example limestone data
+  output$download_soil_lime <- downloadHandler(
+
+    filename = function() {
+      paste("limestone_example_", Sys.Date(), ".xy", sep="")
+    },
+    content = function(file) {
+      write.table(soils$limestone, file, sep = " ", col.names = FALSE, row.names = FALSE)
+    }
+  )
+
+  #Downloads of example granite data
+  output$download_soil_lime <- downloadHandler(
+
+    filename = function() {
+      paste("granite_example_", Sys.Date(), ".xy", sep="")
+    },
+    content = function(file) {
+      write.table(soils$granite, file, sep = " ", col.names = FALSE, row.names = FALSE)
+    }
+  )
+
+  #Download an example reference library
+  output$download_example_ref <- downloadHandler(
+
+    filename = "example_library.Rdata",
+    content = function(con) {
+      assign("example_library", minerals)
+
+      save(list="example_library", file=con)
+    }
+  )
+
   #Update the selectINPUT boxes in the full pattern fitting tab
   observe({
 
@@ -205,7 +249,6 @@ shinyServer(function(input, output, session) {
                                   std = gsub(".*: ", "", input$selectINT),
                                   refs = gsub(".*: ", "", input$selectPHASES),
                                   align = input$align,
-                                  shift = input$shift,
                                   obj = input$selectOBJ,
                                   solver = input$selectSolver)
 

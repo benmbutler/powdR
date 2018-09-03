@@ -7,7 +7,8 @@
 fps(lib, ...)
 }
 \arguments{
-\item{lib}{A \code{powdRlib} object representing the reference library.}
+\item{lib}{A \code{powdRlib} object representing the reference library. Created using the
+\code{powdRlib} constructor function.}
 
 \item{...}{Other parameters passed to methods e.g. \code{fps.powdRlib}}
 }
@@ -15,10 +16,10 @@ fps(lib, ...)
 a list with components:
 \item{tth}{a vector of the 2theta scale of the fitted data}
 \item{fitted}{a vector of the fitted XRPD pattern}
-\item{measured}{a vector of the original XRPD measurement}
-\item{residuals}{a vector of the Residuals of fitted vs measured}
+\item{measured}{a vector of the original XRPD measurement (aligned)}
+\item{residuals}{a vector of the residuals (fitted vs measured)}
 \item{phases}{a dataframe of the phases used to produce the fitted pattern}
-\item{phases_summary}{the phases dataframe grouped by phase and summarised (sum)}
+\item{phases_summary}{the phases dataframe grouped by phase_name and summarised (sum)}
 \item{rwp}{the Rwp of the fitted vs measured pattern}
 \item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 All patterns have been weighted according to the coefficients used in the fit}
@@ -26,12 +27,13 @@ All patterns have been weighted according to the coefficients used in the fit}
 }
 \description{
 \code{fps} returns estimates of phase concentrations using full pattern
-fitting of X-ray powder diffraction data. For more details see \code{?fps.powdRlib}.
+summation of X-ray powder diffraction data. For more details see \code{?fps.powdRlib}.
 }
 \details{
-This function applies full pattern fitting to an XRPD sample to quantify phase
-concentrations. It requires a library of reference patterns with
-pre-measured reference intensity ratios.
+Applies full pattern summation (Chipera & Bish, 2002, 2013; Eberl, 2003) to an XRPD
+measurement to quantify phase concentrations. Requires a \code{powdRlib} library of
+reference patterns with pre-measured reference intensity ratios in order to derive
+mineral concentrations.
 }
 \examples{
 #Load the minerals library
@@ -59,4 +61,16 @@ fps_granite <- fps(lib = minerals,
                    refs = minerals$phases$phase_id,
                    std = "QUA.1")
 }
+}
+\references{
+Chipera, S.J., Bish, D.L., 2013. Fitting Full X-Ray Diffraction Patterns for Quantitative Analysis:
+A Method for Readily Quantifying Crystalline and Disordered Phases. Adv. Mater. Phys. Chem. 03, 47-53.
+doi:10.4236/ampc.2013.31A007
+
+Chipera, S.J., Bish, D.L., 2002. FULLPAT: A full-pattern quantitative analysis program for X-ray powder
+diffraction using measured and calculated patterns. J. Appl. Crystallogr. 35, 744-749.
+doi:10.1107/S0021889802017405
+
+Eberl, D.D., 2003. User's guide to ROCKJOCK - A program for determining quantitative mineralogy from
+powder X-ray diffraction data. Boulder, CA.
 }

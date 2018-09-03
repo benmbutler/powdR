@@ -4,8 +4,23 @@
 \name{powdR}
 \alias{powdR}
 \alias{powdR-package}
-\title{powdR: A package for quantitative mineralogy.}
+\title{powdR: full pattern summation of XRPD data}
 \description{
-The powdR package provides an implementation of the full pattern summation
-approach to quantitative mineralogy from X-ray powder diffraction data.
+An implementation of the full pattern summation, approach to quantitative mineralogy
+from X-ray powder diffraction data (Chipera & Bish, 2002, 2013; Eberl, 2003).
+}
+\references{
+Chipera, S.J., Bish, D.L., 2013. Fitting Full X-Ray Diffraction Patterns for Quantitative Analysis:
+A Method for Readily Quantifying Crystalline and Disordered Phases. Adv. Mater. Phys. Chem. 03, 47-53.
+doi:10.4236/ampc.2013.31A007
+
+Chipera, S.J., Bish, D.L., 2002. FULLPAT: A full-pattern quantitative analysis program for X-ray powder
+diffraction using measured and calculated patterns. J. Appl. Crystallogr. 35, 744-749.
+doi:10.1107/S0021889802017405
+
+Eberl, D.D., 2003. User's guide to ROCKJOCK - A program for determining quantitative mineralogy from
+powder X-ray diffraction data. Boulder, CA.
+}
+\author{
+Benjamin Butler, The James Hutton Institute, Aberdeen, UK
 }

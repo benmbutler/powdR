@@ -48,7 +48,7 @@ shinyUI(
                           tags$hr(),
                           dataTableOutput("minerals_table")
                         ))
-                        ) # end fluidRow
+                      ) # end fluidRow
              ),
 
              #################################
@@ -63,7 +63,7 @@ shinyUI(
                                     or via the Reference Library Builder.",
                                     multiple = FALSE,
                                     accept = ".Rdata")
-                          )),
+                        )),
                         column(6, wellPanel(
                           selectInput(inputId = "selectPHASES_plotter",
                                       label = "Choose phases from the library to plot.",
@@ -78,7 +78,7 @@ shinyUI(
                           plotlyOutput("lib_plot", width = "auto", height = 600)
                         ))
                       )
-                        ),
+             ),
 
 
              #################################
@@ -92,12 +92,24 @@ shinyUI(
                                     label = "File must be .xy format",
                                     multiple = FALSE,
                                     accept = c(".xy", ".XY")),
+                          h4("Example soil .xy files"),
+                          downloadLink(outputId = "download_soil_sand",
+                                       label = "Sandstone_soil.xy  "),
+                          downloadLink(outputId = "download_soil_lime",
+                                       label = "Limestone_soil.xy  "),
+                          downloadLink(outputId = "download_soil_granite",
+                                       label = "Granite_soil.xy  "),
                           tags$hr(),
                           h3("2. Load a reference library"),
                           fileInput(inputId = "loadLIB",
                                     label = "Choose a .Rdata reference library to load",
                                     multiple = FALSE,
                                     accept = ".Rdata"),
+                          h4("Example reference library"),
+                          downloadLink(outputId = "download_example_ref",
+                                       label = "example_library.Rdata"),
+                          tags$hr(),
+                          h3("3. Select phases"),
                           selectInput(inputId = "selectPHASES",
                                       label = "Choose the crystalline phases to use during fitting.
                                       Use ctrl or shift to select multiple phases.",
@@ -108,7 +120,7 @@ shinyUI(
                                       label = "Choose reference phase to use for peak alignment.",
                                       choices = c("")),
                           tags$hr(),
-                          h3("3. Adjust fit parameters"),
+                          h3("4. Adjust fit parameters"),
                           tags$hr(),
                           sliderInput("tth", withMathJax("Adjust the 2\\(\\theta\\) range for
                                                          full pattern summation"),
@@ -136,7 +148,7 @@ shinyUI(
                           tags$hr(),
                           plotlyOutput("line", width = "auto", height = 1000),
                           tags$hr(),
-                          h3("Download computed fit"),
+                          h3("5. Download computed fit"),
                           downloadButton(outputId = "download_fit",
                                          label = "Download fitted patterns (.csv)"),
                           downloadButton(outputId = "download_mins",

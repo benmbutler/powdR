@@ -2,13 +2,14 @@
 % Please edit documentation in R/fps.R
 \name{fps.powdRlib}
 \alias{fps.powdRlib}
-\title{\code{fps.powdRlib}}
+\title{Full pattern summation}
 \usage{
-\method{fps}{powdRlib}(lib, smpl, refs, std, tth_align, align, tth_fps, res,
-  solver, obj, ...)
+\method{fps}{powdRlib}(lib, smpl, refs, std, tth_align, align, tth_fps, solver,
+  obj, ...)
 }
 \arguments{
-\item{lib}{A \code{powdRlib} object representing the reference library.}
+\item{lib}{A \code{powdRlib} object representing the reference library. Created using the
+\code{powdRlib} constructor function.}
 
 \item{smpl}{A data frame. First column is 2theta, second column is counts}
 
@@ -27,14 +28,12 @@ alignment (degrees). Default = 0.1.}
 \item{tth_fps}{A vector defining the minimum and maximum 2theta values to be used during
 full pattern summation. If not defined, then the full range is used.}
 
-\item{res}{Optional. An integer used to increase the resolution of the
-supplied XRPD data during alignment. Default = 4.}
-
 \item{solver}{The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
 "CG")}. Default = "BFGS".}
 
 \item{obj}{The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
-Default = \code{"Rwp"}.}
+Default = \code{"Rwp"}. See Chipera and Bish (2002) and page 247 of Bish and Post (1989)
+for definitions of these functions.}
 
 \item{...}{other arguments}
 }
@@ -42,8 +41,8 @@ Default = \code{"Rwp"}.}
 a list with components:
 \item{tth}{a vector of the 2theta scale of the fitted data}
 \item{fitted}{a vector of the fitted XRPD pattern}
-\item{measured}{a vector of the original XRPD measurement}
-\item{residuals}{a vector of the Residuals of fitted vs measured}
+\item{measured}{a vector of the original XRPD measurement (aligned)}
+\item{residuals}{a vector of the residuals (fitted vs measured)}
 \item{phases}{a dataframe of the phases used to produce the fitted pattern}
 \item{phases_summary}{the phases dataframe grouped by phase_name and summarised (sum)}
 \item{rwp}{the Rwp of the fitted vs measured pattern}
@@ -53,12 +52,13 @@ All patterns have been weighted according to the coefficients used in the fit}
 }
 \description{
 \code{fps.powdRlib} returns estimates of phase concentrations using full pattern
-fitting of X-ray powder diffraction data.
+summation of X-ray powder diffraction data.
 }
 \details{
-This function applies full pattern fitting to an XRPD sample to quantify phase
-concentrations. It requires a library of reference patterns with
-pre-measured reference intensity ratios.
+Applies full pattern summation (Chipera & Bish, 2002, 2013; Eberl, 2003) to an XRPD
+sample to quantify phase concentrations. Requires a \code{powdRlib} library of reference
+patterns with pre-measured reference intensity ratios in order to derive mineral
+concentrations.
 }
 \examples{
 #Load the minerals library
@@ -86,4 +86,18 @@ fps_granite <- fps(lib = minerals,
                    refs = minerals$phases$phase_id,
                    std = "QUA.1")
 }
+}
+\references{
+Bish, D.L., Post, J.E., 1989. Modern powder diffraction. Mineralogical Society of America.
+
+Chipera, S.J., Bish, D.L., 2013. Fitting Full X-Ray Diffraction Patterns for Quantitative Analysis:
+A Method for Readily Quantifying Crystalline and Disordered Phases. Adv. Mater. Phys. Chem. 03, 47-53.
+doi:10.4236/ampc.2013.31A007
+
+Chipera, S.J., Bish, D.L., 2002. FULLPAT: A full-pattern quantitative analysis program for X-ray powder
+diffraction using measured and calculated patterns. J. Appl. Crystallogr. 35, 744-749.
+doi:10.1107/S0021889802017405
+
+Eberl, D.D., 2003. User's guide to ROCKJOCK - A program for determining quantitative mineralogy from
+powder X-ray diffraction data. Boulder, CA.
 }

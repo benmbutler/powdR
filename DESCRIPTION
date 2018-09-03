@@ -9,8 +9,8 @@ Authors@R: c(
   person("Stephen", "Hillier", email = "stephen.hillier@hutton.ac.uk",
   role = "ctb"))
 Maintainer: Benjamin Butler <benjamin.butler@hutton.ac.uk>
-Description: The powdR package provides an R implementation of the full pattern
-    summation approach to mineral quantification using X-ray powder diffraction
+Description: An R implementation of the full pattern
+    summation approach to mineral quantification from X-ray powder diffraction
     data.
 License: GPL-2 | file LICENSE
 URL: http://github.com/benmbutler/powdR

@@ -11,17 +11,19 @@
 
 \item{patterns}{a character string of reference pattern id's to be plotted}
 
-\item{interactive}{logical. If TRUE then the output will be an interactive
+\item{interactive}{Logical. If TRUE then the output will be an interactive
 ggplotly object. If FALSE then the output will be a ggplot object.}
 
 \item{...}{other arguments}
 }
 \description{
 \code{plot.powdRlib} is designed to provide easy, adaptable plots
-of an XRPD reference library built using the \code{powdRlib} function.
+of an XRPD reference library built using the \code{powdRlib} constructor
+function.
 }
 \details{
-The only mandatory argument is x, which must be a powdRlib object.
+The only mandatory argument is x, which must be a powdRlib object. Plots can
+be made interactive using the logical \code{interactive} argument.
 }
 \examples{
 # Load the minerals library

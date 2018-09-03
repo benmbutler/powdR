@@ -7,21 +7,24 @@
 powdRlib(xrd_table, phases_table)
 }
 \arguments{
-\item{xrd_table}{A data frame of the xrd reference patterns and their associated two
-theta axis. Must all be on the same two theta scale.}
+\item{xrd_table}{A data frame of the count intensities of the xrd reference patterns,
+all scaled to same maximum intensity, with their 2theta axis as the first column.
+Must all be on the same 2theta scale.}
 
-\item{phases_table}{A data frame of the required data for each reference pattern}
+\item{phases_table}{A data frame of the required data (phase ID, phase name, and reference
+intensity ratio) for each reference pattern.}
 }
 \value{
 a list with components:
 \item{xrd}{a data frame of reference patterns}
-\item{tth}{a vector of the two theta measurement intervals}
+\item{tth}{a vector of the 2theta measurement intervals}
 \item{phases}{a data frame of the id, name and reference
 intensity ratio of each reference pattern}
 }
 \description{
-\code{powdRlib} creates a reference library object from two tables of
-data. This reference library object is required for the \code{fps} function.
+A constructor function for creating a \code{powdRlib} object from two tables of
+data. The resulting reference library object is required when
+using \code{\link{fps}}.
 }
 \examples{
 #load an example xrd_table
