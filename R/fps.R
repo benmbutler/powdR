@@ -121,17 +121,20 @@
 #' fps_sand <-  fps(lib = minerals,
 #'                  smpl = soils$sandstone,
 #'                  refs = minerals$phases$phase_id,
-#'                  std = "QUA.1")
+#'                  std = "QUA.1",
+#'                  align = 0.2)
 #'
 #' fps_lime <- fps(lib = minerals,
 #'                 smpl = soils$limestone,
 #'                 refs = minerals$phases$phase_id,
-#'                 std = "QUA.1")
+#'                 std = "QUA.1",
+#'                 align = 0.2)
 #'
 #' fps_granite <- fps(lib = minerals,
 #'                    smpl = soils$granite,
 #'                    refs = minerals$phases$phase_id,
-#'                    std = "QUA.1")
+#'                    std = "QUA.1",
+#'                    align = 0.2)
 #' }
 #' @references
 #' Chipera, S.J., Bish, D.L., 2013. Fitting Full X-Ray Diffraction Patterns for Quantitative Analysis:
@@ -205,17 +208,20 @@ fps <- function(lib, ...) {
 #' fps_sand <-  fps(lib = minerals,
 #'                  smpl = soils$sandstone,
 #'                  refs = minerals$phases$phase_id,
-#'                  std = "QUA.1")
+#'                  std = "QUA.1",
+#'                  align = 0.2)
 #'
 #' fps_lime <- fps(lib = minerals,
 #'                 smpl = soils$limestone,
 #'                 refs = minerals$phases$phase_id,
-#'                 std = "QUA.1")
+#'                 std = "QUA.1",
+#'                 align = 0.2)
 #'
 #' fps_granite <- fps(lib = minerals,
 #'                    smpl = soils$granite,
 #'                    refs = minerals$phases$phase_id,
-#'                    std = "QUA.1")
+#'                    std = "QUA.1",
+#'                    align = 0.2)
 #' }
 #' @references
 #' Bish, D.L., Post, J.E., 1989. Modern powder diffraction. Mineralogical Society of America.

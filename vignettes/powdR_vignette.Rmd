@@ -50,7 +50,8 @@ data(soils)
 fit <- fps(lib = minerals,
            smpl = soils$sandstone,
            refs = "QUA.1",
-           std = "QUA.1")
+           std = "QUA.1",
+           align = 0.2)
 
 #plot the data to interpret the fit
 plot(fit)
@@ -63,7 +64,8 @@ In this case, the fitted pattern consistently overestimates the quartz peak inte
 fit <- fps(lib = minerals,
            smpl = soils$sandstone,
            refs = c("QUA.1", "ORG"),
-           std = "QUA.1")
+           std = "QUA.1",
+           align = 0.2)
 
 #plot the data to interpret the fit
 plot(fit)
@@ -80,7 +82,8 @@ fit <- fps(lib = minerals,
                     "KAO",
                     "FEL",
                     "OLI"),
-           std = "QUA.1")
+           std = "QUA.1",
+           align = 0.2)
 
 #plot the data to interpret the fit
 plot(fit)
