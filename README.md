@@ -68,8 +68,21 @@ To run `powdR` via the shiny app, use `run_powdR()`. This loads the application 
 3.  Full pattern summation: A user friendly interface for iterative full pattern summation of single samples.
 4.  Results viewer: Allows for quick inspection of results derived from full pattern summation.
 
-References
-----------
+### Example 1: Reference library builder
+
+![](man/figures/library_builder.gif)
+
+### Example 2: Reference library viewer
+
+![](man/figures/library_viewer.gif)
+
+### Example 3: Full pattern summation
+
+![](man/figures/full_pattern_summation.gif)
+
+### Example 4: Results viewer
+
+![](man/figures/full_pattern_summation.gif)
 
 Chipera, Steve J., and David L. Bish. 2002. “FULLPAT: A full-pattern quantitative analysis program for X-ray powder diffraction using measured and calculated patterns.” *Journal of Applied Crystallography* 35 (6): 744–49. doi:[10.1107/S0021889802017405](https://doi.org/10.1107/S0021889802017405).
 
