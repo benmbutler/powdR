@@ -78,3 +78,7 @@ To run `powdR` via the shiny app, use `run_powdR()`. This loads the application 
 
 ### Example 4: Results viewer
 ![](man/figures/full_pattern_summation.gif)
+
+##References
+
+
