@@ -1,5 +1,6 @@
 ---
-title: "powdR: full pattern summation of XRPD data"
+title: "powdR: Full Pattern Summation of X-ray Powder Diffraction Data"
+bibliography: bibliography.bib
 author: "Benjamin Butler"
 date: "`r Sys.Date()`"
 output:
@@ -8,7 +9,7 @@ output:
         fig_width: 7
         fig_height: 6
 vignette: >
-  %\VignetteIndexEntry{powdR: full pattern summation of XRPD data}
+  %\VignetteIndexEntry{powdR: Full Pattern Summation of X-ray Powder Diffraction Data}
   %\VignetteEngine{knitr::rmarkdown}
   %\VignetteEncoding{UTF-8}
 ---
@@ -20,18 +21,17 @@ knitr::opts_chunk$set(
 )
 ```
 
-`powdR` is an R implementation of the full pattern summation approach to full pattern summation, which is otherwise available in Excel spreadsheets such as FULLPAT ([Chipera and Bish, 2002](https://journals.iucr.org/j/issues/2002/06/00/hn0141/hn0141.pdf)) and ROCKJOCK ([Eberl, 2003](https://pubs.usgs.gov/of/2003/of03-078/pdf/RockMan7.pdf)). This full pattern summation approach is particularly suitable for samples involving disordered or amorphous phases (e.g. the clay minerals and organic matter in soil). Implementation in R allows for further adaptation of the functions combined with faster computation than is currently available.
-
+`powdR` is an R implementation of the full pattern summation approach to quantitative mineralogy, which is otherwise available in Excel spreadsheets such as FULLPAT [@Chipera2002] and ROCKJOCK [@Eberl2003]. Implementation in R allows for faster computation than is currently available in FULLPAT or ROCKJOCK, and provides a user-friendly shiny application to help with the often iterative process of mineral quantification.
 
 
 ## Full pattern summation
-A powerful property of XRPD data is that it can provide quantitative estimates of phase concentrations (mineral and amorphous). Though several methods are available for quantitative mineralogy, here we focus upon full pattern summation, which is particularly suitable for mineral mixtures containing disordered and amorphous phase. A prime example of such mixtures is soil, where clay minerals represent disordered phases, and organic matter is present as a common X-ray amorphous constituent.
+A powerful property of XRPD data is that it can provide quantitative estimates of phase concentrations (mineral and amorphous). Though several methods are available for quantitative mineralogy, full pattern summation, which is particularly suitable for mineral mixtures containing disordered and amorphous phases. A prime example of such mixtures is soil, where clay minerals represent disordered phases, and organic matter is present as a common X-ray amorphous constituent.
 
 Full pattern summation is based on the principle that XRPD data is the summation of signals from individual components. The following example will illustrate this by applying the `fps` function to a soil derived from sandstone. 
 
 When using  `fps`, a library of pure standards is required. Phases from the library are selected, and their relative contributions optimised until appropriate fit of the observed pattern is achieved. The fit is refined using least squares optimisation of an objective parameter. In most cases, the 'Rwp' is found to result in the most robust fit, and  is hence implemented as the default parameter in `fps`.
 
-It should be noted that the method is ultimately reliant upon a comprehensive library of reference patterns **measured on the same instrument as the sample**. The method currently implemented in `powdR` does not use an internal standard, and therefore forces the mineral assemblage to sum to 100 % ([Chipera and Bish, 2013](http://file.scirp.org/pdf/AMPC_2013042614421420.pdf)).
+It should be noted that the method is ultimately reliant upon a comprehensive library of reference patterns **measured on the same instrument as the sample**. The method currently implemented in `powdR` does not use an internal standard, and therefore forces the mineral assemblage to sum to 100 % [@Chipera2013;@Omotoso2006].
 
 ## `fps`
 In this example the full pattern summation process using `fps` will start with a reference library containing a single quartz phase, and examining the residuals of the fit. If running this vignette yourself in R, all plots can be made interactive by:
@@ -76,10 +76,10 @@ Now the fit is much improved, highlighting how organic matter is an important co
 fit <- fps(lib = minerals,
            smpl = soils$sandstone,
            refs = c("QUA.1",
-                           "QUA.2",
-                           "KAO",
-                           "FEL",
-                           "OLI"),
+                    "QUA.2",
+                    "KAO",
+                    "FEL",
+                    "OLI"),
            std = "QUA.1")
 
 #plot the data to interpret the fit
@@ -102,3 +102,5 @@ fit$phases_summary
 A key element of the summation process in `fps` is the alignment. As such the default function includes an alignment parameter. The first relates to the use of the function that aligns the sample to a selected internal standard.
 
 All of the above examples for `fps` can be further tested using the two other XRPD measurements available in the `soils` list (`soils$limestone` and `soils$granite`), each representing soils with different mineralogies.
+
+## References

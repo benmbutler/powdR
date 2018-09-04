@@ -2,6 +2,8 @@ powdR: full pattern summation of XRPD data
 ================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
+[![Build Status](https://travis-ci.org/benmbutler/powdR.svg?branch=master)](https://travis-ci.org/benmbutler/powdR)
+
 Overview
 --------
 
@@ -16,8 +18,7 @@ Installation via Github
 #Install devtools if you don't already have it on your machine
 devtools::install_github('benmbutler/powdR')
 
-#alternatively, an installation that builds the vignette to help explain
-#the current functionality of powdR
+#alternatively, an installation that builds the vignette
 devtools::install_github('benmbutler/powdR', build_vignettes = TRUE)
 ```
 

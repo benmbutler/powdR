@@ -14,6 +14,8 @@ knitr::opts_chunk$set(
 )
 ```
 
+[![Build Status](https://travis-ci.org/benmbutler/powdR.svg?branch=master)](https://travis-ci.org/benmbutler/powdR)
+
 ## Overview
 
 `powdR` is an implementation of the full pattern summation approach to quantitative mineralogy from X-ray powder diffraction data [@Chipera2002;@Chipera2013;@Eberl2003]. Version 0.1.0 contains functionality for a standardless approach, which assumes all phases within a sample can be identified, and thus they sum to 100 %. Future versions of `powdR` seek to add functionality for samples prepared with an internal standard.
@@ -26,8 +28,7 @@ knitr::opts_chunk$set(
 #Install devtools if you don't already have it on your machine
 devtools::install_github('benmbutler/powdR')
 
-#alternatively, an installation that builds the vignette to help explain
-#the current functionality of powdR
+#alternatively, an installation that builds the vignette
 devtools::install_github('benmbutler/powdR', build_vignettes = TRUE)
 ```
 

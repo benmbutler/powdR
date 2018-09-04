@@ -1,6 +1,6 @@
 Package: powdR
 Type: Package
-Title: Full pattern summation of X-ray powder diffraction data
+Title: Full Pattern Summation of X-Ray Powder Diffraction Data
 Version: 0.1.0
 Date: 2018-08-06
 Authors@R: c(
