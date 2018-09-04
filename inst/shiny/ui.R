@@ -7,15 +7,13 @@ shinyUI(
              tabPanel("Reference Library Builder",
                       fluidRow(
                         column(4, wellPanel(
-                          h3("File upload"),
-                          tags$hr(),
+                          h3("1. File upload"),
                           h4("XRPD data"),
                           fileInput(inputId = "uploadXRD",
                                     label = "Choose a .csv file containing the 2theta scale
                                     and the count intensities of all reference patterns.",
                                     multiple = FALSE,
                                     accept = ".csv"),
-                          tags$hr(),
                           h4("Phase information"),
                           fileInput(inputId = "uploadPHASE",
                                     label = "Upload a .csv file containing
@@ -24,27 +22,28 @@ shinyUI(
                                     multiple = FALSE,
                                     accept = ".csv"),
                           tags$hr(),
-                          h4("Examples"),
-                          downloadLink(outputId = "download_xrd_eg",
-                                       label = "Download an example .csv file of the XRPD data"),
-                          tags$br(),
-                          downloadLink(outputId = "download_phases_eg",
-                                       label = "Download an example .csv file of the
-                                       phase information"),
+                          h3("2. Build"),
+                          actionButton("BuildLibButton", "Click to build library"),
                           tags$hr(),
-                          h3("Download library"),
+                          h3("3. Download library"),
                           textInput("name","Provide a name for the new library object.
                                     This is what the library will be called if it is
                                     subsequently loaded into R (can be kept as the default
                                     'RefLib'):",
                                     "RefLib"),
                           downloadButton(outputId = "download_lib",
-                                         label = "Download library as .Rdata binary file")
+                                         label = "Download library as .Rdata binary file"),
+                          tags$hr(),
+                          h3("Example files"),
+                          downloadLink(outputId = "download_xrd_eg",
+                                       label = "Download an example .csv file of the XRPD data"),
+                          tags$br(),
+                          downloadLink(outputId = "download_phases_eg",
+                                       label = "Download an example .csv file of the
+                                       phase information")
                         )),
                         column(8, wellPanel(
                           h3("Phases in your reference library"),
-                          tags$hr(),
-                          actionButton("BuildLibButton", "Click to build library"),
                           tags$hr(),
                           dataTableOutput("minerals_table")
                         ))
@@ -54,13 +53,13 @@ shinyUI(
              #################################
              ## TAB 2: REFERENCE LIBRARY PLOTTER
              #################################
-             tabPanel("Reference Library Plotter",
+             tabPanel("Reference Library Viewer",
                       fluidRow(
                         column(6, wellPanel(
                           fileInput(inputId = "loadLIB_plotter",
                                     label = "Choose a .Rdata reference library to load. Must be
                                     a powdRlib object created using either the powdRlib function,
-                                    or via the Reference Library Builder.",
+                                    or via the Reference Library Builder in this application.",
                                     multiple = FALSE,
                                     accept = ".Rdata")
                         )),
@@ -82,14 +81,14 @@ shinyUI(
 
 
              #################################
-             ## TAB 3: Full pattern fitting
+             ## TAB 3: Full pattern summation
              #################################
-             tabPanel("Full pattern fitting",
+             tabPanel("Full pattern summation",
                       fluidRow(
                         column(3, wellPanel(
                           h3("1. Load a sample for quantification"),
                           fileInput(inputId = "loadXY",
-                                    label = "File must be .xy format",
+                                    label = "File must be .xy format (space separated)",
                                     multiple = FALSE,
                                     accept = c(".xy", ".XY")),
                           h4("Example soil .xy files"),
@@ -137,7 +136,7 @@ shinyUI(
                                       choices = c("Rwp", "R", "Delta"))
                         )),
                         column(9, wellPanel(
-                          h3("Full pattern fitting outputs"),
+                          h3("5. Full pattern summation"),
                           actionButton("goButton", "Click to start computation"),
                           tags$hr(),
                           h5("Once computation has finished, the results will be
@@ -148,7 +147,7 @@ shinyUI(
                           tags$hr(),
                           plotlyOutput("line", width = "auto", height = 1000),
                           tags$hr(),
-                          h3("5. Download computed fit"),
+                          h3("6. Download computed fit"),
                           downloadButton(outputId = "download_fit",
                                          label = "Download fitted patterns (.csv)"),
                           downloadButton(outputId = "download_mins",
@@ -160,7 +159,7 @@ shinyUI(
                         ),
 
              #################################
-             ## TAB 4: RESULTS PLOTTER
+             ## TAB 4: RESULTS VIEWER
              #################################
 
              tabPanel("Results Viewer",
@@ -171,7 +170,7 @@ shinyUI(
                           fileInput(inputId = "loadRESULTS",
                                     label = "Choose a .Rdata results object to load. Must be a
                                     powdRfps object created using either the fps function, or
-                                    exported from the full pattern fitting tab of this
+                                    exported from the full pattern summation tab of this
                                     application.",
                                     multiple = FALSE,
                                     accept = ".Rdata")

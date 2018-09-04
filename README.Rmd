@@ -1,5 +1,7 @@
 ---
 output: github_document
+title: "powdR: full pattern summation of XRPD data"
+bibliography: bibliography.bib
 ---
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -14,14 +16,17 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-powdR is an implementation of the full pattern summation approach to quantitative mineralogy.
+`powdR` is an implementation of the full pattern summation approach to quantitative mineralogy from X-ray powder diffraction data [@Chipera2002;@Chipera2013;@Eberl2003]. Version 0.1.0 contains functionality for a standardless approach, which assumes all phases within a sample can be identified, and thus they sum to 100 %. Future versions of `powdR` seek to add functionality for samples prepared with an internal standard.
+
+`powdR` has two major advantages over the excel based implementations of full pattern summation such as FULLPAT [@Chipera2002] and ROCKJOCK [@Eberl2003]. First, computation is faster and, when quantifying multiple samples, can be used in combination with the [`foreach`](https://cran.r-project.org/web/packages/foreach/index.html) package for parralel processing. Secondly, powdR can be run via a `shiny` web application, which offers a user friendly interface for fast and iterative mineral quantification.
 
 ## Installation via Github
 
 ```{r, eval = FALSE}
+#Install devtools if you don't already have it on your machine
 devtools::install_github('benmbutler/powdR')
 
-#alternatively, installation that builds the vignette to help explain
+#alternatively, an installation that builds the vignette to help explain
 #the current functionality of powdR
 devtools::install_github('benmbutler/powdR', build_vignettes = TRUE)
 ```
@@ -31,5 +36,35 @@ devtools::install_github('benmbutler/powdR', build_vignettes = TRUE)
 ```{r example}
 library(powdR)
 
-browseVignettes("powdR")
+#Load some soils to quantify
+data(soils)
+
+#Load a reference library of pure patterns
+data(minerals)
+
+#Quantify a sample
+q <-  fps(lib = minerals,
+          smpl = soils$sandstone,
+          refs = minerals$phases$phase_id,
+          std = "QUA.1")
+
+#Inspect the phase concentrations (summarised by name)
+q$phases_summary
+
+#Inspect the quantification
+plot(q)
+
 ```
+
+Alternatively, `plot(q, interactive = TRUE)` provides an interative plot for better inspection of the fit. More detailed usage instructions are provided in the package vignette.
+
+## Shiny app
+
+To run `powdR` via the shiny app, use `run_powdR()`. This loads the application in your default web browser. The application has four tabs:
+
+1. Reference library builder: Allows you to create a reference library from two csv files. One for the XRPD measurements, and the other for the ID, name and reference intensity ratio of each pattern.
+2. Reference library Viewer: For quick inspection of the phases within a reference library.
+3. Full pattern summation: A user friendly interface for iterative full pattern summation of single samples.
+4. Results viewer: Allows for quick inspection of results derived from full pattern summation.
+
+## References
