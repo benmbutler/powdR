@@ -4,8 +4,8 @@
 \alias{fps.powdRlib}
 \title{Full pattern summation}
 \usage{
-\method{fps}{powdRlib}(lib, smpl, refs, std, tth_align, align, tth_fps, solver,
-  obj, ...)
+\method{fps}{powdRlib}(lib, smpl, refs, std, tth_align, align, tth_fps,
+  solver, obj, ...)
 }
 \arguments{
 \item{lib}{A \code{powdRlib} object representing the reference library. Created using the
