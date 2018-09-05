@@ -44,12 +44,12 @@ q <-  fps(lib = minerals,
 #Inspect the phase concentrations (summarised by name)
 q$phases_summary
 #>       phase_name phase_percent
-#> 1         Illite      1.596612
-#> 2     K-feldspar      1.196130
-#> 3      Kaolinite      1.443455
-#> 4 Organic-Matter     38.848924
-#> 5    Plagioclase      1.240560
-#> 6         Quartz     55.674320
+#> 1         Illite      1.237556
+#> 2     K-feldspar      1.250870
+#> 3      Kaolinite      1.390756
+#> 4 Organic-Matter     39.805850
+#> 5    Plagioclase      1.159294
+#> 6         Quartz     55.155674
 
 #Inspect the quantification
 plot(q)
@@ -68,22 +68,6 @@ To run `powdR` via the shiny app, use `run_powdR()`. This loads the application 
 2.  Reference library Viewer: For quick inspection of the phases within a reference library.
 3.  Full pattern summation: A user friendly interface for iterative full pattern summation of single samples.
 4.  Results viewer: Allows for quick inspection of results derived from full pattern summation.
-
-### Example 1: Reference library builder
-
-![](man/figures/library_builder.gif)
-
-### Example 2: Reference library viewer
-
-![](man/figures/library_viewer.gif)
-
-### Example 3: Full pattern summation
-
-![](man/figures/full_pattern_summation.gif)
-
-### Example 4: Results viewer
-
-![](man/figures/full_pattern_summation.gif)
 
 References
 ----------
