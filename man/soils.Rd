@@ -14,7 +14,6 @@ with each dataframe containing two columns of:
 soils
 }
 \description{
-3 soil samples from different parent materials measured by XRPD on a
-Bruker D8.
+3 soil samples from different parent materials measured by XRPD
 }
 \keyword{datasets}

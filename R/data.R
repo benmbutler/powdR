@@ -1,7 +1,6 @@
 #' Example soil XRPD data
 #'
-#' 3 soil samples from different parent materials measured by XRPD on a
-#' Bruker D8.
+#' 3 soil samples from different parent materials measured by XRPD
 #'
 #' @format A list of 3 dataframes (named according to rock type),
 #' with each dataframe containing two columns of:
@@ -11,11 +10,11 @@
 #' }
 "soils"
 
-#' A selection of pure minerals measured on a Bruker D8 arranged into a powdRlib
-#' S3 object
+#' An example powdRlib reference library
 #'
-#' The reference library contains a range of measured XRPD data along with reference
-#' intensity ratios needed for full pattern fitting of the \code{soils} data.
+#' This \code{powdRlib} object, built using the \code{powdRlib} constructor function,
+#' contains a range of measured XRPD data along with their reference intensity ratios.
+#' THe library can be used with the \code{soils} example data for full pattern summation.
 #'
 #' @format A list of 3
 #' \describe{
@@ -27,28 +26,29 @@
 #' }
 "minerals"
 
-#' A table of 13 reference patterns and their corresponding two theta scale that can
-#' be combined with a meta data table to create a powdRlib object when using
-#' the \code{create_xrd_lib} function. Use the same layout to create custom
+#' A table of 14 reference patterns and their corresponding two theta scale that can
+#' be combined with the \code{minerals_phases} table to create a \code{powdRlib} object when using
+#' the \code{powdRlib} constructor function. Use the same layout to create custom
 #' reference libraries.
 #'
 #' @format A dataframe
 #' \describe{
-#' The first column defines the two theta scale, and remaining columns individual
+#' The first column defines the two theta scale, and remaining columns are individual
 #' reference patterns of pure minerals or amorphous phases. Each column title
 #' should be a unique mineral ID
 #' }
 "minerals_xrd"
 
 #' A table of associated data for the minerals_xrd table, which can be be combined with a
-#' xrd data table to create a powdRlib object when using the
-#' \code{create_xrd_lib} function. Use the same layout to create custom reference
+#' xrd data table to create a \code{powdRlib} object when using the
+#' \code{powdRlib} constructor function. Use the same layout to create custom reference
 #' libraries.
 #'
 #' @format A 3 column dataframe
 #' \describe{
 #' The first column is a character string defining the unique mineral ID's that
-#' should match those defined as column names of the minerals table.
+#' should match those defined as column names of the minerals table
+#' (e.g. \code{minerals_xrd}).
 #'
 #' The second column is a character string defining the mineral group that each
 #' reference pattern belongs to.

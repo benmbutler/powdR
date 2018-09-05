@@ -3,13 +3,13 @@
 \docType{data}
 \name{minerals_xrd}
 \alias{minerals_xrd}
-\title{A table of 13 reference patterns and their corresponding two theta scale that can
-be combined with a meta data table to create a powdRlib object when using
-the \code{create_xrd_lib} function. Use the same layout to create custom
+\title{A table of 14 reference patterns and their corresponding two theta scale that can
+be combined with the \code{minerals_phases} table to create a \code{powdRlib} object when using
+the \code{powdRlib} constructor function. Use the same layout to create custom
 reference libraries.}
 \format{A dataframe
 \describe{
-The first column defines the two theta scale, and remaining columns individual
+The first column defines the two theta scale, and remaining columns are individual
 reference patterns of pure minerals or amorphous phases. Each column title
 should be a unique mineral ID
 }}
@@ -17,9 +17,9 @@ should be a unique mineral ID
 minerals_xrd
 }
 \description{
-A table of 13 reference patterns and their corresponding two theta scale that can
-be combined with a meta data table to create a powdRlib object when using
-the \code{create_xrd_lib} function. Use the same layout to create custom
+A table of 14 reference patterns and their corresponding two theta scale that can
+be combined with the \code{minerals_phases} table to create a \code{powdRlib} object when using
+the \code{powdRlib} constructor function. Use the same layout to create custom
 reference libraries.
 }
 \keyword{datasets}

@@ -4,13 +4,14 @@
 \name{minerals_phases}
 \alias{minerals_phases}
 \title{A table of associated data for the minerals_xrd table, which can be be combined with a
-xrd data table to create a powdRlib object when using the
-\code{create_xrd_lib} function. Use the same layout to create custom reference
+xrd data table to create a \code{powdRlib} object when using the
+\code{powdRlib} constructor function. Use the same layout to create custom reference
 libraries.}
 \format{A 3 column dataframe
 \describe{
 The first column is a character string defining the unique mineral ID's that
-should match those defined as column names of the minerals table.
+should match those defined as column names of the minerals table
+(e.g. \code{minerals_xrd}).
 
 The second column is a character string defining the mineral group that each
 reference pattern belongs to.
@@ -23,8 +24,8 @@ minerals_phases
 }
 \description{
 A table of associated data for the minerals_xrd table, which can be be combined with a
-xrd data table to create a powdRlib object when using the
-\code{create_xrd_lib} function. Use the same layout to create custom reference
+xrd data table to create a \code{powdRlib} object when using the
+\code{powdRlib} constructor function. Use the same layout to create custom reference
 libraries.
 }
 \keyword{datasets}

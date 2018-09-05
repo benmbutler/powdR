@@ -3,8 +3,7 @@
 \docType{data}
 \name{minerals}
 \alias{minerals}
-\title{A selection of pure minerals measured on a Bruker D8 arranged into a powdRlib
-S3 object}
+\title{An example powdRlib reference library}
 \format{A list of 3
 \describe{
 \item{xrd}{A dataframe of all xrd data (counts only). Column names denote the
@@ -17,7 +16,8 @@ ratios (RIR)}
 minerals
 }
 \description{
-The reference library contains a range of measured XRPD data along with reference
-intensity ratios needed for full pattern fitting of the \code{soils} data.
+This \code{powdRlib} object, built using the \code{powdRlib} constructor function,
+contains a range of measured XRPD data along with their reference intensity ratios.
+THe library can be used with the \code{soils} example data for full pattern summation.
 }
 \keyword{datasets}

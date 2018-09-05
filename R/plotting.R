@@ -25,11 +25,12 @@
 #' data(soils)
 #'
 #' \dontrun{
-#' fps_sand <-  fps(smpl = soils$sandstone,
-#'                 lib = minerals,
-#'                 tth = c(4.5, 69.5),
+#' fps_sand <-  fps(lib = minerals,
+#'                 smpl = soils$sandstone,
 #'                 refs = minerals$phases$phase_id,
-#'                 std = "QUA.1")
+#'                 std = "QUA.1",
+#'                 align = 0.2)
+#'
 #' plot(fps_sand)
 #' plot(fps_sand, interactive = TRUE)
 #' plot(fps_sand, d = TRUE, wavelength = 1.54, interactive = TRUE)
@@ -164,7 +165,8 @@ plot.powdRfps <- function(x, d, wavelength, interactive, ...) {
 #' # Load the minerals library
 #' data(minerals)
 #'
-#'plot(minerals, patterns = "ALB")
+#' plot(minerals, patterns = "ALB")
+#' plot(minerals, patterns = "ALB", interactive = TRUE)
 #' @export
 plot.powdRlib <- function(x, patterns, interactive, ...) {
 

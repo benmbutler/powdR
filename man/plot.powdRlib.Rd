@@ -30,4 +30,5 @@ be made interactive using the logical \code{interactive} argument.
 data(minerals)
 
 plot(minerals, patterns = "ALB")
+plot(minerals, patterns = "ALB", interactive = TRUE)
 }
