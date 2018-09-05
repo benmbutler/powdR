@@ -25,22 +25,20 @@ knitr::opts_chunk$set(
 
 
 ## Full pattern summation
-A powerful property of XRPD data is that it can provide quantitative estimates of phase concentrations (mineral and amorphous). Though several methods are available for quantitative mineralogy, full pattern summation, which is particularly suitable for mineral mixtures containing disordered and amorphous phases. A prime example of such mixtures is soil, where clay minerals represent disordered phases, and organic matter is present as a common X-ray amorphous constituent.
+A powerful property of XRPD data is that it can provide quantitative estimates of phase concentrations (mineral and amorphous). Though several methods are available for quantitative mineralogy, full pattern summation is particularly suitable for mineral mixtures containing disordered and amorphous phases. A prime example of such mixtures is soil, where clay minerals represent disordered phases, and organic matter is present as a common X-ray amorphous constituent.
 
-Full pattern summation is based on the principle that XRPD data is the summation of signals from individual components. The following example will illustrate this by applying the `fps` function to a soil derived from sandstone. 
+Full pattern summation is based on the principle that an observed pattern is comprised of the sum of signals from pure individual components. When using  full pattern summation, a library of pure standards **measured on the same instrument as the sample** is required. Phases from the library are selected, and their relative contributions optimised until appropriate fit of the observed pattern is achieved [@Chipera2002]. The fit is refined using least squares optimisation of an objective parameter.
 
-When using  `fps`, a library of pure standards is required. Phases from the library are selected, and their relative contributions optimised until appropriate fit of the observed pattern is achieved. The fit is refined using least squares optimisation of an objective parameter. In most cases, the 'Rwp' is found to result in the most robust fit, and  is hence implemented as the default parameter in `fps`.
-
-It should be noted that the method is ultimately reliant upon a comprehensive library of reference patterns **measured on the same instrument as the sample**. The method currently implemented in `powdR` does not use an internal standard, and therefore forces the mineral assemblage to sum to 100 % [@Chipera2013;@Omotoso2006].
+Version 0.1.0 of the `powdR` package currently implements full pattern summation via a standardless approach. The prerequisite of this approach is that all mineral and amorphous phases can be identified within the sample, and that these must sum to 100 weight % [@Chipera2013;@Omotoso2006].
 
 ## `fps`
-In this example the full pattern summation process using `fps` will start with a reference library containing a single quartz phase, and examining the residuals of the fit. If running this vignette yourself in R, all plots can be made interactive by:
+Full pattern summation in `powdR` is provided in the `fps` function. In the following example the full pattern summation process using `fps` will start with a reference library containing a single quartz phase, and examining the residuals of the fit. If running this vignette yourself, all plots can be made interactive by:
 
 `plot(fit, interactive = TRUE)`
 
-Making them interactive aids visual interpretation of the fitted patterns, which can otherwise be difficult in static plots.
+Making them interactive aids visual interpretation of the fitted patterns, which can otherwise be difficult when using static plots.
 
-```{r, fig.show='hold', fig.cap = "**Figure 4:** The resulting full pattern fit on a sandstone soil when `fps` is applied using a single quartz reference pattern. The top plot displays the measured and fitted pattern, and the bottom plots displays the residuals.", message = FALSE, warning = FALSE}
+```{r, fig.show='hold', fig.cap = "**Figure 1:** The resulting fit on a sandstone soil when `fps` is applied using a single quartz reference pattern. The top plot displays the measured and fitted patterns, and the bottom plots displays the residuals.", message = FALSE, warning = FALSE}
 library(powdR)
 
 data(minerals)
@@ -59,7 +57,7 @@ plot(fit)
 
 In this case, the fitted pattern consistently overestimates the quartz peak intensities compared to the measured pattern, but underestimates the background contribution. This can occur when X-ray amorphous phases are present within the sample. To Account for this, an organic matter phase from the reference library will be added, and the fit recomputed.
 
-```{r, fig.show='hold', fig.cap = "**Figure 5:** The resulting full pattern fit on a sandstone soil when `fps` is applied using reference patterns from quartz and organic matter.", message = FALSE, warning = FALSE}
+```{r, fig.show='hold', fig.cap = "**Figure 2:** The resulting full pattern fit on a sandstone soil when `fps` is applied using reference patterns from quartz and organic matter.", message = FALSE, warning = FALSE}
 #Apply fps to the sandstone sample with quartz (crystalline) and organic matter (amorphous)
 fit <- fps(lib = minerals,
            smpl = soils$sandstone,
@@ -71,9 +69,9 @@ fit <- fps(lib = minerals,
 plot(fit)
 ```
 
-Now the fit is much improved, highlighting how organic matter is an important component of this pattern. Based on the current residuals, there is a notable peak at 12.3 degrees 2theta, which is often associated with Kaolinite. There are also numerous peaks either side of the main quartz peak at 26.6 degrees 2theta, which are often coincident with feldspar minerals. The next fit will therefore add kaolinite, plagioclase and potassium feldspar to the process.
+Now the fit is much improved, highlighting how organic matter is an important component of this pattern. Based on the current residuals, there is a notable peak at 12.3 degrees 2theta, which is often associated with kaolinite. There are also numerous peaks either side of the main quartz peak at 26.6 degrees 2theta, which are often coincident with feldspar minerals. The next fit will therefore add kaolinite, plagioclase and potassium feldspar to the process.
 
-```{r, fig.show='hold', fig.cap = "**Figure 6:** The resulting full pattern fit on a sandstone soil when `fps` is applied using reference patterns from quartz (2 different standards), kaolinite, plagioclase, K-feldspar and organic matter", message = FALSE, warning = FALSE}
+```{r, fig.show='hold', fig.cap = "**Figure 3:** The resulting full pattern fit on a sandstone soil when `fps` is applied using reference patterns from quartz (2 different standards), kaolinite, plagioclase, K-feldspar and organic matter", message = FALSE, warning = FALSE}
 #Apply fps to the sandstone sample, adding kaolinite, feldspar and oligoclase to the process
 fit <- fps(lib = minerals,
            smpl = soils$sandstone,
@@ -95,14 +93,12 @@ When including all these phases, pretty much all peaks are accounted for. Once t
 - `fit$phases_summary`
 
 ```{r}
-#returns individual contributions from each reference pattern (min_percent)
+#returns individual contributions from each reference pattern
 fit$phases
 
-#returns summed contributions from each mineral (total_min)
+#returns summed contributions from each mineral
 fit$phases_summary
 ```
-
-A key element of the summation process in `fps` is the alignment. As such the default function includes an alignment parameter. The first relates to the use of the function that aligns the sample to a selected internal standard.
 
 All of the above examples for `fps` can be further tested using the two other XRPD measurements available in the `soils` list (`soils$limestone` and `soils$granite`), each representing soils with different mineralogies.
 

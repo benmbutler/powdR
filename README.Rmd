@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 
 `powdR` is an implementation of the full pattern summation approach to quantitative mineralogy from X-ray powder diffraction data [@Chipera2002;@Chipera2013;@Eberl2003]. Version 0.1.0 contains functionality for a standardless approach, which assumes all phases within a sample can be identified, and thus they sum to 100 %. Future versions of `powdR` seek to add functionality for samples prepared with an internal standard.
 
-`powdR` has two major advantages over the excel based implementations of full pattern summation such as FULLPAT [@Chipera2002] and ROCKJOCK [@Eberl2003]. First, computation is faster and, when quantifying multiple samples, can be used in combination with the [`foreach`](https://cran.r-project.org/web/packages/foreach/index.html) package for parralel processing. Secondly, powdR can be run via a `shiny` web application, which offers a user friendly interface for fast and iterative mineral quantification.
+`powdR` has several advantages over the excel based implementations of full pattern summation such as FULLPAT [@Chipera2002] and ROCKJOCK [@Eberl2003]. First, computation is faster and, when quantifying multiple samples, can be used in combination with other packages (e.g [`foreach`](https://cran.r-project.org/web/packages/foreach/index.html)) for parralel processing. Secondly, powdR can be run via a `shiny` web application, which offers a user friendly interface for fast and iterative mineral quantification. Lastly, R represents a powerful tool for data manipulation, allowing users to creatively adapt, pre-treat and visualise their XRPD data.
 
 ## Installation via Github
 
@@ -63,7 +63,7 @@ Alternatively, `plot(q, interactive = TRUE)` provides an interative plot for bet
 
 To run `powdR` via the shiny app, use `run_powdR()`. This loads the application in your default web browser. The application has four tabs:
 
-1. Reference library builder: Allows you to create a reference library from two csv files. One for the XRPD measurements, and the other for the ID, name and reference intensity ratio of each pattern.
+1. Reference library builder: Allows you to create a reference library from two .csv files: one for the XRPD measurements, and the other for the ID, name and reference intensity ratio of each pattern.
 2. Reference library Viewer: For quick inspection of the phases within a reference library.
 3. Full pattern summation: A user friendly interface for iterative full pattern summation of single samples.
 4. Results viewer: Allows for quick inspection of results derived from full pattern summation.
