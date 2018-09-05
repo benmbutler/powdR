@@ -90,7 +90,7 @@ plot.powdRfps <- function(x, d, wavelength, interactive, ...) {
                          ggplot2::aes_(x = ~d, y = ~value, color = ~variable), size = 0.15) +
       ggplot2::scale_x_reverse() +
       ggplot2::ylab("Counts") +
-      ggplot2::xlab("2theta") +
+      ggplot2::xlab("d") +
       ggplot2::theme(legend.title = ggplot2::element_blank())
 
     g2 <- ggplot2::ggplot() +
@@ -99,7 +99,7 @@ plot.powdRfps <- function(x, d, wavelength, interactive, ...) {
       ggplot2::scale_colour_manual(name = "",
                                    values = c("Residuals" = "blue")) +
       ggplot2::ylab("Counts") +
-      ggplot2::xlab("2theta") +
+      ggplot2::xlab("d") +
       ggplot2::scale_x_reverse()
   }
   #If d is false then just plot a normal 2theta graph
@@ -110,8 +110,8 @@ plot.powdRfps <- function(x, d, wavelength, interactive, ...) {
       ggplot2::geom_line(data = pure_patterns_long,
                          ggplot2::aes_(x = ~tth, y = ~value, color = ~variable), size = 0.15) +
       ggplot2::ylab("Counts") +
-      ggplot2::xlab("2theta")
-    ggplot2::theme(legend.title = ggplot2::element_blank())
+      ggplot2::xlab("2theta") +
+      ggplot2::theme(legend.title = ggplot2::element_blank())
 
     g2 <- ggplot2::ggplot() +
       ggplot2::geom_line(data = resids,
