@@ -1,3 +1,11 @@
+## Resubmission
+This is a resubmission. In this version I have:
+
+* Removed the redundant "An R implementation of" from the description
+* Elaborated upon what the method does in the description
+* Provided a reference and doi for the journal article that the method
+is based on
+
 ## Test environments
 * local Windows 7 install, R 3.5.1
 * ubuntu 14.04 (on travis-ci), R 3.5.0

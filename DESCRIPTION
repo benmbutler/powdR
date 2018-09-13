@@ -2,16 +2,17 @@ Package: powdR
 Type: Package
 Title: Full Pattern Summation of X-Ray Powder Diffraction Data
 Version: 0.1.0
-Date: 2018-09-10
+Date: 2018-09-13
 Authors@R: c(
   person("Benjamin", "Butler", email = "benjamin.butler@hutton.ac.uk",
   role = c("aut", "cre")),
   person("Stephen", "Hillier", email = "stephen.hillier@hutton.ac.uk",
   role = "ctb"))
 Maintainer: Benjamin Butler <benjamin.butler@hutton.ac.uk>
-Description: An R implementation of the full pattern
-    summation approach to mineral quantification from X-ray powder diffraction
-    data.
+Description: Full pattern summation of X-ray powder diffraction data as
+described in Chipera and Bish (2002) <doi:10.1107/S0021889802017405>.
+Derives quantitative estimates of crystalline and amorphous phase
+concentrations in complex mixtures.
 License: GPL-2 | file LICENSE
 URL: http://github.com/benmbutler/powdR
 BugReports: http://github.com/benmbutler/powdR/issues
