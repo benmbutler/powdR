@@ -4,6 +4,10 @@ powdR: full pattern summation of XRPD data
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 [![Build Status](https://travis-ci.org/benmbutler/powdR.svg?branch=master)](https://travis-ci.org/benmbutler/powdR)
 
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/powdR)](https://CRAN.R-project.org/package=powdR)
+
+[![Total\_Downloads](https://cranlogs.r-pkg.org/badges/grand-total/powdR)](https://cran.r-project.org/package=powdR)
+
 Overview
 --------
 
@@ -11,11 +15,22 @@ Overview
 
 `powdR` has several advantages over the excel based implementations of full pattern summation such as FULLPAT (Chipera and Bish 2002) and ROCKJOCK (Eberl 2003). First, computation is faster and, when quantifying multiple samples, can be used in combination with other packages (e.g [`foreach`](https://cran.r-project.org/web/packages/foreach/index.html)) for parralel processing. Secondly, powdR can be run via a `shiny` web application, which offers a user friendly interface for fast and iterative mineral quantification. Lastly, R represents a powerful tool for data manipulation, allowing users to creatively adapt, pre-treat and visualise their XRPD data.
 
-Installation via Github
------------------------
+Installation
+------------
+
+The stable version of `powdR` is on CRAN:
+
+``` r
+install.packages("powdR")
+```
+
+Alternatively, the development version can be downloaded from Github
 
 ``` r
 #Install devtools if you don't already have it on your machine
+install.packages("devtools")
+
+#install without vignette
 devtools::install_github('benmbutler/powdR')
 
 #alternatively, an installation that builds the vignette
