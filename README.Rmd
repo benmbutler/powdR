@@ -68,7 +68,7 @@ plot(q)
 
 ```
 
-Alternatively, `plot(q, interactive = TRUE)` provides an interative plot for better inspection of the fit. More detailed usage instructions are provided in the package vignette.
+Alternatively, `plot(q, interactive = TRUE)` provides an interactive plot for better inspection of the fit. More detailed usage instructions are provided in the package vignette.
 
 ## Shiny app
 
