@@ -27,15 +27,15 @@ bkg <- function(xrd, lambda, hwi, it, int) {
   }
 
   if(missing(hwi)) {
-    hwi <- 50
+    hwi <- 25
   }
 
   if(missing(it)) {
-    it <- 25
+    it <- 50
   }
 
   if(missing(int)) {
-    int <- 1000
+    int <- round(nrow(xrd)/4, 0)
   }
 
   fp <- baseline::baseline(t(xrd[2]),
