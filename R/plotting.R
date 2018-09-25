@@ -209,4 +209,63 @@ plot.powdRlib <- function(x, patterns, interactive, ...) {
 
   return(p)
 
+}
+
+
+#' Plotting a powdRbkg object
+#'
+#' \code{plot.powdRbkg} is designed to provide quick plots to inspect the
+#' fitted backgrounds obtained from \code{bkg}.
+#'
+#' The only mandatory argument is x, which must be a powdRbkg object. Plots can
+#' be made interactive using the logical \code{interactive} argument.
+#'
+#' @param x a powdRlib object
+#' @param interactive Logical. If TRUE then the output will be an interactive
+#' ggplotly object. If FALSE then the output will be a ggplot object.
+#' @param ... other arguments
+#'
+#' @method plot powdRbkg
+#'
+#' @examples
+#' # Load the minerals library
+#' data(minerals)
+#'
+#' plot(minerals, interactive = TRUE)
+#' @export
+plot.powdRbkg <- function(x, interactive, ...) {
+
+  if(missing(interactive)) {
+    interactive <- FALSE
+  }
+
+  if(!missing(interactive) & !is.logical(interactive)) {
+    stop("The interactive arugment must be logical.")
+  }
+
+  observed <- data.frame("tth" = x[[1]],
+                         "counts" = x[[2]],
+                         "id" = rep("Observed", length(x[[1]])))
+
+  fitted_bkg <- data.frame("tth" = x[[1]],
+                           "counts" = x[[3]],
+                           "id" = rep("Background", length(x[[1]])))
+
+  df <- rbind(observed, fitted_bkg)
+
+  p <- ggplot2::ggplot(data = data.frame(df)) +
+    ggplot2::geom_line(ggplot2::aes_(x = ~tth, y = ~counts,
+                                     color = ~id),
+                       size = 0.15) +
+    ggplot2::scale_color_manual(values = c("black", "red")) +
+    ggplot2::xlab("2theta") +
+    ggplot2::ylab("Counts") +
+    ggplot2::theme(legend.title = ggplot2::element_blank())
+
+  if(interactive == TRUE) {
+    p <- plotly::ggplotly(p)
+  }
+
+  return(p)
+
   }

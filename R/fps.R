@@ -290,7 +290,7 @@ fps.powdRlib <- function(lib, smpl, solver, obj, refs, std,
     warning("Be cautious of large 2theta shifts. These can cause issues in sample alignment.")
   }
 
-  #Make only "Nelder-Mead", "BFGS", or "CG" optional for the solver
+  #Make only "Nelder-Mead", "BFGS", or "CG" or "NNLS" optional for the solver
   if (!solver %in% c("Nelder-Mead", "BFGS", "CG", "nnls")) {
     stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG' or 'nnls'")
   }

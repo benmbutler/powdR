@@ -118,8 +118,61 @@ shinyServer(function(input, output, session) {
 
   })
 
+
   #################################
-  ## TAB 3: Full pattern fitting
+  ## TAB 3: Background fitting
+  #################################
+  observe({
+  #Load the .xy sample file
+  filedata_bkg <- reactive({
+    infile_bkg <- input$loadXYbkg
+    if (is.null(infile_bkg)) {
+      # User has not uploaded a file yet
+      return(NULL)
+    }
+    read.csv(infile_bkg$datapath, sep = " ", header = FALSE)
+  })
+
+  #Update the plot sliders
+  if(!is.null(filedata_bkg())) {
+    updateSliderInput(session = session, inputId = "bkg_x",
+                      min = min(filedata_bkg()[1]),
+                      max = max(filedata_bkg()[1]),
+                      value = c(min(filedata_bkg()[1]),
+                                max(filedata_bkg()[1])))
+
+    updateSliderInput(session = session, inputId = "bkg_y",
+                      min = min(filedata_bkg()[2]),
+                      max = max(filedata_bkg()[2]),
+                      value = c(min(filedata_bkg()[2]),
+                                max(filedata_bkg()[2])))
+  }
+
+  #Fit background to data
+
+  output$bkg_plot <- renderPlot({
+  if (is.null(filedata_bkg())) {
+      # User has not uploaded a file yet
+      return(NULL)
+  }
+  bkg_out <- bkg(xrd = filedata_bkg(),
+                 lambda = input$bkg_lambda,
+                 hwi = input$bkg_hwi,
+                 it = input$bkg_it,
+                 int = input$bkg_int)
+
+  bkg_plot <- plot(bkg_out)
+
+  bkg_plot +
+  scale_x_continuous(limits = c(input$bkg_x[1], input$bkg_x[2])) +
+  scale_y_continuous(limits = c(input$bkg_y[1], input$bkg_y[2]))
+
+
+  })
+  })
+
+  #################################
+  ## TAB 4: Full pattern fitting
   #################################
 
   #Downloads of example sandstone data
@@ -355,7 +408,7 @@ shinyServer(function(input, output, session) {
 
 
   #################################
-  ## TAB 4: Results plotter
+  ## TAB 5: Results plotter
   #################################
 
   observe({
