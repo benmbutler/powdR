@@ -2,6 +2,7 @@
 library(shiny)
 library(powdR)
 library(plotly)
+library(shinyWidgets)
 
 data(minerals)
 data(soils)

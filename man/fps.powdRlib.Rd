@@ -4,14 +4,22 @@
 \alias{fps.powdRlib}
 \title{Full pattern summation}
 \usage{
-\method{fps}{powdRlib}(lib, smpl, refs, std, tth_align, align, tth_fps,
-  solver, obj, ...)
+\method{fps}{powdRlib}(lib, smpl, solver, obj, refs, std, tth_align, align,
+  tth_fps, ...)
 }
 \arguments{
 \item{lib}{A \code{powdRlib} object representing the reference library. Created using the
 \code{powdRlib} constructor function.}
 
 \item{smpl}{A data frame. First column is 2theta, second column is counts}
+
+\item{solver}{The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
+"CG" or "nnls")}. Default = \code{"BFGS"}.}
+
+\item{obj}{The objective function to minimise when "BFGS", "Nelder-Mead", or
+"CG" are used as the `solver` argument. One of \code{c("Delta", "R", "Rwp")}.
+Default = \code{"Rwp"}. See Chipera and Bish (2002) and page 247 of Bish and Post (1989)
+for definitions of these functions.}
 
 \item{refs}{A character string of reference pattern ID's from the specified library.
 The ID's must match ID's in the \code{lib$phases$phase_id} column.}
@@ -27,13 +35,6 @@ alignment (degrees). Default = 0.1.}
 
 \item{tth_fps}{A vector defining the minimum and maximum 2theta values to be used during
 full pattern summation. If not defined, then the full range is used.}
-
-\item{solver}{The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
-"CG")}. Default = "BFGS".}
-
-\item{obj}{The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
-Default = \code{"Rwp"}. See Chipera and Bish (2002) and page 247 of Bish and Post (1989)
-for definitions of these functions.}
 
 \item{...}{other arguments}
 }

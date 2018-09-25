@@ -1,7 +1,7 @@
 Package: powdR
 Type: Package
 Title: Full Pattern Summation of X-Ray Powder Diffraction Data
-Version: 0.1.0
+Version: 0.1.0.9000
 Date: 2018-09-13
 Authors@R: c(
   person("Benjamin", "Butler", email = "benjamin.butler@hutton.ac.uk",
@@ -25,8 +25,10 @@ Imports:
   plotly (>= 4.7.1),
   ggplot2 (>= 2.2.1),
   stats (>= 3.4.3),
-  ggpubr(>= 0.1.7),
-  shiny (>= 1.0.5)
+  ggpubr (>= 0.1.7),
+  shiny (>= 1.0.5),
+  nnls (>= 1.4),
+  shinyWidgets (>= 0.4.3)
 Suggests:
     knitr,
     rmarkdown

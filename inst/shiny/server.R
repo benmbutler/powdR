@@ -145,7 +145,7 @@ shinyServer(function(input, output, session) {
   )
 
   #Downloads of example granite data
-  output$download_soil_lime <- downloadHandler(
+  output$download_soil_granite <- downloadHandler(
 
     filename = function() {
       paste("granite_example_", Sys.Date(), ".xy", sep="")
@@ -166,24 +166,44 @@ shinyServer(function(input, output, session) {
     }
   )
 
+  output$selectOBJui <- renderUI({
+    if (input$selectSolver == "nnls") return(NULL)
+
+    selectInput(inputId = "selectOBJ",
+                label = "Choose the objective function to minimise",
+                choices = c("Rwp", "R", "Delta"))
+  })
+
   #Update the selectINPUT boxes in the full pattern fitting tab
   observe({
 
       x2 <- filedata3()
       x2 <- x2[[3]]
 
-      updateSelectInput(session, "selectPHASES",
-                        label = paste("Select the phases to use in the fitting. Multiple
-                                      phases can be selected using ctrl or shift."),
-                        choices = paste0(x2[[2]], ": ", x2[[1]]),
-                        selected = head(paste0(x2[[2]], ": ", x2[[1]]), 1))
+      output$selectPHASESui <- renderUI({
+        if (input$selectSolver == "nnls") return(NULL)
+
+        selectInput(inputId = "selectPHASES",
+                    label = "Select the phases to use in the fitting.",
+                    choices = paste0(x2[[2]], ": ", x2[[1]]),
+                    selected = head(paste0(x2[[2]], ": ", x2[[1]]), 1),
+                    multiple = TRUE,
+                    selectize = TRUE)
+      })
 
 
   })
 
   selectPHASESupdate <- reactive({
 
+    x2b <- filedata3()
+    x2b <- x2b[[3]]
+
+    if(input$selectSolver == "nnls") {
+      return(paste0(x2b[[2]], ": ", x2b[[1]]))
+    } else {
     input$selectPHASES
+    }
 
   })
 
@@ -245,12 +265,24 @@ shinyServer(function(input, output, session) {
 
         xrdlib2 <- as.list(filedata3())
 
+        if (input$selectSolver %in% c("Nelder-Mead", "BFGS", "CG")) {
+
         fps_out <- powdR::fps(smpl = smpl, lib = xrdlib2, tth_fps = input$tth,
                                   std = gsub(".*: ", "", input$selectINT),
                                   refs = gsub(".*: ", "", input$selectPHASES),
                                   align = input$align,
                                   obj = input$selectOBJ,
                                   solver = input$selectSolver)
+        } else {
+
+        fps_out <- powdR::fps(smpl = smpl, lib = xrdlib2, tth_fps = input$tth,
+                              std = gsub(".*: ", "", input$selectINT),
+                              refs = xrdlib2$phases$phase_id,
+                              align = input$align,
+                              obj = input$selectOBJ,
+                              solver = input$selectSolver)
+
+        }
 
     })
 
