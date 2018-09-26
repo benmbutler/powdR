@@ -4,8 +4,8 @@
 \alias{afps.powdRlib}
 \title{Automated full pattern summation}
 \usage{
-\method{afps}{powdRlib}(lib, smpl, solver, obj, std, tth_align, align,
-  tth_fps, ...)
+\method{afps}{powdRlib}(lib, smpl, solver, obj, std, amorphous, tth_align,
+  align, tth_fps, background, lld, amorphous_lld, ...)
 }
 \arguments{
 \item{lib}{A \code{powdRlib} object representing the reference library. Created using the
@@ -23,6 +23,9 @@ for definitions of these functions.}
 \item{std}{The phase ID (e.g. "QUA.1") to be used as internal
 standard. Must match an ID provided in the \code{phases} parameter.}
 
+\item{amorphous}{A character string of any phase id's that should be treated as amorphous. Each must
+match a phase_id in the phases table of `lib`.}
+
 \item{tth_align}{A vector defining the minimum and maximum 2theta values to be used during
 alignment. If not defined, then the full range is used.}
 
@@ -31,6 +34,17 @@ alignment (degrees). Default = 0.1.}
 
 \item{tth_fps}{A vector defining the minimum and maximum 2theta values to be used during
 automated full pattern summation. If not defined, then the full range is used.}
+
+\item{background}{a list of parameters used to fit a background to the data. Takes the form
+\code{list(lambda, hwi, it , int)}. If missing, the default used is
+\code{list(lambda = 0.5, hwi = 25, it = 50, int = round(nrow(smpl)/4, 0)).} To tune these parameters
+please see the \code{function}, or the background fitting tab of the \code{run_powdR} shiny app.}
+
+\item{lld}{Optional parameter used to tune the lower limit of dection computation.
+Must be greater than 0. Default = 0.3.}
+
+\item{amorphous_lld}{Optional parameter used to exclude amorphous phases if they are below this
+specified limit (percent). Must be between 0 and 100. Default = 0.}
 
 \item{...}{other arguments}
 }

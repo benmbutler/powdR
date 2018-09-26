@@ -2,6 +2,7 @@
 
 S3method(afps,powdRlib)
 S3method(fps,powdRlib)
+S3method(plot,powdRafps)
 S3method(plot,powdRbkg)
 S3method(plot,powdRfps)
 S3method(plot,powdRlib)
