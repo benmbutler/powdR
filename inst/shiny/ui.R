@@ -236,8 +236,99 @@ shinyUI(
                         ) # end fluidRow
                         ),
 
+
              #################################
-             ## TAB 5: RESULTS VIEWER
+             ## TAB 5:  Automated Full pattern summation
+             #################################
+             tabPanel("Automated full pattern summation",
+                      fluidRow(
+                        column(3, wellPanel(
+                          h3("1. Load a sample for quantification"),
+                          helpText("Must be .xy format (space separated)"),
+                          div(style="display: inline-block;vertical-align:top; width: 225px;",
+                              fileInput(inputId = "loadXYafps",
+                                        label = NULL,
+                                        multiple = FALSE,
+                                        accept = c(".xy", ".XY"))),
+                          div(style="display: inline-block;vertical-align:center; width: 0px;",
+                              dropdownButton(
+                                downloadLink(outputId = "download_soil_sand_afps",
+                                             label = "Sandstone_example.xy  "),
+                                downloadLink(outputId = "download_soil_lime_afps",
+                                             label = "Limestone_example.xy  "),
+                                downloadLink(outputId = "download_soil_granite_afps",
+                                             label = "Granite_example.xy  "),
+                                circle = FALSE, status = "danger", icon = icon("question"),
+                                width = "300px", size = "sm"
+                              )),
+                          h3("2. Load a reference library"),
+                          helpText("Must be a .Rdata powdRlib object"),
+                          div(style="display: inline-block;vertical-align:top; width: 225px;",
+                              fileInput(inputId = "loadLIBafps",
+                                        label = NULL,
+                                        multiple = FALSE,
+                                        accept = ".Rdata")),
+                          div(style="display: inline-block;vertical-align:center; width: 0px;",
+                              dropdownButton(
+                                downloadLink(outputId = "download_example_ref_afps",
+                                             label = "example_library.Rdata"),
+                                circle = FALSE, status = "danger", icon = icon("question"),
+                                width = "300px", size = "sm"
+                              )),
+                          h3("3. Select a solver"),
+                          helpText("Choose the optimisation routine"),
+                          selectInput(inputId = "selectSolver_afps",
+                                      label = NULL,
+                                      choices = c("BFGS", "Nelder-Mead", "CG")),
+                          selectInput(inputId = "selectOBJ_afps",
+                                      label = NULL,
+                                      choices = c("Rwp", "R", "Delta")),
+                          tags$hr(),
+                          h3("4. Select phases"),
+                          helpText("Choose an internal standard for peak alignment."),
+                          selectInput(inputId = "selectINT_afps",
+                                      label = NULL,
+                                      choices = c("")),
+                          tags$hr(),
+                          h3("5. Adjust fit parameters"),
+                          helpText(withMathJax("Adjust the 2\\(\\theta\\) range for
+                                               full pattern summation")),
+                          sliderInput("tth_afps", label = NULL,
+                                      min = 2, max = 75,
+                                      value = c(0, 100), step = 0.1),
+                          helpText("Adjust the alignment parameter"),
+                          sliderInput("align_afps", label = NULL, min = 0.01,
+                                      max = 0.5,
+                                      value = c(0.1))
+                          )),
+                        column(9, wellPanel(
+                          div(style="display: inline-block;vertical-align:bottom; width: 300px;",
+                              h3("6. Full pattern summation")),
+                          div(style="display: inline-block;vertical-align:bottom; width: 300px;",
+                              actionButton("goButton_afps", "Click to start computation")),
+                          tags$hr(),
+                          h5("Once computation has finished, the results will be
+                             tabulated and plotted below. Results can then be exported
+                             using download buttons at the bottom of this page."),
+                          tags$hr(),
+                          dataTableOutput("contents_afps"),
+                          tags$hr(),
+                          plotlyOutput("line_afps", width = "auto", height = 1000),
+                          tags$hr(),
+                          h3("7. Download computed fit"),
+                          downloadButton(outputId = "download_fit_afps",
+                                         label = "Download fitted patterns (.csv)"),
+                          downloadButton(outputId = "download_mins_afps",
+                                         label = "Download phase concentrations (.csv)"),
+                          downloadButton(outputId = "download_fps_afps",
+                                         label = "Download in powdRfps format (.Rdata)")
+                        ))
+             ) # end fluidRow
+             ),
+
+
+             #################################
+             ## TAB 6: RESULTS VIEWER
              #################################
 
              tabPanel("Results Viewer",

@@ -30,8 +30,9 @@
                    "phase_percent" = as.numeric(phase_percent),
                    "rir" = as.numeric(rir))
 
-  #Remove any amorphous phases
-  if (length(amorphous) > 0) {
+  #Remove any amorphous phases if a vector is specified and if any phases in
+  #that vector have made it to this point!
+  if (length(amorphous) > 0 & length(which(df$phase_id %in% amorphous)) > 0) {
   #Extract these so that they can be added at the end
   df_amorphous <- df[which(df$phase_id %in% amorphous), ]
   x_amorphous <- x[which(names(x) %in% amorphous)]

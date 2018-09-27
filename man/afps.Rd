@@ -49,16 +49,19 @@ data(soils)
 afps_sand <-  afps(lib = minerals,
                  smpl = soils$sandstone,
                  std = "QUA.1",
+                 amorphous = "ORG",
                  align = 0.2)
 
 afps_lime <- afps(lib = minerals,
                 smpl = soils$limestone,
                 std = "QUA.1",
+                amorphous = "ORG",
                 align = 0.2)
 
 afps_granite <- afps(lib = minerals,
                    smpl = soils$granite,
                    std = "QUA.1",
+                   amorphous = "ORG",
                    align = 0.2)
 }
 }
