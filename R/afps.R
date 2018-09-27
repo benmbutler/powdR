@@ -239,8 +239,8 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
   }
 
   #Make sure that the amorphous phases identified are contained within the reference library
-  if (!amorphous %in% lib$phases$phase_id) {
-    stop("The phases you have specified as amorphous are not in the reference library")
+  if (!length(amorphous) == length(which(amorphous %in% lib$phases$phase_id))) {
+    stop("One or more of the phases you have specified as amorphous are not in the reference library")
   }
 
   #if only one phase is being used, make sure it's a dataframe and named correctly

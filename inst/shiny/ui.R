@@ -201,15 +201,15 @@ shinyUI(
                                       choices = c("")),
                           tags$hr(),
                           h3("5. Adjust fit parameters"),
+                          helpText("Adjust the alignment parameter"),
+                          sliderInput("align", label = NULL, min = 0.01,
+                                      max = 0.5,
+                                      value = c(0.1)),
                           helpText(withMathJax("Adjust the 2\\(\\theta\\) range for
                                                          full pattern summation")),
                           sliderInput("tth", label = NULL,
                                       min = 2, max = 75,
-                                      value = c(0, 100), step = 0.1),
-                          helpText("Adjust the alignment parameter"),
-                          sliderInput("align", label = NULL, min = 0.01,
-                                      max = 0.5,
-                                      value = c(0.1))
+                                      value = c(0, 100), step = 0.1)
                         )),
                         column(9, wellPanel(
                           div(style="display: inline-block;vertical-align:bottom; width: 300px;",
@@ -289,19 +289,33 @@ shinyUI(
                           selectInput(inputId = "selectINT_afps",
                                       label = NULL,
                                       choices = c("")),
+                          helpText("Choose which phases should be treated as amorphous."),
+                          selectInput(inputId = "selectAMORPH_afps",
+                                      label = NULL,
+                                      choices = c(""),
+                                      multiple = TRUE,
+                                      selectize = TRUE),
                           tags$hr(),
                           h3("5. Adjust fit parameters"),
+                          helpText("Adjust the alignment parameter"),
+                          sliderInput("align_afps", label = NULL, min = 0.01,
+                                      max = 0.5,
+                                      value = c(0.1)),
                           helpText(withMathJax("Adjust the 2\\(\\theta\\) range for
                                                full pattern summation")),
                           sliderInput("tth_afps", label = NULL,
                                       min = 2, max = 75,
                                       value = c(0, 100), step = 0.1),
-                          helpText("Adjust the alignment parameter"),
-                          sliderInput("align_afps", label = NULL, min = 0.01,
-                                      max = 0.5,
-                                      value = c(0.1)),
+                          helpText("Tune the limit of detection parameter for crystalline phases"),
+                          sliderInput("lld_afps", label = NULL,
+                                      min = 0, max = 2,
+                                      value = 0.3, step = 0.1),
+                          helpText("Remove amorphous phases below this limit (percent)"),
+                          sliderInput("amorph_lld_afps", label = NULL,
+                                      min = 0, max = 100,
+                                      value = 2, step = 1),
                           div(style="display: inline-block;vertical-align:center; width: 300px;",
-                              h3("5. Background parameters")),
+                              h3("6. Background parameters")),
                           div(style="display: inline-block;vertical-align:center; width: 0px;",
                               dropdownButton(
                                 helpText("Tune the background parameters"),
@@ -318,14 +332,14 @@ shinyUI(
                                             min = 10, max = 2000,
                                             value = 1000, step = 10),
                                 circle = FALSE, status = "danger", icon = icon("sliders"),
-                                width = "300px", size = "lg"
+                                width = "300px", size = "sm"
                               )),
                           helpText("Use the dropdown box to tune the background parameters. The
                                    default setting are usually adequate.")
                           )),
                         column(9, wellPanel(
                           div(style="display: inline-block;vertical-align:bottom; width: 300px;",
-                              h3("6. Auotmated full pattern summation")),
+                              h3("7. Automated full pattern summation")),
                           div(style="display: inline-block;vertical-align:bottom; width: 300px;",
                               actionButton("goButton_afps", "Click to start computation")),
                           tags$hr(),
@@ -337,12 +351,12 @@ shinyUI(
                           tags$hr(),
                           plotlyOutput("line_afps", width = "auto", height = 1000),
                           tags$hr(),
-                          h3("7. Download computed fit"),
+                          h3("8. Download computed fit"),
                           downloadButton(outputId = "download_fit_afps",
                                          label = "Download fitted patterns (.csv)"),
                           downloadButton(outputId = "download_mins_afps",
                                          label = "Download phase concentrations (.csv)"),
-                          downloadButton(outputId = "download_fps_afps",
+                          downloadButton(outputId = "download_afps",
                                          label = "Download in powdRfps format (.Rdata)")
                         ))
              ) # end fluidRow

@@ -303,7 +303,9 @@ shinyServer(function(input, output, session) {
       xrd_uploaded <- as.list(filedata3())
       updateSliderInput(session = session, inputId = "tth",
                         min = round(min(as.numeric(xrd_uploaded[[2]])) + input$align, 2),
-                        max = round(max(as.numeric(xrd_uploaded[[2]])) - input$align, 2))
+                        max = round(max(as.numeric(xrd_uploaded[[2]])) - input$align, 2),
+                        value = c(round(min(as.numeric(xrd_uploaded[[2]])) + input$align, 2),
+                                  round(max(as.numeric(xrd_uploaded[[2]])) - input$align, 2)))
     }
 
   })
@@ -408,7 +410,206 @@ shinyServer(function(input, output, session) {
 
 
   #################################
-  ## TAB 5: Results plotter
+  ## TAB 5: Automated full pattern fitting
+  #################################
+
+  #Downloads of example sandstone data
+  output$download_soil_sand_afps <- downloadHandler(
+
+    filename = function() {
+      paste("sandstone_example_", Sys.Date(), ".xy", sep="")
+    },
+    content = function(file) {
+      write.table(soils$sandstone, file, sep = " ", col.names = FALSE, row.names = FALSE)
+    }
+  )
+
+  #Downloads of example limestone data
+  output$download_soil_lime_afps <- downloadHandler(
+
+    filename = function() {
+      paste("limestone_example_", Sys.Date(), ".xy", sep="")
+    },
+    content = function(file) {
+      write.table(soils$limestone, file, sep = " ", col.names = FALSE, row.names = FALSE)
+    }
+  )
+
+  #Downloads of example granite data
+  output$download_soil_granite_afps <- downloadHandler(
+
+    filename = function() {
+      paste("granite_example_", Sys.Date(), ".xy", sep="")
+    },
+    content = function(file) {
+      write.table(soils$granite, file, sep = " ", col.names = FALSE, row.names = FALSE)
+    }
+  )
+
+  #Download an example reference library
+  output$download_example_ref_afps <- downloadHandler(
+
+    filename = "example_library.Rdata",
+    content = function(con) {
+      assign("example_library", minerals)
+
+      save(list="example_library", file=con)
+    }
+  )
+
+
+  #Load the .xy sample file
+  filedata2_afps <- reactive({
+    infile2_afps <- input$loadXYafps
+    if (is.null(infile2_afps)) {
+      # User has not uploaded a file yet
+      return(NULL)
+    }
+    read.csv(infile2_afps$datapath, sep = " ", header = FALSE)
+  })
+
+  #If a library has been uploaded, then create a reactive library
+  filedata3_afps <- reactive({
+    infile3_afps <- input$loadLIBafps
+    if (is.null(infile3_afps)) {
+      # User has not uploaded a file yet
+      return(NULL)
+    }
+    bar <- load(infile3_afps$datapath)
+    fd3_afps <- get(bar)
+    return(fd3_afps)
+  })
+
+  #update the selection of internal standard
+  observe({
+
+    x2_afps <- filedata3_afps()
+    x2_afps <- x2_afps[[3]]
+
+    updateSelectInput(session, "selectINT_afps",
+                      label = paste("Choose an internal standard for peak alignment."),
+                      choices = paste0(x2_afps[[2]], ": ", x2_afps[[1]]),
+                      selected = head(paste0(x2_afps[[2]], ": ", x2_afps[[1]]), 1)
+                      )
+
+    updateSelectInput(session, "selectAMORPH_afps",
+                      label = paste("Choose which phases should be treated as amorphous."),
+                      choices = paste0(x2_afps[[2]], ": ", x2_afps[[1]]),
+                      selected = head(paste0(x2_afps[[2]], ": ", x2_afps[[1]]), 1)
+                      )
+
+  })
+
+  #Use the selected library to adjust the 2theta slider
+  observe({
+
+    if(!is.null(input$loadLIBafps)) {
+      xrd_uploaded_afps <- as.list(filedata3_afps())
+      updateSliderInput(session = session, inputId = "tth_afps",
+                        min = round(min(as.numeric(xrd_uploaded_afps[[2]])) + input$align_afps, 2),
+                        max = round(max(as.numeric(xrd_uploaded_afps[[2]])) - input$align_afps, 2),
+                        value = c(round(min(as.numeric(xrd_uploaded_afps[[2]])) + input$align_afps, 2),
+                                  round(max(as.numeric(xrd_uploaded_afps[[2]])) - input$align_afps, 2)))
+    }
+
+  })
+
+  #FULL PATTERN FITTING
+
+  observe({
+
+    afps_reactive <- eventReactive(input$goButton_afps, {
+
+      smpl_afps <- filedata2_afps()
+
+      xrdlib2_afps <- as.list(filedata3_afps())
+
+        afps_out <- powdR::afps(smpl = smpl, lib = xrdlib2_afps, tth_fps = input$tth_afps,
+                              std = gsub(".*: ", "", input$selectINT_afps),
+                              amorphous = gsub(".*: ", "", input$selectAMORPH_afps),
+                              align = input$align_afps,
+                              obj = input$selectOBJ_afps,
+                              solver = input$selectSolver_afps,
+                              background = list("lambda" = input$bkg_lambda,
+                                                "hwi" = input$bkg_hwi,
+                                                "it" = input$bkg_it,
+                                                "int" = input$bkg_int),
+                              lld = input$lld_afps,
+                              amorphous_lld = input$amorph_lld_afps)
+
+    })
+
+
+    afps_out <- afps_reactive()
+
+    output$contents_afps <- renderDataTable({
+
+      afps_table <- data.frame(afps_out["phases_summary"])
+      names(afps_table) <- c("PHASE_NAME", "PHASE_PERCENT")
+      afps_table$PHASE_PERCENT <- round(afps_table$PHASE_PERCENT, 2)
+
+      afps_table
+
+    }, options = list(lengthMenu = c(5, 10, 15), pageLength = 10))
+
+
+
+    output$line_afps <- plotly::renderPlotly({
+
+      plot(afps_out, interactive = TRUE)
+
+    })
+
+
+    #Export the mineral concentrations to a .csv file
+    minout_afps <- afps_out
+    minout_afps <- data.frame(minout_afps[["phases"]])
+    names(minout_afps) <- c("PHASE_ID", "PHASE_NAME", "PERCENT")
+
+    output$download_mins_afps <- downloadHandler(
+
+      filename = function() {
+        paste("minerals-", Sys.Date(), ".csv", sep="")
+      },
+      content = function(file) {
+        write.table(minout_afps, file, sep = ",", col.names = TRUE, row.names = FALSE)
+      }
+    )
+
+    #Export the weighted patterns
+    fitout_afps <- afps_out
+    fitout_afps <- data.frame("TTH" = fitout_afps[["tth"]],
+                         "MEASURED" = fitout_afps[["measured"]],
+                         "FITTED" = fitout_afps[["fitted"]],
+                         "BACKGROUND" = fitout_afps[["background"]],
+                         fitout[["weighted_pure_patterns"]])
+
+    output$download_fit_afps <- downloadHandler(
+
+      filename = function() {
+        paste("fit-", Sys.Date(), ".csv", sep="")
+      },
+      content = function(file) {
+        write.table(fitout_afps, file, sep = ",", col.names = TRUE, row.names = FALSE)
+      }
+    )
+
+    #Download the whole fps output as .Rdata format
+    output$download_afps <- downloadHandler(
+
+      filename = "afps.Rdata",
+      content = function(con) {
+        assign("afps_output", afps_reactive())
+
+        save(list="afps_output", file=con)
+      }
+    )
+
+  })
+
+
+  #################################
+  ## TAB 6: Results plotter
   #################################
 
   observe({
