@@ -93,6 +93,10 @@
   dfs <- data.frame(stats::aggregate(phase_percent ~ phase_name, data = df, FUN = sum),
                     stringsAsFactors = FALSE)
 
+  #Ensure that the phase concentrations are rounded to 4 dp
+  df$phase_percent <- round(df$phase_percent, 4)
+  dfs$phase_percent <- round(dfs$phase_percent, 4)
+
   out <- list("df" = df, "dfs" = dfs)
 
   return(out)
@@ -388,31 +392,12 @@ x <- o$par
 # Remove negative parameters
 #-----------------------------------------------
 
-#setup an initial negpar that is negative so that the following while loop will
-#run until no negative parameters are found
+remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
+                              solver = solver, obj = obj)
 
-negpar <- min(x)
+x <- remove_neg_out[[1]]
+lib <- remove_neg_out[[2]]
 
-while (negpar < 0) {
-  #use the most recently optimised coefficients
-  x <- o$par
-  #check for any negative parameters
-  omit <- which(x < 0)
-
-  #remove the column from the library that contains the identified data
-  if (length(which(x < 0)) > 0) {
-    lib$xrd <- lib$xrd[, -omit]
-    x <- x[-omit]
-  }
-
-  cat("\n-Reoptimising to remove negative coefficients...")
-  o <- stats::optim(par = x, .fullpat,
-             method = solver, pure_patterns = lib$xrd,
-             sample_pattern = smpl[, 2], obj = obj)
-  x <- o$par
-  #identify whether any parameters are negative for the next iteration
-  negpar <- min(x)
-}
 } else {
 
   cat("\n-Applying non-negative least squares")

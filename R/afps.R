@@ -323,35 +323,14 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
 
     x <- o$par
 
-    #-----------------------------------------------
-    # Remove negative parameters
-    #-----------------------------------------------
 
-    #setup an initial negpar that is negative so that the following while loop will
-    #run until no negative parameters are found
 
-    negpar <- min(x)
+  #Remove negative parameters
+  remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
+                                solver = solver, obj = obj)
 
-    while (negpar < 0) {
-      #use the most recently optimised coefficients
-      x <- o$par
-      #check for any negative parameters
-      omit <- which(x < 0)
-
-      #remove the column from the library that contains the identified data
-      if (length(which(x < 0)) > 0) {
-        lib$xrd <- lib$xrd[, -omit]
-        x <- x[-omit]
-      }
-
-      cat("\n-Reoptimising to remove negative coefficients...")
-      o <- stats::optim(par = x, .fullpat,
-                        method = solver, pure_patterns = lib$xrd,
-                        sample_pattern = smpl[, 2], obj = obj)
-      x <- o$par
-      #identify whether any parameters are negative for the next iteration
-      negpar <- min(x)
-    }
+  x <- remove_neg_out[[1]]
+  lib <- remove_neg_out[[2]]
 
 
   #Now that some negative parameters have been removed, the detection limits
@@ -380,89 +359,70 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
 
   }
 
+  #Calculate mineral concentrations so that I can throw away any amorphous
+  #phases below detection limit
 
-   #Calculate mineral concentrations so that I can throw away any amorphous
-   #phases below detection limit
+  min_concs <- .qminerals(x = x, xrd_lib = lib)
 
-    min_concs <- .qminerals(x = x, xrd_lib = lib)
-
-    df <- min_concs[[1]]
-    dfs <- min_concs[[2]]
-
-
-    #######
-    #Remove amorphous phases if below amorphous_lld
-
-    if(length(amorphous) > 0) {
-
-      remove_amorphous <- which(names(x) %in% df$phase_id[which(df$phase_id %in% amorphous &
-                                                                df$phase_percent < amorphous_lld)])
-
-      while (length(remove_amorphous) > 0) {
-
-        cat("\n-Some amorphous phases below the amorphous_lld limit. Removing them and reoptimising")
-        #Remove amorphous phase from library
-        lib$xrd <- lib$xrd[-remove_amorphous]
-        x <- x[-remove_amorphous]
-
-        #reoptimise
-        o <- stats::optim(par = x, .fullpat,
-                          method = solver, pure_patterns = lib$xrd,
-                          sample_pattern = smpl[, 2], obj = obj)
-        x <- o$par
-
-        #Recompute percentages
-        min_concs <- .qminerals(x = x, xrd_lib = lib)
-        df <- min_concs[[1]]
-        dfs <- min_concs[[2]]
-
-        #Calculate the fitted pattern and resids again
-
-        fitted_pattern <- apply(sweep(as.matrix(lib$xrd), 2, x, "*"), 1, sum)
-        resid_x <- smpl[, 2] - fitted_pattern
-
-        remove_amorphous <- which(names(x) %in% df$phase_id[which(df$phase_id %in% amorphous &
-                                                                    df$phase_percent < amorphous_lld)])
-      }
-    }
+  df <- min_concs[[1]]
+  dfs <- min_concs[[2]]
 
 
-    #Remove negative parameters again because some can creep in late-on
-    negpar <- min(o$par)
+  #######
+  #Remove amorphous phases if below amorphous_lld
 
-    if (negpar < 0) {
+    # if(length(amorphous) > 0) {
+    #
+    #   remove_amorphous <- which(names(x) %in% df$phase_id[which(df$phase_id %in% amorphous &
+    #                                                             df$phase_percent < amorphous_lld)])
+    #
+    #   while (length(remove_amorphous) > 0) {
+    #
+    #     cat("\n-Some amorphous phases below the amorphous_lld limit. Removing them and reoptimising")
+    #     #Remove amorphous phase from library
+    #     lib$xrd <- lib$xrd[-remove_amorphous]
+    #     x <- x[-remove_amorphous]
+    #
+    #     #reoptimise
+    #     o <- stats::optim(par = x, .fullpat,
+    #                       method = solver, pure_patterns = lib$xrd,
+    #                       sample_pattern = smpl[, 2], obj = obj)
+    #     x <- o$par
+    #
+    #     #Recompute percentages
+    #     min_concs <- .qminerals(x = x, xrd_lib = lib)
+    #     df <- min_concs[[1]]
+    #     dfs <- min_concs[[2]]
+    #
+    #     #Calculate the fitted pattern and resids again
+    #
+    #     fitted_pattern <- apply(sweep(as.matrix(lib$xrd), 2, x, "*"), 1, sum)
+    #     resid_x <- smpl[, 2] - fitted_pattern
+    #
+    #     remove_amorphous <- which(names(x) %in% df$phase_id[which(df$phase_id %in% amorphous &
+    #                                                                 df$phase_percent < amorphous_lld)])
+    #   }
+    # }
 
-      while (negpar < 0) {
-        cat("\n-Reoptimising to remove negative coefficients.")
-        #use the most recently optimised coefficients
-        x <- o$par
-        #check for any negative parameters
-        remove_index <- which(x < 0)
+  remove_amorphous_out <- .remove_amorphous(x = x,
+                                            amorphous = amorphous,
+                                            amorphous_lld = amorphous_lld,
+                                            df = df,
+                                            lib = lib,
+                                            solver = solver,
+                                            smpl = smpl,
+                                            obj = obj)
 
-        #remove the column from the library that contains the identified data
-        if (length(remove_index) > 0) {
-          lib$xrd <- lib$xrd[, -remove_index]
-          x <- x[-remove_index]
-        }
+  x <- remove_amorphous_out[[1]]
+  lib <- remove_amorphous_out[[2]]
 
-        o <- stats::optim(par = x, .fullpat,
-                          method = solver, pure_patterns = lib$xrd,
-                          sample_pattern = smpl[, 2], obj = obj)
 
-        x <- o$par
-        #identify whether any parameters are negative for the next iteration
-        negpar <- min(x)
-      }
+  #Remove negative parameters again because some can creep in late-on
+  remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
+                                  solver = solver, obj = obj)
 
-      #Recompute the mineral concentrations and fitted patterns
-      #min_concs <- qminerals(x = x, xrd.lib = lib)
-      #df <- min_concs[[1]]
-      #dfs <- min_concs[[2]]
-
-      #fitted_pattern <- apply(sweep(as.matrix(lib$xrd), 2, x, "*"), 1, sum)
-      #resid_x <- smpl[, 2] - fitted_pattern
-
-  }
+  x <- remove_neg_out[[1]]
+  lib <- remove_neg_out[[2]]
 
   #compute fitted pattern and residuals
   fitted_pattern <- apply(sweep(as.matrix(lib$xrd), 2, x, "*"), 1, sum)
