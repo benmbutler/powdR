@@ -38,16 +38,19 @@
 #' afps_sand <-  afps(lib = minerals,
 #'                  smpl = soils$sandstone,
 #'                  std = "QUA.1",
+#'                  amorphous = "ORG",
 #'                  align = 0.2)
 #'
 #' afps_lime <- afps(lib = minerals,
 #'                 smpl = soils$limestone,
 #'                 std = "QUA.1",
+#'                 amorphous = "ORG",
 #'                 align = 0.2)
 #'
 #' afps_granite <- afps(lib = minerals,
 #'                    smpl = soils$granite,
 #'                    std = "QUA.1",
+#'                    amorphous = "ORG",
 #'                    align = 0.2)
 #' }
 #' @references
@@ -127,19 +130,22 @@ afps <- function(lib, ...) {
 #' #the whole library can be used at once to get an
 #' #estimate of the phases within each sample.
 #' \dontrun{
-#' fps_sand <-  fps(lib = minerals,
+#' afps_sand <-  afps(lib = minerals,
 #'                  smpl = soils$sandstone,
 #'                  std = "QUA.1",
+#'                  amorphous = "ORG",
 #'                  align = 0.2)
 #'
-#' fps_lime <- fps(lib = minerals,
+#' afps_lime <- afps(lib = minerals,
 #'                 smpl = soils$limestone,
 #'                 std = "QUA.1",
+#'                 amorphous = "ORG",
 #'                 align = 0.2)
 #'
-#' fps_granite <- fps(lib = minerals,
+#' afps_granite <- afps(lib = minerals,
 #'                    smpl = soils$granite,
 #'                    std = "QUA.1",
+#'                    amorphous = "ORG",
 #'                    align = 0.2)
 #' }
 #' @references
