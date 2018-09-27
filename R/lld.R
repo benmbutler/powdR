@@ -30,6 +30,9 @@
                    "phase_percent" = as.numeric(phase_percent),
                    "rir" = as.numeric(rir))
 
+  #create an x_amorphous vector that will be used later in a condition
+  x_amorphous <- c()
+
   #Remove any amorphous phases if a vector is specified and if any phases in
   #that vector have made it to this point!
   if (length(amorphous) > 0 & length(which(df$phase_id %in% amorphous)) > 0) {
@@ -132,7 +135,7 @@
   }
 
   #Lastly add on the amorphous phases that were held behind
-  if(length(amorphous) > 0) {
+  if(length(amorphous) > 0 & length(x_amorphous > 0)) {
   x_ordered <- c(x_ordered, x_amorphous)
   x_ordered <- x_ordered[order(names(x_ordered))]
 

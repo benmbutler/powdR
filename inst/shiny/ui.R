@@ -299,11 +299,33 @@ shinyUI(
                           helpText("Adjust the alignment parameter"),
                           sliderInput("align_afps", label = NULL, min = 0.01,
                                       max = 0.5,
-                                      value = c(0.1))
+                                      value = c(0.1)),
+                          div(style="display: inline-block;vertical-align:center; width: 300px;",
+                              h3("5. Background parameters")),
+                          div(style="display: inline-block;vertical-align:center; width: 0px;",
+                              dropdownButton(
+                                helpText("Tune the background parameters"),
+                                sliderInput("lambda", label = "lambda",
+                                            min = 0.1, max = 10,
+                                            value = 0.5, step = 0.1),
+                                sliderInput("hwi", label = "hwi",
+                                            min = 10, max = 100,
+                                            value = 25, step = 1),
+                                sliderInput("it", label = "it",
+                                            min = 2, max = 75,
+                                            value = 50, step = 1),
+                                sliderInput("int", label = "int",
+                                            min = 10, max = 2000,
+                                            value = 1000, step = 10),
+                                circle = FALSE, status = "danger", icon = icon("sliders"),
+                                width = "300px", size = "lg"
+                              )),
+                          helpText("Use the dropdown box to tune the background parameters. The
+                                   default setting are usually adequate.")
                           )),
                         column(9, wellPanel(
                           div(style="display: inline-block;vertical-align:bottom; width: 300px;",
-                              h3("6. Full pattern summation")),
+                              h3("6. Auotmated full pattern summation")),
                           div(style="display: inline-block;vertical-align:bottom; width: 300px;",
                               actionButton("goButton_afps", "Click to start computation")),
                           tags$hr(),
