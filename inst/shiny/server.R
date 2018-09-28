@@ -524,7 +524,7 @@ shinyServer(function(input, output, session) {
 
       xrdlib2_afps <- as.list(filedata3_afps())
 
-        afps_out <- powdR::afps(smpl = smpl, lib = xrdlib2_afps, tth_fps = input$tth_afps,
+        afps_out <- powdR::afps(smpl = smpl_afps, lib = xrdlib2_afps, tth_fps = input$tth_afps,
                               std = gsub(".*: ", "", input$selectINT_afps),
                               amorphous = gsub(".*: ", "", input$selectAMORPH_afps),
                               align = input$align_afps,
@@ -582,7 +582,7 @@ shinyServer(function(input, output, session) {
                          "MEASURED" = fitout_afps[["measured"]],
                          "FITTED" = fitout_afps[["fitted"]],
                          "BACKGROUND" = fitout_afps[["background"]],
-                         fitout[["weighted_pure_patterns"]])
+                         fitout_afps[["weighted_pure_patterns"]])
 
     output$download_fit_afps <- downloadHandler(
 
