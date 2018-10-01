@@ -95,6 +95,8 @@ afps <- function(lib, ...) {
 #' alignment. If not defined, then the full range is used.
 #' @param align The maximum shift that is allowed during initial 2theta
 #' alignment (degrees). Default = 0.1.
+#' @param shift The maximum shift (degrees 2theta) that is allowed during the grid search phases selected
+#' from the non-negative least squares. Default = 0.05).
 #' @param tth_fps A vector defining the minimum and maximum 2theta values to be used during
 #' automated full pattern summation. If not defined, then the full range is used.
 #' @param background a list of parameters used to fit a background to the data. Takes the form
@@ -163,7 +165,7 @@ afps <- function(lib, ...) {
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
 afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
-                         tth_align, align, tth_fps, background, lld,
+                         tth_align, align, shift, tth_fps, background, lld,
                          amorphous_lld, ...) {
 
   if(missing(amorphous)) {
@@ -180,6 +182,11 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
   if(missing(align)) {
     cat("\n-Using default alignment of 0.1")
     align = 0.1
+  }
+
+  if(missing(shift)) {
+    cat("\n-Using default shift of 0.05")
+    shift = 0.05
   }
 
   if(missing(solver)) {
@@ -328,6 +335,35 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
                       sample_pattern = smpl[, 2], obj = obj)
 
     x <- o$par
+
+
+  #--------------------------------------------
+  #Grid-search shifting
+  #--------------------------------------------
+
+  #Alignment and then another optimisation ONLY if the shift parameter
+  #is included
+
+  if(shift > 0) {
+
+   fpf_aligned <- .shift(smpl = smpl,
+                         lib = lib,
+                         max_shift = shift,
+                         x = x)
+
+    smpl <- fpf_aligned[["smpl"]]
+    lib$xrd <- data.frame(fpf_aligned[["lib"]])
+    lib$tth <- smpl[,1]
+
+    #Re-optimise after shifts
+
+    o <- stats::optim(par = x, .fullpat,
+                      method = solver, pure_patterns = lib$xrd,
+                      sample_pattern = smpl[, 2], obj = obj)
+    x <- o$par
+
+    #return(list("x" = x, "smpl" = smpl, "lib" = lib))
+  }
 
 
 
