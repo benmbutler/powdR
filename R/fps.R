@@ -188,7 +188,7 @@ fps <- function(lib, ...) {
 #' \code{powdRlib} constructor function.
 #' @param smpl A data frame. First column is 2theta, second column is counts
 #' @param solver The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
-#' "CG" or "nnls")}. Default = \code{"BFGS"}.
+#' "CG" or "NNLS")}. Default = \code{"BFGS"}.
 #' @param obj The objective function to minimise when "BFGS", "Nelder-Mead", or
 #' "CG" are used as the `solver` argument. One of \code{c("Delta", "R", "Rwp")}.
 #' Default = \code{"Rwp"}. See Chipera and Bish (2002) and page 247 of Bish and Post (1989)
@@ -295,8 +295,8 @@ fps.powdRlib <- function(lib, smpl, solver, obj, refs, std,
   }
 
   #Make only "Nelder-Mead", "BFGS", or "CG" or "NNLS" optional for the solver
-  if (!solver %in% c("Nelder-Mead", "BFGS", "CG", "nnls")) {
-    stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG' or 'nnls'")
+  if (!solver %in% c("Nelder-Mead", "BFGS", "CG", "NNLS")) {
+    stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG' or 'NNLS'")
   }
 
   #Make sure that the phase identified as the internal standard is contained within the reference library

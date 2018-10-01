@@ -313,7 +313,7 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
   }
 
   #--------------------------------------------
-  #Initial nnls to remove some samples
+  #Initial NNLS to remove some samples
   #--------------------------------------------
 
   cat("\n-Applying non-negative least squares")
@@ -356,7 +356,7 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
     lib$tth <- smpl[,1]
 
     #Re-optimise after shifts
-
+    cat("\n-Reoptimising after shifting data")
     o <- stats::optim(par = x, .fullpat,
                       method = solver, pure_patterns = lib$xrd,
                       sample_pattern = smpl[, 2], obj = obj)

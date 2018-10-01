@@ -220,7 +220,7 @@ shinyServer(function(input, output, session) {
   )
 
   output$selectOBJui <- renderUI({
-    if (input$selectSolver == "nnls") return(NULL)
+    if (input$selectSolver == "NNLS") return(NULL)
 
     selectInput(inputId = "selectOBJ",
                 label = "Choose the objective function to minimise",
@@ -234,7 +234,7 @@ shinyServer(function(input, output, session) {
       x2 <- x2[[3]]
 
       output$selectPHASESui <- renderUI({
-        if (input$selectSolver == "nnls") return(NULL)
+        if (input$selectSolver == "NNLS") return(NULL)
 
         selectInput(inputId = "selectPHASES",
                     label = "Select the phases to use in the fitting.",
@@ -252,7 +252,7 @@ shinyServer(function(input, output, session) {
     x2b <- filedata3()
     x2b <- x2b[[3]]
 
-    if(input$selectSolver == "nnls") {
+    if(input$selectSolver == "NNLS") {
       return(paste0(x2b[[2]], ": ", x2b[[1]]))
     } else {
     input$selectPHASES
@@ -528,6 +528,7 @@ shinyServer(function(input, output, session) {
                               std = gsub(".*: ", "", input$selectINT_afps),
                               amorphous = gsub(".*: ", "", input$selectAMORPH_afps),
                               align = input$align_afps,
+                              shift = input$shift_afps,
                               obj = input$selectOBJ_afps,
                               solver = input$selectSolver_afps,
                               background = list("lambda" = input$bkg_lambda,
