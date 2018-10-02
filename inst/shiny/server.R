@@ -64,7 +64,7 @@ shinyServer(function(input, output, session) {
       paste("xrd_example_", Sys.Date(), ".csv", sep="")
     },
     content = function(file) {
-      write.table(minerals_xrd, file, sep = ",", col.names = TRUE, row.names = FALSE)
+      write.table(data(minerals_xrd), file, sep = ",", col.names = TRUE, row.names = FALSE)
     }
   )
 
@@ -74,7 +74,7 @@ shinyServer(function(input, output, session) {
       paste("phase_info_example_", Sys.Date(), ".csv", sep="")
     },
     content = function(file) {
-      write.table(minerals_phases, file, sep = ",", col.names = TRUE, row.names = FALSE)
+      write.table(data(minerals_phases), file, sep = ",", col.names = TRUE, row.names = FALSE)
     }
   )
 
@@ -101,15 +101,20 @@ shinyServer(function(input, output, session) {
   if(class(lib_plotter_load()) == "powdRlib") {
   updateSelectInput(session, "selectPHASES_plotter",
                     label = paste("Choose phases from the library to plot."),
-                    choices = lib_plotter_load()[[3]][[1]],
-                    selected = head(lib_plotter_load()[[3]][[1]], 1))
+                    choices = paste0(lib_plotter_load()[[3]][[2]], ": ", lib_plotter_load()[[3]][[1]]))
   }
 
   #Plot phases in the library
   output$lib_plot <- plotly::renderPlotly({
 
-  if(class(lib_plotter_load()) == "powdRlib") {
-    plot(lib_plotter_load(), patterns = input$selectPHASES_plotter, interactive = TRUE)
+  #Subset the library based on the selection
+  lib_sub <- lib_plotter_load()
+  lib_sub$xrd <- lib_sub$xrd[,which(names(lib_sub$xrd) %in% gsub(".*: ", "", input$selectPHASES_plotter))]
+  lib_sub$phases <- lib_sub$phases[which(lib_sub$phases$phase_id %in% gsub(".*: ", "", input$selectPHASES_plotter)),]
+
+
+  if(class(lib_sub) == "powdRlib" & length(input$selectPHASES_plotter > 0)) {
+    plot(lib_sub, interactive = TRUE)
   } else {
    return(NULL)
   }
@@ -182,7 +187,7 @@ shinyServer(function(input, output, session) {
       paste("sandstone_example_", Sys.Date(), ".xy", sep="")
     },
     content = function(file) {
-      write.table(soils$sandstone, file, sep = " ", col.names = FALSE, row.names = FALSE)
+      write.table(data(soils$sandstone), file, sep = " ", col.names = FALSE, row.names = FALSE)
     }
   )
 
@@ -193,7 +198,7 @@ shinyServer(function(input, output, session) {
       paste("limestone_example_", Sys.Date(), ".xy", sep="")
     },
     content = function(file) {
-      write.table(soils$limestone, file, sep = " ", col.names = FALSE, row.names = FALSE)
+      write.table(data(soils$limestone), file, sep = " ", col.names = FALSE, row.names = FALSE)
     }
   )
 
@@ -204,7 +209,7 @@ shinyServer(function(input, output, session) {
       paste("granite_example_", Sys.Date(), ".xy", sep="")
     },
     content = function(file) {
-      write.table(soils$granite, file, sep = " ", col.names = FALSE, row.names = FALSE)
+      write.table(data(soils$granite), file, sep = " ", col.names = FALSE, row.names = FALSE)
     }
   )
 
@@ -213,7 +218,7 @@ shinyServer(function(input, output, session) {
 
     filename = "example_library.Rdata",
     content = function(con) {
-      assign("example_library", minerals)
+      assign("example_library", data(minerals))
 
       save(list="example_library", file=con)
     }
@@ -420,7 +425,7 @@ shinyServer(function(input, output, session) {
       paste("sandstone_example_", Sys.Date(), ".xy", sep="")
     },
     content = function(file) {
-      write.table(soils$sandstone, file, sep = " ", col.names = FALSE, row.names = FALSE)
+      write.table(data(soils$sandstone), file, sep = " ", col.names = FALSE, row.names = FALSE)
     }
   )
 
@@ -431,7 +436,7 @@ shinyServer(function(input, output, session) {
       paste("limestone_example_", Sys.Date(), ".xy", sep="")
     },
     content = function(file) {
-      write.table(soils$limestone, file, sep = " ", col.names = FALSE, row.names = FALSE)
+      write.table(data(soils$limestone), file, sep = " ", col.names = FALSE, row.names = FALSE)
     }
   )
 
@@ -442,7 +447,7 @@ shinyServer(function(input, output, session) {
       paste("granite_example_", Sys.Date(), ".xy", sep="")
     },
     content = function(file) {
-      write.table(soils$granite, file, sep = " ", col.names = FALSE, row.names = FALSE)
+      write.table(data(soils$granite), file, sep = " ", col.names = FALSE, row.names = FALSE)
     }
   )
 
@@ -451,7 +456,7 @@ shinyServer(function(input, output, session) {
 
     filename = "example_library.Rdata",
     content = function(con) {
-      assign("example_library", minerals)
+      assign("example_library", data(minerals))
 
       save(list="example_library", file=con)
     }

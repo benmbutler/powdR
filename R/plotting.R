@@ -354,7 +354,8 @@ plot.powdRlib <- function(x, patterns, interactive, ...) {
                            color = ~phase),
                        size = 0.15) +
     ggplot2::xlab("2theta") +
-    ggplot2::ylab("Counts")
+    ggplot2::ylab("Counts") +
+    ggplot2::theme(legend.title = ggplot2::element_blank())
 
   if(interactive == TRUE) {
     p <- plotly::ggplotly(p)
