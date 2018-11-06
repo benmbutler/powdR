@@ -109,8 +109,11 @@ shinyServer(function(input, output, session) {
 
   #Subset the library based on the selection
   lib_sub <- lib_plotter_load()
+
+  if (length(input$selectPHASES_plotter > 0)) {
   lib_sub$xrd <- lib_sub$xrd[,which(names(lib_sub$xrd) %in% gsub(".*: ", "", input$selectPHASES_plotter))]
   lib_sub$phases <- lib_sub$phases[which(lib_sub$phases$phase_id %in% gsub(".*: ", "", input$selectPHASES_plotter)),]
+  }
 
 
   if(class(lib_sub) == "powdRlib" & length(input$selectPHASES_plotter > 0)) {
