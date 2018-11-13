@@ -1,18 +1,25 @@
 # powdR 0.1.0.9000
 
-*   `powdR` now suggests the `nnls` (>=1.4) package in the DESCRIPTION.
+## New features
 
-*   `fps` now has accepts "NNLS" in the `solver` argument. If "NNLS" is selected,
-    the algorithm uses non negative least squares instaed of minimising an objective
-    function.
-    
-*   The shiny application behind `run_powdR` has been updated to accept "NNLS"
+*   Suggests packages `nnls` (>=1.4), `baseline` (>= 1.2) and `shinyWidgets` (>= 0.4.3) in
+    the DESCRIPTION.
 
-*   The shiny application now has tabs for background fitting and automated full
-    pattern summation.
+*   `fps()` now accepts "NNLS" in the `solver` argument. If "NNLS" (non-negative least
+    squares) is selected, the algorithm uses non negative least squares instead of
+    minimising an objective function. This is a much faster alternative but less
+    accurate for samples containing amorphous phases.
     
-*   An `afps` function is now included that seeks to automated the process of full
-    pattern summation by selecting samples from the reference library and excluding
-    those estimated to be below detection limit.
+*   `bkg()` is a new function that allows for backgrounds to be fitted to XRPD data
     
-*   The `bkg` function allows for backgrounds to be fitted to XRPD data
+*   `afps()` is a new function that seeks to automate the process of full pattern
+    summation by selecting samples from the reference library (using NNLS) and
+    excluding those estimated to be below detection limit.
+    
+*   The shiny application behind `run_powdR` has been updated to accept "NNLS", and
+    now includes tabs for background fitting (using `bkg()`) and automated full pattern
+    summation (using `afps()`).
+    
+# powdR 0.1.0
+
+*   Released on CRAN
