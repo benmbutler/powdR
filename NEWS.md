@@ -1,4 +1,4 @@
-# powdR 0.1.0.9000
+# powdR 0.2.0
 
 ## New features
 
