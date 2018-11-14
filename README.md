@@ -1,4 +1,4 @@
-powdR: Full Pattern Summation of X-ray Powder Diffraction Data
+powdR: Full Pattern Summation of X-Ray Powder Diffraction Data
 ================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -34,7 +34,7 @@ Usage
 
 ``` r
 library(powdR)
-#> powdR: full pattern summation of X-ray powder diffraction data
+#> powdR: Full Pattern Summation of X-Ray Powder Diffraction Data
 
 #Load some soils to quantify
 data(soils)
@@ -47,16 +47,27 @@ q <-  fps(lib = minerals,
           smpl = soils$sandstone,
           refs = minerals$phases$phase_id,
           std = "QUA.1")
+#> 
+#> -Using maximum tth range
+#> -Using default alignment of 0.1
+#> -Using default solver of BFGS
+#> -Using default objective function of Rwp
+#> -Aligning sample to the internal standard
+#> -Interpolating library to same 2theta scale as aligned sample
+#> -Optimising...
+#> -Removing negative coefficients and reoptimising...
+#> -Computing phase concentrations
+#> -Full pattern summation complete
 
 #Inspect the phase concentrations (summarised by name)
 q$phases_summary
 #>       phase_name phase_percent
-#> 1         Illite      1.237556
-#> 2     K-feldspar      1.250870
-#> 3      Kaolinite      1.390756
-#> 4 Organic-Matter     39.805850
-#> 5    Plagioclase      1.159294
-#> 6         Quartz     55.155674
+#> 1         Illite        1.2376
+#> 2     K-feldspar        1.2509
+#> 3      Kaolinite        1.3908
+#> 4 Organic-Matter       39.8058
+#> 5    Plagioclase        1.1593
+#> 6         Quartz       55.1557
 
 #Inspect the quantification
 plot(q)
@@ -66,8 +77,8 @@ plot(q)
 
 Alternatively, `plot(q, interactive = TRUE)` provides an interactive plot for better inspection of the fit. More detailed usage instructions are provided in the package vignette.
 
-Shiny app
----------
+The powdR Shiny app
+-------------------
 
 To run `powdR` via the shiny app, use `run_powdR()`. This loads the application in your default web browser. The application has sixr tabs:
 
