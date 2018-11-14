@@ -1,6 +1,6 @@
 #' Fit a background to XRPD data
 #'
-#' \code{bkg} fits a background to xrpd data
+#' \code{bkg} fits a background to X-Ray Powder Diffraction data
 #'
 #' A wrapper for the \code{baseline.fillPeaks} in the \code{baseline} package.
 #'

@@ -1,6 +1,6 @@
-#' powdR: full pattern summation of XRPD data
+#' powdR: Full Pattern Summation of X-Ray Powder Diffraction Data
 #'
-#' An implementation of the full pattern summation, approach to quantitative mineralogy
+#' An implementation of the full pattern summation approach to quantitative mineralogy
 #' from X-ray powder diffraction data (Chipera & Bish, 2002, 2013; Eberl, 2003).
 #' @docType package
 #' @name powdR

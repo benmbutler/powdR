@@ -312,7 +312,7 @@ shinyUI(
                                       value = c(0, 100), step = 0.1),
                           helpText("Tune the limit of detection parameter for crystalline phases"),
                           sliderInput("lld_afps", label = NULL,
-                                      min = 0, max = 2,
+                                      min = 0, max = 5,
                                       value = 0.3, step = 0.1),
                           helpText("Remove amorphous phases below this limit (percent)"),
                           sliderInput("amorph_lld_afps", label = NULL,
@@ -376,9 +376,9 @@ shinyUI(
                       fluidRow(
 
                         column(6, wellPanel(
-                          helpText("Choose a .Rdata results object to load. Must be a
+                          helpText("Choose a .Rdata file to load. Must be a
                                     powdRfps object created using either the fps function, or
-                                    exported from the full pattern summation tab of this
+                                    exported from the 'Full Pattern Summation' tab of this
                                     application."),
                           fileInput(inputId = "loadRESULTS",
                                     label = NULL,

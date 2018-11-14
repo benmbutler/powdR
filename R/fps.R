@@ -8,8 +8,10 @@
 
   remove_these <- which(x == 0)
 
+  if(length(remove_these) > 0) {
   x <- x[-remove_these]
   xrd.lib[[1]] <- xrd.lib[[1]][-remove_these]
+  }
 
   out <- list("x" = x, "xrd.lib" = xrd.lib[[1]])
   return(out)

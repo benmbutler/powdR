@@ -26,5 +26,7 @@ be made interactive using the logical \code{interactive} argument.
 # Load the minerals library
 data(minerals)
 
+\dontrun{
 plot(minerals, interactive = TRUE)
+}
 }

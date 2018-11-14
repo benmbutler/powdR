@@ -4,9 +4,9 @@
 \name{powdR}
 \alias{powdR}
 \alias{powdR-package}
-\title{powdR: full pattern summation of XRPD data}
+\title{powdR: Full Pattern Summation of X-Ray Powder Diffraction Data}
 \description{
-An implementation of the full pattern summation, approach to quantitative mineralogy
+An implementation of the full pattern summation approach to quantitative mineralogy
 from X-ray powder diffraction data (Chipera & Bish, 2002, 2013; Eberl, 2003).
 }
 \references{

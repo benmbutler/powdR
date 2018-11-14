@@ -385,7 +385,9 @@ plot.powdRlib <- function(x, patterns, interactive, ...) {
 #' # Load the minerals library
 #' data(minerals)
 #'
+#' \dontrun{
 #' plot(minerals, interactive = TRUE)
+#' }
 #' @export
 plot.powdRbkg <- function(x, interactive, ...) {
 

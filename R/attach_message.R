@@ -1,3 +1,3 @@
 .onAttach <- function(libname, pkgname) {
-  packageStartupMessage("powdR: full pattern summation of X-ray powder diffraction data")
+  packageStartupMessage("powdR: Full Pattern Summation of X-Ray Powder Diffraction Data")
 }

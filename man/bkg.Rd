@@ -25,7 +25,7 @@ a list of 3 vectors
 \item{background}{The fitted background}
 }
 \description{
-\code{bkg} fits a background to xrpd data
+\code{bkg} fits a background to X-Ray Powder Diffraction data
 }
 \details{
 A wrapper for the \code{baseline.fillPeaks} in the \code{baseline} package.

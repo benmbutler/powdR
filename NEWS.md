@@ -10,13 +10,18 @@
     minimising an objective function. This is a much faster alternative but less
     accurate for samples containing amorphous phases.
     
-*   `bkg()` is a new function that allows for backgrounds to be fitted to XRPD data
+*   `bkg()` is a new function that allows for backgrounds to be fitted to XRPD data.
+    It is a wrapper of the `baseline::baseline.fillPeaks()` method, and the output is
+    a `powdRbkg` object.
     
-*   `afps()` is a new function that seeks to automate the process of full pattern
-    summation by selecting samples from the reference library (using NNLS) and
-    excluding those estimated to be below detection limit.
+*   `afps()` is a new function that automates the process of full pattern
+    summation by firstly selecting samples from the reference library (using NNLS) and
+    then excluding those estimated to be below detection limit. The output is a `powdRafps`
+    object.
     
-*   The shiny application behind `run_powdR` has been updated to accept "NNLS", and
+*   New `plot()` methods for `powdRbkg` and `powdRafps` objects 
+    
+*   The shiny application behind `run_powdR()` has been updated to accept "NNLS", and
     now includes tabs for background fitting (using `bkg()`) and automated full pattern
     summation (using `afps()`).
     

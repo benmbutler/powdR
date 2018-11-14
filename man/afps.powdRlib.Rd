@@ -66,7 +66,8 @@ All patterns have been weighted according to the coefficients used in the fit}
 }
 \description{
 \code{afps.powdRlib} returns estimates of phase concentrations using automated full pattern
-summation of X-ray powder diffraction data.
+summation of X-ray powder diffraction data. It is designed for high-throughput cases
+involving mineral quantification from large reference libraries.
 }
 \details{
 Applies automated full pattern summation to an XRPD
