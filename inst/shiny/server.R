@@ -354,9 +354,9 @@ shinyServer(function(input, output, session) {
 
     output$contents <- renderDataTable({
 
-      fps_table <- data.frame(fps_out["phases_summary"])
-      names(fps_table) <- c("PHASE_NAME", "PHASE_PERCENT")
-      fps_table$PHASE_PERCENT <- round(fps_table$PHASE_PERCENT, 2)
+      fps_table <- data.frame(fps_out$phases)
+
+      fps_table$phase_percent <- round(fps_table$phase_percent, 2)
 
       fps_table
 
@@ -477,6 +477,7 @@ shinyServer(function(input, output, session) {
   })
 
   #If a library has been uploaded, then create a reactive library
+
   filedata3_afps <- reactive({
     infile3_afps <- input$loadLIBafps
     if (is.null(infile3_afps)) {
@@ -488,10 +489,15 @@ shinyServer(function(input, output, session) {
     return(fd3_afps)
   })
 
+
+
+
+
   #update the selection of internal standard
   observe({
 
     x2_afps <- filedata3_afps()
+
     x2_afps <- x2_afps[[3]]
 
     updateSelectInput(session, "selectINT_afps",
@@ -553,9 +559,9 @@ shinyServer(function(input, output, session) {
 
     output$contents_afps <- renderDataTable({
 
-      afps_table <- data.frame(afps_out["phases_summary"])
-      names(afps_table) <- c("PHASE_NAME", "PHASE_PERCENT")
-      afps_table$PHASE_PERCENT <- round(afps_table$PHASE_PERCENT, 2)
+      afps_table <- data.frame(afps_out$phases)
+
+      afps_table$phase_percent <- round(afps_table$phase_percent, 2)
 
       afps_table
 
@@ -636,7 +642,7 @@ shinyServer(function(input, output, session) {
 
     output$minerals_viewer_table <- shiny::renderDataTable({
 
-      if (!class(results_plotter_load()) == "powdRfps") {
+      if (!class(results_plotter_load()) %in% c("powdRafps", "powdRfps")) {
 
         return(NULL)
 
@@ -644,13 +650,13 @@ shinyServer(function(input, output, session) {
 
       if(input$selectTABLE_viewer == "All phases") {
 
-        table_to_view <- results_plotter_load()[[5]]
+        table_to_view <- results_plotter_load()$phases
         table_to_view$phase_percent <- round(table_to_view$phase_percent, 2)
         table_to_view
 
       } else {
 
-        table_to_view <- results_plotter_load()[[6]]
+        table_to_view <- results_plotter_load()$phases_summary
         table_to_view$phase_percent <- round(table_to_view$phase_percent, 2)
         table_to_view
       }
@@ -659,7 +665,7 @@ shinyServer(function(input, output, session) {
 
     output$results_plot <- plotly::renderPlotly({
 
-      if(class(results_plotter_load()) == "powdRfps") {
+      if(class(results_plotter_load()) %in% c("powdRfps", "powdRafps")) {
         plot(results_plotter_load(), interactive = TRUE)
       } else {
         return(NULL)

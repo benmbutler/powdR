@@ -231,7 +231,7 @@ shinyUI(
                           downloadButton(outputId = "download_mins",
                                          label = "Download phase concentrations (.csv)"),
                           downloadButton(outputId = "download_fps",
-                                         label = "Download in powdRfps format (.Rdata)")
+                                         label = "Download powdRfps object (.Rdata)")
                           ))
                         ) # end fluidRow
                         ),
@@ -361,7 +361,7 @@ shinyUI(
                           downloadButton(outputId = "download_mins_afps",
                                          label = "Download phase concentrations (.csv)"),
                           downloadButton(outputId = "download_afps",
-                                         label = "Download in powdRfps format (.Rdata)")
+                                         label = "Download powdRafps object (.Rdata)")
                         ))
              ) # end fluidRow
              ),
@@ -377,16 +377,19 @@ shinyUI(
 
                         column(6, wellPanel(
                           helpText("Choose a .Rdata file to load. Must be a
-                                    powdRfps object created using either the fps function, or
-                                    exported from the 'Full Pattern Summation' tab of this
-                                    application."),
+                                    powdRfps or powdRafps object created using the fps() or
+                                    afps() function. These objects can also be saved from the
+                                    'Full pattern summation' or 'Automated full pattern summation'
+                                    tabs of this application."),
                           fileInput(inputId = "loadRESULTS",
                                     label = NULL,
                                     multiple = FALSE,
                                     accept = ".Rdata")
                         )),
                         column(6, wellPanel(
-                          helpText("Choose how the results are tabulated"),
+                          helpText("Choose how the results are tabulated. If 'Grouped phases' is selected,
+                                   the mineralogy is summarised according to the phase_name column, e.g.
+                                   if more than one quartz pattern is used, these will be summed together."),
                           selectInput(inputId = "selectTABLE_viewer",
                                       label = NULL,
                                       choices = c("All phases", "Grouped phases"))

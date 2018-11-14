@@ -1,4 +1,4 @@
-powdR: full pattern summation of XRPD data
+powdR: Full Pattern Summation of X-ray Powder Diffraction Data
 ================
 
 <!-- README.md is generated from README.Rmd. Please edit that file -->
@@ -7,7 +7,7 @@ powdR: full pattern summation of XRPD data
 Overview
 --------
 
-`powdR` is an implementation of the full pattern summation approach to quantitative mineralogy from X-ray powder diffraction data (Chipera and Bish 2002; Chipera and Bish 2013; Eberl 2003). Version 0.1.0 contains functionality for a standardless approach, which assumes all phases within a sample can be identified, and thus they sum to 100 %. Future versions of `powdR` seek to add functionality for samples prepared with an internal standard.
+`powdR` is an implementation of the full pattern summation approach to quantitative mineralogy from X-ray powder diffraction data (Chipera and Bish 2002; Chipera and Bish 2013; Eberl 2003). More specifically, `powdR` implements a standardless approach, which assumes all phases within a sample can be identified, and thus they sum to 100 %.
 
 `powdR` has several advantages over the excel based implementations of full pattern summation such as FULLPAT (Chipera and Bish 2002) and ROCKJOCK (Eberl 2003). First, computation is faster and, when quantifying multiple samples, can be used in combination with other packages (e.g [`foreach`](https://cran.r-project.org/web/packages/foreach/index.html)) for parralel processing. Secondly, powdR can be run via a `shiny` web application, which offers a user friendly interface for fast and iterative mineral quantification. Lastly, R represents a powerful tool for data manipulation, allowing users to creatively adapt, pre-treat and visualise their XRPD data.
 
@@ -26,11 +26,7 @@ Alternatively, the development version can be downloaded from Github
 #Install devtools if you don't already have it on your machine
 install.packages("devtools")
 
-#install without vignette
 devtools::install_github('benmbutler/powdR')
-
-#alternatively, an installation that builds the vignette
-devtools::install_github('benmbutler/powdR', build_vignettes = TRUE)
 ```
 
 Usage
@@ -68,17 +64,19 @@ plot(q)
 
 ![](man/figures/README-example-1.png)
 
-Alternatively, `plot(q, interactive = TRUE)` provides an interative plot for better inspection of the fit. More detailed usage instructions are provided in the package vignette.
+Alternatively, `plot(q, interactive = TRUE)` provides an interactive plot for better inspection of the fit. More detailed usage instructions are provided in the package vignette.
 
 Shiny app
 ---------
 
-To run `powdR` via the shiny app, use `run_powdR()`. This loads the application in your default web browser. The application has four tabs:
+To run `powdR` via the shiny app, use `run_powdR()`. This loads the application in your default web browser. The application has sixr tabs:
 
 1.  Reference library builder: Allows you to create a reference library from two .csv files: one for the XRPD measurements, and the other for the ID, name and reference intensity ratio of each pattern.
 2.  Reference library Viewer: For quick inspection of the phases within a reference library.
-3.  Full pattern summation: A user friendly interface for iterative full pattern summation of single samples.
-4.  Results viewer: Allows for quick inspection of results derived from full pattern summation.
+3.  Background fitting: Allows to background fitting parameters to be optimised easily
+4.  Full pattern summation: A user friendly interface for iterative full pattern summation of single samples
+5.  Automated full pattern summation: A user friendly interface for automated full pattern summation of single samples
+6.  Results viewer: Allows for quick inspection of results derived from full pattern summation.
 
 References
 ----------
