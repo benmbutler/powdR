@@ -7,8 +7,8 @@ Authors@R: c(
   person("Benjamin", "Butler", email = "benjamin.butler@hutton.ac.uk",
   role = c("aut", "cre")),
   person("Stephen", "Hillier", email = "stephen.hillier@hutton.ac.uk",
-  role = "aut")),
-  person("Dylan", "Beaudette", role = "ctb")
+  role = "aut"),
+  person("Dylan", "Beaudette", role = "ctb"))
 Maintainer: Benjamin Butler <benjamin.butler@hutton.ac.uk>
 Description: Full pattern summation of X-ray powder diffraction data as
   described in Chipera and Bish (2002) <doi:10.1107/S0021889802017405>.

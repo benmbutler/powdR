@@ -1,6 +1,6 @@
 ---
 output: github_document
-title: "powdR: full pattern summation of XRPD data"
+title: "powdR: Full Pattern Summation of X-ray Powder Diffraction Data"
 bibliography: bibliography.bib
 ---
 
