@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-`powdR` is an R implementation of the full pattern summation approach to quantitative mineralogy, which is otherwise available in Excel spreadsheets such as FULLPAT [@Chipera2002] and ROCKJOCK [@Eberl2003]. Implementation in R allows for faster computation than is currently available in FULLPAT or ROCKJOCK, and provides a user-friendly shiny application to help with the often iterative process of mineral quantification.
+`powdR` is an R implementation of the full pattern summation approach to quantitative mineralogy from X-ray powder diffraction (XRPD) data. Whilst this is available in Excel spreadsheets such as FULLPAT [@Chipera2002] and ROCKJOCK [@Eberl2003], implementation in R allows for faster computation than is currently available in FULLPAT or ROCKJOCK, and provides a user-friendly shiny application to help with the often iterative process of mineral quantification.
 
 
 ## Full pattern summation
