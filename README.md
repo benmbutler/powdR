@@ -39,7 +39,7 @@ library(powdR)
 #Load some soils to quantify
 data(soils)
 
-#Load a reference library of pure patterns
+#Load a powdRlib reference library of pure patterns
 data(minerals)
 
 #Quantify a sample
@@ -80,14 +80,14 @@ Alternatively, `plot(q, interactive = TRUE)` provides an interactive plot for be
 The powdR Shiny app
 -------------------
 
-To run `powdR` via the shiny app, use `run_powdR()`. This loads the application in your default web browser. The application has sixr tabs:
+To run `powdR` via the shiny app, use `run_powdR()`. This loads the application in your default web browser. The application has six tabs:
 
-1.  Reference library builder: Allows you to create a reference library from two .csv files: one for the XRPD measurements, and the other for the ID, name and reference intensity ratio of each pattern.
-2.  Reference library Viewer: For quick inspection of the phases within a reference library.
-3.  Background fitting: Allows to background fitting parameters to be optimised easily
-4.  Full pattern summation: A user friendly interface for iterative full pattern summation of single samples
-5.  Automated full pattern summation: A user friendly interface for automated full pattern summation of single samples
-6.  Results viewer: Allows for quick inspection of results derived from full pattern summation.
+1.  **Reference library builder:** Allows you to create and export a `powdRlib` reference library from two .csv files: one for the XRPD measurements, and the other for the ID, name and reference intensity ratio of each pattern.
+2.  **Reference library viewer:** Facilitates quick inspection of the phases within a reference library.
+3.  **Background fitting:** Allows background fitting parameters to be optimised easily.
+4.  **Full pattern summation:** A user friendly interface for iterative full pattern summation of single samples.
+5.  **Automated full pattern summation:** A user friendly interface for automated full pattern summation of single samples.
+6.  **Results viewer:** Allows for quick inspection of results derived from full pattern summation.
 
 References
 ----------
