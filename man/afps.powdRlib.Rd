@@ -5,7 +5,7 @@
 \title{Automated full pattern summation}
 \usage{
 \method{afps}{powdRlib}(lib, smpl, solver, obj, std, amorphous, tth_align,
-  align, shift, tth_fps, background, lld, amorphous_lld, ...)
+  align, shift, tth_fps, background, lod, amorphous_lod, ...)
 }
 \arguments{
 \item{lib}{A \code{powdRlib} object representing the reference library. Created using the
@@ -43,10 +43,10 @@ automated full pattern summation. If not defined, then the full range is used.}
 \code{list(lambda = 0.5, hwi = 25, it = 50, int = round(nrow(smpl)/4, 0)).} To tune these parameters
 please see the \code{function}, or the background fitting tab of the \code{run_powdR} shiny app.}
 
-\item{lld}{Optional parameter used to tune the lower limit of dection computation.
-Must be greater than 0. Default = 0.3.}
+\item{lod}{Optional parameter used to tune the lower limit of dection computation.
+Must be greater than 0. Default = 0.3. Lower values represent lower detection limits.}
 
-\item{amorphous_lld}{Optional parameter used to exclude amorphous phases if they are below this
+\item{amorphous_lod}{Optional parameter used to exclude amorphous phases if they are below this
 specified limit (percent). Must be between 0 and 100. Default = 0.}
 
 \item{...}{other arguments}

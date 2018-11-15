@@ -1,14 +1,14 @@
-.remove_amorphous <- function(x, amorphous, amorphous_lld, df, lib, solver, smpl,
+.remove_amorphous <- function(x, amorphous, amorphous_lod, df, lib, solver, smpl,
                              obj) {
 
   if(length(amorphous) > 0) {
 
     remove_amorphous <- which(names(x) %in% df$phase_id[which(df$phase_id %in% amorphous &
-                                                                df$phase_percent < amorphous_lld)])
+                                                                df$phase_percent < amorphous_lod)])
 
     while (length(remove_amorphous) > 0) {
 
-      cat("\n-Some amorphous phases below the amorphous_lld limit. Removing them and reoptimising")
+      cat("\n-Some amorphous phases below the amorphous_lod limit. Removing them and reoptimising")
       #Remove amorphous phase from library
       lib$xrd <- lib$xrd[-remove_amorphous]
       x <- x[-remove_amorphous]
@@ -25,7 +25,7 @@
       dfs <- min_concs[[2]]
 
       remove_amorphous <- which(names(x) %in% df$phase_id[which(df$phase_id %in% amorphous &
-                                                                  df$phase_percent < amorphous_lld)])
+                                                                  df$phase_percent < amorphous_lod)])
     }
   }
 

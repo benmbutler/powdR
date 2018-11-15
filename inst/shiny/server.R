@@ -591,8 +591,8 @@ shinyServer(function(input, output, session) {
                                                 "hwi" = input$bkg_hwi,
                                                 "it" = input$bkg_it,
                                                 "int" = input$bkg_int),
-                              lld = input$lld_afps,
-                              amorphous_lld = input$amorph_lld_afps)
+                              lod = input$lod_afps,
+                              amorphous_lod = input$amorph_lod_afps)
 
     })
 

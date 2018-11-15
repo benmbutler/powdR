@@ -18,6 +18,7 @@
 #' \item{tth}{a vector of the 2theta scale of the fitted data}
 #' \item{fitted}{a vector of the fitted XRPD pattern}
 #' \item{measured}{a vector of the original XRPD measurement (aligned)}
+#' \item{background}{a vector of the fitted background used to estimate limits of detection}
 #' \item{residuals}{a vector of the residuals (fitted vs measured)}
 #' \item{phases}{a dataframe of the phases used to produce the fitted pattern}
 #' \item{phases_summary}{the phases dataframe grouped by phase_name and summarised (sum)}
@@ -106,9 +107,9 @@ afps <- function(lib, ...) {
 #' \code{list(lambda, hwi, it , int)}. If missing, the default used is
 #' \code{list(lambda = 0.5, hwi = 25, it = 50, int = round(nrow(smpl)/4, 0)).} To tune these parameters
 #' please see the \code{function}, or the background fitting tab of the \code{run_powdR} shiny app.
-#' @param lld Optional parameter used to tune the lower limit of dection computation.
-#' Must be greater than 0. Default = 0.3.
-#' @param amorphous_lld Optional parameter used to exclude amorphous phases if they are below this
+#' @param lod Optional parameter used to tune the lower limit of dection computation.
+#' Must be greater than 0. Default = 0.3. Lower values represent lower detection limits.
+#' @param amorphous_lod Optional parameter used to exclude amorphous phases if they are below this
 #' specified limit (percent). Must be between 0 and 100. Default = 0.
 #' @param ... other arguments
 #'
@@ -116,6 +117,7 @@ afps <- function(lib, ...) {
 #' \item{tth}{a vector of the 2theta scale of the fitted data}
 #' \item{fitted}{a vector of the fitted XRPD pattern}
 #' \item{measured}{a vector of the original XRPD measurement (aligned)}
+#' \item{background}{a vector of the fitted background used to estimate limits of detection}
 #' \item{residuals}{a vector of the residuals (fitted vs measured)}
 #' \item{phases}{a dataframe of the phases used to produce the fitted pattern}
 #' \item{phases_summary}{the phases dataframe grouped by phase_name and summarised (sum)}
@@ -168,8 +170,8 @@ afps <- function(lib, ...) {
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
 afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
-                         tth_align, align, shift, tth_fps, background, lld,
-                         amorphous_lld, ...) {
+                         tth_align, align, shift, tth_fps, background, lod,
+                         amorphous_lod, ...) {
 
   if(missing(amorphous)) {
     cat("\n-No amorphous phases identified")
@@ -201,14 +203,14 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
     obj = "Rwp"
   }
 
-  if(missing(lld)) {
-    cat("\n-Using default lld of 0.3")
-    lld = 0.3
+  if(missing(lod)) {
+    cat("\n-Using default lod of 0.3")
+    lod = 0.3
   }
 
-  if(missing(amorphous_lld)) {
-    cat("\n-Using default amorphous_lld of 0")
-    amorphous_lld = 0
+  if(missing(amorphous_lod)) {
+    cat("\n-Using default amorphous_lod of 0")
+    amorphous_lod = 0
   }
 
   if(missing(background)) {
@@ -229,6 +231,11 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
   #Ensure that the align is greater than 0.
   if (align <= 0) {
     stop("The align argument must be greater than 0")
+  }
+
+  #Ensure that the lod is greater than 0.
+  if (lod <= 0) {
+    stop("The lod argument must be greater than 0")
   }
 
   #Create a warning message if the shift is greater than 0.5, since this can confuse the optimisation
@@ -332,10 +339,6 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
     lib$xrd <- lib$xrd[, -amorphous_index]
   }
 
-  #if(length(amorphous_index) > 0) {
-  #  lib$xrd <- lib$xrd[, -amorphous_index]
-  #}
-
   #--------------------------------------------
   #Initial NNLS to remove some samples
   #--------------------------------------------
@@ -379,14 +382,6 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
     lib$xrd <- data.frame(fpf_aligned[["lib"]])
     lib$tth <- smpl[,1]
 
-    #Re-optimise after shifts
-    #cat("\n-Reoptimising after shifting data")
-    #o <- stats::optim(par = x, .fullpat,
-    #                  method = solver, pure_patterns = lib$xrd,
-    #                  sample_pattern = smpl[, 2], obj = obj)
-    #x <- o$par
-
-    #return(list("x" = x, "smpl" = smpl, "lib" = lib))
   }
 
   #-----------------------------------------------------------
@@ -447,14 +442,14 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
 
   # Removing phases based on detection limits
 
-  #Calculate the lld and remove any phases below it if lld > 0
+  #Calculate the lod and remove any phases below it if lod > 0
 
-  if (lld > 0) {
+  if (lod > 0) {
 
   cat("\n-Calculating detection limits")
-  xrd_detectable <- .lld(x = x, smpl = smpl, lib = lib,
+  xrd_detectable <- .lod(x = x, smpl = smpl, lib = lib,
                         std = std, amorphous = amorphous,
-                        background = background, lld = lld)
+                        background = background, lod = lod)
   cat("\n-Removing phases below detection limit")
 
   x <- xrd_detectable[["x"]]
@@ -479,7 +474,7 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
   #Remove amorphous phases
   remove_amorphous_out <- .remove_amorphous(x = x,
                                             amorphous = amorphous,
-                                            amorphous_lld = amorphous_lld,
+                                            amorphous_lod = amorphous_lod,
                                             df = df,
                                             lib = lib,
                                             solver = solver,
