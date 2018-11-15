@@ -28,7 +28,8 @@ be made interactive using the logical \code{interactive} argument.
 \examples{
 # Load the minerals library
 data(minerals)
-
+\dontrun{
 plot(minerals, patterns = "ALB")
 plot(minerals, patterns = "ALB", interactive = TRUE)
+}
 }
