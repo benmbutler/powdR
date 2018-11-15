@@ -317,9 +317,10 @@ plot.powdRafps <- function(x, d, wavelength, interactive, ...) {
 #' @examples
 #' # Load the minerals library
 #' data(minerals)
-#'
+#' \dontrun{
 #' plot(minerals, patterns = "ALB")
 #' plot(minerals, patterns = "ALB", interactive = TRUE)
+#' }
 #' @export
 plot.powdRlib <- function(x, patterns, interactive, ...) {
 
@@ -349,6 +350,8 @@ plot.powdRlib <- function(x, patterns, interactive, ...) {
     melted <- melted[which(melted$phase %in% patterns), ]
   }
 
+  if(length(table(melted$phase)) > 1) {
+
   p <- ggplot2::ggplot(data = melted) +
     ggplot2::geom_line(ggplot2::aes_(x = ~tth, y = ~counts,
                            color = ~phase),
@@ -356,6 +359,18 @@ plot.powdRlib <- function(x, patterns, interactive, ...) {
     ggplot2::xlab("2theta") +
     ggplot2::ylab("Counts") +
     ggplot2::theme(legend.title = ggplot2::element_blank())
+
+  } else {
+
+  p <- ggplot2::ggplot(data = melted) +
+      ggplot2::geom_line(ggplot2::aes_(x = ~tth, y = ~counts,
+                                       color = ~phase),
+                         size = 0.15) +
+      ggplot2::xlab("2theta") +
+      ggplot2::ylab("Counts") +
+      ggplot2::theme(legend.position = "none")
+
+  }
 
   if(interactive == TRUE) {
     p <- plotly::ggplotly(p)

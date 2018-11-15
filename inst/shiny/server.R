@@ -27,17 +27,6 @@ shinyServer(function(input, output, session) {
     read.csv(infile2$datapath, header = TRUE, stringsAsFactors = FALSE)
   })
 
-  #Download the library
-  output$download_lib <- downloadHandler(
-
-    filename = "xrd.Rdata",
-    content = function(con) {
-      assign(input$name, Dataset())
-
-      save(list=input$name, file=con)
-    }
-
-  )
 
   #Create a powdRlib object
   Dataset <- eventReactive(input$BuildLibButton, {
@@ -46,6 +35,19 @@ shinyServer(function(input, output, session) {
                                    phases_table = phasedata())
 
   })
+
+
+  #Download the library
+  output$download_lib <- downloadHandler(
+
+    filename = "my_powdRlib.Rdata",
+    content = function(con) {
+      assign(input$name, Dataset())
+
+      save(list=input$name, file=con)
+    }
+
+  )
 
   #Tabulate the minerals in the library
     output$minerals_table <- shiny::renderDataTable({
@@ -57,6 +59,10 @@ shinyServer(function(input, output, session) {
   })
 
 
+  observe({
+
+  minerals_xrd <- powdR::minerals_xrd
+
   #Downloads of example data
   output$download_xrd_eg <- downloadHandler(
 
@@ -64,9 +70,16 @@ shinyServer(function(input, output, session) {
       paste("xrd_example_", Sys.Date(), ".csv", sep="")
     },
     content = function(file) {
-      write.table(data(minerals_xrd), file, sep = ",", col.names = TRUE, row.names = FALSE)
+      write.table(minerals_xrd, file, sep = ",", col.names = TRUE, row.names = FALSE)
     }
   )
+
+  })
+
+
+  observe({
+
+  minerals_phases <- powdR::minerals_phases
 
   output$download_phases_eg <- downloadHandler(
 
@@ -74,9 +87,11 @@ shinyServer(function(input, output, session) {
       paste("phase_info_example_", Sys.Date(), ".csv", sep="")
     },
     content = function(file) {
-      write.table(data(minerals_phases), file, sep = ",", col.names = TRUE, row.names = FALSE)
+      write.table(minerals_phases, file, sep = ",", col.names = TRUE, row.names = FALSE)
     }
   )
+
+  })
 
   #################################
   ## TAB 2: Reference library plotter
@@ -101,7 +116,8 @@ shinyServer(function(input, output, session) {
   if(class(lib_plotter_load()) == "powdRlib") {
   updateSelectInput(session, "selectPHASES_plotter",
                     label = paste("Choose phases from the library to plot."),
-                    choices = paste0(lib_plotter_load()[[3]][[2]], ": ", lib_plotter_load()[[3]][[1]]))
+                    choices = paste0(lib_plotter_load()[[3]][[2]], ": ", lib_plotter_load()[[3]][[1]]),
+                    selected = head(paste0(lib_plotter_load()[[3]][[2]], ": ", lib_plotter_load()[[3]][[1]]), 1))
   }
 
   #Plot phases in the library
@@ -184,13 +200,18 @@ shinyServer(function(input, output, session) {
   #################################
 
   #Downloads of example sandstone data
+
+  observe({
+
+  soils <- powdR::soils
+
   output$download_soil_sand <- downloadHandler(
 
     filename = function() {
       paste("sandstone_example_", Sys.Date(), ".xy", sep="")
     },
     content = function(file) {
-      write.table(data(soils$sandstone), file, sep = " ", col.names = FALSE, row.names = FALSE)
+      write.table(soils$sandstone, file, sep = " ", col.names = FALSE, row.names = FALSE)
     }
   )
 
@@ -201,7 +222,7 @@ shinyServer(function(input, output, session) {
       paste("limestone_example_", Sys.Date(), ".xy", sep="")
     },
     content = function(file) {
-      write.table(data(soils$limestone), file, sep = " ", col.names = FALSE, row.names = FALSE)
+      write.table(soils$limestone, file, sep = " ", col.names = FALSE, row.names = FALSE)
     }
   )
 
@@ -212,20 +233,29 @@ shinyServer(function(input, output, session) {
       paste("granite_example_", Sys.Date(), ".xy", sep="")
     },
     content = function(file) {
-      write.table(data(soils$granite), file, sep = " ", col.names = FALSE, row.names = FALSE)
+      write.table(soils$granite, file, sep = " ", col.names = FALSE, row.names = FALSE)
     }
   )
+
+  })
 
   #Download an example reference library
+
+  observe({
+
+  minerals <- powdR::minerals
+
   output$download_example_ref <- downloadHandler(
 
-    filename = "example_library.Rdata",
+    filename = "example_powdRlib.Rdata",
     content = function(con) {
-      assign("example_library", data(minerals))
+      assign("example_powdRlib", minerals)
 
-      save(list="example_library", file=con)
+      save(list="example_powdRlib", file=con)
     }
   )
+
+  })
 
   output$selectOBJui <- renderUI({
     if (input$selectSolver == "NNLS") return(NULL)
@@ -406,7 +436,7 @@ shinyServer(function(input, output, session) {
     #Download the whole fps output as .Rdata format
     output$download_fps <- downloadHandler(
 
-      filename = "fps.Rdata",
+      filename = "fps_output.Rdata",
       content = function(con) {
         assign("fps_output", fps_reactive())
 
@@ -421,6 +451,10 @@ shinyServer(function(input, output, session) {
   ## TAB 5: Automated full pattern fitting
   #################################
 
+  observe({
+
+  soils <- powdR::soils
+
   #Downloads of example sandstone data
   output$download_soil_sand_afps <- downloadHandler(
 
@@ -428,7 +462,7 @@ shinyServer(function(input, output, session) {
       paste("sandstone_example_", Sys.Date(), ".xy", sep="")
     },
     content = function(file) {
-      write.table(data(soils$sandstone), file, sep = " ", col.names = FALSE, row.names = FALSE)
+      write.table(soils$sandstone, file, sep = " ", col.names = FALSE, row.names = FALSE)
     }
   )
 
@@ -439,7 +473,7 @@ shinyServer(function(input, output, session) {
       paste("limestone_example_", Sys.Date(), ".xy", sep="")
     },
     content = function(file) {
-      write.table(data(soils$limestone), file, sep = " ", col.names = FALSE, row.names = FALSE)
+      write.table(soils$limestone, file, sep = " ", col.names = FALSE, row.names = FALSE)
     }
   )
 
@@ -450,20 +484,29 @@ shinyServer(function(input, output, session) {
       paste("granite_example_", Sys.Date(), ".xy", sep="")
     },
     content = function(file) {
-      write.table(data(soils$granite), file, sep = " ", col.names = FALSE, row.names = FALSE)
+      write.table(soils$granite, file, sep = " ", col.names = FALSE, row.names = FALSE)
     }
   )
+
+  })
 
   #Download an example reference library
+
+  observe({
+
+  minerals <- powdR::minerals
+
   output$download_example_ref_afps <- downloadHandler(
 
-    filename = "example_library.Rdata",
+    filename = "example_powdRlib.Rdata",
     content = function(con) {
-      assign("example_library", data(minerals))
+      assign("example_powdRlib", minerals)
 
-      save(list="example_library", file=con)
+      save(list="example_powdRlib", file=con)
     }
   )
+
+  })
 
 
   #Load the .xy sample file
@@ -508,8 +551,7 @@ shinyServer(function(input, output, session) {
 
     updateSelectInput(session, "selectAMORPH_afps",
                       label = paste("Choose which phases should be treated as amorphous."),
-                      choices = paste0(x2_afps[[2]], ": ", x2_afps[[1]]),
-                      selected = head(paste0(x2_afps[[2]], ": ", x2_afps[[1]]), 1)
+                      choices = paste0(x2_afps[[2]], ": ", x2_afps[[1]])
                       )
 
   })
@@ -612,7 +654,7 @@ shinyServer(function(input, output, session) {
     #Download the whole fps output as .Rdata format
     output$download_afps <- downloadHandler(
 
-      filename = "afps.Rdata",
+      filename = "afps_output.Rdata",
       content = function(con) {
         assign("afps_output", afps_reactive())
 
