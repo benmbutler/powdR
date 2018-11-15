@@ -403,8 +403,7 @@ shinyServer(function(input, output, session) {
 
     #Export the mineral concentrations to a .csv file
     minout <- fps_out
-    minout <- data.frame(minout[[5]])
-    names(minout) <- c("PHASE_ID", "PHASE_NAME", "PERCENT")
+    minout <- data.frame(minout$phases)
 
     output$download_mins <- downloadHandler(
 
@@ -621,7 +620,7 @@ shinyServer(function(input, output, session) {
     #Export the mineral concentrations to a .csv file
     minout_afps <- afps_out
     minout_afps <- data.frame(minout_afps[["phases"]])
-    names(minout_afps) <- c("PHASE_ID", "PHASE_NAME", "PERCENT")
+
 
     output$download_mins_afps <- downloadHandler(
 
