@@ -71,7 +71,7 @@ plot(fit)
 
 Now the fit is much improved, highlighting how organic matter is an important component of this pattern. Based on the current residuals, there is a notable peak at 12.3 degrees 2theta, which is often associated with kaolinite. There are also numerous peaks either side of the main quartz peak at 26.6 degrees 2theta, which are often coincident with feldspar minerals. The next fit will therefore add kaolinite, plagioclase and potassium feldspar to the process.
 
-```{r, fig.show='hold', fig.cap = "**Figure 3:** The resulting full pattern fit on a sandstone soil when `fps` is applied using reference patterns from quartz (2 different standards), kaolinite, plagioclase, K-feldspar and organic matter", message = FALSE, warning = FALSE}
+```{r, fig.show='hold', fig.cap = "**Figure 3:** The resulting full pattern fit on a sandstone soil when `fps` is applied using reference patterns from quartz (2 different standards), kaolinite, plagioclase, K-feldspar and organic matter.", message = FALSE, warning = FALSE}
 #Apply fps to the sandstone sample, adding kaolinite, feldspar and oligoclase to the process
 fit <- fps(lib = minerals,
            smpl = soils$sandstone,
@@ -104,11 +104,11 @@ All of the above and subsequent examples can be further tested using the two oth
 
 ## `fps()` with non-negative least squares
 
-As mentioned previously, an alternative to minimisation of an objective function (the default for `fps()`) in non-negative least squares (NNLS). This is implemented in `powdR` version 0.2.0, and provides very fast computation. Whilst NNLS can struggle with X-ray amorphous phases, its speed makes it particularly useful fast quantititative estimates of a sample using a whole reference library at once.
+As mentioned previously, an alternative to minimisation of an objective function (the default for `fps()`) is non-negative least squares (NNLS). This is implemented in `powdR` version 0.2.0, and provides very fast computation. Whilst NNLS can struggle with X-ray amorphous phases, its speed makes it particularly useful for fast quantititative estimates of a sample using a whole reference library at once. All phases with a coefficient equal to zero are excluded.
 
-```{r, fig.show='hold', fig.cap = "**Figure 4:** Application of NNLS to the sandstone soil", message = FALSE, warning = FALSE}
+```{r, fig.show='hold', fig.cap = "**Figure 4:** Application of `fps()`to the sandstone soil using NNLS instead of least squares optimisation.", message = FALSE, warning = FALSE}
 
-#Apply fps to the sandstone sample using NNLS. Note that when NNLS is selected as the solver argument, there is no need to define the refs because all phases in the library are used
+#Apply fps to the sandstone sample using NNLS. Note that when NNLS is selected as the solver argument, there is no need to define the refs because all phases in the library are used by default
 fit <- fps(lib = minerals,
            smpl = soils$sandstone,
            solver = "NNLS",
@@ -119,5 +119,21 @@ fit <- fps(lib = minerals,
 plot(fit)
 ```
 
+## Automated full pattern summation: `afps()`
+
+Since NNLS is fast and can be used to exclude phases from large libraries (based on coefficients equal to zero), it has been used in combination with a method for estimating limits of detection [@Hillier2003] to create an algorithm for automated full pattern summation, `afps()`. The rationale behind this algorithm relates to the challenge of accurately quantifying high-throughput soil XRPD datasets, which show substantial variation in mineralogy. Large reference libraries are needed to handle such datasets, thus an algorithm was needed that both selected appropriate phases from a large library, and then excluded phases estimated to be below the detection limit.
+
+```{r, fig.show='hold', fig.cap = "**Figure 5:** Application of `afps()` to the sandstone soil.", message = FALSE, warning = FALSE}
+
+#Apply afps to the sandstone sample using afps. Note that amorphous phases need to be specified because they are treated differently to crystalline phases in this algorithm
+fit <- afps(lib = minerals,
+           smpl = soils$sandstone,
+           std = "QUA.1",
+           amorphous = "ORG",
+           align = 0.2)
+
+#plot the data to interpret the fit
+plot(fit)
+```
 
 ## References
