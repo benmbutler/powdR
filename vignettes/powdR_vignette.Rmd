@@ -21,24 +21,24 @@ knitr::opts_chunk$set(
 )
 ```
 
-`powdR` is an R implementation of the full pattern summation approach to quantitative mineralogy from X-ray powder diffraction (XRPD) data. Whilst this is available in Excel spreadsheets such as FULLPAT [@Chipera2002] and ROCKJOCK [@Eberl2003], implementation in R allows for faster computation than is currently available in FULLPAT or ROCKJOCK, and provides a user-friendly shiny application to help with the often iterative process of mineral quantification.
+`powdR` is an R implementation of the full pattern summation approach to quantitative mineralogy from X-ray powder diffraction (XRPD) data. Whilst this is available in Excel spreadsheets such as FULLPAT [@Chipera2002] and ROCKJOCK [@Eberl2003], implementation in R allows for faster computation than is currently available, and provides a user-friendly `shiny` application to help with the often iterative process of mineral quantification.
 
 
 ## Full pattern summation
 A powerful property of XRPD data is that it can provide quantitative estimates of phase concentrations (mineral and amorphous). Though several methods are available for quantitative mineralogy, full pattern summation is particularly suitable for mineral mixtures containing disordered and amorphous phases. A prime example of such mixtures is soil, where clay minerals represent disordered phases, and organic matter is present as a common X-ray amorphous constituent.
 
-Full pattern summation is based on the principle that an observed pattern is comprised of the sum of signals from pure individual components. When using  full pattern summation, a library of pure standards **measured on the same instrument as the sample** is required. Phases from the library are selected, and their relative contributions optimised until appropriate fit of the observed pattern is achieved [@Chipera2002]. The fit is refined using least squares optimisation of an objective parameter.
+The full pattern summation implemented in `powdR` is based on the principle that an observed pattern is comprised of the sum of signals from pure individual components. A key component of this approach is a library of measured or calculated patterns of pure phases. The pure patterns should be sufficient to cover all of the phases that may be encountered in your samples, and would ideally be measured on the same instrument as the sample (but this is not always possible). To quantify a given sample, phases from the library are selected, and their relative contributions optimised until an appropriate fit of the observed pattern is achieved [@Chipera2002]. The fit is usually refined using least squares optimisation of an objective parameter, but non-negative least squares can also be used. The scaled intensities of the optimised patterns are then convered to weight % using reference intensity ratios, which are a measure of diffracting power relative to a standard mineral (usually corundum).
 
-Version 0.1.0 of the `powdR` package currently implements full pattern summation via a standardless approach. The prerequisite of this approach is that all mineral and amorphous phases can be identified within the sample, and that these must sum to 100 weight % [@Chipera2013;@Omotoso2006].
+Version 0.2.0 of `powdR` currently implements full pattern summation via a standardless approach. The prerequisite of this approach is that all mineral and amorphous phases can be identified within the sample, and that these must sum to 100 weight % [@Chipera2013;@Omotoso2006].
 
-## `fps`
-Full pattern summation in `powdR` is provided in the `fps` function. In the following example the full pattern summation process using `fps` will start with a reference library containing a single quartz phase, and examining the residuals of the fit. If running this vignette yourself, all plots can be made interactive by:
+## `fps()`
+Full pattern summation in `powdR` is provided in the `fps()` function. In the following example the full pattern summation process using `fps()` will start with a reference library containing a single quartz phase, and subsequent phases will be added by examining the residuals of the fit. If running this vignette yourself, all plots can be made interactive by:
 
 `plot(fit, interactive = TRUE)`
 
 Making them interactive aids visual interpretation of the fitted patterns, which can otherwise be difficult when using static plots.
 
-```{r, fig.show='hold', fig.cap = "**Figure 1:** The resulting fit on a sandstone soil when `fps` is applied using a single quartz reference pattern. The top plot displays the measured and fitted patterns, and the bottom plots displays the residuals.", message = FALSE, warning = FALSE}
+```{r, fig.show='hold', fig.cap = "**Figure 1:** The resulting fit on a sandstone soil when `fps()` is applied using a single quartz reference pattern. The top plot displays the measured and fitted patterns, and the bottom plots displays the residuals.", message = FALSE, warning = FALSE}
 library(powdR)
 
 data(minerals)
@@ -57,7 +57,7 @@ plot(fit)
 
 In this case, the fitted pattern consistently overestimates the quartz peak intensities compared to the measured pattern, but underestimates the background contribution. This can occur when X-ray amorphous phases are present within the sample. To Account for this, an organic matter phase from the reference library will be added, and the fit recomputed.
 
-```{r, fig.show='hold', fig.cap = "**Figure 2:** The resulting full pattern fit on a sandstone soil when `fps` is applied using reference patterns from quartz and organic matter.", message = FALSE, warning = FALSE}
+```{r, fig.show='hold', fig.cap = "**Figure 2:** The resulting full pattern fit on a sandstone soil when `fps()` is applied using reference patterns from quartz and organic matter.", message = FALSE, warning = FALSE}
 #Apply fps to the sandstone sample with quartz (crystalline) and organic matter (amorphous)
 fit <- fps(lib = minerals,
            smpl = soils$sandstone,
@@ -87,7 +87,7 @@ fit <- fps(lib = minerals,
 plot(fit)
 ```
 
-When including all these phases, pretty much all peaks are accounted for. Once the user is satisfied that an appropriate fit has been achieved, the mineral concentrations can be extracted and interpreted by looking at two elements of the output from `fps`:
+When including all these phases, pretty much all peaks are accounted for. Once the user is satisfied that an appropriate fit has been achieved, the mineral concentrations can be extracted and interpreted by looking at two elements of the output from `fps()`:
 
 - `fit$phases`
 - `fit$phases_summary`
@@ -100,6 +100,24 @@ fit$phases
 fit$phases_summary
 ```
 
-All of the above examples for `fps` can be further tested using the two other XRPD measurements available in the `soils` list (`soils$limestone` and `soils$granite`), each representing soils with different mineralogies.
+All of the above and subsequent examples can be further tested using the two other XRPD measurements available in the `soils` list (`soils$limestone` and `soils$granite`), each representing soils with different mineralogies.
+
+## `fps()` with non-negative least squares
+
+As mentioned previously, an alternative to minimisation of an objective function (the default for `fps()`) in non-negative least squares (NNLS). This is implemented in `powdR` version 0.2.0, and provides very fast computation. Whilst NNLS can struggle with X-ray amorphous phases, its speed makes it particularly useful fast quantititative estimates of a sample using a whole reference library at once.
+
+```{r, fig.show='hold', fig.cap = "**Figure 4:** Application of NNLS to the sandstone soil", message = FALSE, warning = FALSE}
+
+#Apply fps to the sandstone sample using NNLS. Note that when NNLS is selected as the solver argument, there is no need to define the refs because all phases in the library are used
+fit <- fps(lib = minerals,
+           smpl = soils$sandstone,
+           solver = "NNLS",
+           std = "QUA.1",
+           align = 0.2)
+
+#plot the data to interpret the fit
+plot(fit)
+```
+
 
 ## References

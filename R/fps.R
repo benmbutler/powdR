@@ -281,6 +281,12 @@ fps.powdRlib <- function(lib, smpl, solver, obj, refs, std,
     solver = "BFGS"
   }
 
+  if(solver == "NNLS" & missing(refs)) {
+
+    refs = lib$phases$phase_id
+
+  }
+
   if(missing(obj) & solver %in% c("Nelder-Mead", "BFGS", "CG")) {
     cat("\n-Using default objective function of Rwp")
     obj = "Rwp"
