@@ -107,7 +107,7 @@ afps <- function(lib, ...) {
 #' \code{list(lambda, hwi, it , int)}. If missing, the default used is
 #' \code{list(lambda = 0.5, hwi = 25, it = 50, int = round(nrow(smpl)/4, 0)).} To tune these parameters
 #' please see the \code{function}, or the background fitting tab of the \code{run_powdR} shiny app.
-#' @param lod Optional parameter used to tune the lower limit of dection computation.
+#' @param lod Optional parameter used to tune the lower limit of detection computation.
 #' Must be greater than 0. Default = 0.3. Lower values represent lower detection limits.
 #' @param amorphous_lod Optional parameter used to exclude amorphous phases if they are below this
 #' specified limit (percent). Must be between 0 and 100. Default = 0.

@@ -43,7 +43,7 @@ automated full pattern summation. If not defined, then the full range is used.}
 \code{list(lambda = 0.5, hwi = 25, it = 50, int = round(nrow(smpl)/4, 0)).} To tune these parameters
 please see the \code{function}, or the background fitting tab of the \code{run_powdR} shiny app.}
 
-\item{lod}{Optional parameter used to tune the lower limit of dection computation.
+\item{lod}{Optional parameter used to tune the lower limit of detection computation.
 Must be greater than 0. Default = 0.3. Lower values represent lower detection limits.}
 
 \item{amorphous_lod}{Optional parameter used to exclude amorphous phases if they are below this
