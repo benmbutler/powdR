@@ -14,9 +14,24 @@
       x <- x[-remove_amorphous]
 
       #reoptimise
-      o <- stats::optim(par = x, .fullpat,
+      if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
+
+        cat("\n-Reoptimising after shifting data/adding amorphous phases")
+        o <- stats::optim(par = x, .fullpat,
                         method = solver, pure_patterns = lib$xrd,
                         sample_pattern = smpl[, 2], obj = obj)
+
+      } else {
+
+        cat("\n-Reoptimising after shifting data/adding amorphous phases. Using
+            L-BFGS-B constrained to a lower limit of zero")
+        o <- stats::optim(par = x, .fullpat,
+                          method = solver, lower = 0, pure_patterns = lib$xrd,
+                          sample_pattern = smpl[, 2], obj = obj)
+
+
+      }
+
       x <- o$par
 
       #Recompute percentages

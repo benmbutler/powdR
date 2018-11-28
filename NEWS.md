@@ -1,3 +1,10 @@
+# powdR 0.2.0.9000
+
+## New features
+
+*  `fps()` and `afps()` now accept "L-BFGS-B" in the `solver` argument. If selected, this uses
+   L-BFGS-B optimisation constrained so that parameters cannot be lower than zero.
+
 # powdR 0.2.0
 
 ## New features

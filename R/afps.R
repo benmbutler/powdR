@@ -87,7 +87,7 @@ afps <- function(lib, ...) {
 #' \code{powdRlib} constructor function.
 #' @param smpl A data frame. First column is 2theta, second column is counts
 #' @param solver The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
-#' "CG")}. Default = \code{"BFGS"}.
+#' "CG" or "L-BFGS-B")}. Default = \code{"BFGS"}.
 #' @param obj The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
 #' Default = \code{"Rwp"}. See Chipera and Bish (2002) and page 247 of Bish and Post (1989)
 #' for definitions of these functions.
@@ -198,7 +198,7 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
     solver = "BFGS"
   }
 
-  if(missing(obj) & solver %in% c("Nelder-Mead", "BFGS", "CG")) {
+  if(missing(obj) & solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
     cat("\n-Using default objective function of 'Rwp'")
     obj = "Rwp"
   }
@@ -243,9 +243,9 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
     warning("Be cautious of large 2theta shifts. These can cause issues in sample alignment.")
   }
 
-  #Make only "Nelder-Mead", "BFGS", or "CG" optional for the solver
-  if (!solver %in% c("Nelder-Mead", "BFGS", "CG")) {
-    stop("The solver argument must be one of 'BFGS', 'Nelder Mead' or 'CG'")
+  #Make only "Nelder-Mead", "BFGS", "CG" or "L-BFGS-B" optional for the solver
+  if (!solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
+    stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG' or 'L-BFGS-B'")
   }
 
   #Make sure that the phase identified as the internal standard is contained within the reference library
@@ -356,10 +356,21 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
     x <- rep(0, ncol(lib$xrd))
     names(x) <- names(lib$xrd)
 
+    if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
+
     cat("\n-Optimising...")
     o <- stats::optim(par = x, .fullpat,
                       method = solver, pure_patterns = lib$xrd,
                       sample_pattern = smpl[, 2], obj = obj)
+
+    } else {
+
+    cat("\n-Optimising using L-BFGS-B constrained to a lower limit of zero...")
+    o <- stats::optim(par = x, .fullpat,
+                      method = solver, lower = 0, pure_patterns = lib$xrd,
+                      sample_pattern = smpl[, 2], obj = obj)
+
+    }
 
     x <- o$par
 
@@ -415,11 +426,24 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
 
   if(shift > 0 | length(amorphous_index) > 0) {
 
+    if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
+
     cat("\n-Reoptimising after shifting data/adding amorphous phases")
 
     o <- stats::optim(par = x, .fullpat,
                       method = solver, pure_patterns = lib$xrd,
                       sample_pattern = smpl[, 2], obj = obj)
+
+    } else {
+
+    cat("\n-Reoptimising after shifting data/adding amorphous phases. Using L-BFGS-B constrained
+        to a lower limit of zero")
+
+    o <- stats::optim(par = x, .fullpat,
+                      method = solver, lower = 0, pure_patterns = lib$xrd,
+                      sample_pattern = smpl[, 2], obj = obj)
+
+    }
 
     x <- o$par
 
@@ -427,7 +451,7 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
 
 
   #--------------------------------------------------------------------------------------------
-  #Remove negative parameters
+  #Remove negative/zero parameters
   #--------------------------------------------------------------------------------------------
 
   remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
@@ -455,10 +479,25 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
   x <- xrd_detectable[["x"]]
   lib$xrd <- xrd_detectable[["lib"]]
 
-  cat("\n-Reoptimising")
+  if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
+
+  cat("\n-Reoptimising after shifting data/adding amorphous phases")
+
   o <- stats::optim(par = x, .fullpat,
                     method = solver, pure_patterns = lib$xrd,
                     sample_pattern = smpl[, 2], obj = obj)
+
+  } else {
+
+  cat("\n-Reoptimising after shifting data/adding amorphous phases. Using L-BFGS-B
+      constrained to a lower limit of zero")
+
+  o <- stats::optim(par = x, .fullpat,
+                    method = solver, lower = 0, pure_patterns = lib$xrd,
+                    sample_pattern = smpl[, 2], obj = obj)
+
+  }
+
   x <- o$par
 
   }

@@ -190,9 +190,9 @@ fps <- function(lib, ...) {
 #' \code{powdRlib} constructor function.
 #' @param smpl A data frame. First column is 2theta, second column is counts
 #' @param solver The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
-#' "CG" or "NNLS")}. Default = \code{"BFGS"}.
-#' @param obj The objective function to minimise when "BFGS", "Nelder-Mead", or
-#' "CG" are used as the `solver` argument. One of \code{c("Delta", "R", "Rwp")}.
+#' "CG", "L-BFGS-B", or "NNLS")}. Default = \code{"BFGS"}.
+#' @param obj The objective function to minimise when "BFGS", "Nelder-Mead",
+#' "CG" or "L-BFGS-B" are used as the `solver` argument. One of \code{c("Delta", "R", "Rwp")}.
 #' Default = \code{"Rwp"}. See Chipera and Bish (2002) and page 247 of Bish and Post (1989)
 #' for definitions of these functions.
 #' @param refs A character string of reference pattern ID's from the specified library.
@@ -287,7 +287,7 @@ fps.powdRlib <- function(lib, smpl, solver, obj, refs, std,
 
   }
 
-  if(missing(obj) & solver %in% c("Nelder-Mead", "BFGS", "CG")) {
+  if(missing(obj) & solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
     cat("\n-Using default objective function of Rwp")
     obj = "Rwp"
   }
@@ -302,9 +302,9 @@ fps.powdRlib <- function(lib, smpl, solver, obj, refs, std,
     warning("Be cautious of large 2theta shifts. These can cause issues in sample alignment.")
   }
 
-  #Make only "Nelder-Mead", "BFGS", or "CG" or "NNLS" optional for the solver
-  if (!solver %in% c("Nelder-Mead", "BFGS", "CG", "NNLS")) {
-    stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG' or 'NNLS'")
+  #Make only "Nelder-Mead", "BFGS", or "CG", "L-BFGS-B" or "NNLS" optional for the solver
+  if (!solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "NNLS")) {
+    stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG', 'L-BFGS-B' or 'NNLS'")
   }
 
   #Make sure that the phase identified as the internal standard is contained within the reference library
@@ -380,7 +380,7 @@ if (is.vector(lib$xrd)) {
   names(lib$xrd) <- refs
 }
 
-if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
+if (solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
 
 #--------------------------------------------
 #Initial Optimisation
@@ -389,15 +389,28 @@ if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
 x <- rep(0, ncol(lib$xrd))
 names(x) <- names(lib$xrd)
 
+if (solver == "L-BFGS-B") {
+
+ cat("\n-Optimising using L-BFGS-B constrained to a lower limit of zero...")
+
+ o <- stats::optim(par = x, .fullpat,
+                   method = solver, lower = 0, pure_patterns = lib$xrd,
+                   sample_pattern = smpl[, 2], obj = obj)
+
+} else {
+
 cat("\n-Optimising...")
+
 o <- stats::optim(par = x, .fullpat,
            method = solver, pure_patterns = lib$xrd,
            sample_pattern = smpl[, 2], obj = obj)
 
+}
+
 x <- o$par
 
 #-----------------------------------------------
-# Remove negative parameters
+# Remove negative parameters or parameters equal to zero
 #-----------------------------------------------
 
 remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
