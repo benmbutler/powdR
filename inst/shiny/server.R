@@ -358,7 +358,7 @@ shinyServer(function(input, output, session) {
 
         xrdlib2 <- as.list(filedata3())
 
-        if (input$selectSolver %in% c("Nelder-Mead", "BFGS", "CG")) {
+        if (input$selectSolver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
 
         fps_out <- powdR::fps(smpl = smpl, lib = xrdlib2, tth_fps = input$tth,
                                   std = gsub(".*: ", "", input$selectINT),
