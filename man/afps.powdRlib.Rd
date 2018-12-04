@@ -5,7 +5,7 @@
 \title{Automated full pattern summation}
 \usage{
 \method{afps}{powdRlib}(lib, smpl, solver, obj, std, amorphous, tth_align,
-  align, shift, tth_fps, background, lod, amorphous_lod, ...)
+  align, shift, tth_fps, background, lod, tth_lod, amorphous_lod, ...)
 }
 \arguments{
 \item{lib}{A \code{powdRlib} object representing the reference library. Created using the
@@ -44,7 +44,11 @@ automated full pattern summation. If not defined, then the full range is used.}
 please see the \code{function}, or the background fitting tab of the \code{run_powdR} shiny app.}
 
 \item{lod}{Optional parameter used to tune the lower limit of detection computation.
-Must be greater than 0. Default = 0.3. Lower values represent lower detection limits.}
+Default = 4. Lower values represent lower detection limits. If \code{lod = 0} then limits of detection
+are not computed.}
+
+\item{tth_lod}{Mandatory vector defining the 2theta range within which the major peak of the
+internal standard is found. e.g. \code{c(26.2, 26.9)}.}
 
 \item{amorphous_lod}{Optional parameter used to exclude amorphous phases if they are below this
 specified limit (percent). Must be between 0 and 100. Default = 0.}
@@ -91,19 +95,25 @@ afps_sand <-  afps(lib = minerals,
                  smpl = soils$sandstone,
                  std = "QUA.1",
                  amorphous = "ORG",
-                 align = 0.2)
+                 align = 0.2,
+                 lod = 2,
+                 tth_lod = c(26.3, 27))
 
 afps_lime <- afps(lib = minerals,
                 smpl = soils$limestone,
                 std = "QUA.1",
                 amorphous = "ORG",
-                align = 0.2)
+                align = 0.2,
+                lod = 2,
+                tth_lod = c(26.3, 27))
 
 afps_granite <- afps(lib = minerals,
                    smpl = soils$granite,
                    std = "QUA.1",
                    amorphous = "ORG",
-                   align = 0.2)
+                   align = 0.2,
+                   lod = 2,
+                   tth_lod = c(26.3, 27))
 }
 }
 \references{

@@ -108,7 +108,10 @@ afps <- function(lib, ...) {
 #' \code{list(lambda = 0.5, hwi = 25, it = 50, int = round(nrow(smpl)/4, 0)).} To tune these parameters
 #' please see the \code{function}, or the background fitting tab of the \code{run_powdR} shiny app.
 #' @param lod Optional parameter used to tune the lower limit of detection computation.
-#' Must be greater than 0. Default = 0.3. Lower values represent lower detection limits.
+#' Default = 4. Lower values represent lower detection limits. If \code{lod = 0} then limits of detection
+#' are not computed.
+#' @param tth_lod Mandatory vector defining the 2theta range within which the major peak of the
+#' internal standard is found. e.g. \code{c(26.2, 26.9)}.
 #' @param amorphous_lod Optional parameter used to exclude amorphous phases if they are below this
 #' specified limit (percent). Must be between 0 and 100. Default = 0.
 #' @param ... other arguments
@@ -141,19 +144,25 @@ afps <- function(lib, ...) {
 #'                  smpl = soils$sandstone,
 #'                  std = "QUA.1",
 #'                  amorphous = "ORG",
-#'                  align = 0.2)
+#'                  align = 0.2,
+#'                  lod = 2,
+#'                  tth_lod = c(26.3, 27))
 #'
 #' afps_lime <- afps(lib = minerals,
 #'                 smpl = soils$limestone,
 #'                 std = "QUA.1",
 #'                 amorphous = "ORG",
-#'                 align = 0.2)
+#'                 align = 0.2,
+#'                 lod = 2,
+#'                 tth_lod = c(26.3, 27))
 #'
 #' afps_granite <- afps(lib = minerals,
 #'                    smpl = soils$granite,
 #'                    std = "QUA.1",
 #'                    amorphous = "ORG",
-#'                    align = 0.2)
+#'                    align = 0.2,
+#'                    lod = 2,
+#'                    tth_lod = c(26.3, 27))
 #' }
 #' @references
 #' Bish, D.L., Post, J.E., 1989. Modern powder diffraction. Mineralogical Society of America.
@@ -170,7 +179,7 @@ afps <- function(lib, ...) {
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
 afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
-                         tth_align, align, shift, tth_fps, background, lod,
+                         tth_align, align, shift, tth_fps, background, lod, tth_lod,
                          amorphous_lod, ...) {
 
   if(missing(amorphous)) {
@@ -204,8 +213,16 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
   }
 
   if(missing(lod)) {
-    cat("\n-Using default lod of 0.3")
-    lod = 0.3
+    cat("\n-Using default lod of 4")
+    lod = 4
+  }
+
+  if(missing(tth_lod) & lod > 0) {
+    stop("tth_lod must be defined")
+  }
+
+  if(missing(tth_lod) & lod == 0) {
+    tth_lod <- c(0,0)
   }
 
   if(missing(amorphous_lod)) {
@@ -471,9 +488,13 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
   if (lod > 0) {
 
   cat("\n-Calculating detection limits")
-  xrd_detectable <- .lod(x = x, smpl = smpl, lib = lib,
-                        std = std, amorphous = amorphous,
-                        background = background, lod = lod)
+  #xrd_detectable <- .lod(x = x, smpl = smpl, lib = lib,
+  #                      std = std, amorphous = amorphous,
+  #                      background = background, lod = lod)
+  xrd_detectable <- .lod2(x = x, lib = lib,
+                          std = std, amorphous = amorphous,
+                          background = background, lod = lod,
+                          tth_lod = tth_lod)
   cat("\n-Removing phases below detection limit")
 
   x <- xrd_detectable[["x"]]
@@ -481,7 +502,7 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
 
   if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
 
-  cat("\n-Reoptimising after shifting data/adding amorphous phases")
+  cat("\n-Reoptimising after removing phases below the limit of detection")
 
   o <- stats::optim(par = x, .fullpat,
                     method = solver, pure_patterns = lib$xrd,
@@ -489,7 +510,7 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
 
   } else {
 
-  cat("\n-Reoptimising after shifting data/adding amorphous phases. Using L-BFGS-B
+  cat("\n--Reoptimising after removing phases below the limit of detection. Using L-BFGS-B
       constrained to a lower limit of zero")
 
   o <- stats::optim(par = x, .fullpat,
