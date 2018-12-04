@@ -130,7 +130,9 @@ fit <- afps(lib = minerals,
            smpl = soils$sandstone,
            std = "QUA.1",
            amorphous = "ORG",
-           align = 0.2)
+           align = 0.2,
+           lod = 2,
+           tth_lod = c(26.2, 27.0))
 
 #plot the data to interpret the fit
 plot(fit)
