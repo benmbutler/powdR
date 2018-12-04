@@ -10,13 +10,13 @@ bkg(xrd, lambda, hwi, it, int)
 \item{xrd}{an xy data frame of the data to fit a background to. First column
 is the 2theta scale, second column is count intensities}
 
-\item{lambda}{2nd derivative penalty for primary smoothing}
+\item{lambda}{2nd derivative penalty for primary smoothing. Default = 0.5.}
 
-\item{hwi}{Half width of local windows}
+\item{hwi}{Half width of local windows. Default = 25.}
 
-\item{it}{Number of iterations in suppression loop}
+\item{it}{Number of iterations in suppression loop. Default = 50.}
 
-\item{int}{Number of buckets to divide the data into}
+\item{int}{Number of buckets to divide the data into. Default = \code{round(nrow(xrd)/4)}.}
 }
 \value{
 a list of 3 vectors

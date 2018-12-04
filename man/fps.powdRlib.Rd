@@ -14,10 +14,10 @@
 \item{smpl}{A data frame. First column is 2theta, second column is counts}
 
 \item{solver}{The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
-"CG" or "NNLS")}. Default = \code{"BFGS"}.}
+"CG", "L-BFGS-B", or "NNLS")}. Default = \code{"BFGS"}.}
 
-\item{obj}{The objective function to minimise when "BFGS", "Nelder-Mead", or
-"CG" are used as the `solver` argument. One of \code{c("Delta", "R", "Rwp")}.
+\item{obj}{The objective function to minimise when "BFGS", "Nelder-Mead",
+"CG" or "L-BFGS-B" are used as the `solver` argument. One of \code{c("Delta", "R", "Rwp")}.
 Default = \code{"Rwp"}. See Chipera and Bish (2002) and page 247 of Bish and Post (1989)
 for definitions of these functions.}
 

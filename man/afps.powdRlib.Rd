@@ -14,7 +14,7 @@
 \item{smpl}{A data frame. First column is 2theta, second column is counts}
 
 \item{solver}{The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
-"CG")}. Default = \code{"BFGS"}.}
+"CG" or "L-BFGS-B")}. Default = \code{"BFGS"}.}
 
 \item{obj}{The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
 Default = \code{"Rwp"}. See Chipera and Bish (2002) and page 247 of Bish and Post (1989)
