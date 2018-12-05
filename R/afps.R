@@ -491,7 +491,7 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
   #xrd_detectable <- .lod(x = x, smpl = smpl, lib = lib,
   #                      std = std, amorphous = amorphous,
   #                      background = background, lod = lod)
-  xrd_detectable <- .lod2(x = x, lib = lib,
+  xrd_detectable <- .lod(x = x, lib = lib,
                           std = std, amorphous = amorphous,
                           background = background, lod = lod,
                           tth_lod = tth_lod)
