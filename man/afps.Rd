@@ -51,21 +51,24 @@ data(soils)
 \dontrun{
 afps_sand <-  afps(lib = minerals,
                  smpl = soils$sandstone,
-                 std = "QUA.1",
+                 std = "QUA.2",
                  amorphous = "ORG",
-                 align = 0.2)
+                 align = 0.2,
+                 tth_lod = c(26.3, 27))
 
 afps_lime <- afps(lib = minerals,
                 smpl = soils$limestone,
-                std = "QUA.1",
+                std = "QUA.2",
                 amorphous = "ORG",
-                align = 0.2)
+                align = 0.2,
+                tth_lod = c(26.3, 27))
 
 afps_granite <- afps(lib = minerals,
                    smpl = soils$granite,
-                   std = "QUA.1",
+                   std = "QUA.2",
                    amorphous = "ORG",
-                   align = 0.2)
+                   align = 0.2,
+                   tth_lod = c(26.3, 27))
 }
 }
 \references{

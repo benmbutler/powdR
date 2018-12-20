@@ -44,7 +44,7 @@ automated full pattern summation. If not defined, then the full range is used.}
 please see the \code{function}, or the background fitting tab of the \code{run_powdR} shiny app.}
 
 \item{lod}{Optional parameter used to tune the lower limit of detection computation.
-Default = 4. Lower values represent lower detection limits. If \code{lod = 0} then limits of detection
+Default = 1. Lower values represent lower detection limits. If \code{lod = 0} then limits of detection
 are not computed.}
 
 \item{tth_lod}{Mandatory vector defining the 2theta range within which the major peak of the
@@ -93,7 +93,7 @@ data(soils)
 \dontrun{
 afps_sand <-  afps(lib = minerals,
                  smpl = soils$sandstone,
-                 std = "QUA.1",
+                 std = "QUA.2",
                  amorphous = "ORG",
                  align = 0.2,
                  lod = 2,
@@ -101,7 +101,7 @@ afps_sand <-  afps(lib = minerals,
 
 afps_lime <- afps(lib = minerals,
                 smpl = soils$limestone,
-                std = "QUA.1",
+                std = "QUA.2",
                 amorphous = "ORG",
                 align = 0.2,
                 lod = 2,
@@ -109,7 +109,7 @@ afps_lime <- afps(lib = minerals,
 
 afps_granite <- afps(lib = minerals,
                    smpl = soils$granite,
-                   std = "QUA.1",
+                   std = "QUA.2",
                    amorphous = "ORG",
                    align = 0.2,
                    lod = 2,

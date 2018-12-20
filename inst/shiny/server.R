@@ -543,7 +543,7 @@ shinyServer(function(input, output, session) {
     x2_afps <- x2_afps[[3]]
 
     updateSelectInput(session, "selectINT_afps",
-                      label = paste("Choose an internal standard for peak alignment."),
+                      label = paste("Choose an internal standard for peak alignment/limit of detection estimation."),
                       choices = paste0(x2_afps[[2]], ": ", x2_afps[[1]]),
                       selected = head(paste0(x2_afps[[2]], ": ", x2_afps[[1]]), 1)
                       )
@@ -555,12 +555,26 @@ shinyServer(function(input, output, session) {
 
   })
 
-  #Use the selected library to adjust the 2theta slider
+  #Use the selected library to adjust the 2theta sliders
   observe({
 
     if(!is.null(input$loadLIBafps)) {
       xrd_uploaded_afps <- as.list(filedata3_afps())
       updateSliderInput(session = session, inputId = "tth_afps",
+                        min = round(min(as.numeric(xrd_uploaded_afps[[2]])) + input$align_afps, 2),
+                        max = round(max(as.numeric(xrd_uploaded_afps[[2]])) - input$align_afps, 2),
+                        value = c(round(min(as.numeric(xrd_uploaded_afps[[2]])) + input$align_afps, 2),
+                                  round(max(as.numeric(xrd_uploaded_afps[[2]])) - input$align_afps, 2)))
+    }
+
+  })
+
+
+  observe({
+
+    if(!is.null(input$loadLIBafps)) {
+      xrd_uploaded_afps <- as.list(filedata3_afps())
+      updateSliderInput(session = session, inputId = "tth_afps_lod",
                         min = round(min(as.numeric(xrd_uploaded_afps[[2]])) + input$align_afps, 2),
                         max = round(max(as.numeric(xrd_uploaded_afps[[2]])) - input$align_afps, 2),
                         value = c(round(min(as.numeric(xrd_uploaded_afps[[2]])) + input$align_afps, 2),
@@ -591,6 +605,7 @@ shinyServer(function(input, output, session) {
                                                 "it" = input$bkg_it,
                                                 "int" = input$bkg_int),
                               lod = input$lod_afps,
+                              tth_lod = input$tth_afps_lod,
                               amorphous_lod = input$amorph_lod_afps)
 
     })

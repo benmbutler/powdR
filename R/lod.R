@@ -23,7 +23,7 @@
   #Add the amorphous phases as a column in the quant$df table
   quant$df$amorphous <- FALSE
 
-  if(length(amorphous) > 0) {
+  if(length(which(amorphous %in% quant$df$phase_id)) > 0) {
     quant$df$amorphous[which(quant$df$phase_id %in% amorphous)] <- TRUE
   }
 
@@ -74,6 +74,10 @@
 
     lib_df <- lib$xrd[-remove_these]
     x <- x[-remove_these]
+
+  } else{
+
+    lib_df <- lib$xrd
 
   }
 

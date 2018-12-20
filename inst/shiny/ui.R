@@ -202,7 +202,7 @@ shinyUI(
                           tags$hr(),
                           h3("5. Adjust fit parameters"),
                           helpText("Adjust the alignment parameter"),
-                          sliderInput("align", label = NULL, min = 0.01,
+                          sliderInput("align", label = NULL, min = 0,
                                       max = 0.5,
                                       value = c(0.1)),
                           helpText(withMathJax("Adjust the 2\\(\\theta\\) range for
@@ -285,7 +285,7 @@ shinyUI(
                                       choices = c("Rwp", "R", "Delta")),
                           tags$hr(),
                           h3("4. Select phases"),
-                          helpText("Choose an internal standard for peak alignment."),
+                          helpText("Choose an internal standard for peak alignment/limit of detection estimation."),
                           selectInput(inputId = "selectINT_afps",
                                       label = NULL,
                                       choices = c("")),
@@ -298,7 +298,7 @@ shinyUI(
                           tags$hr(),
                           h3("5. Adjust fit parameters"),
                           helpText("Adjust the alignment parameter"),
-                          sliderInput("align_afps", label = NULL, min = 0.01,
+                          sliderInput("align_afps", label = NULL, min = 0,
                                       max = 0.5,
                                       value = 0.1),
                           helpText("Adjust the shifting parameter"),
@@ -308,6 +308,11 @@ shinyUI(
                           helpText(withMathJax("Adjust the 2\\(\\theta\\) range for
                                                full pattern summation")),
                           sliderInput("tth_afps", label = NULL,
+                                      min = 2, max = 75,
+                                      value = c(0, 100), step = 0.1),
+                          helpText(withMathJax("Define the 2\\(\\theta\\) range of the major
+                                               internal standard peak")),
+                          sliderInput("tth_afps_lod", label = NULL,
                                       min = 2, max = 75,
                                       value = c(0, 100), step = 0.1),
                           helpText("Tune the limit of detection parameter for crystalline phases (lower values

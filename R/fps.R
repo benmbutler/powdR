@@ -265,36 +265,40 @@ fps <- function(lib, ...) {
 fps.powdRlib <- function(lib, smpl, solver, obj, refs, std,
                 tth_align, align, tth_fps, ...) {
 
-  #Create defaults for values that aren't specified.
+  #If tth_align is missing then use the maximum tth range
   if(missing(tth_align)) {
     cat("\n-Using maximum tth range")
     tth_align <- c(min(smpl[[1]]), max(smpl[[1]]))
   }
 
+  #If align is missing then set it to default
   if(missing(align)) {
     cat("\n-Using default alignment of 0.1")
     align = 0.1
   }
 
+  #If solver is missing then set it to BFGS
   if(missing(solver)) {
     cat("\n-Using default solver of BFGS")
     solver = "BFGS"
   }
 
+  #If solver is NNLS and refs aren't defined then use all of them
   if(solver == "NNLS" & missing(refs)) {
 
     refs = lib$phases$phase_id
 
   }
 
+  #If obj is not defined and needs to be, set it to Rwp
   if(missing(obj) & solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
     cat("\n-Using default objective function of Rwp")
     obj = "Rwp"
   }
 
   #Ensure that the align is greater than 0.
-  if (align <= 0) {
-    stop("The align argument must be greater than 0")
+  if (align < 0) {
+    stop("The align argument must be equal to or greater than 0")
   }
 
   #Create a warning message if the shift is greater than 0.5, since this can confuse the optimisation
@@ -307,30 +311,38 @@ fps.powdRlib <- function(lib, smpl, solver, obj, refs, std,
     stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG', 'L-BFGS-B' or 'NNLS'")
   }
 
+  #If align is 0 and the standard is missing then it can be set to 'none'
+  if (align == 0 & missing(std)) {
+
+    std <- "none"
+
+  }
+
   #Make sure that the phase identified as the internal standard is contained within the reference library
-  if (!std %in% lib$phases$phase_id) {
+  if (!std == "none" & !std %in% lib$phases$phase_id) {
   stop("The phase you have specified as the internal standard is not in the reference library")
   }
 
-#subset lib according to the phases vector
+  #subset lib according to the phases vector
+  lib$xrd <- lib$xrd[, which(lib$phases$phase_id %in% refs)]
+  lib$phases <- lib$phases[which(lib$phases$phase_id %in% refs), ]
 
-lib$xrd <- lib$xrd[, which(lib$phases$phase_id %in% refs)]
-lib$phases <- lib$phases[which(lib$phases$phase_id %in% refs), ]
 
+  #if only one phase is being used, make sure it's a dataframe and named correctly
+  if (length(refs) == 1) {
+    lib$xrd <- data.frame("phase" = lib$xrd)
+    names(lib$xrd) <- refs
+  }
 
-#if only one phase is being used, make sure it's a dataframe and named correctly
-if (length(refs) == 1) {
-  lib$xrd <- data.frame("phase" = lib$xrd)
-  names(lib$xrd) <- refs
-}
-
-#Extract the standard as an xy dataframe
-xrd_standard <- data.frame(tth = lib$tth, counts = lib$xrd[, which(lib$phases$phase_id == std)])
+if (align > 0) {
 
 #align the data
 cat("\n-Aligning sample to the internal standard")
-smpl <- .xrd_align(smpl = smpl, xrd_standard, xmin = tth_align[1],
-                    xmax = tth_align[2], xshift = align)
+smpl <- .xrd_align(smpl = smpl,
+                   standard = data.frame(tth = lib$tth,
+                                         counts = lib$xrd[, which(lib$phases$phase_id == std)]),
+                   xmin = tth_align[1],
+                   xmax = tth_align[2], xshift = align)
 
 #If the alignment is close to the limit, provide a warning
 if (sqrt(smpl[[1]]^2) > (align*0.95)) {
@@ -346,10 +358,20 @@ smpl <- smpl[which(smpl[[1]] >= min(lib$tth) & smpl[[1]] <= max(lib$tth)), ]
 #Define a 2TH scale to harmonise all data to
 smpl_tth <- smpl[[1]]
 
+} else {
+
+ names(smpl) <- c("tth", "counts")
+ smpl_tth <- smpl[[1]]
+
+}
+
 #If tth_fps isn't defined, then define it here
 if(missing(tth_fps)) {
   tth_fps <- c(min(smpl_tth), max(smpl_tth))
 }
+
+
+if (align > 0) {
 
 xrd_ref_names <- lib$phases$phase_id
 
@@ -361,6 +383,8 @@ lib$xrd <- data.frame(lapply(names(lib$xrd),
                                                           xout = smpl_tth)[[2]]))
 
 names(lib$xrd) <- xrd_ref_names
+
+}
 
 #Replace the library tth with that of the sample
 lib$tth <- smpl_tth
@@ -442,15 +466,7 @@ min_concs <- .qminerals(x = x, xrd_lib = lib)
 df <- min_concs[[1]]
 dfs <- min_concs[[2]]
 
-#### Compute the R statistic. This could be used to identify samples
-# that require manual interpretation
-
-#obs_minus_calc <- (smpl[,2] - fitted_pattern)^2
-#sample_squared <- smpl[,2]^2
-
-#R_fit <- sqrt(sum((sample[,2] - fitted_pattern)^2)/sum(sample[,2]^2))
-
-#Rwp
+#### Compute the Rwp
 R_fit <- sqrt(sum((1/smpl[,2]) * ((smpl[,2] - fitted_pattern)^2)) / sum((1/smpl[,2]) * (smpl[,2]^2)))
 
 #Extract the xrd data
