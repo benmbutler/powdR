@@ -484,7 +484,7 @@ if (ncol(xrd) == 1) {
 
 
 #Define a list that becomes the function output
-out <- list(smpl[,1], fitted_pattern, smpl[,2], resid_x, df, dfs, R_fit, xrd, x)
+out <- list(smpl[,1], unname(fitted_pattern), smpl[,2], unname(resid_x), df, dfs, R_fit, xrd, x)
 names(out) <- c("tth", "fitted", "measured", "residuals",
                 "phases", "phases_summary", "rwp", "weighted_pure_patterns", "coefficients")
 
