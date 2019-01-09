@@ -373,6 +373,7 @@ shinyServer(function(input, output, session) {
                               std = gsub(".*: ", "", input$selectINT),
                               refs = xrdlib2$phases$phase_id,
                               align = input$align,
+                              shift = input$shift,
                               obj = input$selectOBJ,
                               solver = input$selectSolver)
 
