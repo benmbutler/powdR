@@ -1,9 +1,5 @@
 .shift <- function(smpl, lib, max_shift, x, res) {
 
-  if(missing(res)) {
-    res <- 4
-  }
-
   #create a blank list
   pure_patterns <- list()
 

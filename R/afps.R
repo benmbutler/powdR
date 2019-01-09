@@ -104,6 +104,8 @@ afps <- function(lib, ...) {
 #' alignment (degrees). Default = 0.1.
 #' @param shift The maximum shift (degrees 2theta) that is allowed during the grid search phases selected
 #' from the non-negative least squares. Default = 0.05).
+#' @param shift_res A single integer defining the increase in resolution used during grid search shifting. Higher
+#' values facilitatefiner shifts at the expense of longer computation. Default = 4.
 #' @param tth_fps A vector defining the minimum and maximum 2theta values to be used during
 #' automated full pattern summation. If not defined, then the full range is used.
 #' @param background a list of parameters used to fit a background to the data. Takes the form
@@ -182,7 +184,7 @@ afps <- function(lib, ...) {
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
 afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
-                         tth_align, align, shift, tth_fps, background, lod, tth_lod,
+                         tth_align, align, shift, shift_res, tth_fps, background, lod, tth_lod,
                          amorphous_lod, ...) {
 
   #If amorphous is misssing then set it to an empty vector
@@ -203,12 +205,6 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
     align = 0.1
   }
 
-  #If shift is missing the set it to default
-  if(missing(shift)) {
-    cat("\n-Using default shift of 0.05")
-    shift = 0.05
-  }
-
   #If solver is missing then set it to BFGS
   if(missing(solver)) {
     cat("\n-Using default solver of 'BFGS'")
@@ -220,6 +216,18 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
   if(missing(obj) & solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
     cat("\n-Using default objective function of 'Rwp'")
     obj = "Rwp"
+  }
+
+  #If shift is missing then set it to default
+  if(missing(shift)) {
+    cat("\n-Using default shift of 0.05")
+    shift = 0.05
+  }
+
+  #If shift_res is missing then set it to default
+  if(missing(shift_res)) {
+    cat("\n-Using default shift_res of 4")
+    shift_res = 4
   }
 
   #If lod is missing then set it to a default of 1
@@ -416,7 +424,8 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
    fpf_aligned <- .shift(smpl = smpl,
                          lib = lib,
                          max_shift = shift,
-                         x = x)
+                         x = x,
+                         res = shift_res)
 
     smpl <- fpf_aligned[["smpl"]]
     lib$xrd <- data.frame(fpf_aligned[["lib"]])

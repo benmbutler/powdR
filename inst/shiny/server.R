@@ -364,6 +364,7 @@ shinyServer(function(input, output, session) {
                                   std = gsub(".*: ", "", input$selectINT),
                                   refs = gsub(".*: ", "", input$selectPHASES),
                                   align = input$align,
+                                  shift = input$shift,
                                   obj = input$selectOBJ,
                                   solver = input$selectSolver)
         } else {

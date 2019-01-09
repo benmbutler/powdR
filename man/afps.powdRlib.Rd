@@ -5,7 +5,8 @@
 \title{Automated full pattern summation}
 \usage{
 \method{afps}{powdRlib}(lib, smpl, solver, obj, std, amorphous, tth_align,
-  align, shift, tth_fps, background, lod, tth_lod, amorphous_lod, ...)
+  align, shift, shift_res, tth_fps, background, lod, tth_lod,
+  amorphous_lod, ...)
 }
 \arguments{
 \item{lib}{A \code{powdRlib} object representing the reference library. Created using the
@@ -34,6 +35,9 @@ alignment (degrees). Default = 0.1.}
 
 \item{shift}{The maximum shift (degrees 2theta) that is allowed during the grid search phases selected
 from the non-negative least squares. Default = 0.05).}
+
+\item{shift_res}{A single integer defining the increase in resolution used during grid search shifting. Higher
+values facilitatefiner shifts at the expense of longer computation. Default = 4.}
 
 \item{tth_fps}{A vector defining the minimum and maximum 2theta values to be used during
 automated full pattern summation. If not defined, then the full range is used.}

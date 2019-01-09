@@ -205,6 +205,10 @@ fps <- function(lib, ...) {
 #' alignment (degrees). Default = 0.1.
 #' @param tth_fps A vector defining the minimum and maximum 2theta values to be used during
 #' full pattern summation. If not defined, then the full range is used.
+#' @param shift The maximum shift (degrees 2theta) that is allowed during the grid search phases selected
+#' from the non-negative least squares. Default = 0.05).
+#' @param shift_res A single integer defining the increase in resolution used during grid search shifting. Higher
+#' values facilitatefiner shifts at the expense of longer computation. Default = 4.
 #' @param ... other arguments
 #'
 #' @return a list with components:
@@ -263,7 +267,7 @@ fps <- function(lib, ...) {
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
 fps.powdRlib <- function(lib, smpl, solver, obj, refs, std,
-                tth_align, align, tth_fps, ...) {
+                tth_align, align, tth_fps, shift, shift_res, ...) {
 
   #If tth_align is missing then use the maximum tth range
   if(missing(tth_align)) {
@@ -281,6 +285,17 @@ fps.powdRlib <- function(lib, smpl, solver, obj, refs, std,
   if(missing(solver)) {
     cat("\n-Using default solver of BFGS")
     solver = "BFGS"
+  }
+
+  #If shift is missing then set it to default
+  if(missing(shift)) {
+    cat("\n-Using default shift of 0")
+    shift = 0
+  }
+
+  #If shift_res is missing then set it to default
+  if(missing(shift_res)) {
+    shift_res = 4
   }
 
   #If solver is NNLS and refs aren't defined then use all of them
@@ -451,7 +466,76 @@ lib <- remove_neg_out[[2]]
   lib$xrd <- nnls_out$xrd.lib
   x <- nnls_out$x
 
+}
+
+
+#----------------------------------------------------
+# Grid search shifting
+#----------------------------------------------------
+
+#Shift and then another optimisation ONLY if the shift parameter
+#is greater than zero
+
+if(shift > 0) {
+
+  fpf_aligned <- .shift(smpl = smpl,
+                        lib = lib,
+                        max_shift = shift,
+                        x = x,
+                        res = shift_res)
+
+  smpl <- fpf_aligned[["smpl"]]
+  lib$xrd <- data.frame(fpf_aligned[["lib"]])
+  lib$tth <- smpl[,1]
+
+
+
+
+#----------------------------------------------
+#Re-optimise after shifting
+#----------------------------------------------
+
+  if (solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
+
+    cat("\n-Reoptimising after shifting data")
+
+    o <- stats::optim(par = x, .fullpat,
+                      method = solver, pure_patterns = lib$xrd,
+                      sample_pattern = smpl[, 2], obj = obj)
+
+    x <- o$par
+
+  } else {
+
+    cat("\n-Applying non-negative least squares")
+
+    nnls_out <- .xrd_nnls(xrd.lib = lib, xrd.sample = smpl[, 2])
+
+    lib$xrd <- nnls_out$xrd.lib
+
+    x <- nnls_out$x
+
   }
+
+#--------------------------------------------------------------------------------------------
+#Remove negative/zero parameters after shifting
+#--------------------------------------------------------------------------------------------
+
+if (!solver == 'NNLS') {
+
+remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
+                              solver = solver, obj = obj)
+
+x <- remove_neg_out[[1]]
+lib <- remove_neg_out[[2]]
+
+}
+
+}
+
+#--------------------------------------------------------
+#Compute fitted pattern and quantify
+#--------------------------------------------------------
 
 #compute fitted pattern and residuals
 fitted_pattern <- apply(sweep(as.matrix(lib$xrd), 2, x, "*"), 1, sum)
