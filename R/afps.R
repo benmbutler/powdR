@@ -105,7 +105,7 @@ afps <- function(lib, ...) {
 #' @param shift The maximum shift (degrees 2theta) that is allowed during the grid search phases selected
 #' from the non-negative least squares. Default = 0.05).
 #' @param shift_res A single integer defining the increase in resolution used during grid search shifting. Higher
-#' values facilitatefiner shifts at the expense of longer computation. Default = 4.
+#' values facilitate finer shifts at the expense of longer computation. Default = 4.
 #' @param tth_fps A vector defining the minimum and maximum 2theta values to be used during
 #' automated full pattern summation. If not defined, then the full range is used.
 #' @param background a list of parameters used to fit a background to the data. Takes the form
