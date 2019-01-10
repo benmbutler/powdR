@@ -4,8 +4,8 @@
 \alias{afps.powdRlib}
 \title{Automated full pattern summation}
 \usage{
-\method{afps}{powdRlib}(lib, smpl, solver, obj, std, amorphous, tth_align,
-  align, shift, shift_res, tth_fps, background, lod, tth_lod,
+\method{afps}{powdRlib}(lib, smpl, solver, obj, std, tth_align, align,
+  shift, shift_res, tth_fps, background, lod, tth_lod, amorphous,
   amorphous_lod, ...)
 }
 \arguments{
@@ -24,9 +24,6 @@ for definitions of these functions.}
 \item{std}{The phase ID (e.g. "QUA.1") to be used as internal
 standard. Must match an ID provided in the \code{phases} parameter.}
 
-\item{amorphous}{A character string of any phase id's that should be treated as amorphous. Each must
-match a phase_id in the phases table of `lib`.}
-
 \item{tth_align}{A vector defining the minimum and maximum 2theta values to be used during
 alignment. If not defined, then the full range is used.}
 
@@ -37,7 +34,7 @@ alignment (degrees). Default = 0.1.}
 from the non-negative least squares. Default = 0.05).}
 
 \item{shift_res}{A single integer defining the increase in resolution used during grid search shifting. Higher
-values facilitatefiner shifts at the expense of longer computation. Default = 4.}
+values facilitate finer shifts at the expense of longer computation. Default = 4.}
 
 \item{tth_fps}{A vector defining the minimum and maximum 2theta values to be used during
 automated full pattern summation. If not defined, then the full range is used.}
@@ -53,6 +50,9 @@ are not computed.}
 
 \item{tth_lod}{Mandatory vector defining the 2theta range within which the major peak of the
 internal standard is found. e.g. \code{c(26.2, 26.9)}.}
+
+\item{amorphous}{A character string of any phase id's that should be treated as amorphous. Each must
+match a phase_id in the phases table of `lib`.}
 
 \item{amorphous_lod}{Optional parameter used to exclude amorphous phases if they are below this
 specified limit (percent). Must be between 0 and 100. Default = 0.}

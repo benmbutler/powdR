@@ -96,8 +96,6 @@ afps <- function(lib, ...) {
 #' for definitions of these functions.
 #' @param std The phase ID (e.g. "QUA.1") to be used as internal
 #' standard. Must match an ID provided in the \code{phases} parameter.
-#' @param amorphous A character string of any phase id's that should be treated as amorphous. Each must
-#' match a phase_id in the phases table of `lib`.
 #' @param tth_align A vector defining the minimum and maximum 2theta values to be used during
 #' alignment. If not defined, then the full range is used.
 #' @param align The maximum shift that is allowed during initial 2theta
@@ -117,6 +115,8 @@ afps <- function(lib, ...) {
 #' are not computed.
 #' @param tth_lod Mandatory vector defining the 2theta range within which the major peak of the
 #' internal standard is found. e.g. \code{c(26.2, 26.9)}.
+#' @param amorphous A character string of any phase id's that should be treated as amorphous. Each must
+#' match a phase_id in the phases table of `lib`.
 #' @param amorphous_lod Optional parameter used to exclude amorphous phases if they are below this
 #' specified limit (percent). Must be between 0 and 100. Default = 0.
 #' @param ... other arguments
@@ -183,9 +183,9 @@ afps <- function(lib, ...) {
 #' Eberl, D.D., 2003. User's guide to ROCKJOCK - A program for determining quantitative mineralogy from
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
-afps.powdRlib <- function(lib, smpl, solver, obj, std, amorphous,
+afps.powdRlib <- function(lib, smpl, solver, obj, std,
                          tth_align, align, shift, shift_res, tth_fps, background, lod, tth_lod,
-                         amorphous_lod, ...) {
+                         amorphous, amorphous_lod, ...) {
 
   #If amorphous is misssing then set it to an empty vector
   if(missing(amorphous)) {

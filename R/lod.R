@@ -3,6 +3,34 @@
   #quantify minerals
   quant <- .qminerals(x = x, xrd_lib = lib)
 
+  #Check that the internal standard is present and if it isn't then
+  #use an alternative
+  if (length(which(quant$df$phase_id == std)) == 0) {
+
+     cat("\n-The original internal standard specified is no longer available")
+
+    alt_std_name <- lib$phases$phase_name[which(lib$phases$phase_id == std)]
+    alt_std_options <- quant$df$phase_id[which(quant$df$phase_name == alt_std_name)]
+
+    if (length(alt_std_options) > 0) {
+
+      cat(paste("\n-Selecting an alternative", alt_std_name, "standard to use"))
+
+      std <- alt_std_options[which.max(quant$df$phase_percent[which(quant$df$phase_id %in% alt_std_options)])]
+
+      cat(paste("\n-Now using", std, "as the internal standard for LOD estimation"))
+
+    } else {
+
+      alt_std_options2 <- quant$df[-which(quant$df$phase_id %in% amorphous),]
+      std <- alt_std_options2$phase_id[which.max(alt_std_options2$phase_percent)]
+
+      cat(paste("\n-Now using", std, "as the internal standard for LOD estimation"))
+
+    }
+
+  }
+
   #Add a warning if the internal standard is less that 5 %
   if (quant$df$phase_percent[which(quant$df$phase_id == std)] < 5) {
 

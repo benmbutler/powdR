@@ -40,7 +40,7 @@ full pattern summation. If not defined, then the full range is used.}
 from the non-negative least squares. Default = 0.05).}
 
 \item{shift_res}{A single integer defining the increase in resolution used during grid search shifting. Higher
-values facilitatefiner shifts at the expense of longer computation. Default = 4.}
+values facilitate finer shifts at the expense of longer computation. Default = 4.}
 
 \item{...}{other arguments}
 }
