@@ -271,7 +271,7 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
 
   #Ensure that the align is greater than 0.
   if (align < 0) {
-    stop("The align argument must be greater than oe equal to 0")
+    stop("The align argument must be greater than or equal to 0")
   }
 
   #Ensure that the lod is greater than 0.
@@ -490,10 +490,13 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
                           std = std, amorphous = amorphous,
                           background = background, lod = lod,
                           tth_lod = tth_lod)
-  cat("\n-Removing phases below detection limit")
+
+  logical_reoptimise <- identical(x, xrd_detectable[["x"]])
 
   x <- xrd_detectable[["x"]]
   lib$xrd <- xrd_detectable[["lib"]]
+
+  if (logical_reoptimise == FALSE) {
 
   if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
 
@@ -515,6 +518,8 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
   }
 
   x <- o$par
+
+  }
 
   }
 

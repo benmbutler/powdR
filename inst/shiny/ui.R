@@ -302,7 +302,7 @@ shinyUI(
                           tags$hr(),
                           h3("5. Adjust fit parameters"),
                           helpText("Adjust the alignment parameter"),
-                          sliderInput("align_afps", label = NULL, min = 0,
+                          sliderInput("align_afps", label = NULL, min = 0.001,
                                       max = 0.5,
                                       value = 0.1),
                           helpText("Adjust the grid-search shifting parameter"),

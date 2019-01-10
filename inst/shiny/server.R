@@ -593,9 +593,9 @@ shinyServer(function(input, output, session) {
 
       smpl_afps <- filedata2_afps()
 
-      xrdlib2_afps <- as.list(filedata3_afps())
+      xrdlib2_afps <- filedata3_afps()
 
-        afps_out <- powdR::afps(smpl = smpl_afps, lib = xrdlib2_afps, tth_fps = input$tth_afps,
+        afps_out <- powdR::afps(lib = xrdlib2_afps, smpl = smpl_afps, tth_fps = input$tth_afps,
                               std = gsub(".*: ", "", input$selectINT_afps),
                               amorphous = gsub(".*: ", "", input$selectAMORPH_afps),
                               align = input$align_afps,

@@ -3,6 +3,25 @@
   #quantify minerals
   quant <- .qminerals(x = x, xrd_lib = lib)
 
+  #fit background to fitted pattern
+
+  if (length(x) == 1) {
+    fit <- lib$xrd * x
+  } else {
+    fit <- unname(apply(sweep(lib$xrd[names(x)], 2, x, "*"), 1, sum))
+  }
+
+  fit_bkg <- bkg(xrd = data.frame(tth = lib$tth,
+                                  counts = fit),
+                 lambda = background$lambda,
+                 hwi = background$hwi,
+                 it = background$it,
+                 int = background$int)
+
+  #-----------------------------------------------------------
+  # Catching errors when the internal standard gets dropped
+  #-----------------------------------------------------------
+
   #Check that the internal standard is present and if it isn't then
   #use an alternative
   if (length(which(quant$df$phase_id == std)) == 0) {
@@ -22,14 +41,15 @@
 
     } else {
 
-      alt_std_options2 <- quant$df[-which(quant$df$phase_id %in% amorphous),]
-      std <- alt_std_options2$phase_id[which.max(alt_std_options2$phase_percent)]
-
-      cat(paste("\n-Now using", std, "as the internal standard for LOD estimation"))
+      cat(paste("\n-Unable to estimate limits of detection. Retry using a different standard"))
+      lib_df <- lib$xrd
 
     }
 
   }
+
+  #If a suitable standard is available then carry out the lod function
+  if (std %in% names(lib$xrd)) {
 
   #Add a warning if the internal standard is less that 5 %
   if (quant$df$phase_percent[which(quant$df$phase_id == std)] < 5) {
@@ -63,20 +83,6 @@
                  it = background$it,
                  int = background$int)
 
-  #fit background to fitted pattern
-
-  if (length(x) == 1) {
-    fit <- lib$xrd * x
-  } else {
-    fit <- unname(apply(sweep(lib$xrd[names(x)], 2, x, "*"), 1, sum))
-  }
-
-  fit_bkg <- bkg(xrd = data.frame(tth = lib$tth,
-                                  counts = fit),
-                 lambda = background$lambda,
-                 hwi = background$hwi,
-                 it = background$it,
-                 int = background$int)
 
   #Take the standard background from the bacground of the fit
   fit_bkg2 <- fit_bkg$background - std_bkg$background
@@ -100,12 +106,15 @@
   #Remove phases from x and the library
   if (length(remove_these > 0)) {
 
+    cat("\n-Removing phases below detection limit")
     lib_df <- lib$xrd[-remove_these]
     x <- x[-remove_these]
 
   } else{
 
     lib_df <- lib$xrd
+
+  }
 
   }
 
