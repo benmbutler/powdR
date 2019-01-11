@@ -323,7 +323,7 @@ shinyUI(
                                    = lower limits of detection)"),
                           sliderInput("lod_afps", label = NULL,
                                       min = 0.01, max = 5,
-                                      value = 0.3, step = 0.1),
+                                      value = 1, step = 0.1),
                           helpText("Remove amorphous phases below this limit (percent)"),
                           sliderInput("amorph_lod_afps", label = NULL,
                                       min = 0, max = 100,
