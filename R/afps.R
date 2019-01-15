@@ -111,7 +111,7 @@ afps <- function(lib, ...) {
 #' \code{list(lambda = 0.5, hwi = 25, it = 50, int = round(nrow(smpl)/4, 0)).} To tune these parameters
 #' please see the \code{function}, or the background fitting tab of the \code{run_powdR} shiny app.
 #' @param lod Optional parameter used to tune the lower limit of detection computation.
-#' Default = 1. Lower values represent lower detection limits. If \code{lod = 0} then limits of detection
+#' Default = 4. Lower values represent lower detection limits. If \code{lod = 0} then limits of detection
 #' are not computed.
 #' @param tth_lod Mandatory vector defining the 2theta range within which the major peak of the
 #' internal standard is found. e.g. \code{c(26.2, 26.9)}.
@@ -232,8 +232,8 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
 
   #If lod is missing then set it to a default of 1
   if(missing(lod)) {
-    cat("\n-Using default lod of 1")
-    lod = 1
+    cat("\n-Using default lod of 4")
+    lod = 4
   }
 
   #If tth_lod is missing and the lod is greater than 0, stop the process
@@ -596,7 +596,7 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
 
   #Define the class
   class(out) <- "powdRafps"
-  cat("\n-Automated full pattern summation complete")
+  cat("\n***Automated full pattern summation complete***\n")
 
   return(out)
 

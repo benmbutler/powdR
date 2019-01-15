@@ -209,6 +209,8 @@ fps <- function(lib, ...) {
 #' from the non-negative least squares. Default = 0.05).
 #' @param shift_res A single integer defining the increase in resolution used during grid search shifting. Higher
 #' values facilitate finer shifts at the expense of longer computation. Default = 4.
+#' @param remove_trace A single numeric value representing the limit for the concentration of trace phases to
+#' be retained, i.e. any mineral with an estimated concentration below `remove_trace` will be ommitted. Default = 0.
 #' @param ... other arguments
 #'
 #' @return a list with components:
@@ -267,7 +269,7 @@ fps <- function(lib, ...) {
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
 fps.powdRlib <- function(lib, smpl, solver, obj, refs, std,
-                tth_align, align, tth_fps, shift, shift_res, ...) {
+                tth_align, align, tth_fps, shift, shift_res, remove_trace, ...) {
 
   #If tth_align is missing then use the maximum tth range
   if(missing(tth_align)) {
@@ -298,6 +300,11 @@ fps.powdRlib <- function(lib, smpl, solver, obj, refs, std,
     shift_res = 4
   }
 
+  #If remove_trace is missing then set it to default
+  if(missing(remove_trace)) {
+    remove_trace = 0
+  }
+
   #If solver is NNLS and refs aren't defined then use all of them
   if(solver == "NNLS" & missing(refs)) {
 
@@ -319,6 +326,11 @@ fps.powdRlib <- function(lib, smpl, solver, obj, refs, std,
   #Create a warning message if the shift is greater than 0.5, since this can confuse the optimisation
   if (align > 0.5) {
     warning("Be cautious of large 2theta shifts. These can cause issues in sample alignment.")
+  }
+
+  #Create a warning message if the shift is greater than 0.5, since this can confuse the optimisation
+  if (remove_trace < 0) {
+    stop("The remove_trace argument must be greater than 0.")
   }
 
   #Make only "Nelder-Mead", "BFGS", or "CG", "L-BFGS-B" or "NNLS" optional for the solver
@@ -533,6 +545,20 @@ lib <- remove_neg_out[[2]]
 
 }
 
+#-------------------------------------------------------------------------------------------
+#Remove trace patterns
+#-------------------------------------------------------------------------------------------
+
+if (remove_trace > 0) {
+
+  remove_trace_out <- .remove_trace(x = x, lib = lib, smpl = smpl,
+                                  solver = solver, obj = obj,
+                                  remove_trace = remove_trace)
+  x <- remove_trace_out[[1]]
+  lib <- remove_trace_out[[2]]
+
+}
+
 #--------------------------------------------------------
 #Compute fitted pattern and quantify
 #--------------------------------------------------------
@@ -574,7 +600,7 @@ names(out) <- c("tth", "fitted", "measured", "residuals",
 
 #Define the class
 class(out) <- "powdRfps"
-cat("\n-Full pattern summation complete")
+cat("\n***Full pattern summation complete***\n")
 
 return(out)
 

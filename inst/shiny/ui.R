@@ -97,7 +97,7 @@ shinyUI(
              #################################
              ## TAB 3: Background Fitting
              #################################
-             tabPanel("Background fitting",
+             tabPanel("Background Fitting",
                       fluidRow(
                         column(3, wellPanel(
                           h3("1. Load a sample"),
@@ -151,7 +151,7 @@ shinyUI(
              #################################
              ## TAB 4: Full pattern summation
              #################################
-             tabPanel("Full pattern summation",
+             tabPanel("Full Pattern Summation",
                       fluidRow(
                         column(3, wellPanel(
                           h3("1. Load a sample for quantification"),
@@ -190,7 +190,8 @@ shinyUI(
                           helpText("Choose the optimisation routine"),
                           selectInput(inputId = "selectSolver",
                                       label = NULL,
-                                      choices = c("BFGS", "Nelder-Mead", "CG", "L-BFGS-B", "NNLS")),
+                                      choices = c("BFGS", "Nelder-Mead", "CG", "L-BFGS-B", "NNLS"),
+                                      selected = "NNLS"),
                           uiOutput("selectOBJui"),
                           tags$hr(),
                           h3("4. Select phases"),
@@ -213,7 +214,12 @@ shinyUI(
                                                          full pattern summation")),
                           sliderInput("tth", label = NULL,
                                       min = 2, max = 75,
-                                      value = c(0, 100), step = 0.1)
+                                      value = c(0, 100), step = 0.1),
+                          helpText(withMathJax("Adjust the value below which trace phases
+                                               are removed")),
+                          sliderInput("remove_trace", label = NULL,
+                                      min = 0, max = 1,
+                                      value = 0, step = 0.01)
                         )),
                         column(9, wellPanel(
                           div(style="display: inline-block;vertical-align:bottom; width: 300px;",
@@ -244,7 +250,7 @@ shinyUI(
              #################################
              ## TAB 5:  Automated Full pattern summation
              #################################
-             tabPanel("Automated full pattern summation",
+             tabPanel("Automated Full Pattern Summation",
                       fluidRow(
                         column(3, wellPanel(
                           h3("1. Load a sample for quantification"),

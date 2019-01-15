@@ -94,7 +94,7 @@
   bkg_sum <- sum(fit_bkg2[which(lib$tth >= tth_lod[1] & lib$tth <= tth_lod[2])])
   std_sum <- sum(int_std[which(lib$tth >= tth_lod[1] & lib$tth <= tth_lod[2])])
 
-  std_lod <- (lod*(2*sqrt(bkg_sum)))/(std_sum/quant$df$phase_percent[which(quant$df$phase_id == std)])
+  std_lod <- (lod*sqrt(bkg_sum))/(std_sum/quant$df$phase_percent[which(quant$df$phase_id == std)])
 
   #Compute a vector of lod's for all phases
   all_lod <- std_lod * (quant$df$rir[which(quant$df$phase_id == std)]/quant$df$rir)

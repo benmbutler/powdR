@@ -366,7 +366,8 @@ shinyServer(function(input, output, session) {
                                   align = input$align,
                                   shift = input$shift,
                                   obj = input$selectOBJ,
-                                  solver = input$selectSolver)
+                                  solver = input$selectSolver,
+                                  remove_trace = input$remove_trace)
         } else {
 
         fps_out <- powdR::fps(smpl = smpl, lib = xrdlib2, tth_fps = input$tth,
@@ -375,7 +376,8 @@ shinyServer(function(input, output, session) {
                               align = input$align,
                               shift = input$shift,
                               obj = input$selectOBJ,
-                              solver = input$selectSolver)
+                              solver = input$selectSolver,
+                              remove_trace = input$remove_trace)
 
         }
 

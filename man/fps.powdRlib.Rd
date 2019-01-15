@@ -5,7 +5,7 @@
 \title{Full pattern summation}
 \usage{
 \method{fps}{powdRlib}(lib, smpl, solver, obj, refs, std, tth_align, align,
-  tth_fps, shift, shift_res, ...)
+  tth_fps, shift, shift_res, remove_trace, ...)
 }
 \arguments{
 \item{lib}{A \code{powdRlib} object representing the reference library. Created using the
@@ -41,6 +41,9 @@ from the non-negative least squares. Default = 0.05).}
 
 \item{shift_res}{A single integer defining the increase in resolution used during grid search shifting. Higher
 values facilitate finer shifts at the expense of longer computation. Default = 4.}
+
+\item{remove_trace}{A single numeric value representing the limit for the concentration of trace phases to
+be retained, i.e. any mineral with an estimated concentration below `remove_trace` will be ommitted. Default = 0.}
 
 \item{...}{other arguments}
 }

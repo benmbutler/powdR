@@ -45,7 +45,7 @@ automated full pattern summation. If not defined, then the full range is used.}
 please see the \code{function}, or the background fitting tab of the \code{run_powdR} shiny app.}
 
 \item{lod}{Optional parameter used to tune the lower limit of detection computation.
-Default = 1. Lower values represent lower detection limits. If \code{lod = 0} then limits of detection
+Default = 4. Lower values represent lower detection limits. If \code{lod = 0} then limits of detection
 are not computed.}
 
 \item{tth_lod}{Mandatory vector defining the 2theta range within which the major peak of the

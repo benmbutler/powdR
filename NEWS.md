@@ -17,6 +17,9 @@
 *  Limit of detection estimation in `afps()` now uses a single peak instead of the whole pattern,
    and therefore `afps()` contains an additional argument, `tth_lod`, which defines the position of
    the internal standards major peak along the 2theta axis.
+   
+*  `fps()` now contains an optional `remove_trace` argument that allows the user to exclude phases
+   below a small trace value that would unlikely be detected. Default = 0.
 
 # powdR 0.2.0
 
