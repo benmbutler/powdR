@@ -89,6 +89,8 @@ shinyUI(
                       ), # end fluidRow
                       fluidRow(
                         column(12, wellPanel(
+                          dataTableOutput("lib_table"),
+                          tags$hr(),
                           plotlyOutput("lib_plot", width = "auto", height = 600)
                         ))
                       )

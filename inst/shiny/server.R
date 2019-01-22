@@ -120,6 +120,13 @@ shinyServer(function(input, output, session) {
                     selected = head(paste0(lib_plotter_load()[[3]][[2]], ": ", lib_plotter_load()[[3]][[1]]), 1))
   }
 
+  #Tabulate the minerals in the library
+  output$lib_table <- shiny::renderDataTable({
+
+    lib_plotter_load()[[3]]
+
+  }, options = list(lengthMenu = c(5, 10, 25, 50), pageLength = 5))
+
   #Plot phases in the library
   output$lib_plot <- plotly::renderPlotly({
 

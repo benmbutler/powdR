@@ -28,41 +28,27 @@
 #' @export
 powdRlib <- function(xrd_table, phases_table) {
 
+  #Checks on the xrd table
   if(!names(table(is.na(xrd_table))) == FALSE) {
     stop("Please ensure that the xrd_table does not contain any
          NA's")
   }
 
+  #Check all columns in xrd_table are numeric
+  if(!ncol(xrd_table) == as.numeric(summary(unlist(lapply(xrd_table, is.numeric)))[[2]])) {
+
+    stop("All columns in the xrd_table should be numeric")
+
+  }
+
   tth <- xrd_table[[1]]
-  xrd <- xrd_table[-1]
+  xrd <- data.frame(xrd_table[-1])
   phases <- phases_table
 
-  #Check that all phase id's match the column names
-  if(!length(which(names(xrd) %in% phases[[1]])) == ncol(xrd)) {
-    stop("The id's in the phase_id column of the phases_table do not match the id's
-         provided as column names in the xrd_table")
-  }
-
-  #Ensure the order of the xrd_table and phases_table are the same
-  xrd <- xrd[order(names(xrd))]
-  phases <- phases[order(phases[[1]]), ]
-
-  if(!ncol(xrd) == length(which((names(xrd) == phases[[1]]) == TRUE))) {
-    stop("Please check that the first column in the phases_table matches the
-         phase ids provided as column names in the xrd_table.")
-  }
-
-  if(is.factor(phases[[1]])) {
-    phases[[1]] <- as.character(phases[[1]])
-  }
-
+  #Checks on the phases table
   if(!is.character(phases[[1]])) {
     stop("Please make sure that the first column in phases_table is a character
          string.")
-  }
-
-  if(is.factor(phases[[2]])) {
-    phases[[2]] <- as.character(phases[[2]])
   }
 
   if(!is.character(phases[[2]])) {
@@ -73,6 +59,29 @@ powdRlib <- function(xrd_table, phases_table) {
   if(!is.numeric(phases[[3]])) {
     stop("Please make sure that the third column in phases_table is a numeric vector.")
   }
+
+  #R can adjust the names of a data frame to ensure they meet the requirements
+  #by replacing spaces and dashes with dots. Here I can ensure this is done.
+  xrd2 <- xrd
+  names(xrd2) <- phases[[1]]
+  xrd2 <- data.frame(xrd2)
+
+  #Check that all phase id's match the column names
+  if(!length(which(names(xrd) %in% names(xrd2))) == ncol(xrd)) {
+    stop("The id's in the phase_id column of the phases_table do not match the id's
+         provided as column names in the xrd_table")
+  }
+
+  phases[[1]] <- names(xrd)
+
+  #Ensure the order of the xrd_table and phases_table are the same
+  xrd <- xrd[order(names(xrd))]
+  phases <- phases[order(phases[[1]]), ]
+
+  #if(!ncol(xrd) == length(which((names(xrd) == phases[[1]]) == TRUE))) {
+  #  stop("Please check that the first column in the phases_table matches the
+  #       phase ids provided as column names in the xrd_table.")
+  #}
 
   names(phases) <- c("phase_id", "phase_name", "rir")
 
