@@ -1,4 +1,4 @@
-.shift <- function(smpl, lib, max_shift, x, res) {
+.shift <- function(smpl, lib, max_shift, x, res, obj) {
 
   #create a blank list
   pure_patterns <- list()
@@ -23,14 +23,14 @@
     pure_patterns <- as.matrix(pure_patterns)
   } else {
     pure_patterns <- data.frame(pure_patterns)
-    names(pure_patterns) <- names(data.frame(lib$xrd))
+    names(pure_patterns) <- names(lib$xrd)
     pure_patterns <- as.matrix(pure_patterns)
   }
 
   #Define a value that will be used to shift the data.
   TTH_res <- (TTH_long[length(TTH_long)] - TTH_long[1])/(length(TTH_long)-1)
   #Round up the number of increments the data can shift by (based on max_shift)
-  shift_value <- round(max_shift/TTH_res, 0)
+  shift_value <- round(max_shift/TTH_res)
 
   #Shorten the sample pattern and 2theta to account for
   #the maximum/minimum shifts that might be applied
@@ -58,7 +58,7 @@
   d <- list()
 
   #This vector will be used to identify the optimum shift
-  dmin <- c()
+  #dmin <- c()
 
   #This vs matrix will be populated with the aligned patterns
   vs <- shift_mat
@@ -76,18 +76,33 @@
       # #add the shifted data
       vm[[j]][,i] <- v[[j]]
 
-      # #compute the fitted pattern
+      # compute the fitted pattern
       vf[[j]] <- apply(sweep(vm[[j]], 2, x, "*"), 1, sum)
 
-      #Compute the Rwp
-      #d[[j]] <- sqrt(sum((1/sample_long) * ((sample_long - vf[[j]])^2)) /
-      #                 sum((1/sample_long) * (sample_long^2)))
+      #Compute Rwp or NNLS is defined in obj then compute the Rwp
+      if (obj %in% c("Rwp", "NNLS")) {
 
-      #Compute the Delta
+      d[[j]] <- sqrt(sum((1/sample_long) * ((sample_long - vf[[j]])^2)) /
+                       sum((1/sample_long) * (sample_long^2)))
+
+      }
+
+      #Compute the Delta is defined in obj
+      if (obj == "Delta") {
+
       d[[j]] <- sum(abs(sample_long - vf[[j]]))
 
+      }
+
+      #Compute R if defined in obj
+      if (obj == "R") {
+
+        d[[j]] <- sqrt(sum((sample_long - vf[[j]])^2)/sum(sample_long^2))
+
+      }
+
       #identify which shifted pattern results in minimum Delta
-      dmin[[i]] <- which.min(d)
+      #dmin[[i]] <- which.min(d)
 
       #Populate a library with the optimumly shifted references
       vs[, i] <- vm[[which.min(d)]][, i]

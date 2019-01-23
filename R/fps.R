@@ -494,7 +494,8 @@ if(shift > 0) {
                         lib = lib,
                         max_shift = shift,
                         x = x,
-                        res = shift_res)
+                        res = shift_res,
+                        obj = obj)
 
   smpl <- fpf_aligned[["smpl"]]
   lib$xrd <- data.frame(fpf_aligned[["lib"]])
