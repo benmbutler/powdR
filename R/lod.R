@@ -48,16 +48,10 @@
 
   }
 
+
+
   #If a suitable standard is available then carry out the lod function
   if (std %in% names(lib$xrd)) {
-
-  #Add a warning if the internal standard is less that 5 %
-  if (quant$df$phase_percent[which(quant$df$phase_id == std)] < 5) {
-
-    warning("The estimated concentration of the interal standard is less
-            than 5 %, we recommend selecting another phase to use.")
-
-  }
 
   #order quant$df and x so they're guaranteed to be the same order
   quant$df <- quant$df[order(quant$df$phase_id),]
@@ -75,9 +69,55 @@
     quant$df$amorphous[which(quant$df$phase_id %in% amorphous)] <- TRUE
   }
 
+
+  #------------------------------------------------------------------
+  #If more than one phase is available for the given standard mineral
+  #then use it!
+  #------------------------------------------------------------------
+
+  #Create a vector of the summed signal from the identified mineral
+  std_mineral <- quant$df$phase_name[which(quant$df$phase_id == std)]
+
+  if (length(which(quant$df$phase_name == std_mineral)) > 1) {
+
+    cat(paste0("\n-Grouping all available ", std_mineral, " standards together to compute LOD (n = ",
+              length(which(quant$df$phase_name == std_mineral)), ")"))
+
+    mineral_ids <- lib$xrd$phase_id[which(lib$phases$phase_name == std_mineral)]
+
+    #Compute the counts as the sum
+    std_counts <- rowSums(lib$xrd[mineral_ids])
+
+    #Compute the RIR as the weighted average
+    std_props <- quant$df$phase_percent[which(quant$df$phase_name == std_mineral)] /
+                 sum(quant$df$phase_percent[which(quant$df$phase_name == std_mineral)])
+
+    std_rir <- sum(quant$df$rir[which(quant$df$phase_name == std_mineral)] * std_props)
+
+    #Compute the concentration
+    std_conc <- sum(quant$df$phase_percent[which(quant$df$phase_name == std_mineral)])
+
+  } else { #i.e. if only one standard is available
+
+    #Extract the counts
+    std_counts <- lib$xrd[[std]]
+    std_rir <- lib$phases$rir[which(lib$phases$phase_id == std)]
+    std_conc <- quant$df$phase_percent[which(quant$df$phase_id == std)]
+
+  }
+
+  #Add a warning if the internal standard is less that 5 %
+  if (std_conc < 5) {
+
+    warning("The estimated concentration of the interal standard is less
+            than 5 %, we recommend selecting another phase to use.")
+
+  }
+
+
   #fit background to chosen standard
   std_bkg <- bkg(xrd = data.frame(tth = lib$tth,
-                                  counts = lib$xrd[[std]]),
+                                  counts = std_counts),
                  lambda = background$lambda,
                  hwi = background$hwi,
                  it = background$it,
@@ -88,16 +128,16 @@
   fit_bkg2 <- fit_bkg$background - std_bkg$background
 
   #Add the internal standard pattern to the fit_bkg2
-  int_std <- lib$xrd[[std]] + fit_bkg2
+  int_std <- std_counts + fit_bkg2
 
   #Compute sums of fit_bkg2 and int_std
   bkg_sum <- sum(fit_bkg2[which(lib$tth >= tth_lod[1] & lib$tth <= tth_lod[2])])
   std_sum <- sum(int_std[which(lib$tth >= tth_lod[1] & lib$tth <= tth_lod[2])])
 
-  std_lod <- (lod*sqrt(bkg_sum))/(std_sum/quant$df$phase_percent[which(quant$df$phase_id == std)])
+  std_lod <- (lod*sqrt(bkg_sum))/(std_sum/std_conc)
 
   #Compute a vector of lod's for all phases
-  all_lod <- std_lod * (quant$df$rir[which(quant$df$phase_id == std)]/quant$df$rir)
+  all_lod <- std_lod * (std_rir/quant$df$rir)
   names(all_lod) <- quant$df$phase_id
 
   #Now remove phases that are below detection limit
