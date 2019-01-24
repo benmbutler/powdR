@@ -87,7 +87,7 @@
     cat(paste0("\n-Grouping all available ", std_mineral, " standards together to compute LOD (n = ",
               length(which(quant$df$phase_name == std_mineral)), ")"))
 
-    mineral_ids <- lib$phases$phase_id[which(lib$phases$phase_name == std_mineral)]
+    mineral_ids <- quant$df$phase_id[which(quant$df$phase_name == std_mineral)]
 
     #Compute the counts as the sum
     std_counts <- rowSums(scaled_xrd[mineral_ids])
@@ -105,7 +105,7 @@
 
     #Extract the counts
     std_counts <- scaled_xrd[[std]]
-    std_rir <- lib$phases$rir[which(lib$phases$phase_id == std)]
+    std_rir <- quant$df$rir[which(quant$df$phase_id == std)]
     std_conc <- quant$df$phase_percent[which(quant$df$phase_id == std)]
 
   }

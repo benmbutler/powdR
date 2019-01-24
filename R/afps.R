@@ -412,6 +412,17 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
     x <- o$par
 
 
+
+  #--------------------------------------------------------------------------------------------
+  #Remove negative/zero parameters
+  #--------------------------------------------------------------------------------------------
+
+  remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
+                                solver = solver, obj = obj)
+
+  x <- remove_neg_out[[1]]
+  lib <- remove_neg_out[[2]]
+
   #--------------------------------------------
   #Grid-search shifting
   #--------------------------------------------
@@ -421,12 +432,12 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
 
   if(shift > 0) {
 
-   fpf_aligned <- .shift(smpl = smpl,
-                         lib = lib,
-                         max_shift = shift,
-                         x = x,
-                         res = shift_res,
-                         obj = obj)
+    fpf_aligned <- .shift(smpl = smpl,
+                          lib = lib,
+                          max_shift = shift,
+                          x = x,
+                          res = shift_res,
+                          obj = obj)
 
     smpl <- fpf_aligned[["smpl"]]
     lib$xrd <- data.frame(fpf_aligned[["lib"]])
@@ -443,37 +454,26 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
 
     if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
 
-    cat("\n-Reoptimising after shifting data")
+      cat("\n-Reoptimising after shifting data")
 
-    o <- stats::optim(par = x, .fullpat,
-                      method = solver, pure_patterns = lib$xrd,
-                      sample_pattern = smpl[, 2], obj = obj)
+      o <- stats::optim(par = x, .fullpat,
+                        method = solver, pure_patterns = lib$xrd,
+                        sample_pattern = smpl[, 2], obj = obj)
 
     } else {
 
-    cat("\n-Reoptimising after shifting data. Using L-BFGS-B constrained
+      cat("\n-Reoptimising after shifting data. Using L-BFGS-B constrained
         to a lower limit of zero")
 
-    o <- stats::optim(par = x, .fullpat,
-                      method = solver, lower = 0, pure_patterns = lib$xrd,
-                      sample_pattern = smpl[, 2], obj = obj)
+      o <- stats::optim(par = x, .fullpat,
+                        method = solver, lower = 0, pure_patterns = lib$xrd,
+                        sample_pattern = smpl[, 2], obj = obj)
 
     }
 
     x <- o$par
 
   }
-
-
-  #--------------------------------------------------------------------------------------------
-  #Remove negative/zero parameters
-  #--------------------------------------------------------------------------------------------
-
-  remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
-                                solver = solver, obj = obj)
-
-  x <- remove_neg_out[[1]]
-  lib <- remove_neg_out[[2]]
 
 
   #Now that some negative parameters have been removed, the detection limits

@@ -16,14 +16,14 @@
       #reoptimise
       if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
 
-        cat("\n-Reoptimising after shifting data/adding amorphous phases")
+        cat("\n-Reoptimising after removing amorphous phases below amorphous_lod")
         o <- stats::optim(par = x, .fullpat,
                         method = solver, pure_patterns = lib$xrd,
                         sample_pattern = smpl[, 2], obj = obj)
 
       } else {
 
-        cat("\n-Reoptimising after shifting data/adding amorphous phases. Using
+        cat("\n-Reoptimising after removing amorphous phases below amorphous_lod. Using
             L-BFGS-B constrained to a lower limit of zero")
         o <- stats::optim(par = x, .fullpat,
                           method = solver, lower = 0, pure_patterns = lib$xrd,
