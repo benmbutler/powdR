@@ -78,15 +78,19 @@
   #Create a vector of the summed signal from the identified mineral
   std_mineral <- quant$df$phase_name[which(quant$df$phase_id == std)]
 
+  #Create a dataframe of scaled counts
+  scaled_xrd <- data.frame(mapply("*", lib$xrd, x))
+
+
   if (length(which(quant$df$phase_name == std_mineral)) > 1) {
 
     cat(paste0("\n-Grouping all available ", std_mineral, " standards together to compute LOD (n = ",
               length(which(quant$df$phase_name == std_mineral)), ")"))
 
-    mineral_ids <- lib$xrd$phase_id[which(lib$phases$phase_name == std_mineral)]
+    mineral_ids <- lib$phases$phase_id[which(lib$phases$phase_name == std_mineral)]
 
     #Compute the counts as the sum
-    std_counts <- rowSums(lib$xrd[mineral_ids])
+    std_counts <- rowSums(scaled_xrd[mineral_ids])
 
     #Compute the RIR as the weighted average
     std_props <- quant$df$phase_percent[which(quant$df$phase_name == std_mineral)] /
@@ -100,7 +104,7 @@
   } else { #i.e. if only one standard is available
 
     #Extract the counts
-    std_counts <- lib$xrd[[std]]
+    std_counts <- scaled_xrd[[std]]
     std_rir <- lib$phases$rir[which(lib$phases$phase_id == std)]
     std_conc <- quant$df$phase_percent[which(quant$df$phase_id == std)]
 
