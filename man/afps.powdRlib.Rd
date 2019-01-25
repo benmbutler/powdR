@@ -5,8 +5,7 @@
 \title{Automated full pattern summation}
 \usage{
 \method{afps}{powdRlib}(lib, smpl, solver, obj, std, tth_align, align,
-  shift, shift_res, tth_fps, background, lod, tth_lod, amorphous,
-  amorphous_lod, ...)
+  shift, shift_res, tth_fps, lod, amorphous, amorphous_lod, ...)
 }
 \arguments{
 \item{lib}{A \code{powdRlib} object representing the reference library. Created using the
@@ -39,17 +38,10 @@ values facilitate finer shifts at the expense of longer computation. Default = 4
 \item{tth_fps}{A vector defining the minimum and maximum 2theta values to be used during
 automated full pattern summation. If not defined, then the full range is used.}
 
-\item{background}{a list of parameters used to fit a background to the data. Takes the form
-\code{list(lambda, hwi, it , int)}. If missing, the default used is
-\code{list(lambda = 0.5, hwi = 25, it = 50, int = round(nrow(smpl)/4, 0)).} To tune these parameters
-please see the \code{function}, or the background fitting tab of the \code{run_powdR} shiny app.}
-
-\item{lod}{Optional parameter used to tune the lower limit of detection computation.
-Default = 4. Lower values represent lower detection limits. If \code{lod = 0} then limits of detection
-are not computed.}
-
-\item{tth_lod}{Mandatory vector defining the 2theta range within which the major peak of the
-internal standard is found. e.g. \code{c(26.2, 26.9)}.}
+\item{lod}{Optional parameter used to define the limit of detection (in weight percent) of the internal standard
+(i.e. the phase provided in the \code{std} argument). The \code{lod} value is used to estimate the lod of other
+phases during the fitting process and hence remove reference patterns that are considered below detection limit.
+Default = 0.1. If \code{lod = 0} then limits of detection are not computed.}
 
 \item{amorphous}{A character string of any phase id's that should be treated as amorphous. Each must
 match a phase_id in the phases table of `lib`.}
@@ -64,7 +56,6 @@ a list with components:
 \item{tth}{a vector of the 2theta scale of the fitted data}
 \item{fitted}{a vector of the fitted XRPD pattern}
 \item{measured}{a vector of the original XRPD measurement (aligned)}
-\item{background}{a vector of the fitted background used to estimate limits of detection}
 \item{residuals}{a vector of the residuals (fitted vs measured)}
 \item{phases}{a dataframe of the phases used to produce the fitted pattern}
 \item{phases_summary}{the phases dataframe grouped by phase_name and summarised (sum)}
@@ -100,24 +91,21 @@ afps_sand <-  afps(lib = minerals,
                  std = "QUA.2",
                  amorphous = "ORG",
                  align = 0.2,
-                 lod = 2,
-                 tth_lod = c(26.3, 27))
+                 lod = 0.2)
 
 afps_lime <- afps(lib = minerals,
                 smpl = soils$limestone,
                 std = "QUA.2",
                 amorphous = "ORG",
                 align = 0.2,
-                lod = 2,
-                tth_lod = c(26.3, 27))
+                lod = 0.2)
 
 afps_granite <- afps(lib = minerals,
                    smpl = soils$granite,
                    std = "QUA.2",
                    amorphous = "ORG",
                    align = 0.2,
-                   lod = 2,
-                   tth_lod = c(26.3, 27))
+                   lod = 0.2)
 }
 }
 \references{

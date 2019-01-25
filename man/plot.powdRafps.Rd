@@ -37,14 +37,15 @@ data(minerals)
 data(soils)
 
 \dontrun{
-fps_sand <-  afps(lib = minerals,
+afps_sand <-  afps(lib = minerals,
                 smpl = soils$sandstone,
                 std = "QUA.1",
                 amorphous = "ORG",
-                align = 0.2)
+                align = 0.2,
+                lod = 0.1)
 
-plot(fps_sand)
-plot(fps_sand, interactive = TRUE)
-plot(fps_sand, d = TRUE, wavelength = 1.54, interactive = TRUE)
+plot(afps_sand)
+plot(afps_sand, interactive = TRUE)
+plot(afps_sand, d = TRUE, wavelength = 1.54, interactive = TRUE)
 }
 }

@@ -17,7 +17,6 @@ a list with components:
 \item{tth}{a vector of the 2theta scale of the fitted data}
 \item{fitted}{a vector of the fitted XRPD pattern}
 \item{measured}{a vector of the original XRPD measurement (aligned)}
-\item{background}{a vector of the fitted background used to estimate limits of detection}
 \item{residuals}{a vector of the residuals (fitted vs measured)}
 \item{phases}{a dataframe of the phases used to produce the fitted pattern}
 \item{phases_summary}{the phases dataframe grouped by phase_name and summarised (sum)}
@@ -54,21 +53,21 @@ afps_sand <-  afps(lib = minerals,
                  std = "QUA.2",
                  amorphous = "ORG",
                  align = 0.2,
-                 tth_lod = c(26.3, 27))
+                 lod = 0.2)
 
 afps_lime <- afps(lib = minerals,
                 smpl = soils$limestone,
                 std = "QUA.2",
                 amorphous = "ORG",
                 align = 0.2,
-                tth_lod = c(26.3, 27))
+                lod = 0.2)
 
 afps_granite <- afps(lib = minerals,
                    smpl = soils$granite,
                    std = "QUA.2",
                    amorphous = "ORG",
                    align = 0.2,
-                   tth_lod = c(26.3, 27))
+                   lod = 0.2)
 }
 }
 \references{

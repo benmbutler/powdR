@@ -169,15 +169,16 @@ plot.powdRfps <- function(x, d, wavelength, interactive, ...) {
 #' data(soils)
 #'
 #' \dontrun{
-#' fps_sand <-  afps(lib = minerals,
+#' afps_sand <-  afps(lib = minerals,
 #'                 smpl = soils$sandstone,
 #'                 std = "QUA.1",
 #'                 amorphous = "ORG",
-#'                 align = 0.2)
+#'                 align = 0.2,
+#'                 lod = 0.1)
 #'
-#' plot(fps_sand)
-#' plot(fps_sand, interactive = TRUE)
-#' plot(fps_sand, d = TRUE, wavelength = 1.54, interactive = TRUE)
+#' plot(afps_sand)
+#' plot(afps_sand, interactive = TRUE)
+#' plot(afps_sand, d = TRUE, wavelength = 1.54, interactive = TRUE)
 #' }
 #' @export
 plot.powdRafps <- function(x, d, wavelength, interactive, ...) {
@@ -212,10 +213,6 @@ plot.powdRafps <- function(x, d, wavelength, interactive, ...) {
   measured <- data.frame(tth = x$tth,
                          Measured = x$measured)
 
-  #The fitted background
-  background <- data.frame(tth = x$tth,
-                         Background = x$background)
-
   #Residuals
   resids <- data.frame(tth = x$tth,
                        Residuals = x$residuals)
@@ -227,7 +224,6 @@ plot.powdRafps <- function(x, d, wavelength, interactive, ...) {
   if(d == TRUE) {
     pure_patterns[["d"]] <- wavelength/(2*sin((pure_patterns$tth/2)*pi/180))
     measured[["d"]] <- wavelength/(2*sin((measured$tth/2)*pi/180))
-    background[["d"]] <- wavelength/(2*sin((background$tth/2)*pi/180))
     resids[["d"]] <- wavelength/(2*sin((resids$tth/2)*pi/180))
     pure_patterns_long[["d"]] <- wavelength/(2*sin((pure_patterns_long$tth/2)*pi/180))
 
@@ -235,8 +231,6 @@ plot.powdRafps <- function(x, d, wavelength, interactive, ...) {
     g1 <- ggplot2::ggplot() +
       ggplot2::geom_line(data = measured,
                          ggplot2::aes_(x = ~d, y = ~Measured, color = "Measured"), size = 0.35, linetype = "dotted") +
-      ggplot2::geom_line(data = background,
-                         ggplot2::aes_(x = ~d, y = ~Background, color = "Background"), size = 0.35, linetype = "dotted") +
       ggplot2::geom_line(data = pure_patterns_long,
                          ggplot2::aes_(x = ~d, y = ~value, color = ~variable), size = 0.15) +
       ggplot2::scale_x_reverse() +
@@ -258,8 +252,6 @@ plot.powdRafps <- function(x, d, wavelength, interactive, ...) {
     g1 <- ggplot2::ggplot() +
       ggplot2::geom_line(data = measured,
                          ggplot2::aes_(x = ~tth, y = ~Measured, color = "Measured"), size = 0.35, linetype = "dotted") +
-      ggplot2::geom_line(data = background,
-                         ggplot2::aes_(x = ~tth, y = ~Background, color = "Background"), size = 0.35, linetype = "dotted") +
       ggplot2::geom_line(data = pure_patterns_long,
                          ggplot2::aes_(x = ~tth, y = ~value, color = ~variable), size = 0.15) +
       ggplot2::ylab("Counts") +

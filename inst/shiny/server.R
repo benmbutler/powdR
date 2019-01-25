@@ -153,54 +153,54 @@ shinyServer(function(input, output, session) {
   #################################
   ## TAB 3: Background fitting
   #################################
-  observe({
-  #Load the .xy sample file
-  filedata_bkg <- reactive({
-    infile_bkg <- input$loadXYbkg
-    if (is.null(infile_bkg)) {
-      # User has not uploaded a file yet
-      return(NULL)
-    }
-    read.csv(infile_bkg$datapath, sep = " ", header = FALSE)
-  })
+  #observe({
+  ##Load the .xy sample file
+  #filedata_bkg <- reactive({
+  #  infile_bkg <- input$loadXYbkg
+  #  if (is.null(infile_bkg)) {
+  #    # User has not uploaded a file yet
+  #    return(NULL)
+  #  }
+  #  read.csv(infile_bkg$datapath, sep = " ", header = FALSE)
+  #})
 
   #Update the plot sliders
-  if(!is.null(filedata_bkg())) {
-    updateSliderInput(session = session, inputId = "bkg_x",
-                      min = min(filedata_bkg()[1]),
-                      max = max(filedata_bkg()[1]),
-                      value = c(min(filedata_bkg()[1]),
-                                max(filedata_bkg()[1])))
+  #if(!is.null(filedata_bkg())) {
+  #  updateSliderInput(session = session, inputId = "bkg_x",
+  #                    min = min(filedata_bkg()[1]),
+  #                    max = max(filedata_bkg()[1]),
+  #                    value = c(min(filedata_bkg()[1]),
+  #                              max(filedata_bkg()[1])))
 
-    updateSliderInput(session = session, inputId = "bkg_y",
-                      min = min(filedata_bkg()[2]),
-                      max = max(filedata_bkg()[2]),
-                      value = c(min(filedata_bkg()[2]),
-                                max(filedata_bkg()[2])))
-  }
+  # updateSliderInput(session = session, inputId = "bkg_y",
+  #                    min = min(filedata_bkg()[2]),
+  #                    max = max(filedata_bkg()[2]),
+  #                    value = c(min(filedata_bkg()[2]),
+  #                              max(filedata_bkg()[2])))
+  #}
 
   #Fit background to data
 
-  output$bkg_plot <- renderPlot({
-  if (is.null(filedata_bkg())) {
+  #output$bkg_plot <- renderPlot({
+  #if (is.null(filedata_bkg())) {
       # User has not uploaded a file yet
-      return(NULL)
-  }
-  bkg_out <- bkg(xrd = filedata_bkg(),
-                 lambda = input$bkg_lambda,
-                 hwi = input$bkg_hwi,
-                 it = input$bkg_it,
-                 int = input$bkg_int)
+  #    return(NULL)
+  #}
+  #bkg_out <- bkg(xrd = filedata_bkg(),
+  #               lambda = input$bkg_lambda,
+  #               hwi = input$bkg_hwi,
+  #               it = input$bkg_it,
+  #               int = input$bkg_int)
 
-  bkg_plot <- plot(bkg_out)
+  #bkg_plot <- plot(bkg_out)
 
-  bkg_plot +
-  scale_x_continuous(limits = c(input$bkg_x[1], input$bkg_x[2])) +
-  scale_y_continuous(limits = c(input$bkg_y[1], input$bkg_y[2]))
+  #bkg_plot +
+  #scale_x_continuous(limits = c(input$bkg_x[1], input$bkg_x[2])) +
+  #scale_y_continuous(limits = c(input$bkg_y[1], input$bkg_y[2]))
 
 
-  })
-  })
+  #})
+  #})
 
   #################################
   ## TAB 4: Full pattern fitting
@@ -581,18 +581,18 @@ shinyServer(function(input, output, session) {
   })
 
 
-  observe({
+  #observe({
 
-    if(!is.null(input$loadLIBafps)) {
-      xrd_uploaded_afps <- as.list(filedata3_afps())
-      updateSliderInput(session = session, inputId = "tth_afps_lod",
-                        min = round(min(as.numeric(xrd_uploaded_afps[[2]])) + input$align_afps, 2),
-                        max = round(max(as.numeric(xrd_uploaded_afps[[2]])) - input$align_afps, 2),
-                        value = c(round(min(as.numeric(xrd_uploaded_afps[[2]])) + input$align_afps, 2),
-                                  round(max(as.numeric(xrd_uploaded_afps[[2]])) - input$align_afps, 2)))
-    }
+  #  if(!is.null(input$loadLIBafps)) {
+  #    xrd_uploaded_afps <- as.list(filedata3_afps())
+  #    updateSliderInput(session = session, inputId = "tth_afps_lod",
+  #                      min = round(min(as.numeric(xrd_uploaded_afps[[2]])) + input$align_afps, 2),
+  #                      max = round(max(as.numeric(xrd_uploaded_afps[[2]])) - input$align_afps, 2),
+  #                      value = c(round(min(as.numeric(xrd_uploaded_afps[[2]])) + input$align_afps, 2),
+  #                                round(max(as.numeric(xrd_uploaded_afps[[2]])) - input$align_afps, 2)))
+  #  }
 
-  })
+  #})
 
   #FULL PATTERN FITTING
 
@@ -611,12 +611,7 @@ shinyServer(function(input, output, session) {
                               shift = input$shift_afps,
                               obj = input$selectOBJ_afps,
                               solver = input$selectSolver_afps,
-                              background = list("lambda" = input$bkg_lambda,
-                                                "hwi" = input$bkg_hwi,
-                                                "it" = input$bkg_it,
-                                                "int" = input$bkg_int),
                               lod = input$lod_afps,
-                              tth_lod = input$tth_afps_lod,
                               amorphous_lod = input$amorph_lod_afps)
 
     })

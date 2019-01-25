@@ -18,7 +18,6 @@
 #' \item{tth}{a vector of the 2theta scale of the fitted data}
 #' \item{fitted}{a vector of the fitted XRPD pattern}
 #' \item{measured}{a vector of the original XRPD measurement (aligned)}
-#' \item{background}{a vector of the fitted background used to estimate limits of detection}
 #' \item{residuals}{a vector of the residuals (fitted vs measured)}
 #' \item{phases}{a dataframe of the phases used to produce the fitted pattern}
 #' \item{phases_summary}{the phases dataframe grouped by phase_name and summarised (sum)}
@@ -43,21 +42,21 @@
 #'                  std = "QUA.2",
 #'                  amorphous = "ORG",
 #'                  align = 0.2,
-#'                  tth_lod = c(26.3, 27))
+#'                  lod = 0.2)
 #'
 #' afps_lime <- afps(lib = minerals,
 #'                 smpl = soils$limestone,
 #'                 std = "QUA.2",
 #'                 amorphous = "ORG",
 #'                 align = 0.2,
-#'                 tth_lod = c(26.3, 27))
+#'                 lod = 0.2)
 #'
 #' afps_granite <- afps(lib = minerals,
 #'                    smpl = soils$granite,
 #'                    std = "QUA.2",
 #'                    amorphous = "ORG",
 #'                    align = 0.2,
-#'                    tth_lod = c(26.3, 27))
+#'                    lod = 0.2)
 #' }
 #' @references
 #' Chipera, S.J., Bish, D.L., 2013. Fitting Full X-Ray Diffraction Patterns for Quantitative Analysis:
@@ -106,15 +105,10 @@ afps <- function(lib, ...) {
 #' values facilitate finer shifts at the expense of longer computation. Default = 4.
 #' @param tth_fps A vector defining the minimum and maximum 2theta values to be used during
 #' automated full pattern summation. If not defined, then the full range is used.
-#' @param background a list of parameters used to fit a background to the data. Takes the form
-#' \code{list(lambda, hwi, it , int)}. If missing, the default used is
-#' \code{list(lambda = 0.5, hwi = 25, it = 50, int = round(nrow(smpl)/4, 0)).} To tune these parameters
-#' please see the \code{function}, or the background fitting tab of the \code{run_powdR} shiny app.
-#' @param lod Optional parameter used to tune the lower limit of detection computation.
-#' Default = 4. Lower values represent lower detection limits. If \code{lod = 0} then limits of detection
-#' are not computed.
-#' @param tth_lod Mandatory vector defining the 2theta range within which the major peak of the
-#' internal standard is found. e.g. \code{c(26.2, 26.9)}.
+#' @param lod Optional parameter used to define the limit of detection (in weight percent) of the internal standard
+#' (i.e. the phase provided in the \code{std} argument). The \code{lod} value is used to estimate the lod of other
+#' phases during the fitting process and hence remove reference patterns that are considered below detection limit.
+#' Default = 0.1. If \code{lod = 0} then limits of detection are not computed.
 #' @param amorphous A character string of any phase id's that should be treated as amorphous. Each must
 #' match a phase_id in the phases table of `lib`.
 #' @param amorphous_lod Optional parameter used to exclude amorphous phases if they are below this
@@ -125,7 +119,6 @@ afps <- function(lib, ...) {
 #' \item{tth}{a vector of the 2theta scale of the fitted data}
 #' \item{fitted}{a vector of the fitted XRPD pattern}
 #' \item{measured}{a vector of the original XRPD measurement (aligned)}
-#' \item{background}{a vector of the fitted background used to estimate limits of detection}
 #' \item{residuals}{a vector of the residuals (fitted vs measured)}
 #' \item{phases}{a dataframe of the phases used to produce the fitted pattern}
 #' \item{phases_summary}{the phases dataframe grouped by phase_name and summarised (sum)}
@@ -150,24 +143,21 @@ afps <- function(lib, ...) {
 #'                  std = "QUA.2",
 #'                  amorphous = "ORG",
 #'                  align = 0.2,
-#'                  lod = 2,
-#'                  tth_lod = c(26.3, 27))
+#'                  lod = 0.2)
 #'
 #' afps_lime <- afps(lib = minerals,
 #'                 smpl = soils$limestone,
 #'                 std = "QUA.2",
 #'                 amorphous = "ORG",
 #'                 align = 0.2,
-#'                 lod = 2,
-#'                 tth_lod = c(26.3, 27))
+#'                 lod = 0.2)
 #'
 #' afps_granite <- afps(lib = minerals,
 #'                    smpl = soils$granite,
 #'                    std = "QUA.2",
 #'                    amorphous = "ORG",
 #'                    align = 0.2,
-#'                    lod = 2,
-#'                    tth_lod = c(26.3, 27))
+#'                    lod = 0.2)
 #' }
 #' @references
 #' Bish, D.L., Post, J.E., 1989. Modern powder diffraction. Mineralogical Society of America.
@@ -184,7 +174,7 @@ afps <- function(lib, ...) {
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
 afps.powdRlib <- function(lib, smpl, solver, obj, std,
-                         tth_align, align, shift, shift_res, tth_fps, background, lod, tth_lod,
+                         tth_align, align, shift, shift_res, tth_fps, lod,
                          amorphous, amorphous_lod, ...) {
 
   #If amorphous is misssing then set it to an empty vector
@@ -250,23 +240,6 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
   if(missing(amorphous_lod)) {
     cat("\n-Using default amorphous_lod of 0")
     amorphous_lod = 0
-  }
-
-  #Define the default background parameters if it's missing
-  if(missing(background)) {
-
-    background <- list(lambda = 0.5,
-                       hwi = 25,
-                       it = 50,
-                       int = round(nrow(smpl)/4, 0))
-
-  }
-
-  #Make sure the background parameters are defined correctly
-  if(!identical(names(background), c("lambda", "hwi", "it", "int"))) {
-
-    stop("Please provide the correct coefficient names in the background argument (lambda, hwi, it, int)")
-
   }
 
   #Ensure that the align is greater than 0.
@@ -489,10 +462,10 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
 
   xrd_detectable <- .lod(x = x, lib = lib,
                           std = std, amorphous = amorphous,
-                          background = background, lod = lod,
-                          tth_lod = tth_lod)
+                          lod = lod)
 
-  logical_reoptimise <- identical(x, xrd_detectable[["x"]])
+  #Reoptimise if things have changed
+  logical_reoptimise <- identical(x[order(names(x))], xrd_detectable[["x"]])
 
   x <- xrd_detectable[["x"]]
   lib$xrd <- xrd_detectable[["lib"]]
@@ -587,7 +560,6 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
   out <- list("tth" = smpl[,1],
               "fitted" = fitted_pattern,
               "measured" = smpl[,2],
-              "background" = xrd_detectable$background,
               "residuals" = resid_x,
               "phases" = df,
               "phases_summary" = dfs,

@@ -89,9 +89,9 @@ shinyUI(
                       ), # end fluidRow
                       fluidRow(
                         column(12, wellPanel(
-                          dataTableOutput("lib_table"),
+                          plotlyOutput("lib_plot", width = "auto", height = 600),
                           tags$hr(),
-                          plotlyOutput("lib_plot", width = "auto", height = 600)
+                          dataTableOutput("lib_table")
                         ))
                       )
              ),
@@ -99,56 +99,56 @@ shinyUI(
              #################################
              ## TAB 3: Background Fitting
              #################################
-             tabPanel("Background Fitting",
-                      fluidRow(
-                        column(3, wellPanel(
-                          h3("1. Load a sample"),
-                          helpText("File must be .xy format (space separated)"),
-                          fileInput(inputId = "loadXYbkg",
-                                    label = NULL,
-                                    multiple = FALSE,
-                                    accept = c(".xy", ".XY")),
-                          h3("2. Background parameters"),
-                          helpText("lamda: 2nd derivative penalty for primary smoothing (default = 0.5)"),
-                          sliderInput("bkg_lambda",
-                                      label = NULL,
-                                      min = 0.1, max = 10,
-                                      value = 0.5, step = 0.1),
-                          helpText("hwi: half width of local windows (default = 25)"),
-                          sliderInput("bkg_hwi",
-                                      label = NULL,
-                                      min = 10, max = 100,
-                                      value = 25, step = 1),
-                          helpText("it: number of iterations in suppression loop (default = 50)"),
-                          sliderInput("bkg_it",
-                                      label = NULL,
-                                      min = 1, max = 200,
-                                      value = 50, step = 1),
-                          helpText("int: number of buckets to divide the data into (default = 1000)"),
-                          sliderInput("bkg_int",
-                                      label = NULL,
-                                      min = 10, max = 2000,
-                                      value = 1000, step = 10)
-                          )),
-                        column(9, wellPanel(
-                          div(style="display: inline-block;vertical-align:top; width: 200px;",
-                              h4("Fitted background plot")),
-                          div(style="display: inline-block;vertical-align:top; width: 300px;",
-                              dropdownButton(
-                                sliderInput("bkg_x", "adjust the x-axis",
-                                            min = 4, max = 70,
-                                            value = c(4,70), step = 1),
-                                sliderInput("bkg_y", "adjust the y-axis",
-                                            min = 0, max = 10000,
-                                            value = c(0,5000), step = 1),
-                                circle = FALSE, status = "danger", icon = icon("sliders"),
-                                width = "400px", size = "sm",
-                                tooltip = tooltipOptions(title = "Click to adjust graph axes")
-                              )),
-                          plotOutput("bkg_plot", width = "100%", height = "600px")
-                          ))
-                        ) # end fluidRow
-             ),
+             #tabPanel("Background Fitting",
+            #          fluidRow(
+            #            column(3, wellPanel(
+            #              h3("1. Load a sample"),
+            #              helpText("File must be .xy format (space separated)"),
+            #              fileInput(inputId = "loadXYbkg",
+            #                        label = NULL,
+            #                        multiple = FALSE,
+            #                        accept = c(".xy", ".XY")),
+            #              h3("2. Background parameters"),
+            #              helpText("lamda: 2nd derivative penalty for primary smoothing (default = 0.5)"),
+            #              sliderInput("bkg_lambda",
+            #                          label = NULL,
+            #                          min = 0.1, max = 10,
+            #                          value = 0.5, step = 0.1),
+            #              helpText("hwi: half width of local windows (default = 25)"),
+            #              sliderInput("bkg_hwi",
+            #                          label = NULL,
+            #                          min = 10, max = 100,
+            #                          value = 25, step = 1),
+            #              helpText("it: number of iterations in suppression loop (default = 50)"),
+            #              sliderInput("bkg_it",
+            #                          label = NULL,
+            #                          min = 1, max = 200,
+            #                          value = 50, step = 1),
+            #             helpText("int: number of buckets to divide the data into (default = 1000)"),
+            #              sliderInput("bkg_int",
+            #                          label = NULL,
+            #                          min = 10, max = 2000,
+            #                          value = 1000, step = 10)
+            #              )),
+            #            column(9, wellPanel(
+            #              div(style="display: inline-block;vertical-align:top; width: 200px;",
+            #                  h4("Fitted background plot")),
+            #              div(style="display: inline-block;vertical-align:top; width: 300px;",
+            #                  dropdownButton(
+            #                    sliderInput("bkg_x", "adjust the x-axis",
+            #                                min = 4, max = 70,
+            #                                value = c(4,70), step = 1),
+            #                    sliderInput("bkg_y", "adjust the y-axis",
+            #                                min = 0, max = 10000,
+            #                                value = c(0,5000), step = 1),
+            #                    circle = FALSE, status = "danger", icon = icon("sliders"),
+            #                    width = "400px", size = "sm",
+            #                    tooltip = tooltipOptions(title = "Click to adjust graph axes")
+            #                  )),
+            #              plotOutput("bkg_plot", width = "100%", height = "600px")
+            #              ))
+            #            ) # end fluidRow
+            # ),
 
              #################################
              ## TAB 4: Full pattern summation
@@ -324,40 +324,41 @@ shinyUI(
                                       value = c(0, 100), step = 0.1),
                           helpText(withMathJax("Define the 2\\(\\theta\\) range of the major
                                                internal standard peak")),
-                          sliderInput("tth_afps_lod", label = NULL,
-                                      min = 2, max = 75,
-                                      value = c(0, 100), step = 0.1),
-                          helpText("Tune the limit of detection parameter for crystalline phases (lower values
-                                   = lower limits of detection)"),
+                          #sliderInput("tth_afps_lod", label = NULL,
+                          #            min = 2, max = 75,
+                          #            value = c(0, 100), step = 0.1),
+                          helpText("Estimate the limit of detection (weight percent) of the
+                                    selected internal standard, from which all other LOD's
+                                    are estimated."),
                           sliderInput("lod_afps", label = NULL,
                                       min = 0.01, max = 5,
-                                      value = 1, step = 0.1),
-                          helpText("Remove amorphous phases below this limit (percent)"),
+                                      value = 0.1, step = 0.05),
+                          helpText("Remove amorphous phases below this limit (weight percent)"),
                           sliderInput("amorph_lod_afps", label = NULL,
                                       min = 0, max = 100,
-                                      value = 2, step = 1),
-                          div(style="display: inline-block;vertical-align:center; width: 300px;",
-                              h3("6. Background parameters")),
-                          div(style="display: inline-block;vertical-align:center; width: 0px;",
-                              dropdownButton(
-                                helpText("Tune the background parameters"),
-                                sliderInput("lambda", label = "lambda",
-                                            min = 0.1, max = 10,
-                                            value = 0.5, step = 0.1),
-                                sliderInput("hwi", label = "hwi",
-                                            min = 10, max = 100,
-                                            value = 25, step = 1),
-                                sliderInput("it", label = "it",
-                                            min = 2, max = 75,
-                                            value = 50, step = 1),
-                                sliderInput("int", label = "int",
-                                            min = 10, max = 2000,
-                                            value = 1000, step = 10),
-                                circle = FALSE, status = "danger", icon = icon("sliders"),
-                                width = "300px", size = "sm"
-                              )),
-                          helpText("Use the dropdown box to tune the background parameters. The
-                                   default setting are usually adequate.")
+                                      value = 2, step = 1)
+                          #div(style="display: inline-block;vertical-align:center; width: 300px;",
+                          #    h3("6. Background parameters")),
+                          #div(style="display: inline-block;vertical-align:center; width: 0px;",
+                          #    dropdownButton(
+                          #      helpText("Tune the background parameters"),
+                          #      sliderInput("lambda", label = "lambda",
+                          #                  min = 0.1, max = 10,
+                          #                  value = 0.5, step = 0.1),
+                          #      sliderInput("hwi", label = "hwi",
+                          #                  min = 10, max = 100,
+                          #                  value = 25, step = 1),
+                          #      sliderInput("it", label = "it",
+                          #                  min = 2, max = 75,
+                          #                  value = 50, step = 1),
+                          #      sliderInput("int", label = "int",
+                          #                  min = 10, max = 2000,
+                          #                  value = 1000, step = 10),
+                          #      circle = FALSE, status = "danger", icon = icon("sliders"),
+                          #      width = "300px", size = "sm"
+                          #    )),
+                          #helpText("Use the dropdown box to tune the background parameters. The
+                          #         default setting are usually adequate.")
                           )),
                         column(9, wellPanel(
                           div(style="display: inline-block;vertical-align:bottom; width: 400px;",
