@@ -226,16 +226,6 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
     lod = 4
   }
 
-  #If tth_lod is missing and the lod is greater than 0, stop the process
-  if(missing(tth_lod) & lod > 0) {
-    stop("tth_lod must be defined")
-  }
-
-  #If tth_lod is missing and the lod is 0, the tth_lod can be set to 0 too
-  if(missing(tth_lod) & lod == 0) {
-    tth_lod <- c(0,0)
-  }
-
   #If amorphous_lod is missing, set it to 0
   if(missing(amorphous_lod)) {
     cat("\n-Using default amorphous_lod of 0")
