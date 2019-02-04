@@ -149,6 +149,65 @@ shinyServer(function(input, output, session) {
 
   })
 
+  #################################
+  ## TAB 2: Reference library Editor
+  #################################
+
+  observe({
+
+    #Load library
+    lib_editor_load <- reactive({
+      infile_lib_editor <- input$loadLIB_editor
+      if (is.null(infile_lib_editor)) {
+        # User has not uploaded a file yet
+        return(NULL)
+      }
+      bar <- load(infile_lib_editor$datapath)
+      lpl <- get(bar)
+      return(lpl)
+    })
+
+    #Make sure the class of the uploaded data is correct and
+    #if it is, update the selectInput
+    if(class(lib_editor_load()) == "powdRlib") {
+      updateSelectInput(session, "selectPHASES_editor",
+                        label = paste("Select reference patterns to subset"),
+                        choices = paste0(lib_editor_load()[[3]][[2]], ": ", lib_editor_load()[[3]][[1]]),
+                        selected = head(paste0(lib_editor_load()[[3]][[2]], ": ", lib_editor_load()[[3]][[1]]), 1))
+    }
+
+
+    #Create a powdRlib object
+    subset_lib <- eventReactive(input$SubsetLibButton, {
+
+      subset_lib <- powdR::subset(x = lib_editor_load,
+                                 phases = input$selectPHASES_editor,
+                                 mode = input$selectMODE_editor)
+
+    })
+
+
+    #Download the library
+    output$download_subset_lib <- downloadHandler(
+
+      filename = "my_powdRlib.Rdata",
+      content = function(con) {
+        assign(input$name, subset_lib())
+
+        save(list=input$name, file=con)
+      }
+
+    )
+
+    #Tabulate the minerals in the library
+    output$minerals_subset_table <- shiny::renderDataTable({
+
+      subset_lib()[[3]]
+
+    }, options = list(lengthMenu = c(10, 25, 50), pageLength = 10))
+
+  })
+
 
   #################################
   ## TAB 3: Background fitting

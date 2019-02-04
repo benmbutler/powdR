@@ -97,6 +97,61 @@ shinyUI(
              ),
 
              #################################
+             ## TAB 3: REFERENCE LIBRARY EDITOR
+             #################################
+             tabPanel("Reference Library Editor",
+                      fluidRow(
+                        column(4, wellPanel(
+                          h3("1. Load a library"),
+                          helpText("Choose a .Rdata reference library to load. Must be
+                                    a powdRlib object created using either the powdRlib function,
+                                    or via the Reference Library Builder in this application."),
+                          div(style="display: inline-block;vertical-align:top; width: 300px;",
+                              fileInput(inputId = "loadLIB_editor",
+                                        label = NULL,
+                                        multiple = FALSE,
+                                        accept = ".Rdata")),
+                          tags$hr(),
+                          h3("2. Select the subset mode"),
+                          selectInput(inputId = "selectMODE_editor",
+                                      label = NULL,
+                                      choices = c("keep", "remove"),
+                                      multiple = FALSE),
+                          tags$hr(),
+                          h3("3. Select reference patterns to subset"),
+                          selectInput(inputId = "selectPHASES_editor",
+                                      label = NULL,
+                                      choices = c("Please upload a reference library"),
+                                      selected = "Please upload a reference library",
+                                      multiple = TRUE,
+                                      selectize = TRUE),
+                          tags$hr(),
+                          div(style="display: inline-block;vertical-align:bottom; width: 120px;",
+                              h3("4. Subset")),
+                          div(style="display: inline-block;vertical-align:bottom; width: 100px;",
+                              actionButton("SubsetLibButton", "Click to subset library")),
+                          tags$hr(),
+                          h3("5. Download subset library"),
+                          helpText("Provide a name for the new library object.
+                                    This is what the library will be called if it is
+                                   subsequently loaded into R (can be kept as the default
+                                   'RefLib'):"),
+                          textInput("name", label = NULL,
+                                    "RefLib"),
+                          downloadButton(outputId = "download_subset_lib",
+                                         label = "Download library as .Rdata binary file")
+
+                        )),
+                        column(8, wellPanel(
+                          h3("Phases in your subset reference library"),
+                          tags$hr(),
+                          dataTableOutput("minerals_subset_table")
+                        ))
+                      ) #End fluid row
+
+             ), #End tabpanel
+
+             #################################
              ## TAB 3: Background Fitting
              #################################
              #tabPanel("Background Fitting",
