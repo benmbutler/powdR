@@ -2,12 +2,12 @@
 % Please edit documentation in R/subset.R
 \name{subset.powdRlib}
 \alias{subset.powdRlib}
-\title{Subset a powdRlib object}
+\title{subset a powdRlib object}
 \usage{
-\method{subset}{powdRlib}(x, refs, mode, ...)
+\method{subset}{powdRlib}(lib, refs, mode, ...)
 }
 \arguments{
-\item{x}{a powdRlib object}
+\item{lib}{a powdRlib object}
 
 \item{refs}{a strong of the phase ID's of reference patterns to be subset}
 
@@ -22,7 +22,7 @@ subsetting a \code{powdRlib} object by defining the phase ID's
 that the user wishes to either keep or remove.
 }
 \details{
-The only mandatory argument is \code{x}, which must be a powdRlib object.
+The only mandatory argument is \code{lib}, which must be a powdRlib object.
 }
 \examples{
 #Load the minerals library
