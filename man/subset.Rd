@@ -14,7 +14,8 @@ subset(lib, ...)
 \description{
 \code{subset} is designed to provide an easy way of
 subsetting a \code{powdRlib} object by defining the phase ID's
-that the user wishes to either keep or remove.
+that the user wishes to either keep or remove. For more information
+see \code{?subset.powdRlib}.
 }
 \details{
 The only mandatory argument is \code{lib}, which must be a powdRlib object.

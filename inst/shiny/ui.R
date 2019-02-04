@@ -131,7 +131,7 @@ shinyUI(
                           div(style="display: inline-block;vertical-align:bottom; width: 100px;",
                               actionButton("SubsetLibButton", "Click to subset library")),
                           tags$hr(),
-                          h3("5. Download subset library"),
+                          h3("5. Download library"),
                           helpText("Provide a name for the new library object.
                                     This is what the library will be called if it is
                                    subsequently loaded into R (can be kept as the default
