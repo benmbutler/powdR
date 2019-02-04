@@ -181,8 +181,8 @@ shinyServer(function(input, output, session) {
     subset_lib <- eventReactive(input$SubsetLibButton, {
 
       subset_lib <- powdR::subset(x = lib_editor_load,
-                                 phases = input$selectPHASES_editor,
-                                 mode = input$selectMODE_editor)
+                                  phases = input$selectPHASES_editor,
+                                  mode = input$selectMODE_editor)
 
     })
 

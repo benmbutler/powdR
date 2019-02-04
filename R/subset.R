@@ -1,5 +1,35 @@
 #' Subset a powdRlib object
 #'
+#' \code{subset} is designed to provide an easy way of
+#' subsetting a \code{powdRlib} object by defining the phase ID's
+#' that the user wishes to either keep or remove. For more details
+#' see \code{?subset.powdRlib}.
+#'
+#' The only mandatory argument is \code{x}, which must be a powdRlib object.
+#'
+#' @param x a powdRlib object
+#' @param ... other arguments
+#'
+#' @method subset powdRlib
+#' @examples
+#' #Load the minerals library
+#' data(minerals)
+#'
+#' minerals_keep <- subset(minerals,
+#'                         refs = c("QUA.1", "QUA.2"),
+#'                         mode = "keep")
+#'
+#' minerals_remove <- subset(minerals,
+#'                           refs = c("QUA.1", "QUA.2"),
+#'                           mode = "remove")
+#' @export
+subset <- function(x, ...) {
+  UseMethod("subset")
+}
+
+
+#' Subset a powdRlib object
+#'
 #' \code{subset.powdRlib} is designed to provide an easy way of
 #' subsetting a \code{powdRlib} object by defining the phase ID's
 #' that the user wishes to either keep or remove.
