@@ -23,7 +23,7 @@
 
 *  `subset()` is a new function that allows simple subsetting of a `powdRlib` object.
 
-*  The `run_powdR()` shiny app now contains tabs for subsetting a `powdRlib` object via the subset
+*  The `run_powdR()` shiny app now contains a tab for subsetting a `powdRlib` object via `subset()`
    function. This replaces the background fitting tab previously available in `powdR` version 0.2.0.
    
 # powdR 0.2.0
