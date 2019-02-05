@@ -7,20 +7,25 @@
 
 *  `fps()` now contains an optional `shift` argument, identical to that already implemented in
    `afps()`. This defines the 2theta range within with a grid-search algorithm can optimise the
-    aligment of standards to sample. If not defined in the function call it defaults to 0.
+    aligment of standards to the sample. If not defined in the function call it defaults to 0.
     
 *  `fps()` and `afps()` now have a `shift_res` argument which accepts a single integer to define
    the increase in resolution used during grid search shifting. Higher values facilitate finer
    shifts at the expense of longer computation. If not defined in the function call it defaults
-   to 0.
+   to 4.
 
-*  Limit of detection estimation in `afps()` now uses a single peak instead of the whole pattern,
-   and therefore `afps()` contains an additional argument, `tth_lod`, which defines the position of
-   the internal standards major peak along the 2theta axis.
+*  The `lod` argument of `afps()`, now simply represents an estimate of the limit of detection of
+   the selected internal standard defined by the `std` argument. The function then uses the reference
+   intensity ratios to estimate limits of detection for all other phases.
    
 *  `fps()` now contains an optional `remove_trace` argument that allows the user to exclude phases
    below a small trace value that would unlikely be detected. Default = 0.
 
+*  `subset()` is a new function that allows simple subsetting of a `powdRlib` object.
+
+*  The `run_powdR()` shiny app now contains tabs for subsetting a `powdRlib` object via the subset
+   function. This replaces the background fitting tab previously available in `powdR` version 0.2.0.
+   
 # powdR 0.2.0
 
 ## New features
