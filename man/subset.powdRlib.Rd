@@ -2,14 +2,14 @@
 % Please edit documentation in R/subset.R
 \name{subset.powdRlib}
 \alias{subset.powdRlib}
-\title{subset a powdRlib object}
+\title{Subset a powdRlib object}
 \usage{
 \method{subset}{powdRlib}(lib, refs, mode, ...)
 }
 \arguments{
 \item{lib}{a powdRlib object}
 
-\item{refs}{a strong of the phase ID's of reference patterns to be subset}
+\item{refs}{a string of the phase ID's of reference patterns to be subset}
 
 \item{mode}{denotes whether the phase ID's defined in the \code{refs} argument are
 retained (\code{"keep"}) or removed (\code{"remove"}).}

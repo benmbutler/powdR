@@ -2,7 +2,7 @@
 % Please edit documentation in R/subset.R
 \name{subset}
 \alias{subset}
-\title{subset a powdRlib object}
+\title{Subset a powdRlib object}
 \usage{
 subset(lib, ...)
 }

@@ -1,4 +1,4 @@
-#' subset a powdRlib object
+#' Subset a powdRlib object
 #'
 #' \code{subset} is designed to provide an easy way of
 #' subsetting a \code{powdRlib} object by defining the phase ID's
@@ -28,7 +28,7 @@ subset <- function(lib, ...) {
 
 
 
-#' subset a powdRlib object
+#' Subset a powdRlib object
 #'
 #' \code{subset.powdRlib} is designed to provide an easy way of
 #' subsetting a \code{powdRlib} object by defining the phase ID's
@@ -37,7 +37,7 @@ subset <- function(lib, ...) {
 #' The only mandatory argument is \code{lib}, which must be a powdRlib object.
 #'
 #' @param lib a powdRlib object
-#' @param refs a strong of the phase ID's of reference patterns to be subset
+#' @param refs a string of the phase ID's of reference patterns to be subset
 #' @param mode denotes whether the phase ID's defined in the \code{refs} argument are
 #' retained (\code{"keep"}) or removed (\code{"remove"}).
 #' @param ... other arguments
