@@ -318,6 +318,13 @@ fps.powdRlib <- function(lib, smpl, solver, obj, refs, std,
     obj = "Rwp"
   }
 
+  #If obj is missing and NNLS is being used along with some shift
+  #then set obj to Rwp
+  if(missing(obj) & solver == "NNLS" & shift > 0) {
+    cat("\n-Using Rwp to optimise shifts when applying grid search")
+    obj = "Rwp"
+  }
+
   #Ensure that the align is greater than 0.
   if (align < 0) {
     stop("The align argument must be equal to or greater than 0")

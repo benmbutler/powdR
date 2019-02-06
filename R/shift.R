@@ -79,8 +79,8 @@
       # compute the fitted pattern
       vf[[j]] <- apply(sweep(vm[[j]], 2, x, "*"), 1, sum)
 
-      #Compute Rwp or NNLS is defined in obj then compute the Rwp
-      if (obj %in% c("Rwp", "NNLS")) {
+      #Compute Rwp if defined in obj
+      if (obj == "Rwp") {
 
       d[[j]] <- sqrt(sum((1/sample_long) * ((sample_long - vf[[j]])^2)) /
                        sum((1/sample_long) * (sample_long^2)))
