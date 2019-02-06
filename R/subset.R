@@ -1,9 +1,9 @@
 #' Subset a powdRlib object
 #'
-#' \code{subset} is designed to provide an easy way of
+#' \code{subset_powdR} is designed to provide an easy way of
 #' subsetting a \code{powdRlib} object by defining the phase ID's
 #' that the user wishes to either keep or remove. For more information
-#' see \code{?subset.powdRlib}.
+#' see \code{?subset_powdR.powdRlib}.
 #'
 #' The only mandatory argument is \code{lib}, which must be a powdRlib object.
 #'
@@ -14,23 +14,23 @@
 #' #Load the minerals library
 #' data(minerals)
 #'
-#' minerals_keep <- subset(minerals,
+#' minerals_keep <- subset_powdR(minerals,
 #'                         refs = c("QUA.1", "QUA.2"),
 #'                         mode = "keep")
 #'
-#' minerals_remove <- subset(minerals,
+#' minerals_remove <- subset_powdR(minerals,
 #'                           refs = c("QUA.1", "QUA.2"),
 #'                           mode = "remove")
 #' @export
-subset <- function(lib, ...) {
-  UseMethod("subset")
+subset_powdR <- function(lib, ...) {
+  UseMethod("subset_powdR")
 }
 
 
 
 #' Subset a powdRlib object
 #'
-#' \code{subset.powdRlib} is designed to provide an easy way of
+#' \code{subset_powdR.powdRlib} is designed to provide an easy way of
 #' subsetting a \code{powdRlib} object by defining the phase ID's
 #' that the user wishes to either keep or remove.
 #'
@@ -46,15 +46,15 @@ subset <- function(lib, ...) {
 #' #Load the minerals library
 #' data(minerals)
 #'
-#' minerals_keep <- subset(minerals,
+#' minerals_keep <- subset_powdR(minerals,
 #'                         refs = c("QUA.1", "QUA.2"),
 #'                         mode = "keep")
 #'
-#' minerals_remove <- subset(minerals,
+#' minerals_remove <- subset_powdR(minerals,
 #'                           refs = c("QUA.1", "QUA.2"),
 #'                           mode = "remove")
 #' @export
-subset.powdRlib <- function(lib, refs, mode, ...) {
+subset_powdR.powdRlib <- function(lib, refs, mode, ...) {
 
   if(missing(mode)) {
 
