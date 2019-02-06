@@ -35,6 +35,11 @@ Usage
 ``` r
 library(powdR)
 #> powdR: Full Pattern Summation of X-Ray Powder Diffraction Data
+#> 
+#> Attaching package: 'powdR'
+#> The following object is masked from 'package:base':
+#> 
+#>     subset
 
 #Load some soils to quantify
 data(soils)
@@ -51,13 +56,14 @@ q <-  fps(lib = minerals,
 #> -Using maximum tth range
 #> -Using default alignment of 0.1
 #> -Using default solver of BFGS
+#> -Using default shift of 0
 #> -Using default objective function of Rwp
 #> -Aligning sample to the internal standard
 #> -Interpolating library to same 2theta scale as aligned sample
 #> -Optimising...
 #> -Removing negative coefficients and reoptimising...
 #> -Computing phase concentrations
-#> -Full pattern summation complete
+#> ***Full pattern summation complete***
 
 #Inspect the phase concentrations (summarised by name)
 q$phases_summary
@@ -82,11 +88,11 @@ The powdR Shiny app
 
 To run `powdR` via the shiny app, use `run_powdR()`. This loads the application in your default web browser. The application has six tabs:
 
-1.  **Reference library builder:** Allows you to create and export a `powdRlib` reference library from two .csv files: one for the XRPD measurements, and the other for the ID, name and reference intensity ratio of each pattern.
-2.  **Reference library viewer:** Facilitates quick inspection of the phases within a reference library.
-3.  **Background fitting:** Allows background fitting parameters to be optimised easily.
-4.  **Full pattern summation:** A user friendly interface for iterative full pattern summation of single samples.
-5.  **Automated full pattern summation:** A user friendly interface for automated full pattern summation of single samples.
+1.  **Reference Library Builder:** Allows you to create and export a `powdRlib` reference library from two .csv files: one for the XRPD measurements, and the other for the ID, name and reference intensity ratio of each pattern.
+2.  **Reference Library Viewer:** Facilitates quick inspection of the phases within a `powdRlib` reference library.
+3.  **Reference Library Editor:** Allows the user to easily subset a `powdRlib` reference library .
+4.  **Full Pattern Summation:** A user friendly interface for iterative full pattern summation of single samples.
+5.  **Automated Full Pattern Summation:** A user friendly interface for automated full pattern summation of single samples.
 6.  **Results viewer:** Allows for quick inspection of results derived from full pattern summation.
 
 References
