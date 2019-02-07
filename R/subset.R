@@ -1,42 +1,38 @@
-#' Subset a powdRlib object
-#'
-#' \code{subset_powdR} is designed to provide an easy way of
-#' subsetting a \code{powdRlib} object by defining the phase ID's
-#' that the user wishes to either keep or remove. For more information
-#' see \code{?subset_powdR.powdRlib}.
-#'
-#' The only mandatory argument is \code{lib}, which must be a powdRlib object.
-#'
-#' @param lib a powdRlib object
-#' @param ... other arguments
-#'
-#' @examples
-#' #Load the minerals library
-#' data(minerals)
-#'
-#' minerals_keep <- subset_powdR(minerals,
-#'                         refs = c("QUA.1", "QUA.2"),
-#'                         mode = "keep")
-#'
-#' minerals_remove <- subset_powdR(minerals,
-#'                           refs = c("QUA.1", "QUA.2"),
-#'                           mode = "remove")
-#' @export
-subset_powdR <- function(lib, ...) {
-  UseMethod("subset_powdR")
-}
+#' ##' Subset a powdRlib object
+#' #'
+#' #' \code{subset_powdR} is designed to provide an easy way of
+#' #' subsetting a \code{powdRlib} object by defining the phase ID's
+#' #' that the user wishes to either keep or remove. For more information
+#' #' see \code{?subset_powdR.powdRlib}.
+#' #'
+#' #' @param x a powdRlib object
+#' #' @param ... other arguments
+#' #'
+#' #' @examples
+#' #' #Load the minerals library
+#' #' data(minerals)
+#' #'
+#' #' minerals_keep <- subset_powdR(minerals,
+#' #'                         refs = c("QUA.1", "QUA.2"),
+#' #'                         mode = "keep")
+#' #'
+#' #' minerals_remove <- subset_powdR(minerals,
+#' #'                           refs = c("QUA.1", "QUA.2"),
+#' #'                           mode = "remove")
+#' #' @export
+#' subset_powdR <- function(x, ...) {
+#'   UseMethod("subset_powdR")
+#' }
 
 
 
 #' Subset a powdRlib object
 #'
-#' \code{subset_powdR.powdRlib} is designed to provide an easy way of
+#' \code{subset.powdRlib} is designed to provide an easy way of
 #' subsetting a \code{powdRlib} object by defining the phase ID's
 #' that the user wishes to either keep or remove.
 #'
-#' The only mandatory argument is \code{lib}, which must be a powdRlib object.
-#'
-#' @param lib a powdRlib object
+#' @param x a powdRlib object
 #' @param refs a string of the phase ID's of reference patterns to be subset
 #' @param mode denotes whether the phase ID's defined in the \code{refs} argument are
 #' retained (\code{"keep"}) or removed (\code{"remove"}).
@@ -46,15 +42,15 @@ subset_powdR <- function(lib, ...) {
 #' #Load the minerals library
 #' data(minerals)
 #'
-#' minerals_keep <- subset_powdR(minerals,
+#' minerals_keep <- subset(minerals,
 #'                         refs = c("QUA.1", "QUA.2"),
 #'                         mode = "keep")
 #'
-#' minerals_remove <- subset_powdR(minerals,
+#' minerals_remove <- subset(minerals,
 #'                           refs = c("QUA.1", "QUA.2"),
 #'                           mode = "remove")
 #' @export
-subset_powdR.powdRlib <- function(lib, refs, mode, ...) {
+subset.powdRlib <- function(x, refs, mode, ...) {
 
   if(missing(mode)) {
 
@@ -74,7 +70,7 @@ subset_powdR.powdRlib <- function(lib, refs, mode, ...) {
 
   }
 
-  if(!length(which(refs %in% names(lib[[1]]))) == length(refs)) {
+  if(!length(which(refs %in% names(x[[1]]))) == length(refs)) {
 
     stop("Not all phase ID's defined in the refs argument are present within
          your powdRlib object.")
@@ -83,30 +79,30 @@ subset_powdR.powdRlib <- function(lib, refs, mode, ...) {
 
   if (mode == "keep") {
 
-    keep_index_xrd <- which(names(lib[[1]]) %in% refs)
-    keep_index_phases <- which(lib[[3]][[1]] %in% refs)
+    keep_index_xrd <- which(names(x[[1]]) %in% refs)
+    keep_index_phases <- which(x[[3]][[1]] %in% refs)
 
-    lib[[1]] <- lib[[1]][keep_index_xrd]
-    lib[[3]] <- lib[[3]][keep_index_phases, ]
+    x[[1]] <- x[[1]][keep_index_xrd]
+    x[[3]] <- x[[3]][keep_index_phases, ]
 
     #Ensure they're ordered
-    lib[[1]] <- lib[[1]][order(names(lib[[1]]))]
-    lib[[3]] <- lib[[3]][order(lib[[3]][[1]]),]
+    x[[1]] <- x[[1]][order(names(x[[1]]))]
+    x[[3]] <- x[[3]][order(x[[3]][[1]]),]
 
   } else {
 
-    remove_index_xrd <- which(names(lib[[1]]) %in% refs)
-    remove_index_phases <- which(lib[[3]][[1]] %in% refs)
+    remove_index_xrd <- which(names(x[[1]]) %in% refs)
+    remove_index_phases <- which(x[[3]][[1]] %in% refs)
 
-    lib[[1]] <- lib[[1]][-remove_index_xrd]
-    lib[[3]] <- lib[[3]][-remove_index_phases, ]
+    x[[1]] <- x[[1]][-remove_index_xrd]
+    x[[3]] <- x[[3]][-remove_index_phases, ]
 
     #Ensure they're ordered
-    lib[[1]] <- lib[[1]][order(names(lib[[1]]))]
-    lib[[3]] <- lib[[3]][order(lib[[3]][[1]]),]
+    x[[1]] <- x[[1]][order(names(x[[1]]))]
+    x[[3]] <- x[[3]][order(x[[3]][[1]]),]
 
   }
 
-  return(lib)
+  return(x)
 
   }
