@@ -222,8 +222,8 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
 
   #If lod is missing then set it to a default of 1
   if(missing(lod)) {
-    cat("\n-Using default lod of 4")
-    lod = 4
+    cat("\n-Using default lod of 0.1")
+    lod = 0.1
   }
 
   #If amorphous_lod is missing, set it to 0
