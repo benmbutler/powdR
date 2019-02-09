@@ -4,11 +4,13 @@
 #' subsetting a \code{powdRlib} object by defining the phase ID's
 #' that the user wishes to either keep or remove.
 #'
-#' @param x a powdRlib object
+#' @param x a \code{powdRlib} object.
 #' @param refs a string of the phase ID's of reference patterns to be subset
 #' @param mode denotes whether the phase ID's defined in the \code{refs} argument are
 #' retained (\code{"keep"}) or removed (\code{"remove"}).
 #' @param ... other arguments
+#'
+#' @return a \code{powdRlib} object.
 #'
 #' @examples
 #' #Load the minerals library

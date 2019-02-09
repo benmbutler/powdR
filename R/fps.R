@@ -159,6 +159,14 @@
 #'                    refs = minerals$phases$phase_id,
 #'                    std = "QUA.1",
 #'                    align = 0.2)
+#'
+#' #Alternatively run all 3 at once using lapply
+#'
+#' fps_soils <- lapply(soils, fps,
+#'                     lib = minerals,
+#'                     std = "QUA.2",
+#'                     refs = minerals$phases$phase_id
+#'                     align = 0.2)
 #' }
 #' @references
 #' Chipera, S.J., Bish, D.L., 2013. Fitting Full X-Ray Diffraction Patterns for Quantitative Analysis:
@@ -253,6 +261,14 @@ fps <- function(lib, ...) {
 #'                    refs = minerals$phases$phase_id,
 #'                    std = "QUA.1",
 #'                    align = 0.2)
+#'
+#' #Alternatively run all 3 at once using lapply
+#'
+#' fps_soils <- lapply(soils, fps,
+#'                     lib = minerals,
+#'                     std = "QUA.2",
+#'                     refs = minerals$phases$phase_id
+#'                     align = 0.2)
 #' }
 #' @references
 #' Bish, D.L., Post, J.E., 1989. Modern powder diffraction. Mineralogical Society of America.

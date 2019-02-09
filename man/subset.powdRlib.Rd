@@ -7,7 +7,7 @@
 \method{subset}{powdRlib}(x, refs, mode, ...)
 }
 \arguments{
-\item{x}{a powdRlib object}
+\item{x}{a \code{powdRlib} object.}
 
 \item{refs}{a string of the phase ID's of reference patterns to be subset}
 
@@ -15,6 +15,9 @@
 retained (\code{"keep"}) or removed (\code{"remove"}).}
 
 \item{...}{other arguments}
+}
+\value{
+a \code{powdRlib} object.
 }
 \description{
 \code{subset.powdRlib} is designed to provide an easy way of

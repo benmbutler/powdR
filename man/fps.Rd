@@ -63,6 +63,14 @@ fps_granite <- fps(lib = minerals,
                    refs = minerals$phases$phase_id,
                    std = "QUA.1",
                    align = 0.2)
+
+#Alternatively run all 3 at once using lapply
+
+fps_soils <- lapply(soils, fps,
+                    lib = minerals,
+                    std = "QUA.2",
+                    refs = minerals$phases$phase_id
+                    align = 0.2)
 }
 }
 \references{

@@ -30,7 +30,8 @@ Imports:
   shiny (>= 1.0.5),
   nnls (>= 1.4),
   shinyWidgets (>= 0.4.3),
-  baseline (>= 1.2)
+  baseline (>= 1.2),
+  tidyr (>= 0.8)
 Suggests:
     knitr,
     rmarkdown
