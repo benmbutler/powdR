@@ -34,6 +34,7 @@
 #'                             type = "all",
 #'                             order = TRUE)
 #' }
+#' @export
 summarise_mineralogy <- function(x, type, order) {
 
 #Make sure x is a list
