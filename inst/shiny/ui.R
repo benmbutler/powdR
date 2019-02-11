@@ -68,7 +68,7 @@ shinyUI(
              #################################
              tabPanel("Reference Library Viewer",
                       fluidRow(
-                        column(6, wellPanel(
+                        column(4, wellPanel(
                           helpText("Choose a .Rdata reference library to load. Must be
                                     a powdRlib object created using either the powdRlib function,
                                     or via the Reference Library Builder in this application."),
@@ -77,7 +77,15 @@ shinyUI(
                                     multiple = FALSE,
                                     accept = ".Rdata")
                         )),
-                        column(6, wellPanel(
+                        column(4, wellPanel(
+                          helpText("Select a wavelength to use when calculating d-spacings."),
+                          selectInput(inputId = "selectWAVELENGTH",
+                                      label = NULL,
+                                      multiple = FALSE,
+                                      choices = list("Cu (1.54056 Angstroms)" = "Cu",
+                                                     "Co (1.78897 Angstroms)" = "Co"))
+                        )),
+                        column(4, wellPanel(
                           helpText("Choose phases from the library to plot."),
                           selectInput(inputId = "selectPHASES_plotter",
                                       label = NULL,
@@ -272,11 +280,17 @@ shinyUI(
                           sliderInput("tth", label = NULL,
                                       min = 2, max = 75,
                                       value = c(0, 100), step = 0.1),
-                          helpText(withMathJax("Adjust the value below which trace phases
-                                               are removed")),
+                          helpText("Adjust the value below which trace phases
+                                               are removed"),
                           sliderInput("remove_trace", label = NULL,
                                       min = 0, max = 1,
-                                      value = 0, step = 0.01)
+                                      value = 0, step = 0.01),
+                          helpText("Select a wavelength to use when calculating d-spacings."),
+                          selectInput(inputId = "selectWAVELENGTHfps",
+                                      label = NULL,
+                                      multiple = FALSE,
+                                      choices = list("Cu (1.54056 Angstroms)" = "Cu",
+                                                     "Co (1.78897 Angstroms)" = "Co"))
                         )),
                         column(9, wellPanel(
                           div(style="display: inline-block;vertical-align:bottom; width: 300px;",
@@ -377,11 +391,6 @@ shinyUI(
                           sliderInput("tth_afps", label = NULL,
                                       min = 2, max = 75,
                                       value = c(0, 100), step = 0.1),
-                          helpText(withMathJax("Define the 2\\(\\theta\\) range of the major
-                                               internal standard peak")),
-                          #sliderInput("tth_afps_lod", label = NULL,
-                          #            min = 2, max = 75,
-                          #            value = c(0, 100), step = 0.1),
                           helpText("Estimate the limit of detection (weight percent) of the
                                     selected internal standard, from which all other LOD's
                                     are estimated."),
@@ -391,29 +400,13 @@ shinyUI(
                           helpText("Remove amorphous phases below this limit (weight percent)"),
                           sliderInput("amorph_lod_afps", label = NULL,
                                       min = 0, max = 100,
-                                      value = 2, step = 1)
-                          #div(style="display: inline-block;vertical-align:center; width: 300px;",
-                          #    h3("6. Background parameters")),
-                          #div(style="display: inline-block;vertical-align:center; width: 0px;",
-                          #    dropdownButton(
-                          #      helpText("Tune the background parameters"),
-                          #      sliderInput("lambda", label = "lambda",
-                          #                  min = 0.1, max = 10,
-                          #                  value = 0.5, step = 0.1),
-                          #      sliderInput("hwi", label = "hwi",
-                          #                  min = 10, max = 100,
-                          #                  value = 25, step = 1),
-                          #      sliderInput("it", label = "it",
-                          #                  min = 2, max = 75,
-                          #                  value = 50, step = 1),
-                          #      sliderInput("int", label = "int",
-                          #                  min = 10, max = 2000,
-                          #                  value = 1000, step = 10),
-                          #      circle = FALSE, status = "danger", icon = icon("sliders"),
-                          #      width = "300px", size = "sm"
-                          #    )),
-                          #helpText("Use the dropdown box to tune the background parameters. The
-                          #         default setting are usually adequate.")
+                                      value = 2, step = 1),
+                          helpText("Select a wavelength to use when calculating d-spacings."),
+                          selectInput(inputId = "selectWAVELENGTHafps",
+                                      label = NULL,
+                                      multiple = FALSE,
+                                      choices = list("Cu (1.54056 Angstroms)" = "Cu",
+                                                     "Co (1.78897 Angstroms)" = "Co"))
                           )),
                         column(9, wellPanel(
                           div(style="display: inline-block;vertical-align:bottom; width: 400px;",
@@ -449,7 +442,7 @@ shinyUI(
 
                       fluidRow(
 
-                        column(6, wellPanel(
+                        column(4, wellPanel(
                           helpText("Choose a .Rdata file to load. Must be a
                                     powdRfps or powdRafps object created using the fps() or
                                     afps() function. These objects can also be saved from the
@@ -460,7 +453,15 @@ shinyUI(
                                     multiple = FALSE,
                                     accept = ".Rdata")
                         )),
-                        column(6, wellPanel(
+                        column(4, wellPanel(
+                          helpText("Select a wavelength to use when calculating d-spacings."),
+                          selectInput(inputId = "selectWAVELENGTHresults",
+                                      label = NULL,
+                                      multiple = FALSE,
+                                      choices = list("Cu (1.54056 Angstroms)" = "Cu",
+                                                     "Co (1.78897 Angstroms)" = "Co"))
+                        )),
+                        column(4, wellPanel(
                           helpText("Choose how the results are tabulated. If 'Grouped phases' is selected,
                                    the mineralogy is summarised according to the phase_name column, e.g.
                                    if more than one quartz pattern is used, these will be summed together."),

@@ -90,7 +90,7 @@ afps_sand <-  afps(lib = minerals,
                  smpl = soils$sandstone,
                  std = "QUA.2",
                  align = 0.2,
-                 lod = 0.2
+                 lod = 0.2,
                  amorphous = "ORG",
                  amorphous_lod = 1)
 
@@ -98,7 +98,7 @@ afps_lime <- afps(lib = minerals,
                 smpl = soils$limestone,
                 std = "QUA.2",
                 align = 0.2,
-                lod = 0.2
+                lod = 0.2,
                 amorphous = "ORG",
                 amorphous_lod = 1)
 
@@ -106,7 +106,7 @@ afps_granite <- afps(lib = minerals,
                    smpl = soils$granite,
                    std = "QUA.2",
                    align = 0.2,
-                   lod = 0.2
+                   lod = 0.2,
                    amorphous = "ORG",
                    amorphous_lod = 1)
 
@@ -116,7 +116,7 @@ afps_soils <- lapply(soils, afps,
                      lib = minerals,
                      std = "QUA.2",
                      align = 0.2,
-                     lod = 0.2
+                     lod = 0.2,
                      amorphous = "ORG",
                      amorphous_lod = 1)
 }

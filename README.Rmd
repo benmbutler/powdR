@@ -60,11 +60,11 @@ q <-  fps(lib = minerals,
 q$phases_summary
 
 #Inspect the quantification
-plot(q)
+plot(q, wavelength = "Cu")
 
 ```
 
-Alternatively, `plot(q, interactive = TRUE)` provides an interactive plot for better inspection of the fit. More detailed usage instructions are provided in the package vignette.
+Alternatively, `plot(q, wavelength = "Cu", interactive = TRUE)` provides an interactive plot for better inspection of the fit. More detailed usage instructions are provided in the package vignette.
 
 ## The powdR Shiny app
 

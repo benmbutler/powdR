@@ -34,7 +34,7 @@ Version 0.2.0 of `powdR` currently implements full pattern summation via a stand
 ## `fps()`
 Full pattern summation in `powdR` is provided in the `fps()` function. In the following example the full pattern summation process using `fps()` will start with a reference library containing a single quartz phase, and subsequent phases will be added by examining the residuals of the fit. If running this vignette yourself, all plots can be made interactive by:
 
-`plot(fit, interactive = TRUE)`
+`plot(fit, wavelength = "Cu", interactive = TRUE)`
 
 Making them interactive aids visual interpretation of the fitted patterns, which can otherwise be difficult when using static plots.
 
@@ -52,7 +52,7 @@ fit <- fps(lib = minerals,
            align = 0.2)
 
 #plot the data to interpret the fit
-plot(fit)
+plot(fit, wavelength = "Cu")
 ```
 
 In this case, the fitted pattern consistently overestimates the quartz peak intensities compared to the measured pattern, but underestimates the background contribution. This can occur when X-ray amorphous phases are present within the sample. To Account for this, an organic matter phase from the reference library will be added, and the fit recomputed.
@@ -66,7 +66,7 @@ fit <- fps(lib = minerals,
            align = 0.2)
 
 #plot the data to interpret the fit
-plot(fit)
+plot(fit, wavelength = "Cu")
 ```
 
 Now the fit is much improved, highlighting how organic matter is an important component of this pattern. Based on the current residuals, there is a notable peak at 12.3 degrees 2theta, which is often associated with kaolinite. There are also numerous peaks either side of the main quartz peak at 26.6 degrees 2theta, which are often coincident with feldspar minerals. The next fit will therefore add kaolinite, plagioclase and potassium feldspar to the process.
@@ -84,7 +84,7 @@ fit <- fps(lib = minerals,
            align = 0.2)
 
 #plot the data to interpret the fit
-plot(fit)
+plot(fit, wavelength = "Cu")
 ```
 
 When including all these phases, pretty much all peaks are accounted for. Once the user is satisfied that an appropriate fit has been achieved, the mineral concentrations can be extracted and interpreted by looking at two elements of the output from `fps()`:
@@ -116,7 +116,7 @@ fit <- fps(lib = minerals,
            align = 0.2)
 
 #plot the data to interpret the fit
-plot(fit)
+plot(fit, wavelength = "Cu")
 ```
 
 ## Automated full pattern summation: `afps()`
@@ -134,7 +134,7 @@ fit <- afps(lib = minerals,
            lod = 0.2)
 
 #plot the data to interpret the fit
-plot(fit)
+plot(fit, wavelength = "Cu")
 ```
 
 ## References

@@ -35,11 +35,6 @@ Usage
 ``` r
 library(powdR)
 #> powdR: Full Pattern Summation of X-Ray Powder Diffraction Data
-#> 
-#> Attaching package: 'powdR'
-#> The following object is masked from 'package:base':
-#> 
-#>     subset
 
 #Load some soils to quantify
 data(soils)
@@ -76,12 +71,12 @@ q$phases_summary
 #> 6         Quartz       55.1557
 
 #Inspect the quantification
-plot(q)
+plot(q, wavelength = "Cu")
 ```
 
 ![](man/figures/README-example-1.png)
 
-Alternatively, `plot(q, interactive = TRUE)` provides an interactive plot for better inspection of the fit. More detailed usage instructions are provided in the package vignette.
+Alternatively, `plot(q, wavelength = "Cu", interactive = TRUE)` provides an interactive plot for better inspection of the fit. More detailed usage instructions are provided in the package vignette.
 
 The powdR Shiny app
 -------------------

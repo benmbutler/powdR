@@ -134,13 +134,13 @@ shinyServer(function(input, output, session) {
   lib_sub <- lib_plotter_load()
 
   if (length(input$selectPHASES_plotter > 0)) {
-  lib_sub$xrd <- lib_sub$xrd[,which(names(lib_sub$xrd) %in% gsub(".*: ", "", input$selectPHASES_plotter))]
+  lib_sub$xrd <- lib_sub$xrd[which(names(lib_sub$xrd) %in% gsub(".*: ", "", input$selectPHASES_plotter))]
   lib_sub$phases <- lib_sub$phases[which(lib_sub$phases$phase_id %in% gsub(".*: ", "", input$selectPHASES_plotter)),]
   }
 
 
   if(class(lib_sub) == "powdRlib" & length(input$selectPHASES_plotter > 0)) {
-    plot(lib_sub, interactive = TRUE)
+    plot(lib_sub, wavelength = input$selectWAVELENGTH, interactive = TRUE)
   } else {
    return(NULL)
   }
@@ -466,7 +466,7 @@ shinyServer(function(input, output, session) {
 
     output$line <- plotly::renderPlotly({
 
-      plot(fps_out, interactive = TRUE)
+      plot(fps_out, wavelength = input$selectWAVELENGTHfps, interactive = TRUE)
 
     })
 
@@ -640,19 +640,6 @@ shinyServer(function(input, output, session) {
   })
 
 
-  #observe({
-
-  #  if(!is.null(input$loadLIBafps)) {
-  #    xrd_uploaded_afps <- as.list(filedata3_afps())
-  #    updateSliderInput(session = session, inputId = "tth_afps_lod",
-  #                      min = round(min(as.numeric(xrd_uploaded_afps[[2]])) + input$align_afps, 2),
-  #                      max = round(max(as.numeric(xrd_uploaded_afps[[2]])) - input$align_afps, 2),
-  #                      value = c(round(min(as.numeric(xrd_uploaded_afps[[2]])) + input$align_afps, 2),
-  #                                round(max(as.numeric(xrd_uploaded_afps[[2]])) - input$align_afps, 2)))
-  #  }
-
-  #})
-
   #FULL PATTERN FITTING
 
   observe({
@@ -692,7 +679,7 @@ shinyServer(function(input, output, session) {
 
     output$line_afps <- plotly::renderPlotly({
 
-      plot(afps_out, interactive = TRUE)
+      plot(afps_out, wavelength = input$selectWAVELENGTHafps, interactive = TRUE)
 
     })
 
@@ -717,7 +704,6 @@ shinyServer(function(input, output, session) {
     fitout_afps <- data.frame("TTH" = fitout_afps[["tth"]],
                          "MEASURED" = fitout_afps[["measured"]],
                          "FITTED" = fitout_afps[["fitted"]],
-                         "BACKGROUND" = fitout_afps[["background"]],
                          fitout_afps[["weighted_pure_patterns"]])
 
     output$download_fit_afps <- downloadHandler(
@@ -787,7 +773,7 @@ shinyServer(function(input, output, session) {
     output$results_plot <- plotly::renderPlotly({
 
       if(class(results_plotter_load()) %in% c("powdRfps", "powdRafps")) {
-        plot(results_plotter_load(), interactive = TRUE)
+        plot(results_plotter_load(), wavelength = input$selectWAVELENGTHresults, interactive = TRUE)
       } else {
         return(NULL)
       }

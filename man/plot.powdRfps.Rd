@@ -4,15 +4,14 @@
 \alias{plot.powdRfps}
 \title{Plotting elements of a powdRfps object}
 \usage{
-\method{plot}{powdRfps}(x, d, wavelength, interactive, ...)
+\method{plot}{powdRfps}(x, wavelength, interactive, ...)
 }
 \arguments{
 \item{x}{a powdRfps object}
 
-\item{d}{logical. Denotes whether x-axis should be d-spacing. Default = FALSE.}
-
-\item{wavelength}{numeric. Wavelength of the measurements to be plotted (in
-angstroms), only required when \code{d = TRUE}.}
+\item{wavelength}{One of "Cu", "Co" or a custom numeric value defining the wavelength
+(in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
+of 1.54056 or 1.78897 are used, respectively.}
 
 \item{interactive}{logical. If TRUE then the output will be an interactive
 ggplotly object. If FALSE then the output will be a ggplot object.}
@@ -43,8 +42,7 @@ fps_sand <-  fps(lib = minerals,
                 std = "QUA.1",
                 align = 0.2)
 
-plot(fps_sand)
-plot(fps_sand, interactive = TRUE)
-plot(fps_sand, d = TRUE, wavelength = 1.54, interactive = TRUE)
+plot(fps_sand, wavelength = "Cu")
+plot(fps_sand, wavelength = "Cu", interactive = TRUE)
 }
 }

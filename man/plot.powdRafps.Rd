@@ -4,15 +4,14 @@
 \alias{plot.powdRafps}
 \title{Plotting elements of a powdRafps object}
 \usage{
-\method{plot}{powdRafps}(x, d, wavelength, interactive, ...)
+\method{plot}{powdRafps}(x, wavelength, interactive, ...)
 }
 \arguments{
 \item{x}{a powdRfps object}
 
-\item{d}{logical. Denotes whether x-axis should be d-spacing. Default = FALSE.}
-
-\item{wavelength}{numeric. Wavelength of the measurements to be plotted (in
-angstroms), only required when \code{d = TRUE}.}
+\item{wavelength}{One of "Cu", "Co" or a custom numeric value defining the wavelength
+(in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
+of 1.54056 or 1.78897 are used, respectively.}
 
 \item{interactive}{logical. If TRUE then the output will be an interactive
 ggplotly object. If FALSE then the output will be a ggplot object.}
@@ -38,14 +37,14 @@ data(soils)
 
 \dontrun{
 afps_sand <-  afps(lib = minerals,
-                smpl = soils$sandstone,
-                std = "QUA.1",
-                amorphous = "ORG",
-                align = 0.2,
-                lod = 0.1)
+                   smpl = soils$sandstone,
+                   std = "QUA.1",
+                   amorphous = "ORG",
+                   align = 0.2,
+                   lod = 0.1)
 
-plot(afps_sand)
-plot(afps_sand, interactive = TRUE)
-plot(afps_sand, d = TRUE, wavelength = 1.54, interactive = TRUE)
+plot(afps_sand, wavelength = "Cu")
+plot(afps_sand, wavelength = "Cu", interactive = TRUE)
+
 }
 }

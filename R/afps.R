@@ -41,7 +41,7 @@
 #'                  smpl = soils$sandstone,
 #'                  std = "QUA.2",
 #'                  align = 0.2,
-#'                  lod = 0.2
+#'                  lod = 0.2,
 #'                  amorphous = "ORG",
 #'                  amorphous_lod = 1)
 #'
@@ -49,7 +49,7 @@
 #'                 smpl = soils$limestone,
 #'                 std = "QUA.2",
 #'                 align = 0.2,
-#'                 lod = 0.2
+#'                 lod = 0.2,
 #'                 amorphous = "ORG",
 #'                 amorphous_lod = 1)
 #'
@@ -57,7 +57,7 @@
 #'                    smpl = soils$granite,
 #'                    std = "QUA.2",
 #'                    align = 0.2,
-#'                    lod = 0.2
+#'                    lod = 0.2,
 #'                    amorphous = "ORG",
 #'                    amorphous_lod = 1)
 #'
@@ -67,7 +67,7 @@
 #'                      lib = minerals,
 #'                      std = "QUA.2",
 #'                      align = 0.2,
-#'                      lod = 0.2
+#'                      lod = 0.2,
 #'                      amorphous = "ORG",
 #'                      amorphous_lod = 1)
 #' }
@@ -155,7 +155,7 @@ afps <- function(lib, ...) {
 #'                  smpl = soils$sandstone,
 #'                  std = "QUA.2",
 #'                  align = 0.2,
-#'                  lod = 0.2
+#'                  lod = 0.2,
 #'                  amorphous = "ORG",
 #'                  amorphous_lod = 1)
 #'
@@ -163,7 +163,7 @@ afps <- function(lib, ...) {
 #'                 smpl = soils$limestone,
 #'                 std = "QUA.2",
 #'                 align = 0.2,
-#'                 lod = 0.2
+#'                 lod = 0.2,
 #'                 amorphous = "ORG",
 #'                 amorphous_lod = 1)
 #'
@@ -171,7 +171,7 @@ afps <- function(lib, ...) {
 #'                    smpl = soils$granite,
 #'                    std = "QUA.2",
 #'                    align = 0.2,
-#'                    lod = 0.2
+#'                    lod = 0.2,
 #'                    amorphous = "ORG",
 #'                    amorphous_lod = 1)
 #'
@@ -181,7 +181,7 @@ afps <- function(lib, ...) {
 #'                      lib = minerals,
 #'                      std = "QUA.2",
 #'                      align = 0.2,
-#'                      lod = 0.2
+#'                      lod = 0.2,
 #'                      amorphous = "ORG",
 #'                      amorphous_lod = 1)
 #' }
