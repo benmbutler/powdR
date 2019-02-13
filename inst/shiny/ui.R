@@ -144,7 +144,7 @@ shinyUI(
                                     This is what the library will be called if it is
                                    subsequently loaded into R (can be kept as the default
                                    'RefLib'):"),
-                          textInput("name", label = NULL,
+                          textInput("name_editor", label = NULL,
                                     "RefLib"),
                           downloadButton(outputId = "download_subset_lib",
                                          label = "Download library as .Rdata binary file")

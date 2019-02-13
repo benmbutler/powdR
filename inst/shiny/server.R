@@ -192,9 +192,9 @@ shinyServer(function(input, output, session) {
 
       filename = "my_powdRlib.Rdata",
       content = function(con) {
-        assign(input$name, subset_lib())
+        assign(input$name_editor, subset_lib())
 
-        save(list=input$name, file=con)
+        save(list=input$name_editor, file=con)
       }
 
     )
