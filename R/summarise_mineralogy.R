@@ -51,6 +51,13 @@ if (!all(names(table(unlist(lapply(x, class)))) %in% c("powdRfps", "powdRafps"))
 
 }
 
+#Check that all the items are named
+if (!length(table(names(x))) == length(x)) {
+
+  stop("Each item in x needs to be named with a unique sample ID")
+
+}
+
 #Make sure more than one sample is being used
 if (length(x) == 1) {
 
