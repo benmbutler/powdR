@@ -21,7 +21,7 @@ knitr::opts_chunk$set(
 )
 ```
 
-`powdR` is an R implementation of the full pattern summation approach to quantitative mineralogy from X-ray powder diffraction (XRPD) data. Whilst this is available in Excel spreadsheets such as FULLPAT [@Chipera2002] and ROCKJOCK [@Eberl2003], implementation in R allows for faster computation than is currently available, and provides a user-friendly `shiny` application to help with the often iterative process of mineral quantification.
+`powdR` is an R implementation of the full pattern summation approach to quantitative mineralogy from X-ray powder diffraction (XRPD) data. Whilst this is available in Excel spreadsheets such as FULLPAT [@Chipera2002] and RockJock [@Eberl2003], implementation in R allows for faster computation than is currently available, and provides a user-friendly `shiny` application to help with the often iterative process of mineral quantification.
 
 
 ## Full pattern summation
@@ -38,7 +38,7 @@ Full pattern summation in `powdR` is provided in the `fps()` function. In the fo
 
 Making them interactive aids visual interpretation of the fitted patterns, which can otherwise be difficult when using static plots.
 
-```{r, fig.show='hold', fig.cap = "**Figure 1:** The resulting fit on a sandstone soil when `fps()` is applied using a single quartz reference pattern. The top plot displays the measured and fitted patterns, and the bottom plots displays the residuals.", message = FALSE, warning = FALSE}
+```{r, fig.show='hold', fig.cap = "**Figure 1:** The resulting fit on a sandstone soil when `fps()` is applied using a single quartz reference pattern. The top plot displays the measured and fitted patterns, and the bottom plot displays the residuals.", message = FALSE, warning = FALSE}
 library(powdR)
 
 data(minerals)
@@ -77,6 +77,7 @@ fit <- fps(lib = minerals,
            smpl = soils$sandstone,
            refs = c("QUA.1",
                     "QUA.2",
+                    "ORG",
                     "KAO",
                     "FEL",
                     "OLI"),

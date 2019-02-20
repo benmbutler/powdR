@@ -57,3 +57,22 @@
 #' of each reference pattern.
 #' }
 "minerals_phases"
+
+#' RockJock reference library
+#'
+#' A \code{powdRlib} object of 168 pure reference patterns from the RockJock
+#' library along with reference intensity ratios. Can be used with the \code{fps()}
+#' and \code{afps()} functions for quantitative analysis.
+#'
+#' @format A list of 3 components
+#' \describe{
+#' \item{xrd}{A dataframe of all xrd data (counts only). Column names denote the
+#' reference sample}
+#' \item{tth}{A vector of 2theta intervals of all measurements in the library}
+#' \item{phases}{A dataframe the phase ID's, names and reference intensity
+#' ratios (RIR)}
+#' }
+#'
+#' @author Dennis Eberl
+#' @references \url{https://pubs.er.usgs.gov/publication/ofr200378}
+"rockjock"

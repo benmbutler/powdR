@@ -2,6 +2,11 @@
 
 ## New features
 
+*  A comprehensive reference library of pure phases from the RockJock computer software is now
+   provided as an example `powdRlib` object called `rockjock`. This library covers most clay,
+   non-clay and amorphous phases that may be encountered in soil samples. The library can be
+   loaded into the global environment via `data(rockjock`).
+
 *  `fps()` and `afps()` now accept "L-BFGS-B" in the `solver` argument. If selected, this uses
    L-BFGS-B optimisation constrained so that parameters cannot be lower than zero.
 
