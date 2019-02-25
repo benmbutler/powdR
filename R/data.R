@@ -62,7 +62,9 @@
 #'
 #' A \code{powdRlib} object of 168 pure reference patterns from the RockJock
 #' library along with reference intensity ratios. Can be used with the \code{fps()}
-#' and \code{afps()} functions for quantitative analysis.
+#' and \code{afps()} functions for quantitative analysis. Example mixtures for
+#' testing the \code{rockjock} library with known concentrations are available
+#' in the \code{rockjock_mixtures} data. See \code{?rockjock_mixtures}.
 #'
 #' @format A list of 3 components
 #' \describe{
