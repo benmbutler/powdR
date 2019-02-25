@@ -36,9 +36,9 @@
 
   #Detecting the peak shift required for each sample
   #First define the number that's going to get minimised by the optim routine
-  smpl_optim_out <- stats::optim(a = smpl_short, par = 0,
+  smpl_optim_out <- suppressWarnings(stats::optim(a = smpl_short, par = 0,
                                 xout = TTH_shorter, std = standard_shorter,
-                                .align_optim, method = "Brent", lower = -xshift, upper = xshift)
+                                .align_optim, method = "Brent", lower = -xshift, upper = xshift))
 
   #extract the optimised shift (i.e. what to add/subtract from the sample 2theta)
   smpl_optim <- smpl_optim_out$par
