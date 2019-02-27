@@ -4,14 +4,19 @@
 \alias{afps.powdRlib}
 \title{Automated full pattern summation}
 \usage{
-\method{afps}{powdRlib}(lib, smpl, solver, obj, std, tth_align, align,
-  shift, shift_res, tth_fps, lod, amorphous, amorphous_lod, ...)
+\method{afps}{powdRlib}(lib, smpl, harmonise, solver, obj, std, tth_align,
+  align, manual_align, shift, shift_res, tth_fps, lod, amorphous,
+  amorphous_lod, ...)
 }
 \arguments{
 \item{lib}{A \code{powdRlib} object representing the reference library. Created using the
 \code{powdRlib} constructor function.}
 
 \item{smpl}{A data frame. First column is 2theta, second column is counts}
+
+\item{harmonise}{logical parameter defining whether to harmonise the \code{lib} and \code{smpl}.
+Default = \code{TRUE}. Harmonises to the intersecting 2theta range at the coarsest resolution
+available.}
 
 \item{solver}{The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
 "CG" or "L-BFGS-B")}. Default = \code{"BFGS"}.}
@@ -28,6 +33,11 @@ alignment. If not defined, then the full range is used.}
 
 \item{align}{The maximum shift that is allowed during initial 2theta
 alignment (degrees). Default = 0.1.}
+
+\item{manual_align}{A logical opertator denoting whether to optimise the alignment within the
+negative/position 2theta range defined in the \code{align} arugment, or to use the specified
+value of the \code{align} argument for alignment of the sample to the standards. Default
+= \code{FALSE}, i.e. alignment is optimised.}
 
 \item{shift}{The maximum shift (degrees 2theta) that is allowed during the grid search phases selected
 from the non-negative least squares. Default = 0.05).}

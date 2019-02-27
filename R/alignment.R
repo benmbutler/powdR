@@ -13,7 +13,13 @@
 
 #Align XRPD data
 .xrd_align <- function(smpl, standard,
-                       xmin, xmax, xshift) {
+                       xmin, xmax, xshift, manual) {
+
+  #if manual == FALSE then make sure the xshift is an absolute valune
+  if (manual == FALSE) {
+
+  xshift <- abs(xshift)
+
 
   #Shorten the data to account for the xmin and xmax used during alignment
   standard_short <- standard[which(standard[[1]] > xmin &
@@ -42,6 +48,12 @@
 
   #extract the optimised shift (i.e. what to add/subtract from the sample 2theta)
   smpl_optim <- smpl_optim_out$par
+
+  } else {
+
+  smpl_optim <- xshift
+
+  }
 
   #shift the pattern
   smpl_aligned <- smpl

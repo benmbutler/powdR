@@ -101,6 +101,9 @@ afps <- function(lib, ...) {
 #' @param lib A \code{powdRlib} object representing the reference library. Created using the
 #' \code{powdRlib} constructor function.
 #' @param smpl A data frame. First column is 2theta, second column is counts
+#' @param harmonise logical parameter defining whether to harmonise the \code{lib} and \code{smpl}.
+#' Default = \code{TRUE}. Harmonises to the intersecting 2theta range at the coarsest resolution
+#' available.
 #' @param solver The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
 #' "CG" or "L-BFGS-B")}. Default = \code{"BFGS"}.
 #' @param obj The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
@@ -112,6 +115,10 @@ afps <- function(lib, ...) {
 #' alignment. If not defined, then the full range is used.
 #' @param align The maximum shift that is allowed during initial 2theta
 #' alignment (degrees). Default = 0.1.
+#' @param manual_align A logical opertator denoting whether to optimise the alignment within the
+#' negative/position 2theta range defined in the \code{align} arugment, or to use the specified
+#' value of the \code{align} argument for alignment of the sample to the standards. Default
+#' = \code{FALSE}, i.e. alignment is optimised.
 #' @param shift The maximum shift (degrees 2theta) that is allowed during the grid search phases selected
 #' from the non-negative least squares. Default = 0.05).
 #' @param shift_res A single integer defining the increase in resolution used during grid search shifting. Higher
@@ -199,9 +206,16 @@ afps <- function(lib, ...) {
 #' Eberl, D.D., 2003. User's guide to ROCKJOCK - A program for determining quantitative mineralogy from
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
-afps.powdRlib <- function(lib, smpl, solver, obj, std,
-                         tth_align, align, shift, shift_res, tth_fps, lod,
+afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std,
+                         tth_align, align, manual_align, shift, shift_res, tth_fps, lod,
                          amorphous, amorphous_lod, ...) {
+
+  if (missing(harmonise)) {
+
+    cat("\n-Setting harmonise to default of TRUE")
+    harmonise <- TRUE
+
+  }
 
   #If amorphous is misssing then set it to an empty vector
   if(missing(amorphous)) {
@@ -219,6 +233,18 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
   if(missing(align)) {
     cat("\n-Using default alignment of 0.1")
     align = 0.1
+  }
+
+  if(missing(manual_align)) {
+
+    manual_align <- FALSE
+
+  }
+
+  if(!is.logical(manual_align)) {
+
+    stop("The manual_align argument must be logical")
+
   }
 
   #If solver is missing then set it to BFGS
@@ -258,10 +284,6 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
     amorphous_lod = 0
   }
 
-  #Ensure that the align is greater than 0.
-  if (align < 0) {
-    stop("The align argument must be greater than or equal to 0")
-  }
 
   #Ensure that the lod is greater than 0.
   if (lod <= 0) {
@@ -269,7 +291,7 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
   }
 
   #Create a warning message if the shift is greater than 0.5, since this can confuse the optimisation
-  if (align > 0.5) {
+  if (align > 0.5 & manual_align == FALSE) {
     warning("Be cautious of large 2theta shifts. These can cause issues in sample alignment.")
   }
 
@@ -294,18 +316,28 @@ afps.powdRlib <- function(lib, smpl, solver, obj, std,
     names(lib$xrd) <- lib$phases$phase_id
   }
 
+  #Harmonise libraries
+  if (harmonise == TRUE & !identical(lib$tth, smpl[[1]])) {
+
+    harmonised <- .harmoniser(lib = lib, smpl = smpl)
+
+    smpl <- harmonised$smpl
+    lib <- harmonised$lib
+
+  }
 
   #align the data
-  if (align > 0) {
+  if (!align == 0) {
   cat("\n-Aligning sample to the internal standard")
   smpl <- .xrd_align(smpl = smpl,
                      standard = data.frame(tth = lib$tth,
                                            counts = lib$xrd[, which(lib$phases$phase_id == std)]),
                      xmin = tth_align[1],
-                     xmax = tth_align[2], xshift = align)
+                     xmax = tth_align[2], xshift = align,
+                     manual = manual_align)
 
   #If the alignment is close to the limit, provide a warning
-  if (sqrt(smpl[[1]]^2) > (align*0.95)) {
+  if (sqrt(smpl[[1]]^2) > (align*0.95) & manual_align == FALSE) {
     warning("The optimised shift used in alignment is equal to the maximum shift defined
             in the function call. We advise visual inspection of this alignment.")
   }

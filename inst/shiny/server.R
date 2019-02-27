@@ -371,7 +371,9 @@ shinyServer(function(input, output, session) {
     scu <- as.character(selectPHASESupdate())
 
     updateSelectInput(session, "selectINT",
-                      label = paste("Choose an internal standard for peak alignment."),
+                      label = paste("Choose an internal standard for peak alignment. If the manual alignment
+                                   box below is ticked, then this internal standard is not used and instead
+                                   the sample is aligned by the amount selected in the alignment slider."),
                       choices = scu,
                       selected = head(scu, 1))
 
@@ -406,10 +408,31 @@ shinyServer(function(input, output, session) {
     if(!is.null(input$loadLIB)) {
       xrd_uploaded <- as.list(filedata3())
       updateSliderInput(session = session, inputId = "tth",
-                        min = round(min(as.numeric(xrd_uploaded[[2]])) + input$align, 2),
-                        max = round(max(as.numeric(xrd_uploaded[[2]])) - input$align, 2),
-                        value = c(round(min(as.numeric(xrd_uploaded[[2]])) + input$align, 2),
-                                  round(max(as.numeric(xrd_uploaded[[2]])) - input$align, 2)))
+                        min = round(min(as.numeric(xrd_uploaded[[2]])) + input$align_fps, 2),
+                        max = round(max(as.numeric(xrd_uploaded[[2]])) - input$align_fps, 2),
+                        value = c(round(min(as.numeric(xrd_uploaded[[2]])) + input$align_fps, 2),
+                                  round(max(as.numeric(xrd_uploaded[[2]])) - input$align_fps, 2)))
+    }
+
+  })
+
+  #Use the tickbox to adjust the alignment slider
+  observe({
+
+    if(input$align_man_fps == TRUE) {
+
+      updateSliderInput(session = session, inputId = "align_fps",
+                        min = -0.5,
+                        max = 0.5,
+                        value = 0)
+
+    } else {
+
+      updateSliderInput(session = session, inputId = "align_fps",
+                        min = 0,
+                        max = 0.5,
+                        value = 0.1)
+
     }
 
   })
@@ -429,8 +452,9 @@ shinyServer(function(input, output, session) {
         fps_out <- powdR::fps(smpl = smpl, lib = xrdlib2, tth_fps = input$tth,
                                   std = gsub(".*: ", "", input$selectINT),
                                   refs = gsub(".*: ", "", input$selectPHASES),
-                                  align = input$align,
-                                  shift = input$shift,
+                                  align = input$align_fps,
+                                  manual_align = input$align_man_fps,
+                                  shift = input$shift_fps,
                                   obj = input$selectOBJ,
                                   solver = input$selectSolver,
                                   remove_trace = input$remove_trace)
@@ -439,9 +463,10 @@ shinyServer(function(input, output, session) {
         fps_out <- powdR::fps(smpl = smpl, lib = xrdlib2, tth_fps = input$tth,
                               std = gsub(".*: ", "", input$selectINT),
                               refs = xrdlib2$phases$phase_id,
-                              align = input$align,
-                              shift = input$shift,
-                              obj = input$selectOBJ,
+                              align = input$align_fps,
+                              manual_align = input$align_man_fps,
+                              shift = input$shift_fps,
+                              obj = "Rwp",
                               solver = input$selectSolver,
                               remove_trace = input$remove_trace)
 
@@ -640,6 +665,28 @@ shinyServer(function(input, output, session) {
   })
 
 
+  #Use the tickbox to adjust the alignment slider
+  observe({
+
+    if(input$align_man_afps == TRUE) {
+
+      updateSliderInput(session = session, inputId = "align_afps",
+                        min = -0.5,
+                        max = 0.5,
+                        value = 0)
+
+    } else {
+
+      updateSliderInput(session = session, inputId = "align_afps",
+                        min = 0,
+                        max = 0.5,
+                        value = 0.1)
+
+    }
+
+  })
+
+
   #FULL PATTERN FITTING
 
   observe({
@@ -654,6 +701,7 @@ shinyServer(function(input, output, session) {
                               std = gsub(".*: ", "", input$selectINT_afps),
                               amorphous = gsub(".*: ", "", input$selectAMORPH_afps),
                               align = input$align_afps,
+                              manual_align = input$align_man_fps,
                               shift = input$shift_afps,
                               obj = input$selectOBJ_afps,
                               solver = input$selectSolver_afps,
