@@ -33,9 +33,6 @@
 #' # Load the soils data
 #' data(soils)
 #'
-#' #Since the reference library is relatively small,
-#' #the whole library can be used at once to get an
-#' #estimate of the phases within each sample.
 #' \dontrun{
 #' afps_sand <-  afps(lib = minerals,
 #'                  smpl = soils$sandstone,
@@ -154,9 +151,6 @@ afps <- function(lib, ...) {
 #' # Load the soils data
 #' data(soils)
 #'
-#' #Since the reference library is relatively small,
-#' #the whole library can be used at once to get an
-#' #estimate of the phases within each sample.
 #' \dontrun{
 #' afps_sand <-  afps(lib = minerals,
 #'                  smpl = soils$sandstone,
