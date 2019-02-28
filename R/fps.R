@@ -414,8 +414,8 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std,
     stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG', 'L-BFGS-B' or 'NNLS'")
   }
 
-  #If align is 0 and the standard is missing then it can be set to 'none'
-  if (align == 0 & missing(std)) {
+  #If align is 0 then the standard can be set to 'none'
+  if (align == 0 | manual_align == TRUE) {
 
     std <- "none"
 
