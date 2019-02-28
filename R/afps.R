@@ -67,6 +67,18 @@
 #'                      lod = 0.2,
 #'                      amorphous = "ORG",
 #'                      amorphous_lod = 1)
+#'
+#' #Automated quantification using the rockjock library
+#'
+#' data(rockjock)
+#' data(rockjock_mixtures)
+#'
+#' #This takes a few minutes to run
+#' rockjock_a1 <- afps(lib = rockjock,
+#'                     smpl = rockjock_mixtures$Mix1,
+#'                     std = "CORUNDUM",
+#'                     align = 0.3,
+#'                     lod = 1)
 #' }
 #' @references
 #' Chipera, S.J., Bish, D.L., 2013. Fitting Full X-Ray Diffraction Patterns for Quantitative Analysis:
@@ -185,6 +197,18 @@ afps <- function(lib, ...) {
 #'                      lod = 0.2,
 #'                      amorphous = "ORG",
 #'                      amorphous_lod = 1)
+#'
+#' #Automated quantification using the rockjock library
+#'
+#' data(rockjock)
+#' data(rockjock_mixtures)
+#'
+#' #This takes a few minutes to run
+#' rockjock_a1 <- afps(lib = rockjock,
+#'                     smpl = rockjock_mixtures$Mix1,
+#'                     std = "CORUNDUM",
+#'                     align = 0.3,
+#'                     lod = 1)
 #' }
 #' @references
 #' Bish, D.L., Post, J.E., 1989. Modern powder diffraction. Mineralogical Society of America.

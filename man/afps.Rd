@@ -44,9 +44,6 @@ data(minerals)
 # Load the soils data
 data(soils)
 
-#Since the reference library is relatively small,
-#the whole library can be used at once to get an
-#estimate of the phases within each sample.
 \dontrun{
 afps_sand <-  afps(lib = minerals,
                  smpl = soils$sandstone,
@@ -81,6 +78,18 @@ afps_soils <- lapply(soils, afps,
                      lod = 0.2,
                      amorphous = "ORG",
                      amorphous_lod = 1)
+
+#Automated quantification using the rockjock library
+
+data(rockjock)
+data(rockjock_mixtures)
+
+#This takes a few minutes to run
+rockjock_a1 <- afps(lib = rockjock,
+                    smpl = rockjock_mixtures$Mix1,
+                    std = "CORUNDUM",
+                    align = 0.3,
+                    lod = 1)
 }
 }
 \references{

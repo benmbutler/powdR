@@ -167,6 +167,22 @@
 #'                     std = "QUA.2",
 #'                     refs = minerals$phases$phase_id,
 #'                     align = 0.2)
+#'
+#' #Using the rockjock library:
+#'
+#' data(rockjock)
+#' data(rockjock_mixtures)
+#'
+#' rockjock_1 <- fps(lib = rockjock,
+#'                   smpl = rockjock_mixtures$Mix1,
+#'                   refs = c("ORDERED_MICROCLINE",
+#'                            "LABRADORITE",
+#'                            "KAOLINITE_DRY_BRANCH",
+#'                            "MONTMORILLONITE_WYO",
+#'                            "ILLITE_1M_RM30",
+#'                            "CORUNDUM"),
+#'                   std = "CORUNDUM",
+#'                   align = 0.3)
 #' }
 #' @references
 #' Chipera, S.J., Bish, D.L., 2013. Fitting Full X-Ray Diffraction Patterns for Quantitative Analysis:
@@ -276,6 +292,22 @@ fps <- function(lib, ...) {
 #'                     std = "QUA.2",
 #'                     refs = minerals$phases$phase_id,
 #'                     align = 0.2)
+#'
+#' #Using the rockjock library:
+#'
+#' data(rockjock)
+#' data(rockjock_mixtures)
+#'
+#' rockjock_1 <- fps(lib = rockjock,
+#'                   smpl = rockjock_mixtures$Mix1,
+#'                   refs = c("ORDERED_MICROCLINE",
+#'                            "LABRADORITE",
+#'                            "KAOLINITE_DRY_BRANCH",
+#'                            "MONTMORILLONITE_WYO",
+#'                            "ILLITE_1M_RM30",
+#'                            "CORUNDUM"),
+#'                   std = "CORUNDUM",
+#'                   align = 0.3)
 #' }
 #' @references
 #' Bish, D.L., Post, J.E., 1989. Modern powder diffraction. Mineralogical Society of America.
