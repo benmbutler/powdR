@@ -64,12 +64,15 @@
   #Now remove phases that are below detection limit
   remove_these_phases <- dfs_weighted$phase_name[which(dfs_weighted$phase_percent < all_lod)]
 
+  #Need to extract the amorphous names instead of the id's identified in the function call
+  amorphous_names <- lib$phases$phase_name[which(lib$phases$phase_id %in% amorphous)]
+
   #Take amorphous phases out of the remove_these_phases vector if the vector exists and if
   #it contains any amorphous phases
-  if (length(remove_these_phases) > 0 & length(which(remove_these_phases %in% amorphous)) > 0) {
+  if (length(remove_these_phases) > 0 & length(which(remove_these_phases %in% amorphous_names)) > 0) {
 
     #Make sure amorphous phases are retained
-    remove_these_phases <- remove_these_phases[-which(remove_these_phases %in% amorphous)]
+    remove_these_phases <- remove_these_phases[-which(remove_these_phases %in% amorphous_names)]
 
   }
 
