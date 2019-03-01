@@ -402,7 +402,7 @@ shinyUI(
                                     are estimated."),
                           sliderInput("lod_afps", label = NULL,
                                       min = 0.01, max = 5,
-                                      value = 0.1, step = 0.05),
+                                      value = 0.1, step = 0.01),
                           helpText("Remove amorphous phases below this limit (weight percent)"),
                           sliderInput("amorph_lod_afps", label = NULL,
                                       min = 0, max = 100,
