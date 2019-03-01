@@ -304,8 +304,8 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std,
 
 
   #Ensure that the lod is greater than 0.
-  if (lod <= 0) {
-    stop("The lod argument must be greater than 0")
+  if (lod < 0) {
+    stop("The lod argument must be equal to or greater than 0")
   }
 
   #Create a warning message if the shift is greater than 0.5, since this can confuse the optimisation
@@ -318,8 +318,22 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std,
     stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG' or 'L-BFGS-B'")
   }
 
+  #If align is 0 and lod isn't being used then the standard can be set to 'none'
+  if (manual_align == TRUE & lod == 0) {
+
+    std <- "none"
+
+  }
+
+  if (align == 0 & lod == 0) {
+
+    std <- "none"
+
+  }
+
+
   #Make sure that the phase identified as the internal standard is contained within the reference library
-  if (!std %in% lib$phases$phase_id) {
+  if (!std == "none" & !std %in% lib$phases$phase_id) {
     stop("The phase you have specified as the internal standard is not in the reference library")
   }
 
