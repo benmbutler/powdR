@@ -2,10 +2,15 @@
 
 ## New features
 
+*  `summarise_mineralogy` is a new function that creates a summary table from lists containing
+   multiple `powdRfps` and `powdRafps` objects.
+
 *  A comprehensive reference library of pure phases from the RockJock computer software is now
    provided as an example `powdRlib` object called `rockjock`. This library covers most clay,
    non-clay and amorphous phases that may be encountered in soil samples. The library can be
-   loaded into the global environment via `data(rockjock`).
+   loaded into the global environment via `data(rockjock)`. Data of synthetic mineral mixtures
+   are also now provided in the `rockjock_mixtures` data, which can be used to test the accuracy
+   of full pattern summation via the `fps()` and `afps()` functions. 
 
 *  `fps()` and `afps()` now accept "L-BFGS-B" in the `solver` argument. If selected, this uses
    L-BFGS-B optimisation constrained so that parameters cannot be lower than zero.
@@ -18,6 +23,14 @@
    the increase in resolution used during grid search shifting. Higher values facilitate finer
    shifts at the expense of longer computation. If not defined in the function call it defaults
    to 4.
+   
+*  `fps()` and `afps()` now have a logical `manual_align` argument which specifies whether to
+   manually align the sample to the value specified in the `align` argument (`manual_align = TRUE`),
+   or optimise the alignment based on a maximum shift defined in the `align` argument 
+   (`manual_align = FALSE`).
+   
+*  `fps()` and `afps()` now have a logical `harmonise` argument which specifies whether to
+   automatically harmonise the sample and library onto the same 2theta scale via linear interpolation.
 
 *  The `lod` argument of `afps()`, now simply represents an estimate of the limit of detection of
    the selected internal standard defined by the `std` argument. The function then uses the reference
