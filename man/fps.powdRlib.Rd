@@ -5,8 +5,8 @@
 \title{Full pattern summation}
 \usage{
 \method{fps}{powdRlib}(lib, smpl, harmonise, solver, obj, refs, std,
-  tth_align, align, manual_align, tth_fps, shift, shift_res, remove_trace,
-  ...)
+  std_conc, tth_align, align, manual_align, tth_fps, shift, shift_res,
+  remove_trace, ...)
 }
 \arguments{
 \item{lib}{A \code{powdRlib} object representing the reference library. Created using the
@@ -31,6 +31,10 @@ The ID's must match ID's in the \code{lib$phases$phase_id} column.}
 
 \item{std}{The phase ID (e.g. "QUA.1") to be used as internal
 standard. Must match an ID provided in the \code{phases} parameter.}
+
+\item{std_conc}{The concentration of the internal standard (if known) in weight percent. If
+unknown then use \code{std_conc = NA}, in which case it will be assumed that all phases sum
+to 100 percent (default).}
 
 \item{tth_align}{A vector defining the minimum and maximum 2theta values to be used during
 alignment. If not defined, then the full range is used.}

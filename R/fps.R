@@ -104,6 +104,71 @@
   return(out)
 }
 
+.qminerals2 <- function(x, xrd_lib, std, std_conc) {
+
+  #Make sure x is ordered if there are more than 1 phases in the library
+  if (length(x) > 1) {
+    x <- x[order(names(x))]
+  }
+
+  #Get the name of the internal standard
+  std_name <- xrd_lib$phases$phase_name[which(xrd_lib$phases$phase_id == std)]
+
+  #Extract all the ids of potential standard patterns
+  std_ids <- xrd_lib$phases$phase_id[which(xrd_lib$phases$phase_name == std_name)]
+
+  if (!std %in% names(x)) {
+
+    stop("\n-The phases specified as the std is not present. Cannot compute
+         phase concentrations.")
+
+  }
+
+  #Get the scaling parameter of x
+  std_x <- x[which(names(x) == std)]
+
+  #Remove any internal standard patterns from x
+  x <- x[-which(names(x) %in% std_ids)]
+
+  #Restrict the xrd library to phases within the names of fpf_pc
+  minerals <- xrd_lib$phases
+
+  std_rir <- minerals$rir[which(minerals$phase_id == std)]
+
+  minerals <- minerals[which(minerals$phase_id %in% names(x)),]
+
+  #Order to the same as fpf_pc
+  if (length(x) > 1) {
+    minerals <- minerals[order(minerals$phase_id),]
+  }
+
+  min_percent <- c()
+
+  for (i in 1:length(x)) {
+
+    min_percent[i] <- (std_conc/(minerals$rir[i]/std_rir)) * (x[i]/std_x) * (1+(std_conc/100))
+
+    #names(min_percent)[i] <- minerals$phase_id[i]
+
+  }
+
+  df <- data.frame(minerals, "phase_percent" = min_percent)
+  row.names(df) = c(1:nrow(df))
+
+  #Summarise by summing the concentrations from each mineral group
+
+  dfs <- data.frame(stats::aggregate(phase_percent ~ phase_name, data = df, FUN = sum),
+                    stringsAsFactors = FALSE)
+
+  #Ensure that the phase concentrations are rounded to 4 dp
+  df$phase_percent <- round(df$phase_percent, 4)
+  dfs$phase_percent <- round(dfs$phase_percent, 4)
+
+  out <- list("df" = df, "dfs" = dfs)
+
+  return(out)
+}
+
 
 #' Full pattern summation
 #'
@@ -226,6 +291,9 @@ fps <- function(lib, ...) {
 #' The ID's must match ID's in the \code{lib$phases$phase_id} column.
 #' @param std The phase ID (e.g. "QUA.1") to be used as internal
 #' standard. Must match an ID provided in the \code{phases} parameter.
+#' @param std_conc The concentration of the internal standard (if known) in weight percent. If
+#' unknown then use \code{std_conc = NA}, in which case it will be assumed that all phases sum
+#' to 100 percent (default).
 #' @param tth_align A vector defining the minimum and maximum 2theta values to be used during
 #' alignment. If not defined, then the full range is used.
 #' @param align The maximum shift that is allowed during initial 2theta
@@ -323,7 +391,7 @@ fps <- function(lib, ...) {
 #' Eberl, D.D., 2003. User's guide to ROCKJOCK - A program for determining quantitative mineralogy from
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
-fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std,
+fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
                 tth_align, align, manual_align, tth_fps, shift, shift_res, remove_trace, ...) {
 
   if (missing(harmonise)) {
@@ -332,6 +400,38 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std,
     harmonise <- TRUE
 
   }
+
+
+
+  if (missing(std_conc)) {
+
+    cat("\n-Using default std_conc of NA")
+    std_conc <- NA
+
+  }
+
+  if (!(is.numeric(std_conc) | is.na(std_conc))) {
+
+    stop("\n-The std_conc argument must either be NA or a numeric value greater than 0 and less than 100.")
+
+  }
+
+  if (is.numeric(std_conc)) {
+
+    if (missing(std)) {
+
+      stop("\n-Please define the std argument")
+
+    }
+
+    if(std_conc <= 0 | std_conc >= 100) {
+
+      stop("\n-The std_conc argument must either be NA or a numeric value greater than 0 and less than 100.")
+
+    }
+
+  }
+
 
   #If tth_align is missing then use the maximum tth range
   if(missing(tth_align)) {
@@ -660,7 +760,18 @@ resid_x <- smpl[, 2] - fitted_pattern
 
 #compute grouped phase concentrations
 cat("\n-Computing phase concentrations")
-min_concs <- .qminerals(x = x, xrd_lib = lib)
+
+if (is.na(std_conc)) {
+
+  cat("\n-Internal standard concentration unknown. Assuming phases sum to 100 %")
+  min_concs <- .qminerals(x = x, xrd_lib = lib)
+
+} else {
+
+  cat("\n-Using internal standard concentration of", std_conc, "% to compute phase concentrations")
+  min_concs <- .qminerals2(x = x, xrd_lib = lib, std = std, std_conc = std_conc)
+
+}
 
 #Extract mineral concentrations (df) and summarised mineral concentrations (dfs)
 df <- min_concs[[1]]
