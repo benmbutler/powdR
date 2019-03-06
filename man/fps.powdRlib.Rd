@@ -136,6 +136,21 @@ rockjock_1 <- fps(lib = rockjock,
                            "CORUNDUM"),
                   std = "CORUNDUM",
                   align = 0.3)
+
+#Alternatively you can specify the internal standard
+#concentration if known:
+rockjock_1s <- fps(lib = rockjock,
+                 smpl = rockjock_mixtures$Mix1,
+                 refs = c("ORDERED_MICROCLINE",
+                          "LABRADORITE",
+                          "KAOLINITE_DRY_BRANCH",
+                          "MONTMORILLONITE_WYO",
+                          "ILLITE_1M_RM30",
+                          "CORUNDUM"),
+                 std = "CORUNDUM",
+                 std_conc = 20,
+                 align = 0.3)
+
 }
 }
 \references{

@@ -90,6 +90,16 @@ rockjock_a1 <- afps(lib = rockjock,
                     std = "CORUNDUM",
                     align = 0.3,
                     lod = 1)
+
+#Quantifying the same sample but defining the internal standard
+#concentration (also takes a few minutes to run):
+rockjock_a1s <- afps(lib = rockjock,
+                     smpl = rockjock_mixtures$Mix1,
+                     std = "CORUNDUM",
+                     std_conc = 20,
+                     align = 0.3,
+                     lod = 1)
+
 }
 }
 \references{

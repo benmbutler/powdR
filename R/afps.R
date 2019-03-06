@@ -79,6 +79,16 @@
 #'                     std = "CORUNDUM",
 #'                     align = 0.3,
 #'                     lod = 1)
+#'
+#' #Quantifying the same sample but defining the internal standard
+#' #concentration (also takes a few minutes to run):
+#' rockjock_a1s <- afps(lib = rockjock,
+#'                      smpl = rockjock_mixtures$Mix1,
+#'                      std = "CORUNDUM",
+#'                      std_conc = 20,
+#'                      align = 0.3,
+#'                      lod = 1)
+#'
 #' }
 #' @references
 #' Chipera, S.J., Bish, D.L., 2013. Fitting Full X-Ray Diffraction Patterns for Quantitative Analysis:
@@ -120,6 +130,9 @@ afps <- function(lib, ...) {
 #' for definitions of these functions.
 #' @param std The phase ID (e.g. "QUA.1") to be used as internal
 #' standard. Must match an ID provided in the \code{phases} parameter.
+#' @param std_conc The concentration of the internal standard (if known) in weight percent. If
+#' unknown then use \code{std_conc = NA}, in which case it will be assumed that all phases sum
+#' to 100 percent (default).
 #' @param tth_align A vector defining the minimum and maximum 2theta values to be used during
 #' alignment. If not defined, then the full range is used.
 #' @param align The maximum shift that is allowed during initial 2theta
@@ -209,6 +222,16 @@ afps <- function(lib, ...) {
 #'                     std = "CORUNDUM",
 #'                     align = 0.3,
 #'                     lod = 1)
+#'
+#' #Quantifying the same sample but defining the internal standard
+#' #concentration (also takes a few minutes to run):
+#' rockjock_a1s <- afps(lib = rockjock,
+#'                      smpl = rockjock_mixtures$Mix1,
+#'                      std = "CORUNDUM",
+#'                      std_conc = 20,
+#'                      align = 0.3,
+#'                      lod = 1)
+#'
 #' }
 #' @references
 #' Bish, D.L., Post, J.E., 1989. Modern powder diffraction. Mineralogical Society of America.
@@ -224,7 +247,7 @@ afps <- function(lib, ...) {
 #' Eberl, D.D., 2003. User's guide to ROCKJOCK - A program for determining quantitative mineralogy from
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
-afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std,
+afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, std_conc,
                          tth_align, align, manual_align, shift, shift_res, tth_fps, lod,
                          amorphous, amorphous_lod, ...) {
 
@@ -239,6 +262,35 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std,
   if(missing(amorphous)) {
     cat("\n-No amorphous phases identified")
     amorphous = c()
+  }
+
+  if (missing(std_conc)) {
+
+    cat("\n-Using default std_conc of NA")
+    std_conc <- NA
+
+  }
+
+  if (!(is.numeric(std_conc) | is.na(std_conc))) {
+
+    stop("\n-The std_conc argument must either be NA or a numeric value greater than 0 and less than 100.")
+
+  }
+
+  if (is.numeric(std_conc)) {
+
+    if (missing(std)) {
+
+      stop("\n-Please define the std argument")
+
+    }
+
+    if(std_conc <= 0 | std_conc >= 100) {
+
+      stop("\n-The std_conc argument must either be NA or a numeric value greater than 0 and less than 100.")
+
+    }
+
   }
 
   #If tth_align is missing then use the maximum tth range of the sample
@@ -540,9 +592,20 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std,
 
   cat("\n-Calculating detection limits")
 
+  if (is.na(std_conc)) {
+
   xrd_detectable <- .lod(x = x, lib = lib,
                           std = std, amorphous = amorphous,
                           lod = lod)
+
+  } else {
+
+  xrd_detectable <- .lod2(x = x, lib = lib,
+                          std = std, std_conc = std_conc,
+                          amorphous = amorphous,
+                          lod = lod)
+
+  }
 
   #Reoptimise if things have changed
   logical_reoptimise <- identical(x[order(names(x))], xrd_detectable[["x"]])
@@ -580,12 +643,23 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std,
   #Calculate mineral concentrations so that I can throw away any amorphous
   #phases below detection limit
 
+  if (is.na(std_conc)) {
+
   min_concs <- .qminerals(x = x, xrd_lib = lib)
+
+  } else {
+
+  min_concs <- .qminerals2(x = x, xrd_lib = lib,
+                           std = std, std_conc = std_conc)
+
+  }
 
   df <- min_concs[[1]]
   dfs <- min_concs[[2]]
 
   #Remove amorphous phases
+  if (is.na(std_conc)) {
+
   remove_amorphous_out <- .remove_amorphous(x = x,
                                             amorphous = amorphous,
                                             amorphous_lod = amorphous_lod,
@@ -594,6 +668,21 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std,
                                             solver = solver,
                                             smpl = smpl,
                                             obj = obj)
+
+  } else {
+
+  remove_amorphous_out <- .remove_amorphous2(x = x,
+                                             amorphous = amorphous,
+                                             amorphous_lod = amorphous_lod,
+                                             df = df,
+                                             lib = lib,
+                                             solver = solver,
+                                             smpl = smpl,
+                                             obj = obj,
+                                             std = std,
+                                             std_conc = std_conc)
+
+  }
 
   x <- remove_amorphous_out[[1]]
   lib <- remove_amorphous_out[[2]]
@@ -611,9 +700,20 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std,
 
   resid_x <- smpl[, 2] - fitted_pattern
 
-  #compute grouped phase concentrations
+  #compute phase concentrations
   cat("\n-Computing phase concentrations")
-  min_concs <- .qminerals(x = x, xrd_lib = lib)
+
+  if (is.na(std_conc)) {
+
+    cat("\n-Internal standard concentration unknown. Assuming phases sum to 100 %")
+    min_concs <- .qminerals(x = x, xrd_lib = lib)
+
+  } else {
+
+    cat("\n-Using internal standard concentration of", std_conc, "% to compute phase concentrations")
+    min_concs <- .qminerals2(x = x, xrd_lib = lib, std = std, std_conc = std_conc)
+
+  }
 
   #Extract mineral concentrations (df) and summarised mineral concentrations (dfs)
   df <- min_concs[[1]]

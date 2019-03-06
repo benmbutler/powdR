@@ -117,24 +117,29 @@
   #Extract all the ids of potential standard patterns
   std_ids <- xrd_lib$phases$phase_id[which(xrd_lib$phases$phase_name == std_name)]
 
-  if (!std %in% names(x)) {
+  id_match <- which(names(x) %in% std_ids)
 
-    stop("\n-The phases specified as the std is not present. Cannot compute
+  if (length(id_match) < 1) {
+
+    stop("\n-The phase specified as the std is not present. Cannot compute
          phase concentrations.")
 
   }
 
   #Get the scaling parameter of x
-  std_x <- x[which(names(x) == std)]
+  std_x <- sum(x[which(names(x) %in% std_ids)])
+
+  minerals <- xrd_lib$phases
+  minerals <- minerals[which(minerals$phase_id %in% names(x)),]
+
+  #Calculate a weighted average rir
+  std_rir <- sum((minerals$rir[which(minerals$phase_id %in% std_ids)]/
+             std_x) * x[which(names(x) %in% std_ids)])
 
   #Remove any internal standard patterns from x
   x <- x[-which(names(x) %in% std_ids)]
 
   #Restrict the xrd library to phases within the names of fpf_pc
-  minerals <- xrd_lib$phases
-
-  std_rir <- minerals$rir[which(minerals$phase_id == std)]
-
   minerals <- minerals[which(minerals$phase_id %in% names(x)),]
 
   #Order to the same as fpf_pc
@@ -248,6 +253,21 @@
 #'                            "CORUNDUM"),
 #'                   std = "CORUNDUM",
 #'                   align = 0.3)
+#'
+#' #Alternatively you can specify the internal standard
+#' #concentration if known:
+#' rockjock_1s <- fps(lib = rockjock,
+#'                  smpl = rockjock_mixtures$Mix1,
+#'                  refs = c("ORDERED_MICROCLINE",
+#'                           "LABRADORITE",
+#'                           "KAOLINITE_DRY_BRANCH",
+#'                           "MONTMORILLONITE_WYO",
+#'                           "ILLITE_1M_RM30",
+#'                           "CORUNDUM"),
+#'                  std = "CORUNDUM",
+#'                  std_conc = 20,
+#'                  align = 0.3)
+#'
 #' }
 #' @references
 #' Chipera, S.J., Bish, D.L., 2013. Fitting Full X-Ray Diffraction Patterns for Quantitative Analysis:
@@ -376,6 +396,21 @@ fps <- function(lib, ...) {
 #'                            "CORUNDUM"),
 #'                   std = "CORUNDUM",
 #'                   align = 0.3)
+#'
+#' #Alternatively you can specify the internal standard
+#' #concentration if known:
+#' rockjock_1s <- fps(lib = rockjock,
+#'                  smpl = rockjock_mixtures$Mix1,
+#'                  refs = c("ORDERED_MICROCLINE",
+#'                           "LABRADORITE",
+#'                           "KAOLINITE_DRY_BRANCH",
+#'                           "MONTMORILLONITE_WYO",
+#'                           "ILLITE_1M_RM30",
+#'                           "CORUNDUM"),
+#'                  std = "CORUNDUM",
+#'                  std_conc = 20,
+#'                  align = 0.3)
+#'
 #' }
 #' @references
 #' Bish, D.L., Post, J.E., 1989. Modern powder diffraction. Mineralogical Society of America.
@@ -758,7 +793,7 @@ fitted_pattern <- apply(sweep(as.matrix(lib$xrd), 2, x, "*"), 1, sum)
 
 resid_x <- smpl[, 2] - fitted_pattern
 
-#compute grouped phase concentrations
+#compute phase concentrations
 cat("\n-Computing phase concentrations")
 
 if (is.na(std_conc)) {

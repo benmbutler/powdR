@@ -4,9 +4,9 @@
 \alias{afps.powdRlib}
 \title{Automated full pattern summation}
 \usage{
-\method{afps}{powdRlib}(lib, smpl, harmonise, solver, obj, std, tth_align,
-  align, manual_align, shift, shift_res, tth_fps, lod, amorphous,
-  amorphous_lod, ...)
+\method{afps}{powdRlib}(lib, smpl, harmonise, solver, obj, std, std_conc,
+  tth_align, align, manual_align, shift, shift_res, tth_fps, lod,
+  amorphous, amorphous_lod, ...)
 }
 \arguments{
 \item{lib}{A \code{powdRlib} object representing the reference library. Created using the
@@ -27,6 +27,10 @@ for definitions of these functions.}
 
 \item{std}{The phase ID (e.g. "QUA.1") to be used as internal
 standard. Must match an ID provided in the \code{phases} parameter.}
+
+\item{std_conc}{The concentration of the internal standard (if known) in weight percent. If
+unknown then use \code{std_conc = NA}, in which case it will be assumed that all phases sum
+to 100 percent (default).}
 
 \item{tth_align}{A vector defining the minimum and maximum 2theta values to be used during
 alignment. If not defined, then the full range is used.}
@@ -138,6 +142,16 @@ rockjock_a1 <- afps(lib = rockjock,
                     std = "CORUNDUM",
                     align = 0.3,
                     lod = 1)
+
+#Quantifying the same sample but defining the internal standard
+#concentration (also takes a few minutes to run):
+rockjock_a1s <- afps(lib = rockjock,
+                     smpl = rockjock_mixtures$Mix1,
+                     std = "CORUNDUM",
+                     std_conc = 20,
+                     align = 0.3,
+                     lod = 1)
+
 }
 }
 \references{
