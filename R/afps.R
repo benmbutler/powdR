@@ -25,6 +25,7 @@
 #' \item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 #' All patterns have been weighted according to the coefficients used in the fit}
 #' \item{coefficients}{a named vector of coefficients used to produce the fitted pattern}
+#' \item{inputs}{a list of input arguments used in the function call}
 #'
 #' @examples
 #' #Load the minerals library
@@ -168,6 +169,7 @@ afps <- function(lib, ...) {
 #' \item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 #' All patterns have been weighted according to the coefficients used in the fit}
 #' \item{coefficients}{a named vector of coefficients used to produce the fitted pattern}
+#' \item{inputs}{a list of input arguments used in the function call}
 #'
 #' @examples
 #' #Load the minerals library

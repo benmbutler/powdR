@@ -200,6 +200,7 @@
 #' \item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 #' All patterns have been weighted according to the coefficients used in the fit}
 #' \item{coefficients}{a named vector of coefficients used to produce the fitted pattern}
+#' \item{inputs}{a list of input arguments used in the function call}
 #'
 #' @examples
 #' #Load the minerals library
@@ -343,6 +344,7 @@ fps <- function(lib, ...) {
 #' \item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 #' All patterns have been weighted according to the coefficients used in the fit}
 #' \item{coefficients}{a named vector of coefficients used to produce the fitted pattern}
+#' \item{inputs}{a list of input arguments used in the function call}
 #'
 #' @examples
 #' #Load the minerals library
@@ -532,6 +534,12 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
   if(missing(obj) & solver == "NNLS" & shift > 0) {
     cat("\n-Using Rwp to optimise shifts when applying grid search")
     obj = "Rwp"
+  }
+
+  #But if obj definitely isn't needed then set it to NULL
+  if(missing(obj) & solver == "NNLS" & shift == 0) {
+    cat("\n-Setting obj to NULL")
+    obj = NULL
   }
 
   #Create a warning message if the shift is greater than 0.5, since this can confuse the optimisation
