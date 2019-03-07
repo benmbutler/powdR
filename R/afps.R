@@ -255,20 +255,18 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, std_conc,
 
   if (missing(harmonise)) {
 
-    cat("\n-Setting harmonise to default of TRUE")
     harmonise <- TRUE
 
   }
 
   #If amorphous is misssing then set it to an empty vector
   if(missing(amorphous)) {
-    cat("\n-No amorphous phases identified")
+
     amorphous = c()
   }
 
   if (missing(std_conc)) {
 
-    cat("\n-Using default std_conc of NA")
     std_conc <- NA
 
   }
@@ -297,13 +295,13 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, std_conc,
 
   #If tth_align is missing then use the maximum tth range of the sample
   if(missing(tth_align)) {
-    cat("\n-Using maximum tth range")
+
     tth_align = c(min(smpl[[1]]), max(smpl[[1]]))
   }
 
   #If align is missing then set it to default
   if(missing(align)) {
-    cat("\n-Using default alignment of 0.1")
+
     align = 0.1
   }
 
@@ -321,38 +319,38 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, std_conc,
 
   #If solver is missing then set it to BFGS
   if(missing(solver)) {
-    cat("\n-Using default solver of 'BFGS'")
+
     solver = "BFGS"
   }
 
   #If a solver other than NNLS is being used but the objective function
   #not defined, then used Rwp
   if(missing(obj) & solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
-    cat("\n-Using default objective function of 'Rwp'")
+
     obj = "Rwp"
   }
 
   #If shift is missing then set it to default
   if(missing(shift)) {
-    cat("\n-Using default shift of 0.05")
+
     shift = 0.05
   }
 
   #If shift_res is missing then set it to default
   if(missing(shift_res)) {
-    cat("\n-Using default shift_res of 4")
+
     shift_res = 4
   }
 
   #If lod is missing then set it to a default of 1
   if(missing(lod)) {
-    cat("\n-Using default lod of 0.1")
+
     lod = 0.1
   }
 
   #If amorphous_lod is missing, set it to 0
   if(missing(amorphous_lod)) {
-    cat("\n-Using default amorphous_lod of 0")
+
     amorphous_lod = 0
   }
 

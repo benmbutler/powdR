@@ -433,7 +433,6 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
   if (missing(harmonise)) {
 
-    cat("\n-Setting harmonise to default of TRUE")
     harmonise <- TRUE
 
   }
@@ -442,7 +441,6 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
   if (missing(std_conc)) {
 
-    cat("\n-Using default std_conc of NA")
     std_conc <- NA
 
   }
@@ -472,13 +470,13 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
   #If tth_align is missing then use the maximum tth range
   if(missing(tth_align)) {
-    cat("\n-Using maximum tth range")
+
     tth_align <- c(min(smpl[[1]]), max(smpl[[1]]))
   }
 
   #If align is missing then set it to default
   if(missing(align)) {
-    cat("\n-Using default alignment of 0.1")
+
     align = 0.1
   }
 
@@ -496,13 +494,13 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
   #If solver is missing then set it to BFGS
   if(missing(solver)) {
-    cat("\n-Using default solver of BFGS")
+
     solver = "BFGS"
   }
 
   #If shift is missing then set it to default
   if(missing(shift)) {
-    cat("\n-Using default shift of 0")
+
     shift = 0
   }
 
@@ -525,20 +523,20 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
   #If obj is not defined and needs to be, set it to Rwp
   if(missing(obj) & solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
-    cat("\n-Using default objective function of Rwp")
+
     obj = "Rwp"
   }
 
   #If obj is missing and NNLS is being used along with some shift
   #then set obj to Rwp
   if(missing(obj) & solver == "NNLS" & shift > 0) {
-    cat("\n-Using Rwp to optimise shifts when applying grid search")
+
     obj = "Rwp"
   }
 
   #But if obj definitely isn't needed then set it to NULL
   if(missing(obj) & solver == "NNLS" & shift == 0) {
-    cat("\n-Setting obj to NULL")
+
     obj = NULL
   }
 
