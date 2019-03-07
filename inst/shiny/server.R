@@ -323,6 +323,28 @@ shinyServer(function(input, output, session) {
 
   })
 
+  #Load the .xy sample file
+  filedata2 <- reactive({
+    infile2 <- input$loadXY
+    if (is.null(infile2)) {
+      # User has not uploaded a file yet
+      return(NULL)
+    }
+    read.csv(infile2$datapath, sep = " ", header = FALSE)
+  })
+
+  #If a library has been uploaded, then create a reactive library
+  filedata3 <- reactive({
+    infile3 <- input$loadLIB
+    if (is.null(infile3)) {
+      # User has not uploaded a file yet
+      return(NULL)
+    }
+    bar <- load(infile3$datapath)
+    fd3 <- get(bar)
+    return(fd3)
+  })
+
   output$selectOBJui <- renderUI({
     if (input$selectSolver == "NNLS") return(NULL)
 
@@ -379,28 +401,22 @@ shinyServer(function(input, output, session) {
 
   })
 
+  observe({
 
-  #Load the .xy sample file
-  filedata2 <- reactive({
-    infile2 <- input$loadXY
-    if (is.null(infile2)) {
-      # User has not uploaded a file yet
-      return(NULL)
-    }
-    read.csv(infile2$datapath, sep = " ", header = FALSE)
+    output$std_conc_box_fps_ui <- renderUI({
+      if (input$std_conc_check_fps == FALSE) return(NULL)
+
+      numericInput("std_conc_box_fps", label = "Define the internal standard concentration",
+                  min = 0.01,
+                  max = 99.99,
+                  value = 20,
+                  step = 0.01)
+
+    })
+
+
   })
 
-  #If a library has been uploaded, then create a reactive library
-  filedata3 <- reactive({
-    infile3 <- input$loadLIB
-    if (is.null(infile3)) {
-      # User has not uploaded a file yet
-      return(NULL)
-    }
-    bar <- load(infile3$datapath)
-    fd3 <- get(bar)
-    return(fd3)
-  })
 
   #Use the selected library to adjust the 2theta slider
   observe({
@@ -408,10 +424,10 @@ shinyServer(function(input, output, session) {
     if(!is.null(input$loadLIB)) {
       xrd_uploaded <- as.list(filedata3())
       updateSliderInput(session = session, inputId = "tth",
-                        min = round(min(as.numeric(xrd_uploaded[[2]])) + input$align_fps, 2),
-                        max = round(max(as.numeric(xrd_uploaded[[2]])) - input$align_fps, 2),
-                        value = c(round(min(as.numeric(xrd_uploaded[[2]])) + input$align_fps, 2),
-                                  round(max(as.numeric(xrd_uploaded[[2]])) - input$align_fps, 2)))
+                        min = round(min(as.numeric(xrd_uploaded[[2]])) + abs(input$align_fps), 2),
+                        max = round(max(as.numeric(xrd_uploaded[[2]])) - abs(input$align_fps), 2),
+                        value = c(round(min(as.numeric(xrd_uploaded[[2]])) + abs(input$align_fps), 2),
+                                  round(max(as.numeric(xrd_uploaded[[2]])) - abs(input$align_fps), 2)))
     }
 
   })
@@ -443,6 +459,16 @@ shinyServer(function(input, output, session) {
 
     fps_reactive <- eventReactive(input$goButton, {
 
+      if(input$std_conc_check_fps == FALSE) {
+
+        std_conc_fps <- NA
+
+      } else {
+
+        std_conc_fps <- input$std_conc_box_fps
+
+      }
+
       smpl <- filedata2()
 
         xrdlib2 <- as.list(filedata3())
@@ -451,6 +477,7 @@ shinyServer(function(input, output, session) {
 
         fps_out <- powdR::fps(smpl = smpl, lib = xrdlib2, tth_fps = input$tth,
                                   std = gsub(".*: ", "", input$selectINT),
+                                  std_conc = std_conc_fps,
                                   refs = gsub(".*: ", "", input$selectPHASES),
                                   align = input$align_fps,
                                   manual_align = input$align_man_fps,
@@ -462,6 +489,7 @@ shinyServer(function(input, output, session) {
 
         fps_out <- powdR::fps(smpl = smpl, lib = xrdlib2, tth_fps = input$tth,
                               std = gsub(".*: ", "", input$selectINT),
+                              std = std_conc_fps,
                               refs = xrdlib2$phases$phase_id,
                               align = input$align_fps,
                               manual_align = input$align_man_fps,
@@ -650,16 +678,55 @@ shinyServer(function(input, output, session) {
 
   })
 
+  #Insert a numeric input box if the internal standard conc is known
+  observe({
+
+    output$std_conc_box_afps_ui <- renderUI({
+      if (input$std_conc_check_afps == FALSE) return(NULL)
+
+      numericInput("std_conc_box_afps", label = "Define the internal standard concentration",
+                   min = 0.01,
+                   max = 99.99,
+                   value = 20,
+                   step = 0.01)
+
+    })
+
+
+  })
+
+  #Create a select input for force if the box is ticked
+  observe({
+
+    f_afps <- filedata3_afps()
+
+    f_afps <- f_afps[[3]]
+
+    output$force_afps_ui <- renderUI({
+      if (input$force_check_afps == FALSE) return(NULL)
+
+      selectInput(inputId = "force_afps",
+                  label = "Select the phases to be retained.",
+                  choices = paste0(f_afps[[2]], ": ", f_afps[[1]]),
+                  selected = NULL,
+                  multiple = TRUE,
+                  selectize = TRUE)
+    })
+
+
+  })
+
+
   #Use the selected library to adjust the 2theta sliders
   observe({
 
     if(!is.null(input$loadLIBafps)) {
       xrd_uploaded_afps <- as.list(filedata3_afps())
       updateSliderInput(session = session, inputId = "tth_afps",
-                        min = round(min(as.numeric(xrd_uploaded_afps[[2]])) + input$align_afps, 2),
-                        max = round(max(as.numeric(xrd_uploaded_afps[[2]])) - input$align_afps, 2),
-                        value = c(round(min(as.numeric(xrd_uploaded_afps[[2]])) + input$align_afps, 2),
-                                  round(max(as.numeric(xrd_uploaded_afps[[2]])) - input$align_afps, 2)))
+                        min = round(min(as.numeric(xrd_uploaded_afps[[2]])) + abs(input$align_afps), 2),
+                        max = round(max(as.numeric(xrd_uploaded_afps[[2]])) - abs(input$align_afps), 2),
+                        value = c(round(min(as.numeric(xrd_uploaded_afps[[2]])) + abs(input$align_afps), 2),
+                                  round(max(as.numeric(xrd_uploaded_afps[[2]])) - abs(input$align_afps), 2)))
     }
 
   })
@@ -693,12 +760,35 @@ shinyServer(function(input, output, session) {
 
     afps_reactive <- eventReactive(input$goButton_afps, {
 
+      #Define whether the internal standard is known or not
+      if(input$std_conc_check_afps == FALSE) {
+
+        std_conc_afps <- NA
+
+      } else {
+
+        std_conc_afps <- input$std_conc_box_afps
+
+      }
+
+      if(input$force_check_afps == FALSE) {
+
+        force_afps_selected <- c()
+
+      } else {
+
+        force_afps_selected <- input$force_afps
+
+      }
+
       smpl_afps <- filedata2_afps()
 
       xrdlib2_afps <- filedata3_afps()
 
         afps_out <- powdR::afps(lib = xrdlib2_afps, smpl = smpl_afps, tth_fps = input$tth_afps,
                               std = gsub(".*: ", "", input$selectINT_afps),
+                              std_conc = std_conc_afps,
+                              force = gsub(".*: ", "", force_afps_selected),
                               amorphous = gsub(".*: ", "", input$selectAMORPH_afps),
                               align = input$align_afps,
                               manual_align = input$align_man_fps,
