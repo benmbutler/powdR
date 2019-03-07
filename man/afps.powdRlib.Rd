@@ -4,8 +4,8 @@
 \alias{afps.powdRlib}
 \title{Automated full pattern summation}
 \usage{
-\method{afps}{powdRlib}(lib, smpl, harmonise, solver, obj, std, std_conc,
-  tth_align, align, manual_align, shift, shift_res, tth_fps, lod,
+\method{afps}{powdRlib}(lib, smpl, harmonise, solver, obj, std, force,
+  std_conc, tth_align, align, manual_align, shift, shift_res, tth_fps, lod,
   amorphous, amorphous_lod, ...)
 }
 \arguments{
@@ -27,6 +27,9 @@ for definitions of these functions.}
 
 \item{std}{The phase ID (e.g. "QUA.1") to be used as internal
 standard. Must match an ID provided in the \code{phases} parameter.}
+
+\item{force}{An optional string of phase ID's specifying which phases should not be forced to
+remain throughout the automated full pattern summation.}
 
 \item{std_conc}{The concentration of the internal standard (if known) in weight percent. If
 unknown then use \code{std_conc = NA}, in which case it will be assumed that all phases sum

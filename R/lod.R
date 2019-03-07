@@ -30,7 +30,13 @@
 }
 
 
-.lod <- function(x, lib, std, amorphous, lod) {
+.lod <- function(x, lib, std, amorphous, lod, force) {
+
+  if(missing(force)) {
+
+    force <- c()
+
+  }
 
   #quantify minerals
   quant <- .qminerals(x = x, xrd_lib = lib)
@@ -67,12 +73,21 @@
   #Need to extract the amorphous names instead of the id's identified in the function call
   amorphous_names <- lib$phases$phase_name[which(lib$phases$phase_id %in% amorphous)]
 
+  force_names <- lib$phases$phase_name[which(lib$phases$phase_id %in% force)]
+
   #Take amorphous phases out of the remove_these_phases vector if the vector exists and if
   #it contains any amorphous phases
   if (length(remove_these_phases) > 0 & length(which(remove_these_phases %in% amorphous_names)) > 0) {
 
     #Make sure amorphous phases are retained
     remove_these_phases <- remove_these_phases[-which(remove_these_phases %in% amorphous_names)]
+
+  }
+
+  if (length(remove_these_phases) > 0 & length(which(remove_these_phases %in% force_names)) > 0) {
+
+    #Make sure amorphous phases are retained
+    remove_these_phases <- remove_these_phases[-which(remove_these_phases %in% force_names)]
 
   }
 
@@ -99,7 +114,13 @@
 
 
 
-.lod2 <- function(x, lib, std, std_conc, amorphous, lod) {
+.lod2 <- function(x, lib, std, std_conc, amorphous, lod, force) {
+
+  if(missing(force)) {
+
+    force <- c()
+
+  }
 
   #quantify minerals using the qminerals2 function, which automatically
   #excludes any phase associated with the internal standard
@@ -146,12 +167,21 @@
   #Need to extract the amorphous names instead of the id's identified in the function call
   amorphous_names <- lib$phases$phase_name[which(lib$phases$phase_id %in% amorphous)]
 
+  force_names <- lib$phases$phase_name[which(lib$phases$phase_id %in% force)]
+
   #Take amorphous phases out of the remove_these_phases vector if the vector exists and if
   #it contains any amorphous phases
   if (length(remove_these_phases) > 0 & length(which(remove_these_phases %in% amorphous_names)) > 0) {
 
     #Make sure amorphous phases are retained
     remove_these_phases <- remove_these_phases[-which(remove_these_phases %in% amorphous_names)]
+
+  }
+
+  if (length(remove_these_phases) > 0 & length(which(remove_these_phases %in% force_names)) > 0) {
+
+    #Make sure amorphous phases are retained
+    remove_these_phases <- remove_these_phases[-which(remove_these_phases %in% force_names)]
 
   }
 

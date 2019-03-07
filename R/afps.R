@@ -131,6 +131,8 @@ afps <- function(lib, ...) {
 #' for definitions of these functions.
 #' @param std The phase ID (e.g. "QUA.1") to be used as internal
 #' standard. Must match an ID provided in the \code{phases} parameter.
+#' @param force An optional string of phase ID's specifying which phases should not be forced to
+#' remain throughout the automated full pattern summation.
 #' @param std_conc The concentration of the internal standard (if known) in weight percent. If
 #' unknown then use \code{std_conc = NA}, in which case it will be assumed that all phases sum
 #' to 100 percent (default).
@@ -249,9 +251,15 @@ afps <- function(lib, ...) {
 #' Eberl, D.D., 2003. User's guide to ROCKJOCK - A program for determining quantitative mineralogy from
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
-afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, std_conc,
+afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, force, std_conc,
                          tth_align, align, manual_align, shift, shift_res, tth_fps, lod,
                          amorphous, amorphous_lod, ...) {
+
+  if (missing(force)) {
+
+    force <- c()
+
+  }
 
   if (missing(harmonise)) {
 
@@ -486,7 +494,7 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, std_conc,
   #--------------------------------------------
 
   cat("\n-Applying non-negative least squares")
-  nnls_out <- .xrd_nnls(xrd.lib = lib, xrd.sample = smpl[, 2])
+  nnls_out <- .xrd_nnls(xrd.lib = lib, xrd.sample = smpl[, 2], force = force)
 
   lib$xrd <- nnls_out$xrd.lib
   x <- nnls_out$x
@@ -523,7 +531,7 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, std_conc,
   #--------------------------------------------------------------------------------------------
 
   remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
-                                solver = solver, obj = obj)
+                                solver = solver, obj = obj, force = force)
 
   x <- remove_neg_out[[1]]
   lib <- remove_neg_out[[2]]
@@ -596,14 +604,16 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, std_conc,
 
   xrd_detectable <- .lod(x = x, lib = lib,
                           std = std, amorphous = amorphous,
-                          lod = lod)
+                          lod = lod,
+                         force = force)
 
   } else {
 
   xrd_detectable <- .lod2(x = x, lib = lib,
                           std = std, std_conc = std_conc,
                           amorphous = amorphous,
-                          lod = lod)
+                          lod = lod,
+                          force = force)
 
   }
 
@@ -690,7 +700,8 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, std_conc,
 
   #Remove negative parameters again because some can creep in late-on
   remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
-                                  solver = solver, obj = obj)
+                                  solver = solver, obj = obj,
+                                force = force)
 
   x <- remove_neg_out[[1]]
   lib <- remove_neg_out[[2]]
@@ -743,6 +754,7 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, std_conc,
                  "solver" = solver,
                  "obj" = obj,
                  "std" = std,
+                 "force" = force,
                  "std_conc" = std_conc,
                  "tth_align" = tth_align,
                  "align" = align,
