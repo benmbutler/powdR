@@ -828,11 +828,33 @@ if (ncol(xrd) == 1) {
   names(xrd) <- df$phase_id[1]
 }
 
+#Create a list of the input arguments
+inputs <- list("harmonise" = harmonise,
+               "solver" = solver,
+               "obj" = obj,
+               "refs" = refs,
+               "std" = std,
+               "std_conc" = std_conc,
+               "tth_align" = tth_align,
+               "align" = align,
+               "manual_align" = manual_align,
+               "tth_fps" = tth_fps,
+               "shift" = shift,
+               "shift_res" = shift_res,
+               "remove_trace" = remove_trace)
+
 
 #Define a list that becomes the function output
-out <- list(smpl[,1], unname(fitted_pattern), smpl[,2], unname(resid_x), df, dfs, R_fit, xrd, x)
-names(out) <- c("tth", "fitted", "measured", "residuals",
-                "phases", "phases_summary", "rwp", "weighted_pure_patterns", "coefficients")
+out <- list("tth" = smpl[,1],
+            "fitted" = unname(fitted_pattern),
+            "measured" = smpl[,2],
+            "residuals" = unname(resid_x),
+            "phases" = df,
+            "phases_summary" = dfs,
+            "rwp" = R_fit,
+            "weighted_pure_patterns" = xrd,
+            "coefficients" = x,
+            "inputs" = inputs)
 
 #Define the class
 class(out) <- "powdRfps"

@@ -736,6 +736,25 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, std_conc,
   }
 
 
+  #Define a list of the inputs
+
+  #Create a list of the input arguments
+  inputs <- list("harmonise" = harmonise,
+                 "solver" = solver,
+                 "obj" = obj,
+                 "std" = std,
+                 "std_conc" = std_conc,
+                 "tth_align" = tth_align,
+                 "align" = align,
+                 "manual_align" = manual_align,
+                 "shift" = shift,
+                 "shift_res" = shift_res,
+                 "tth_fps" = tth_fps,
+                 "lod" = lod,
+                 "amorphous" = amorphous,
+                 "amorphous_lod" = amorphous_lod)
+
+
   #Define a list that becomes the function output
   out <- list("tth" = smpl[,1],
               "fitted" = fitted_pattern,
@@ -745,7 +764,8 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, std_conc,
               "phases_summary" = dfs,
               "rwp" = R_fit,
               "weighted_pure_patterns" = xrd,
-              "coefficients" = x)
+              "coefficients" = x,
+              "inputs" = inputs)
 
   #Define the class
   class(out) <- "powdRafps"
