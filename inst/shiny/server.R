@@ -489,7 +489,7 @@ shinyServer(function(input, output, session) {
 
         fps_out <- powdR::fps(smpl = smpl, lib = xrdlib2, tth_fps = input$tth,
                               std = gsub(".*: ", "", input$selectINT),
-                              std = std_conc_fps,
+                              std_conc = std_conc_fps,
                               refs = xrdlib2$phases$phase_id,
                               align = input$align_fps,
                               manual_align = input$align_man_fps,
