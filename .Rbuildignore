@@ -3,4 +3,5 @@
 ^README\.Rmd$
 ^bibliography\.bib$
 ^cran-comments\.md$
+^tests\.R$
 ^\.travis\.yml$
