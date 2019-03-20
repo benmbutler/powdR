@@ -91,14 +91,14 @@ plot(fit, wavelength = "Cu")
 When including all these phases, pretty much all peaks are accounted for. Once the user is satisfied that an appropriate fit has been achieved, the mineral concentrations can be extracted and interpreted by looking at two elements of the output from `fps()`:
 
 - `fit$phases`
-- `fit$phases_summary`
+- `fit$phases_grouped`
 
 ```{r}
 #returns individual contributions from each reference pattern
 fit$phases
 
 #returns summed contributions from each mineral
-fit$phases_summary
+fit$phases_grouped
 ```
 
 All of the above and subsequent examples can be further tested using the two other XRPD measurements available in the `soils` list (`soils$limestone` and `soils$granite`), each representing soils with different mineralogies.

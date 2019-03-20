@@ -94,7 +94,7 @@
 #' \item{measured}{a vector of the original XRPD measurement (aligned)}
 #' \item{residuals}{a vector of the residuals (fitted vs measured)}
 #' \item{phases}{a dataframe of the phases used to produce the fitted pattern}
-#' \item{phases_summary}{the phases dataframe grouped by phase_name and summarised (sum)}
+#' \item{phases_grouped}{the phases dataframe grouped by phase_name and summed}
 #' \item{rwp}{the Rwp of the fitted vs measured pattern}
 #' \item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 #' All patterns have been weighted according to the coefficients used in the fit}
@@ -238,7 +238,7 @@ fps <- function(lib, ...) {
 #' \item{measured}{a vector of the original XRPD measurement (aligned)}
 #' \item{residuals}{a vector of the residuals (fitted vs measured)}
 #' \item{phases}{a dataframe of the phases used to produce the fitted pattern}
-#' \item{phases_summary}{the phases dataframe grouped by phase_name and summarised (sum)}
+#' \item{phases_grouped}{the phases dataframe grouped by phase_name and summed}
 #' \item{rwp}{the Rwp of the fitted vs measured pattern}
 #' \item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 #' All patterns have been weighted according to the coefficients used in the fit}
@@ -755,7 +755,7 @@ out <- list("tth" = smpl[,1],
             "measured" = smpl[,2],
             "residuals" = unname(resid_x),
             "phases" = df,
-            "phases_summary" = dfs,
+            "phases_grouped" = dfs,
             "rwp" = R_fit,
             "weighted_pure_patterns" = xrd,
             "coefficients" = x,

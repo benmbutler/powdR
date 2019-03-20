@@ -6,7 +6,7 @@
 #'
 #' @param x a list of \code{powdRfps} or \code{powdRafps} objects.
 #' @param type a string specifying whether the table uses all phase ID's, or
-#' summarises them according to the phase name. One of \code{"all"} or \code{"summary"}.
+#' summarises them according to the phase name. One of \code{"all"} or \code{"grouped"}.
 #' @param order a logical operator denoting whether the columns of the resulting summary
 #' table are ordered in descending order according to the summed abundance of each phase
 #' across the dataset.
@@ -31,7 +31,7 @@
 #'                             order = TRUE)
 #'
 #' sm2 <- summarise_mineralogy(multiple_afps,
-#'                             type = "all",
+#'                             type = "grouped",
 #'                             order = TRUE)
 #' }
 #' @export
@@ -75,7 +75,7 @@ if (length(stats::na.omit(names(x))) < length(x)) {
 
 if (missing(type)) {
 
-  stop("Please specify the type argument as one of 'all' or `summary`.")
+  stop("Please specify the type argument as one of 'all' or `grouped`.")
 
 }
 
@@ -91,16 +91,26 @@ if (!is.logical(order)) {
 
 }
 
-if (!type %in% c("all", "summary")) {
+if (!type %in% c("all", "grouped", "summary")) {
 
-  stop("The type argument must be one of 'all' or 'summary'.")
+  stop("The type argument must be one of 'all' or 'grouped'.")
+
+}
+
+if (type == "summary") {
+
+  warning("Use of 'summary' in the type argument has deprecated, please use 'grouped' instead.")
 
 }
 
 if (type == "all")  {
+
   mineralogy <- lapply(x, function(y) y$phases[c(1,4)])
+
 } else {
-  mineralogy <- lapply(x, function(y) y$phases_summary)
+
+  mineralogy <- lapply(x, function(y) y[[which(names(y) %in% c("phases_summary", "phases_grouped"))]])
+
 }
 
 #Rename columns and add sample ID as a column

@@ -901,7 +901,8 @@ shinyServer(function(input, output, session) {
 
       } else {
 
-        table_to_view <- results_plotter_load()$phases_summary
+        table_to_view_index <- which(names(results_plotter_load()) %in% c("phases_summary", "phases_grouped"))
+        table_to_view <- results_plotter_load()[[table_to_view_index]]
         table_to_view$phase_percent <- round(table_to_view$phase_percent, 2)
         table_to_view
       }

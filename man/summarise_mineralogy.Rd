@@ -10,7 +10,7 @@ summarise_mineralogy(x, type, order)
 \item{x}{a list of \code{powdRfps} or \code{powdRafps} objects.}
 
 \item{type}{a string specifying whether the table uses all phase ID's, or
-summarises them according to the phase name. One of \code{"all"} or \code{"summary"}.}
+summarises them according to the phase name. One of \code{"all"} or \code{"grouped"}.}
 
 \item{order}{a logical operator denoting whether the columns of the resulting summary
 table are ordered in descending order according to the summed abundance of each phase
@@ -42,7 +42,7 @@ sm1 <- summarise_mineralogy(multiple_afps,
                             order = TRUE)
 
 sm2 <- summarise_mineralogy(multiple_afps,
-                            type = "all",
+                            type = "grouped",
                             order = TRUE)
 }
 }
