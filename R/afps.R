@@ -267,6 +267,19 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, force, std_con
 
   }
 
+  if (!is.logical(harmonise)) {
+
+    stop("The harmonise argument must be logical")
+
+  }
+
+  if (harmonise == FALSE & !identical(lib$tth, smpl[[1]])) {
+
+    stop("The 2theta scale of the library and sample do not match. Try
+         setting the harmonise argument to TRUE")
+
+  }
+
   #If amorphous is misssing then set it to an empty vector
   if(missing(amorphous)) {
 

@@ -336,7 +336,18 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
   }
 
+  if (!is.logical(harmonise)) {
 
+    stop("The harmonise argument must be logical.")
+
+  }
+
+  if (harmonise == FALSE & !identical(lib$tth, smpl[[1]])) {
+
+    stop("The 2theta scale of the library and sample do not match. Try
+         setting the harmonise argument to TRUE.")
+
+  }
 
   if (missing(std_conc)) {
 
