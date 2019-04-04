@@ -1180,6 +1180,8 @@ shinyServer(function(input, output, session) {
      })
 
 
+     observe({
+
      #Export the mineral concentrations to a .csv file
      minout_editor <- fps_reactive_editor()
      minout_editor <- data.frame(minout_editor[["phases"]])
@@ -1222,6 +1224,8 @@ shinyServer(function(input, output, session) {
          save(list="fps_editor_output", file=con)
        }
      )
+
+     })
 
      })
 
