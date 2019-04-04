@@ -17,7 +17,8 @@ minerals
 }
 \description{
 This \code{powdRlib} object, built using the \code{powdRlib} constructor function,
-contains a range of measured XRPD data along with their reference intensity ratios.
-The library can be used with the \code{soils} example data for full pattern summation.
+contains a range of measured XRPD data (Cu K-alpha radiation) along with their reference
+intensity ratios. The library can be used with the \code{soils} example data for full
+pattern summation.
 }
 \keyword{datasets}

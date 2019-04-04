@@ -22,7 +22,18 @@
   if (!length(keep_tth_lib) == length(tth_lib)) {
 
     lib$tth <- lib$tth[keep_tth_lib]
+
+    if(ncol(lib$xrd) > 1) {
+
     lib$xrd <- lib$xrd[keep_tth_lib,]
+
+    } else {
+
+    phase_id_keep <- names(lib$xrd)
+    lib$xrd <- data.frame(lib$xrd[keep_tth_lib,])
+    names(lib$xrd) <- phase_id_keep
+
+    }
 
   }
 

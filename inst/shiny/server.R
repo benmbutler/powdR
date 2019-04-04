@@ -922,6 +922,310 @@ shinyServer(function(input, output, session) {
   })
 
 
+  #######################
+  #Results editor       #
+  #######################
+
+  #Create a recompute button in new results is selected
+
+
+  #Load the results
+    results_editor_load <- reactive({
+      infile_results_editor <- input$loadResults_editor
+      if (is.null(infile_results_editor)) {
+        # User has not uploaded a file yet
+        return(NULL)
+      }
+      bar <- load(infile_results_editor$datapath)
+      rpl <- get(bar)
+      return(rpl)
+    })
+
+
+  observe({
+
+
+    if(input$selectPLOTeditor == "Original results") {
+
+      if (!class(results_editor_load()) %in% c("powdRafps", "powdRfps")) {
+
+        return(NULL)
+
+      } else {
+
+      output$contents_editor <- shiny::renderDataTable({
+
+        table_to_view <- results_editor_load()$phases
+        table_to_view$phase_percent <- round(table_to_view$phase_percent, 2)
+        table_to_view
+
+      }, options = list(lengthMenu = c(10, 25, 50), pageLength = 10))
+
+
+      output$line_editor <- plotly::renderPlotly({
+
+        if(class(results_editor_load()) %in% c("powdRfps", "powdRafps")) {
+
+          plot(results_editor_load(), wavelength = input$selectWAVELENGTHeditor, interactive = TRUE)
+
+        } else {
+          return(NULL)
+        }
+
+      })
+
+
+      }
+
+    }
+
+  })
+
+  observe({
+
+  #If the thing uploaded is a powdRfps or powdRafps object then update the selection box
+    if(class(results_editor_load()) %in% c("powdRfps", "powdRafps")) {
+      updateSelectInput(session, "selectREMOVE_editor",
+                        label = NULL,
+                        choices = paste0(results_editor_load()[[5]][[2]], ": ", results_editor_load()[[5]][[1]]),
+                        selected = NULL)
+    }
+
+  })
+
+
+  #   #Load the results
+  results_editor_load_lib <- reactive({
+       infile_results_editor2 <- input$loadLib_editor
+       if (is.null(infile_results_editor2)) {
+         # User has not uploaded a file yet
+         return(NULL)
+       }
+       bar2 <- load(infile_results_editor2$datapath)
+       rpl2 <- get(bar2)
+       return(rpl2)
+     })
+
+
+     observe({
+
+     #If both items have been loaded correctly then update the selectADD box
+     if(class(results_editor_load_lib()) == "powdRlib" &
+        class(results_editor_load()) %in% c("powdRfps", "powdRafps")) {
+
+       #The selection needs to include all of the phases in the library that are not already in the results
+       phase_options <- results_editor_load_lib()[[3]][-which(results_editor_load_lib()[[3]][[1]] %in%
+                                                              results_editor_load()[[5]][[1]]),]
+
+       updateSelectInput(session, "selectADD_editor",
+                         label = NULL,
+                         choices = paste0(phase_options[[2]], ": ", phase_options[[1]]),
+                         selected = NULL)
+
+     }
+
+     selectSTDupdate <- reactive({
+
+       if(class(results_editor_load_lib()) == "powdRlib" &
+          class(results_editor_load()) %in% c("powdRfps", "powdRafps")) {
+
+         return(input$selectADD_editor)
+
+       } else {
+
+         return(c(""))
+
+       }
+
+     })
+
+     removeSTDupdate <- reactive({
+
+       if(class(results_editor_load_lib()) == "powdRlib" &
+          class(results_editor_load()) %in% c("powdRfps", "powdRafps")) {
+
+         return(input$selectREMOVE_editor)
+
+       } else {
+
+         return(c(""))
+
+       }
+
+     })
+
+
+     observe({
+
+     #Update the internal standard
+     if(class(results_editor_load_lib()) == "powdRlib" &
+        class(results_editor_load()) %in% c("powdRfps", "powdRafps")) {
+
+       added_phases <- as.character(selectSTDupdate())
+       removed_phases <- as.character(removeSTDupdate())
+
+       #The selection needs to include all of the phases in the library that are not already in the results
+       std_options <- c(paste0(results_editor_load()[[5]][[2]], ": ", results_editor_load()[[5]][[1]]),
+                        added_phases)
+
+       if(length(removed_phases) > 0) {
+
+         std_options <- std_options[-which(std_options %in% removed_phases)]
+
+       }
+
+       std_options <- std_options[order(std_options)]
+
+       updateSelectInput(session, "selectSTD_editor",
+                         label = NULL,
+                         choices = std_options,
+                         selected = NULL)
+
+     }
+
+     })
+
+     })
+
+
+
+     #Add the uioutput if standard concentration is known
+     output$std_conc_box_editor_ui <- renderUI({
+       if (input$std_conc_check_editor == FALSE) return(NULL)
+
+       numericInput("std_conc_box_editor", label = "Define the internal standard concentration",
+                    min = 0.01,
+                    max = 99.99,
+                    value = 20,
+                    step = 0.01)
+
+     })
+
+  #FULL PATTERN FITTING
+
+     observe({
+
+       fps_reactive_editor <- eventReactive(input$goButton_editor, {
+
+         if(input$std_conc_check_editor == FALSE) {
+
+           std_conc_editor <- NA
+
+         } else {
+
+           std_conc_editor <- input$std_conc_box_editor
+
+         }
+
+         added_phases2 <- as.character(input$selectADD_editor)
+         removed_phases2 <- as.character(input$selectREMOVE_editor)
+
+         #The selection needs to include all of the phases in the library that are not already in the results
+         phases2 <- c(paste0(results_editor_load()[[5]][[2]], ": ", results_editor_load()[[5]][[1]]),
+                          added_phases2)
+
+         if(length(removed_phases2) > 0) {
+
+           phases2 <- phases2[-which(phases2 %in% removed_phases2)]
+
+         }
+
+         smpl_editor <- data.frame("tth" = results_editor_load()[[1]],
+                            "counts" = results_editor_load()[[3]])
+
+         xrdlib_editor <- results_editor_load_lib()
+
+         fps_out <- powdR::fps(smpl = smpl_editor, lib = xrdlib_editor,
+                               harmonise = TRUE,
+                               std = gsub(".*: ", "", input$selectSTD_editor),
+                               std_conc = std_conc_editor,
+                               refs = gsub(".*: ", "", phases2),
+                               align = input$align_editor,
+                               manual_align = input$align_man_editor,
+                               shift = input$shift_editor,
+                               obj = input$selectOBJ_editor,
+                               solver = input$selectSolver_editor)
+
+       })
+
+
+     observe({
+
+
+       fps_out_editor <- fps_reactive_editor()
+
+       if (!input$selectPLOTeditor == "Original results") {
+
+       output$contents_editor <- renderDataTable({
+
+         fps_table_editor <- data.frame(fps_out_editor$phases)
+
+         fps_table_editor$phase_percent <- round(fps_table_editor$phase_percent, 2)
+
+         fps_table_editor
+
+       }, options = list(lengthMenu = c(5, 10, 15), pageLength = 10))
+
+
+
+       output$line_editor <- plotly::renderPlotly({
+
+         plot(fps_out_editor, wavelength = input$selectWAVELENGTHeditor, interactive = TRUE)
+
+       })
+
+       }
+
+
+     })
+
+
+     #Export the mineral concentrations to a .csv file
+     minout_editor <- fps_reactive_editor()
+     minout_editor <- data.frame(minout_editor[["phases"]])
+
+
+     output$download_mins_editor <- downloadHandler(
+
+       filename = function() {
+         paste("minerals-", Sys.Date(), ".csv", sep="")
+       },
+       content = function(file) {
+         write.table(minout_editor, file, sep = ",", col.names = TRUE, row.names = FALSE)
+       }
+     )
+
+     #Export the weighted patterns
+     fitout_editor <- fps_reactive_editor()
+     fitout_editor <- data.frame("TTH" = fitout_editor[["tth"]],
+                               "MEASURED" = fitout_editor[["measured"]],
+                               "FITTED" = fitout_editor[["fitted"]],
+                               fitout_editor[["weighted_pure_patterns"]])
+
+     output$download_fit_editor <- downloadHandler(
+
+       filename = function() {
+         paste("fit-", Sys.Date(), ".csv", sep="")
+       },
+       content = function(file) {
+         write.table(fitout_editor, file, sep = ",", col.names = TRUE, row.names = FALSE)
+       }
+     )
+
+     #Download the whole fps output as .Rdata format
+     output$download_editor <- downloadHandler(
+
+       filename = "fps_editor_output.Rdata",
+       content = function(con) {
+         assign("fps_editor_output", fps_reactive_editor())
+
+         save(list="fps_editor_output", file=con)
+       }
+     )
+
+     })
+
+
   session$onSessionEnded(function() {
     stopApp()
   })

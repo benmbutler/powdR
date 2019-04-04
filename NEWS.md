@@ -1,6 +1,9 @@
 # powdR 1.0.0.9000
 
 ## New features
+*  Outputs from `fps()` and `afps()` (`powdRfps` and `powdRafps` objects, respectively) contain
+   an `inputs` components which is a list of each of the arguments (including defaults) used to
+   produce the fit.
 
 *  `summarise_mineralogy` is a new function that creates a summary table from lists containing
    multiple `powdRfps` and `powdRafps` objects.
@@ -43,6 +46,9 @@
 
 *  The `run_powdR()` shiny app now contains a tab for subsetting a `powdRlib` object via `subset()`
    function. This replaces the background fitting tab previously available in `powdR` version 0.2.0.
+   
+*  The `run_powdR()` shiny app now contains a tab for editing results from `powdRfps` and `powdRafps`
+   objects.
    
 # powdR 0.2.0
 

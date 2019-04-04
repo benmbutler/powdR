@@ -14,6 +14,6 @@ with each dataframe containing two columns of:
 soils
 }
 \description{
-3 soil samples from different parent materials measured by XRPD
+3 soil samples from different parent materials measured by XRPD (Cu K-alpha radiation)
 }
 \keyword{datasets}

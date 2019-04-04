@@ -391,6 +391,8 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, force, std_con
     stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG' or 'L-BFGS-B'")
   }
 
+  if (is.na(std_conc)) {
+
   #If align is 0 and lod isn't being used then the standard can be set to 'none'
   if (manual_align == TRUE & lod == 0) {
 
@@ -401,6 +403,8 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, force, std_con
   if (align == 0 & lod == 0) {
 
     std <- "none"
+
+  }
 
   }
 

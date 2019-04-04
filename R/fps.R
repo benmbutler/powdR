@@ -465,10 +465,16 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
     stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG', 'L-BFGS-B' or 'NNLS'")
   }
 
-  #If align is 0 then the standard can be set to 'none'
+  #If there is no internal standard used in computing phase concentrations and
+  #align is 0 then the standard can be set to 'none'
+
+  if (is.na(std_conc)) {
+
   if (align == 0 | manual_align == TRUE) {
 
     std <- "none"
+
+  }
 
   }
 
@@ -478,15 +484,16 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
   }
 
   #subset lib according to the phases vector
-  lib$xrd <- lib$xrd[, which(lib$phases$phase_id %in% refs)]
+
+  lib$xrd <- lib$xrd[which(lib$phases$phase_id %in% refs)]
   lib$phases <- lib$phases[which(lib$phases$phase_id %in% refs), ]
 
 
   #if only one phase is being used, make sure it's a dataframe and named correctly
-  if (length(refs) == 1) {
-    lib$xrd <- data.frame("phase" = lib$xrd)
-    names(lib$xrd) <- refs
-  }
+  #if (length(refs) == 1) {
+  #  lib$xrd <- data.frame("phase" = lib$xrd)
+  #  names(lib$xrd) <- refs
+  #}
 
 
 #Harmonise libraries

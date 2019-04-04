@@ -369,6 +369,7 @@ shinyUI(
                           selectInput(inputId = "selectSolver_afps",
                                       label = NULL,
                                       choices = c("BFGS", "Nelder-Mead", "CG", "L-BFGS-B")),
+                          helpText("Choose the objective function to minimise"),
                           selectInput(inputId = "selectOBJ_afps",
                                       label = NULL,
                                       choices = c("Rwp", "R", "Delta")),
@@ -495,7 +496,113 @@ shinyUI(
                           plotlyOutput("results_plot", width = "auto", height = 800)
                         ))
                       )
-                      )
+                      ),
+            #################################
+            ## TAB 6: RESULTS EDITOR
+            #################################
+
+            tabPanel("Results Editor",
+                     fluidRow(
+                       column(3, wellPanel(
+                         h3("1. Load results to edit"),
+                         helpText("Must be .Rdata powdRfps or powdRafps object"),
+                         div(style="display: inline-block;vertical-align:top; width: 225px;",
+                             fileInput(inputId = "loadResults_editor",
+                                       label = NULL,
+                                       multiple = FALSE,
+                                       accept = c(".Rdata"))),
+                         h3("2. Load the reference library"),
+                         helpText("Must be a .Rdata powdRlib object of the library used to
+                                  produce the original results"),
+                         div(style="display: inline-block;vertical-align:top; width: 225px;",
+                             fileInput(inputId = "loadLib_editor",
+                                       label = NULL,
+                                       multiple = FALSE,
+                                       accept = ".Rdata")),
+                         h3("3. Select a solver"),
+                         helpText("Choose the optimisation routine"),
+                         selectInput(inputId = "selectSolver_editor",
+                                     label = NULL,
+                                     choices = c("BFGS", "Nelder-Mead", "CG", "L-BFGS-B", "NNLS"),
+                                     selected = "BFGS"),
+                         helpText("Choose the objective function to minimise"),
+                         selectInput(inputId = "selectOBJ_editor",
+                                     label = NULL,
+                                     choices = c("Rwp", "R", "Delta")),
+                         tags$hr(),
+                         h3("4. Select phases"),
+                         helpText("Select phases to remove from the original analysis"),
+                         selectInput(inputId = "selectREMOVE_editor",
+                                     label = NULL,
+                                     multiple = TRUE,
+                                     selectize = TRUE,
+                                     choices = c("")),
+                         helpText("Select phases from the library to add to the analysis"),
+                         selectInput(inputId = "selectADD_editor",
+                                     label = NULL,
+                                     multiple = TRUE,
+                                     selectize = TRUE,
+                                     choices = c("")),
+                         helpText("Select an internal standard"),
+                         selectInput(inputId = "selectSTD_editor",
+                                     label = NULL,
+                                     multiple = FALSE,
+                                     selectize = TRUE,
+                                     choices = c("")),
+                         checkboxInput("std_conc_check_editor",
+                                       label = "Is the internal standard concentration known?",
+                                       value = FALSE),
+                         uiOutput("std_conc_box_editor_ui"),
+                         tags$hr(),
+                         h3("5. Adjust fit parameters"),
+                         helpText("Adjust the alignment parameter"),
+                         checkboxInput("align_man_editor", label = "Manual alignment?",
+                                       value = FALSE),
+                         sliderInput("align_editor", label = NULL, min = 0,
+                                     max = 0.5,
+                                     value = c(0.1)),
+                         helpText("Adjust the grid-search shifting parameter"),
+                         sliderInput("shift_editor", label = NULL, min = 0,
+                                     max = 0.1,
+                                     value = c(0)),
+                         helpText(withMathJax("Adjust the 2\\(\\theta\\) range for
+                                              full pattern summation")),
+                         sliderInput("tth_editor", label = NULL,
+                                     min = 2, max = 75,
+                                     value = c(0, 100), step = 0.1),
+                         helpText("Select a wavelength to use when calculating d-spacings."),
+                         selectInput(inputId = "selectWAVELENGTHeditor",
+                                     label = NULL,
+                                     multiple = FALSE,
+                                     choices = list("Cu (1.54056 Angstroms)" = "Cu",
+                                                    "Co (1.78897 Angstroms)" = "Co"))
+                         )),
+                       column(9, wellPanel(
+                         h3("6. Full pattern summation"),
+                         selectInput(inputId = "selectPLOTeditor",
+                                     label = "Select whether the original results or new
+                                     results are plotted",
+                                     multiple = FALSE,
+                                     choices = list("Original results",
+                                                    "New results")),
+                         div(style="display: inline-block;vertical-align:bottom; width: 225px;",
+                             actionButton("goButton_editor", "Click to Recompute results")),
+                         div(style="display: inline-block;vertical-align:bottom; width: 325px;",
+                             helpText("Note: Computation may take several minutes.")),
+                         tags$hr(),
+                         dataTableOutput("contents_editor"),
+                         plotlyOutput("line_editor", width = "auto", height = 1000),
+                         tags$hr(),
+                         h3("7. Download computed fit"),
+                         downloadButton(outputId = "download_fit_editor",
+                                        label = "Download edited fitted patterns (.csv)"),
+                         downloadButton(outputId = "download_mins_editor",
+                                        label = "Download edited phase concentrations (.csv)"),
+                         downloadButton(outputId = "download_editor",
+                                        label = "Download edited powdRfps object (.Rdata)")
+                         ))
+                       ) # end fluidRow
+                       )
 
 
   ) # end navbarPage
