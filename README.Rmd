@@ -20,9 +20,9 @@ knitr::opts_chunk$set(
 
 ## Overview
 
-`powdR` is an implementation of the full pattern summation approach to quantitative mineralogy from X-ray powder diffraction data [@Chipera2002;@Chipera2013;@Eberl2003]. More specifically, `powdR` implements a standardless approach, which assumes all phases within a sample can be identified, and thus they sum to 100 %.
+`powdR` is an implementation of the full pattern summation approach to quantitative mineralogy from X-ray powder diffraction data [@Chipera2002;@Chipera2013;@Eberl2003].
 
-`powdR` has several advantages over the excel based implementations of full pattern summation such as FULLPAT [@Chipera2002] and ROCKJOCK [@Eberl2003]. First, computation is faster and, when quantifying multiple samples, can be used in combination with other packages (e.g [`foreach`](https://cran.r-project.org/web/packages/foreach/index.html)) for parralel processing. Secondly, powdR can be run via a `shiny` web application, which offers a user friendly interface for fast and iterative mineral quantification. Lastly, R represents a powerful tool for data manipulation, allowing users to creatively adapt, pre-treat and visualise their XRPD data.
+`powdR` has several advantages over the excel based implementations of full pattern summation such as FULLPAT [@Chipera2002] and RockJock [@Eberl2003]. First, computation is faster and, when quantifying multiple samples, can be used in combination with other packages (e.g [`foreach`](https://cran.r-project.org/web/packages/foreach/index.html)) for parralel processing. Secondly, powdR can be run via a `shiny` web application, which offers a user friendly interface for fast and iterative mineral quantification. Lastly, R represents a powerful tool for data manipulation, allowing users to creatively adapt, pre-treat and visualise their XRPD data.
 
 ## Installation
 
@@ -76,7 +76,7 @@ To run `powdR` via the shiny app, use `run_powdR()`. This loads the application 
 4. **Full Pattern Summation:** A user friendly interface for iterative full pattern summation of single samples.
 5. **Automated Full Pattern Summation:** A user friendly interface for automated full pattern summation of single samples.
 6. **Results viewer:** Allows for quick inspection of results derived from full pattern summation.
-
+7. **Results editor:** Allows for results from previous saved `powdRfps` and `powdRafps` objects (.Rdata format) to be edited via addition or removal of reference patterns to the fitting process.
 
 ##References
 

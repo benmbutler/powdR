@@ -7,7 +7,7 @@ powdR: Full Pattern Summation of X-Ray Powder Diffraction Data
 Overview
 --------
 
-`powdR` is an implementation of the full pattern summation approach to quantitative mineralogy from X-ray powder diffraction data (Chipera and Bish 2002; Chipera and Bish 2013; Eberl 2003). More specifically, `powdR` implements a standardless approach, which assumes all phases within a sample can be identified, and thus they sum to 100 %.
+`powdR` is an implementation of the full pattern summation approach to quantitative mineralogy from X-ray powder diffraction data (Chipera and Bish 2002; Chipera and Bish 2013; Eberl 2003).
 
 `powdR` has several advantages over the excel based implementations of full pattern summation such as FULLPAT (Chipera and Bish 2002) and ROCKJOCK (Eberl 2003). First, computation is faster and, when quantifying multiple samples, can be used in combination with other packages (e.g [`foreach`](https://cran.r-project.org/web/packages/foreach/index.html)) for parralel processing. Secondly, powdR can be run via a `shiny` web application, which offers a user friendly interface for fast and iterative mineral quantification. Lastly, R represents a powerful tool for data manipulation, allowing users to creatively adapt, pre-treat and visualise their XRPD data.
 
@@ -48,6 +48,7 @@ q <-  fps(lib = minerals,
           refs = minerals$phases$phase_id,
           std = "QUA.1")
 #> 
+#> -Setting harmonise to default of TRUE
 #> -Using maximum tth range
 #> -Using default alignment of 0.1
 #> -Using default solver of BFGS
@@ -89,6 +90,7 @@ To run `powdR` via the shiny app, use `run_powdR()`. This loads the application 
 4.  **Full Pattern Summation:** A user friendly interface for iterative full pattern summation of single samples.
 5.  **Automated Full Pattern Summation:** A user friendly interface for automated full pattern summation of single samples.
 6.  **Results viewer:** Allows for quick inspection of results derived from full pattern summation.
+7.  **Results editor:** Allows for results from previous saved `powdRfps` and `powdRafps` objects (.Rdata format) to be edited via addition or removal of reference patterns to the fitting process.
 
 References
 ----------
