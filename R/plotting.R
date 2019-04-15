@@ -1,3 +1,8 @@
+.gg_color_hue <- function(n) {
+  hues = seq(15, 375, length = n + 1)
+  grDevices::hcl(h = hues, l = 65, c = 100)[1:n]
+}
+
 #' Plotting elements of a powdRfps object
 #'
 #' \code{plot.powdRfps} is designed to provide easy, adaptable plots
@@ -80,13 +85,11 @@ plot.powdRfps <- function(x, wavelength, interactive, ...) {
   #Create a dataframe of the weighted pure patterns and fitted pattern
   pure_patterns <- data.frame(tth = x$tth,
                               d = d_v,
+                              Measured = x$measured,
                               Fitted = x$fitted,
                               x$weighted_pure_patterns)
 
-  #The original measurement
-  measured <- data.frame(tth = x$tth,
-                         d = d_v,
-                         Counts = x$measured)
+  refs_colors <- .gg_color_hue(ncol(x$weighted_pure_patterns))
 
   #Residuals
   resids <- data.frame(tth = x$tth,
@@ -101,41 +104,48 @@ plot.powdRfps <- function(x, wavelength, interactive, ...) {
 
 
   g1 <- suppressWarnings(ggplot2::ggplot() +
-      ggplot2::geom_line(data = measured,
-                         ggplot2::aes_(x = ~tth, y = ~Counts, color = "Measured", d = ~d), size = 0.35, linetype = "dotted") +
-      ggplot2::geom_line(data = pure_patterns_long,
-                         ggplot2::aes_(x = ~tth, y = ~Counts, color = ~variable, d = ~d), size = 0.15) +
-      ggplot2::ylab("Counts") +
-      ggplot2::xlab("2theta") +
-      ggplot2::theme(legend.title = ggplot2::element_blank()))
+                           ggplot2::geom_line(data = pure_patterns_long,
+                                              ggplot2::aes_(x = ~tth, y = ~Counts,
+                                                            color = ~variable,
+                                                            linetype = ~variable,
+                                                            d = ~d),
+                                              size = 0.25) +
+                           ggplot2::scale_color_manual(values = c("black", "red",
+                                                                  refs_colors)) +
+                           ggplot2::scale_linetype_manual(values = c("solid", "solid",
+                                                                     rep("dotted", ncol(x$weighted_pure_patterns)))) +
+                           ggplot2::ylab("Counts") +
+                           ggplot2::xlab("2theta") +
+                           ggplot2::theme(legend.title = ggplot2::element_blank()))
 
   g2 <- suppressWarnings(ggplot2::ggplot() +
-      ggplot2::geom_line(data = resids,
-                         ggplot2::aes_(x = ~tth, y = ~Counts, color = "Residuals", d = ~d), size = 0.15) +
-      ggplot2::ylab("Counts") +
-      ggplot2::xlab("2theta") +
-      ggplot2::scale_colour_manual(name = "",
-                                   values = c("Residuals" = "blue")))
+                           ggplot2::geom_line(data = resids,
+                                              ggplot2::aes_(x = ~tth, y = ~Counts, color = "Residuals", d = ~d), size = 0.15) +
+                           ggplot2::ylab("Counts") +
+                           ggplot2::xlab("2theta") +
+                           ggplot2::scale_colour_manual(name = "",
+                                                        values = c("Residuals" = "blue")))
 
 
   if (interactive == TRUE) {
 
-  #Convert to ggplotly
-  p1 <- plotly::ggplotly(g1)
-  p2 <- plotly::ggplotly(g2)
-  p3 <- plotly::subplot(p1, p2,
-                        nrows = 2,
-                        heights = c(0.5, 0.5),
-                        widths = c(1),
-                        shareX = TRUE,
-                        titleY = TRUE)
+    #Convert to ggplotly
+    p1 <- plotly::ggplotly(g1, tooltip = c("x", "y", "d", "colour"))
+    p2 <- plotly::ggplotly(g2, tooltip = c("x", "y", "d", "colour"))
+    p3 <- plotly::subplot(p1, p2,
+                          nrows = 2,
+                          heights = c((2/3), (1/3)),
+                          widths = c(1),
+                          shareX = TRUE,
+                          titleY = TRUE)
 
-  return(p3)
+    return(p3)
 
   } else {
 
-  g3 <- ggpubr::ggarrange(g1, g2, nrow = 2)
-  return(g3)
+    g3 <- ggpubr::ggarrange(g1, g2, nrow = 2,
+                            heights = c(2,1))
+    return(g3)
 
   }
 
@@ -225,13 +235,11 @@ plot.powdRafps <- function(x, wavelength, interactive, ...) {
   #Create a dataframe of the weighted pure patterns and fitted pattern
   pure_patterns <- data.frame(tth = x$tth,
                               d = d_v,
+                              Measured = x$measured,
                               Fitted = x$fitted,
                               x$weighted_pure_patterns)
 
-  #The original measurement
-  measured <- data.frame(tth = x$tth,
-                         d = d_v,
-                         Counts = x$measured)
+  refs_colors <- .gg_color_hue(ncol(x$weighted_pure_patterns))
 
   #Residuals
   resids <- data.frame(tth = x$tth,
@@ -246,17 +254,23 @@ plot.powdRafps <- function(x, wavelength, interactive, ...) {
 
 
   g1 <- suppressWarnings(ggplot2::ggplot() +
-        ggplot2::geom_line(data = measured,
-                           ggplot2::aes_(x = ~tth, y = ~Counts, color = "Measured", d = ~d), size = 0.35, linetype = "dotted") +
                            ggplot2::geom_line(data = pure_patterns_long,
-                                              ggplot2::aes_(x = ~tth, y = ~Counts, color = ~variable, d = ~d), size = 0.15) +
+                                              ggplot2::aes_(x = ~tth, y = ~Counts,
+                                                            color = ~variable,
+                                                            linetype = ~variable,
+                                                            d = ~d),
+                                              size = 0.25) +
+                           ggplot2::scale_color_manual(values = c("black", "red",
+                                                                  refs_colors)) +
+                           ggplot2::scale_linetype_manual(values = c("solid", "solid",
+                                                                     rep("dotted", ncol(x$weighted_pure_patterns)))) +
                            ggplot2::ylab("Counts") +
                            ggplot2::xlab("2theta") +
                            ggplot2::theme(legend.title = ggplot2::element_blank()))
 
   g2 <- suppressWarnings(ggplot2::ggplot() +
-        ggplot2::geom_line(data = resids,
-                           ggplot2::aes_(x = ~tth, y = ~Counts, color = "Residuals", d = ~d), size = 0.15) +
+                           ggplot2::geom_line(data = resids,
+                                              ggplot2::aes_(x = ~tth, y = ~Counts, color = "Residuals", d = ~d), size = 0.15) +
                            ggplot2::ylab("Counts") +
                            ggplot2::xlab("2theta") +
                            ggplot2::scale_colour_manual(name = "",
@@ -266,11 +280,11 @@ plot.powdRafps <- function(x, wavelength, interactive, ...) {
   if (interactive == TRUE) {
 
     #Convert to ggplotly
-    p1 <- plotly::ggplotly(g1)
-    p2 <- plotly::ggplotly(g2)
+    p1 <- plotly::ggplotly(g1, tooltip = c("x", "y", "d", "colour"))
+    p2 <- plotly::ggplotly(g2, tooltip = c("x", "y", "d", "colour"))
     p3 <- plotly::subplot(p1, p2,
                           nrows = 2,
-                          heights = c(0.5, 0.5),
+                          heights = c((2/3), (1/3)),
                           widths = c(1),
                           shareX = TRUE,
                           titleY = TRUE)
@@ -279,7 +293,8 @@ plot.powdRafps <- function(x, wavelength, interactive, ...) {
 
   } else {
 
-    g3 <- ggpubr::ggarrange(g1, g2, nrow = 2)
+    g3 <- ggpubr::ggarrange(g1, g2, nrow = 2,
+                            heights = c(2,1))
     return(g3)
 
   }

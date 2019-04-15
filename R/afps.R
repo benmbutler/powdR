@@ -354,7 +354,8 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, force, std_con
   #If shift is missing then set it to default
   if(missing(shift)) {
 
-    shift = 0.05
+    shift = 0
+
   }
 
   #If shift_res is missing then set it to default
