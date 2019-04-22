@@ -1229,6 +1229,17 @@ shinyServer(function(input, output, session) {
 
      })
 
+     #-----------------------
+     #VIDEOS
+     #-----------------------
+
+
+     output$video <- renderUI({
+
+         HTML("<iframe width='840' height='473' src='https://www.youtube.com/embed/7Q8xiBw0c3o' frameborder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>")
+
+     })
+
 
   session$onSessionEnded(function() {
     stopApp()

@@ -497,8 +497,9 @@ shinyUI(
                         ))
                       )
                       ),
+
             #################################
-            ## TAB 6: RESULTS EDITOR
+            ## TAB 7: RESULTS EDITOR
             #################################
 
             tabPanel("Results Editor",
@@ -602,8 +603,35 @@ shinyUI(
                                         label = "Download edited powdRfps object (.Rdata)")
                          ))
                        ) # end fluidRow
+                       ),
+
+
+            #################################
+            ## TAB 8: HELP
+            #################################
+
+            tabPanel("Help",
+                     fluidRow(
+                       column(12, align = "center",
+                         h1("Video tutorials"),
+                         helpText("Select an option to view a video tutorial for each tab of this
+                                  Shiny application"),
+                         selectInput(inputId = "selectVIDEO",
+                                     label = NULL,
+                                     multiple = FALSE,
+                                     choices = c("Reference Library Builder",
+                                                 "Reference Library Viewer",
+                                                 "Reference Library Editor",
+                                                 "Full Pattern Summation",
+                                                 "Automated Full Pattern Summation",
+                                                 "Results Viewer",
+                                                 "Results Editor")),
+
+                         uiOutput("video")
                        )
 
+                     ) # end fluidRow
+            )
 
   ) # end navbarPage
 )# end shinyUI

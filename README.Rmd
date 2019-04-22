@@ -68,7 +68,7 @@ Alternatively, `plot(q, wavelength = "Cu", interactive = TRUE)` provides an inte
 
 ## The powdR Shiny app
 
-To run `powdR` via the shiny app, use `run_powdR()`. This loads the application in your default web browser. The application has six tabs:
+To run `powdR` via the shiny app, use `run_powdR()`. This loads the application in your default web browser. The application has seven tabs:
 
 1. **Reference Library Builder:** Allows you to create and export a `powdRlib` reference library from two .csv files: one for the XRPD measurements, and the other for the ID, name and reference intensity ratio of each pattern.
 2. **Reference Library Viewer:** Facilitates quick inspection of the phases within a `powdRlib` reference library.
@@ -76,7 +76,7 @@ To run `powdR` via the shiny app, use `run_powdR()`. This loads the application 
 4. **Full Pattern Summation:** A user friendly interface for iterative full pattern summation of single samples.
 5. **Automated Full Pattern Summation:** A user friendly interface for automated full pattern summation of single samples.
 6. **Results viewer:** Allows for quick inspection of results derived from full pattern summation.
-7. **Results editor:** Allows for results from previous saved `powdRfps` and `powdRafps` objects (.Rdata format) to be edited via addition or removal of reference patterns to the fitting process.
+7. **Results editor:** Allows for results from previously saved `powdRfps` and `powdRafps` objects to be edited via addition or removal of reference patterns to the fitting process.
 
 ##References
 

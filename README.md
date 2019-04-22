@@ -9,7 +9,7 @@ Overview
 
 `powdR` is an implementation of the full pattern summation approach to quantitative mineralogy from X-ray powder diffraction data (Chipera and Bish 2002; Chipera and Bish 2013; Eberl 2003).
 
-`powdR` has several advantages over the excel based implementations of full pattern summation such as FULLPAT (Chipera and Bish 2002) and ROCKJOCK (Eberl 2003). First, computation is faster and, when quantifying multiple samples, can be used in combination with other packages (e.g [`foreach`](https://cran.r-project.org/web/packages/foreach/index.html)) for parralel processing. Secondly, powdR can be run via a `shiny` web application, which offers a user friendly interface for fast and iterative mineral quantification. Lastly, R represents a powerful tool for data manipulation, allowing users to creatively adapt, pre-treat and visualise their XRPD data.
+`powdR` has several advantages over the excel based implementations of full pattern summation such as FULLPAT (Chipera and Bish 2002) and RockJock (Eberl 2003). First, computation is faster and, when quantifying multiple samples, can be used in combination with other packages (e.g [`foreach`](https://cran.r-project.org/web/packages/foreach/index.html)) for parralel processing. Secondly, powdR can be run via a `shiny` web application, which offers a user friendly interface for fast and iterative mineral quantification. Lastly, R represents a powerful tool for data manipulation, allowing users to creatively adapt, pre-treat and visualise their XRPD data.
 
 Installation
 ------------
@@ -48,28 +48,17 @@ q <-  fps(lib = minerals,
           refs = minerals$phases$phase_id,
           std = "QUA.1")
 #> 
-#> -Setting harmonise to default of TRUE
-#> -Using maximum tth range
-#> -Using default alignment of 0.1
-#> -Using default solver of BFGS
-#> -Using default shift of 0
-#> -Using default objective function of Rwp
 #> -Aligning sample to the internal standard
 #> -Interpolating library to same 2theta scale as aligned sample
 #> -Optimising...
 #> -Removing negative coefficients and reoptimising...
 #> -Computing phase concentrations
+#> -Internal standard concentration unknown. Assuming phases sum to 100 %
 #> ***Full pattern summation complete***
 
 #Inspect the phase concentrations (summarised by name)
 q$phases_summary
-#>       phase_name phase_percent
-#> 1         Illite        1.2376
-#> 2     K-feldspar        1.2509
-#> 3      Kaolinite        1.3908
-#> 4 Organic-Matter       39.8058
-#> 5    Plagioclase        1.1593
-#> 6         Quartz       55.1557
+#> NULL
 
 #Inspect the quantification
 plot(q, wavelength = "Cu")
@@ -82,7 +71,7 @@ Alternatively, `plot(q, wavelength = "Cu", interactive = TRUE)` provides an inte
 The powdR Shiny app
 -------------------
 
-To run `powdR` via the shiny app, use `run_powdR()`. This loads the application in your default web browser. The application has six tabs:
+To run `powdR` via the shiny app, use `run_powdR()`. This loads the application in your default web browser. The application has seven tabs:
 
 1.  **Reference Library Builder:** Allows you to create and export a `powdRlib` reference library from two .csv files: one for the XRPD measurements, and the other for the ID, name and reference intensity ratio of each pattern.
 2.  **Reference Library Viewer:** Facilitates quick inspection of the phases within a `powdRlib` reference library.
@@ -90,7 +79,7 @@ To run `powdR` via the shiny app, use `run_powdR()`. This loads the application 
 4.  **Full Pattern Summation:** A user friendly interface for iterative full pattern summation of single samples.
 5.  **Automated Full Pattern Summation:** A user friendly interface for automated full pattern summation of single samples.
 6.  **Results viewer:** Allows for quick inspection of results derived from full pattern summation.
-7.  **Results editor:** Allows for results from previous saved `powdRfps` and `powdRafps` objects (.Rdata format) to be edited via addition or removal of reference patterns to the fitting process.
+7.  **Results editor:** Allows for results from previously saved `powdRfps` and `powdRafps` objects to be edited via addition or removal of reference patterns to the fitting process.
 
 References
 ----------
