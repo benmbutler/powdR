@@ -732,10 +732,20 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, force, std_con
   #compute phase concentrations
   cat("\n-Computing phase concentrations")
 
-  if (is.na(std_conc)) {
+  if (is.na(std_conc) | identical(names(x), std)) {
 
-    cat("\n-Internal standard concentration unknown. Assuming phases sum to 100 %")
+    if (!identical(names(x), std)) {
+      cat("\n-Internal standard concentration unknown. Assuming phases sum to 100 %")
+    }
+
     min_concs <- .qminerals(x = x, xrd_lib = lib)
+
+    if (identical(names(x), std)) {
+      cat("\n-Internal standard is the only phase present, defining its concentration as", std_conc, "%")
+      min_concs$df$phase_percent <- std_conc
+      min_concs$df$phase_percent <- std_conc
+
+    }
 
   } else {
 

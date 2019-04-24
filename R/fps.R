@@ -719,10 +719,20 @@ resid_x <- smpl[, 2] - fitted_pattern
 #compute phase concentrations
 cat("\n-Computing phase concentrations")
 
-if (is.na(std_conc)) {
+if (is.na(std_conc) | identical(names(x), std)) {
 
+  if (!identical(names(x), std)) {
   cat("\n-Internal standard concentration unknown. Assuming phases sum to 100 %")
+  }
+
   min_concs <- .qminerals(x = x, xrd_lib = lib)
+
+  if (identical(names(x), std)) {
+    cat("\n-Internal standard is the only phase present, defining its concentration as", std_conc, "%")
+    min_concs$df$phase_percent <- std_conc
+    min_concs$df$phase_percent <- std_conc
+
+  }
 
 } else {
 
