@@ -303,6 +303,26 @@ shinyServer(function(input, output, session) {
     }
   )
 
+  output$download_rj_mix1 <- downloadHandler(
+
+    filename = function() {
+      paste("rockjock_mix1_", Sys.Date(), ".xy", sep="")
+    },
+    content = function(file) {
+      write.table(rockjock_mixtures$Mix1, file, sep = " ", col.names = FALSE, row.names = FALSE)
+    }
+  )
+
+  output$download_rj_mix2 <- downloadHandler(
+
+    filename = function() {
+      paste("rockjock_mix1_", Sys.Date(), ".xy", sep="")
+    },
+    content = function(file) {
+      write.table(rockjock_mixtures$Mix2, file, sep = " ", col.names = FALSE, row.names = FALSE)
+    }
+  )
+
   })
 
   #Download an example reference library
@@ -318,6 +338,18 @@ shinyServer(function(input, output, session) {
       assign("example_powdRlib", minerals)
 
       save(list="example_powdRlib", file=con)
+    }
+  )
+
+  #rockjock <- powdR::rockjock
+
+  output$download_rj_lib <- downloadHandler(
+
+    filename = "rockjock_powdRlib.Rdata",
+    content = function(con) {
+      assign("rockjock", rockjock)
+
+      save(list="rockjock", file=con)
     }
   )
 
@@ -1236,7 +1268,7 @@ shinyServer(function(input, output, session) {
 
      output$video <- renderUI({
 
-         HTML("<iframe width='840' height='473' src='https://www.youtube.com/embed/7Q8xiBw0c3o' frameborder='0' allow='accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture' allowfullscreen></iframe>")
+         HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/Gz1SH9WHHG8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
 
      })
 

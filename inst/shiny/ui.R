@@ -234,6 +234,10 @@ shinyUI(
                                              label = "Limestone_example.xy  "),
                                 downloadLink(outputId = "download_soil_granite",
                                              label = "Granite_example.xy  "),
+                                downloadLink(outputId = "download_rj_mix1",
+                                             label = "rockjock_mix1.xy  "),
+                                downloadLink(outputId = "download_rj_mix2",
+                                             label = "rockjock_mix2.xy  "),
                                 circle = FALSE, status = "danger", icon = icon("question"),
                                 width = "300px", size = "sm"
                               )),
@@ -248,6 +252,8 @@ shinyUI(
                               dropdownButton(
                             downloadLink(outputId = "download_example_ref",
                                          label = "example_powdRlib.Rdata"),
+                            downloadLink(outputId = "download_rj_lib",
+                                         label = "rockjock_powdRlib.Rdata"),
                             circle = FALSE, status = "danger", icon = icon("question"),
                             width = "300px", size = "sm"
                           )),
