@@ -1181,6 +1181,7 @@ shinyServer(function(input, output, session) {
                                std_conc = std_conc_editor,
                                refs = gsub(".*: ", "", phases2),
                                align = input$align_editor,
+                               tth_fps = input$tth_editor,
                                manual_align = input$align_man_editor,
                                shift = input$shift_editor,
                                obj = input$selectOBJ_editor,
@@ -1276,7 +1277,7 @@ shinyServer(function(input, output, session) {
 
      output$video <- renderUI({
 
-         HTML('<iframe width="560" height="315" src="https://www.youtube.com/embed/Gz1SH9WHHG8" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>')
+         HTML(paste0('<iframe width="560" height="315" src="https://www.youtube.com/embed/', input$selectVIDEO, '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'))
 
      })
 

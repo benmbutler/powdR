@@ -625,13 +625,12 @@ shinyUI(
                          selectInput(inputId = "selectVIDEO",
                                      label = NULL,
                                      multiple = FALSE,
-                                     choices = c("Reference Library Builder",
-                                                 "Reference Library Viewer",
-                                                 "Reference Library Editor",
-                                                 "Full Pattern Summation",
-                                                 "Automated Full Pattern Summation",
-                                                 "Results Viewer",
-                                                 "Results Editor")),
+                                     choices = list("Reference Library Builder" = "RGEhe_hdDkM",
+                                                 "Reference Library Viewer" = "9hVdSXk2uyw",
+                                                 "Reference Library Editor" = "mNQC1TLXJWM",
+                                                 "Full Pattern Summation" = "Xr1dHYo9PRg",
+                                                 "Automated Full Pattern Summation" = "Sia6rGdpbkI",
+                                                 "Results Viewer" = "XTK0r36ilM4")),
 
                          uiOutput("video")
                        )
