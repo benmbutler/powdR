@@ -1023,6 +1023,14 @@ shinyServer(function(input, output, session) {
                         selected = NULL)
     }
 
+    if(class(results_editor_load()) %in% c("powdRfps", "powdRafps")) {
+      updateSliderInput(session = session, inputId = "tth_editor",
+                        min = round(min(results_editor_load()$tth) + abs(input$align_editor), 2),
+                        max = round(max(results_editor_load()$tth) - abs(input$align_editor), 2),
+                        value = c(round(min(results_editor_load()$tth) + abs(input$align_editor), 2),
+                                  round(max(results_editor_load()$tth) - abs(input$align_editor), 2)))
+    }
+
   })
 
 
