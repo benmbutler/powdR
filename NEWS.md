@@ -1,12 +1,12 @@
-# powdR 1.0.0.9000
+# powdR 1.0.0
 
 ## New features
 *  Outputs from `fps()` and `afps()` (`powdRfps` and `powdRafps` objects, respectively) contain
-   an `inputs` components which is a list of each of the arguments (including defaults) used to
+   an `inputs` component. This provides a list of each of the arguments (including defaults) used to
    produce the fit.
 
-*  `summarise_mineralogy` is a new function that creates a summary table from lists containing
-   multiple `powdRfps` and `powdRafps` objects.
+*  `summarise_mineralogy()` is a new function that creates a summary table from lists containing
+   multiple `powdRfps` and/or `powdRafps` objects.
 
 *  A comprehensive reference library of pure phases from the RockJock computer software is now
    provided as an example `powdRlib` object called `rockjock`. This library covers most clay,
@@ -19,7 +19,7 @@
    L-BFGS-B optimisation constrained so that parameters cannot be lower than zero.
 
 *  `fps()` now contains an optional `shift` argument, identical to that already implemented in
-   `afps()`. This defines the 2theta range within with a grid-search algorithm can optimise the
+   `afps()`. This defines the 2$\theta$ range within with a grid-search algorithm can optimise the
     aligment of standards to the sample. If not defined in the function call it defaults to 0.
     
 *  `fps()` and `afps()` now have a `shift_res` argument which accepts a single integer to define
@@ -33,7 +33,7 @@
    (`manual_align = FALSE`).
    
 *  `fps()` and `afps()` now have a logical `harmonise` argument which specifies whether to
-   automatically harmonise the sample and library onto the same 2theta scale via linear interpolation.
+   automatically harmonise the sample and library onto the same 2$\theta$ scale via linear interpolation.
 
 *  The `lod` argument of `afps()`, now simply represents an estimate of the limit of detection of
    the selected internal standard defined by the `std` argument. The function then uses the reference
@@ -44,11 +44,8 @@
 
 *  `subset()` is a new function that allows simple subsetting of a `powdRlib` object.
 
-*  The `run_powdR()` shiny app now contains a tab for subsetting a `powdRlib` object via `subset()`
-   function. This replaces the background fitting tab previously available in `powdR` version 0.2.0.
-   
-*  The `run_powdR()` shiny app now contains a tab for editing results from `powdRfps` and `powdRafps`
-   objects.
+*  The `run_powdR()` shiny app now contains tabs for subsetting a `powdRlib` object via `subset()`
+   function, editing`powdRfps` and `powdRafps` objects, and video tutorials.
    
 # powdR 0.2.0
 

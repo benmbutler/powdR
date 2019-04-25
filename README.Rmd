@@ -22,7 +22,7 @@ knitr::opts_chunk$set(
 
 `powdR` is an implementation of the full pattern summation approach to quantitative mineralogy from X-ray powder diffraction data [@Chipera2002;@Chipera2013;@Eberl2003].
 
-`powdR` has several advantages over the excel based implementations of full pattern summation such as FULLPAT [@Chipera2002] and RockJock [@Eberl2003]. First, computation is faster and, when quantifying multiple samples, can be used in combination with other packages (e.g [`foreach`](https://cran.r-project.org/web/packages/foreach/index.html)) for parralel processing. Secondly, powdR can be run via a `shiny` web application, which offers a user friendly interface for fast and iterative mineral quantification. Lastly, R represents a powerful tool for data manipulation, allowing users to creatively adapt, pre-treat and visualise their XRPD data.
+`powdR` has several advantages over the excel based implementations of full pattern summation such as FULLPAT [@Chipera2002] and RockJock [@Eberl2003]. First, computation is faster and, when quantifying multiple samples, can be used in combination with other packages (e.g [`foreach`](https://cran.r-project.org/web/packages/foreach/index.html) and [`doParallel`](https://cran.r-project.org/web/packages/doParallel/index.html)) for parralel processing. Secondly, powdR can be run via a Shiny web application, which offers a user friendly interface for fast and iterative mineral quantification. Lastly, R represents a powerful tool for data manipulation, allowing users to creatively adapt, pre-treat and visualise their data.
 
 ## Installation
 
@@ -31,7 +31,7 @@ The stable version of `powdR` is on CRAN:
 install.packages("powdR")
 ```
 
-Alternatively, the development version can be downloaded from Github
+Alternatively, the development version can be downloaded from GitHub
 ```{r, eval = FALSE}
 #Install devtools if you don't already have it on your machine
 install.packages("devtools")
@@ -57,7 +57,7 @@ q <-  fps(lib = minerals,
           std = "QUA.1")
 
 #Inspect the phase concentrations (summarised by name)
-q$phases_summary
+q$phases_grouped
 
 #Inspect the quantification
 plot(q, wavelength = "Cu")
@@ -68,7 +68,7 @@ Alternatively, `plot(q, wavelength = "Cu", interactive = TRUE)` provides an inte
 
 ## The powdR Shiny app
 
-To run `powdR` via the shiny app, use `run_powdR()`. This loads the application in your default web browser. The application has seven tabs:
+To run `powdR` via the Shiny app, use `run_powdR()`. This loads the application in your default web browser. The application has eight tabs:
 
 1. **Reference Library Builder:** Allows you to create and export a `powdRlib` reference library from two .csv files: one for the XRPD measurements, and the other for the ID, name and reference intensity ratio of each pattern.
 2. **Reference Library Viewer:** Facilitates quick inspection of the phases within a `powdRlib` reference library.
@@ -77,6 +77,7 @@ To run `powdR` via the shiny app, use `run_powdR()`. This loads the application 
 5. **Automated Full Pattern Summation:** A user friendly interface for automated full pattern summation of single samples.
 6. **Results viewer:** Allows for quick inspection of results derived from full pattern summation.
 7. **Results editor:** Allows for results from previously saved `powdRfps` and `powdRafps` objects to be edited via addition or removal of reference patterns to the fitting process.
+8. **Help** Provides a series of video tutorials (via YouTube) detailing the use of the `powdR` Shiny application.
 
 ##References
 

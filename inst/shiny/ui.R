@@ -9,8 +9,8 @@ shinyUI(
                         column(4, wellPanel(
                           h3("1. File upload"),
                           h4("XRPD data"),
-                          helpText("Choose a .csv file containing the 2theta scale
-                                    and the count intensities of all reference patterns."),
+                          helpText(withMathJax("Choose a .csv file containing the 2\\(\\theta\\) scale
+                                    and the count intensities of all reference patterns.")),
                           div(style="display: inline-block;vertical-align:top; width: 300px;",
                               fileInput(inputId = "uploadXRD",
                                     label = NULL,
@@ -25,7 +25,7 @@ shinyUI(
                               )),
                           h4("Phase information"),
                           helpText("Upload a .csv file containing
-                                    contains the id's, names and reference intensity ratios of
+                                    the id's, names and reference intensity ratios of
                                     all reference patterns."),
                           div(style="display: inline-block;vertical-align:top; width: 300px;",
                               fileInput(inputId = "uploadPHASE",
@@ -46,7 +46,7 @@ shinyUI(
                               actionButton("BuildLibButton", "Click to build library")),
                           tags$hr(),
                           h3("3. Download library"),
-                          helpText("Provide a name for the new library object.
+                          helpText("Provide a name for the new powdRlib object.
                                     This is what the library will be called if it is
                                    subsequently loaded into R (can be kept as the default
                                    'RefLib'):"),
@@ -140,7 +140,7 @@ shinyUI(
                               actionButton("SubsetLibButton", "Click to subset library")),
                           tags$hr(),
                           h3("5. Download library"),
-                          helpText("Provide a name for the new library object.
+                          helpText("Provide a name for the new powdRlib object.
                                     This is what the library will be called if it is
                                    subsequently loaded into R (can be kept as the default
                                    'RefLib'):"),
@@ -295,7 +295,7 @@ shinyUI(
                                       min = 2, max = 75,
                                       value = c(0, 100), step = 0.1),
                           helpText("Adjust the value below which trace phases
-                                               are removed"),
+                                               are removed (weight %)"),
                           sliderInput("remove_trace", label = NULL,
                                       min = 0, max = 1,
                                       value = 0, step = 0.01),
@@ -416,13 +416,13 @@ shinyUI(
                           sliderInput("tth_afps", label = NULL,
                                       min = 2, max = 75,
                                       value = c(0, 100), step = 0.1),
-                          helpText("Estimate the limit of detection (weight percent) of the
+                          helpText("Estimate the limit of detection (weight %) of the
                                     selected internal standard, from which all other LOD's
                                     are estimated."),
                           sliderInput("lod_afps", label = NULL,
                                       min = 0, max = 5,
                                       value = 0.1, step = 0.01),
-                          helpText("Remove amorphous phases below this limit (weight percent)"),
+                          helpText("Remove amorphous phases below this limit (weight %)"),
                           sliderInput("amorph_lod_afps", label = NULL,
                                       min = 0, max = 100,
                                       value = 2, step = 1),
@@ -470,7 +470,7 @@ shinyUI(
                         column(4, wellPanel(
                           helpText("Choose a .Rdata file to load. Must be a
                                     powdRfps or powdRafps object created using the fps() or
-                                    afps() function. These objects can also be saved from the
+                                    afps() functions. These objects can also be saved from the
                                     'Full pattern summation' or 'Automated full pattern summation'
                                     tabs of this application."),
                           fileInput(inputId = "loadRESULTS",
@@ -630,7 +630,8 @@ shinyUI(
                                                  "Reference Library Editor" = "mNQC1TLXJWM",
                                                  "Full Pattern Summation" = "Xr1dHYo9PRg",
                                                  "Automated Full Pattern Summation" = "Sia6rGdpbkI",
-                                                 "Results Viewer" = "XTK0r36ilM4")),
+                                                 "Results Viewer" = "XTK0r36ilM4",
+                                                 "Results Editor" = "R7i8vJgVCvQ")),
 
                          uiOutput("video")
                        )
