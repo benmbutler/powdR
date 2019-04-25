@@ -2,7 +2,7 @@ Package: powdR
 Type: Package
 Title: Full Pattern Summation of X-Ray Powder Diffraction Data
 Version: 1.0.0
-Date: 2019-04-22
+Date: 2019-04-25
 Authors@R: c(
   person("Benjamin", "Butler", email = "benjamin.butler@hutton.ac.uk",
   role = c("aut", "cre")),
