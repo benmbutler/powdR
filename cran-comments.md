@@ -4,15 +4,7 @@
 * win-builder (devel and release)
 
 ## R CMD check results
-There were no ERRORs, WARNINGs.
-
-The was one NOTE from devel test environment:
-
-"Possible mis-spelled words in DESCRIPTION:
-Bish (15:28)
-Chipera (15:16)"
-
-These are not mis-spelled. They are names of authors.
+There were no ERRORs, WARNINGs or NOTEs.
 
 ## Downstream dependencies
 There are currently no downstream dependencies for this package
