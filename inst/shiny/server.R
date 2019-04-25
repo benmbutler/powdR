@@ -764,28 +764,6 @@ shinyServer(function(input, output, session) {
   })
 
 
-  #Use the tickbox to adjust the alignment slider
-  observe({
-
-    if(input$align_man_afps == TRUE) {
-
-      updateSliderInput(session = session, inputId = "align_afps",
-                        min = -0.5,
-                        max = 0.5,
-                        value = 0)
-
-    } else {
-
-      updateSliderInput(session = session, inputId = "align_afps",
-                        min = 0,
-                        max = 0.5,
-                        value = 0.1)
-
-    }
-
-  })
-
-
   #FULL PATTERN FITTING
 
   observe({
@@ -958,7 +936,7 @@ shinyServer(function(input, output, session) {
   #Results editor       #
   #######################
 
-  #Create a recompute button in new results is selected
+#Create a recompute button in new results is selected
 
 
   #Load the results
@@ -1023,6 +1001,10 @@ shinyServer(function(input, output, session) {
                         selected = NULL)
     }
 
+  })
+
+  observe({
+
     if(class(results_editor_load()) %in% c("powdRfps", "powdRafps")) {
       updateSliderInput(session = session, inputId = "tth_editor",
                         min = round(min(results_editor_load()$tth) + abs(input$align_editor), 2),
@@ -1030,6 +1012,7 @@ shinyServer(function(input, output, session) {
                         value = c(round(min(results_editor_load()$tth) + abs(input$align_editor), 2),
                                   round(max(results_editor_load()$tth) - abs(input$align_editor), 2)))
     }
+
 
   })
 
@@ -1125,6 +1108,7 @@ shinyServer(function(input, output, session) {
 
      })
 
+
      })
 
 
@@ -1140,6 +1124,23 @@ shinyServer(function(input, output, session) {
                     step = 0.01)
 
      })
+
+     observeEvent(input$align_man_editor,{
+
+     output$align_editor_ui <- renderUI({
+
+       if (input$align_man_editor == FALSE) return(sliderInput("align_editor", label = NULL, min = 0,
+                                                               max = 0.5,
+                                                               value = c(0.1)))
+
+      sliderInput("align_editor", label = NULL, min = -0.5,
+                     max = 0.5,
+                     value = c(0))
+
+     })
+
+     })
+
 
   #FULL PATTERN FITTING
 
