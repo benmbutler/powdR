@@ -6,7 +6,7 @@
 #'
 #' @param xrd an xy data frame of the data to fit a background to. First column
 #' is the 2theta scale, second column is count intensities
-#' @param lambda 2nd derivative penalty for primary smoothing. Default = 0.5.
+#' @param lambda second derivative penalty for primary smoothing. Default = 0.5.
 #' @param hwi Half width of local windows. Default = 25.
 #' @param it Number of iterations in suppression loop. Default = 50.
 #' @param int Number of buckets to divide the data into. Default = \code{round(nrow(xrd)/4)}.

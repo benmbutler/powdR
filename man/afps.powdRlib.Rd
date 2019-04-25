@@ -41,8 +41,8 @@ alignment. If not defined, then the full range is used.}
 \item{align}{The maximum shift that is allowed during initial 2theta
 alignment (degrees). Default = 0.1.}
 
-\item{manual_align}{A logical opertator denoting whether to optimise the alignment within the
-negative/position 2theta range defined in the \code{align} arugment, or to use the specified
+\item{manual_align}{A logical operator denoting whether to optimise the alignment within the
+negative/position 2theta range defined in the \code{align} argument, or to use the specified
 value of the \code{align} argument for alignment of the sample to the standards. Default
 = \code{FALSE}, i.e. alignment is optimised.}
 
@@ -90,7 +90,7 @@ involving mineral quantification from large reference libraries.
 \details{
 Applies automated full pattern summation to an XRPD
 sample to quantify phase concentrations. Requires a \code{powdRlib} library of reference
-patterns with pre-measured reference intensity ratios in order to derive mineral
+patterns with reference intensity ratios in order to derive mineral
 concentrations.
 }
 \examples{
@@ -169,6 +169,6 @@ Chipera, S.J., Bish, D.L., 2002. FULLPAT: A full-pattern quantitative analysis p
 diffraction using measured and calculated patterns. J. Appl. Crystallogr. 35, 744-749.
 doi:10.1107/S0021889802017405
 
-Eberl, D.D., 2003. User's guide to ROCKJOCK - A program for determining quantitative mineralogy from
+Eberl, D.D., 2003. User's guide to RockJock - A program for determining quantitative mineralogy from
 powder X-ray diffraction data. Boulder, CA.
 }

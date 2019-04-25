@@ -202,7 +202,7 @@ sum(fit_3$phases$phase_percent)
 
 ### Full pattern summation with data harmonisation
 
-It is usually recommended that the reference library used for full pattern summation is measured on the same instrument as the sample using an identicial 2$\theta$ range and resolution. In some cases this is not feasible, and the reference library patterns may be from a different instrument to the sample. To allow for seamless use of samples and libraries from different instruments (measured on the same wavelength), `fps()` and `afps()` contain a logical `harmonise` argument (default `= TRUE`). When the sample and library contain non-identical 2$\theta$ axes, `harmonise = TRUE` will convert the data onto the same scale by determining the overlapping 2$\theta$ range and interpolating to the coarsest resolution available.
+It is usually recommended that the reference library used for full pattern summation is measured on the same instrument as the sample using an identical 2$\theta$ range and resolution. In some cases this is not feasible, and the reference library patterns may be from a different instrument to the sample. To allow for seamless use of samples and libraries from different instruments (measured on the same wavelength), `fps()` and `afps()` contain a logical `harmonise` argument (default `= TRUE`). When the sample and library contain non-identical 2$\theta$ axes, `harmonise = TRUE` will convert the data onto the same scale by determining the overlapping 2$\theta$ range and interpolating to the coarsest resolution available.
 
 ```{r, message = FALSE, warning = FALSE}
 #Create a sample with a shorter 2theta axis than the library

@@ -10,7 +10,7 @@ bkg(xrd, lambda, hwi, it, int)
 \item{xrd}{an xy data frame of the data to fit a background to. First column
 is the 2theta scale, second column is count intensities}
 
-\item{lambda}{2nd derivative penalty for primary smoothing. Default = 0.5.}
+\item{lambda}{second derivative penalty for primary smoothing. Default = 0.5.}
 
 \item{hwi}{Half width of local windows. Default = 25.}
 

@@ -35,7 +35,7 @@ see \code{?afps.powdRlib}.
 \details{
 Applies automated full pattern summation to an XRPD
 measurement to quantify phase concentrations. Requires a \code{powdRlib} library of
-reference patterns with pre-measured reference intensity ratios in order to derive
+reference patterns with reference intensity ratios in order to derive
 mineral concentrations.
 }
 \examples{
@@ -112,6 +112,6 @@ Chipera, S.J., Bish, D.L., 2002. FULLPAT: A full-pattern quantitative analysis p
 diffraction using measured and calculated patterns. J. Appl. Crystallogr. 35, 744-749.
 doi:10.1107/S0021889802017405
 
-Eberl, D.D., 2003. User's guide to ROCKJOCK - A program for determining quantitative mineralogy from
+Eberl, D.D., 2003. User's guide to RockJock - A program for determining quantitative mineralogy from
 powder X-ray diffraction data. Boulder, CA.
 }

@@ -81,7 +81,7 @@
 #'
 #' Applies full pattern summation (Chipera & Bish, 2002, 2013; Eberl, 2003) to an XRPD
 #' measurement to quantify phase concentrations. Requires a \code{powdRlib} library of
-#' reference patterns with pre-measured reference intensity ratios in order to derive
+#' reference patterns with reference intensity ratios in order to derive
 #' mineral concentrations.
 #'
 #' @param lib A \code{powdRlib} object representing the reference library. Created using the
@@ -178,7 +178,7 @@
 #' diffraction using measured and calculated patterns. J. Appl. Crystallogr. 35, 744-749.
 #' doi:10.1107/S0021889802017405
 #'
-#' Eberl, D.D., 2003. User's guide to ROCKJOCK - A program for determining quantitative mineralogy from
+#' Eberl, D.D., 2003. User's guide to RockJock - A program for determining quantitative mineralogy from
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
 fps <- function(lib, ...) {
@@ -192,7 +192,7 @@ fps <- function(lib, ...) {
 #'
 #' Applies full pattern summation (Chipera & Bish, 2002, 2013; Eberl, 2003) to an XRPD
 #' sample to quantify phase concentrations. Requires a \code{powdRlib} library of reference
-#' patterns with pre-measured reference intensity ratios in order to derive mineral
+#' patterns with reference intensity ratios in order to derive mineral
 #' concentrations.
 #'
 #' @param lib A \code{powdRlib} object representing the reference library. Created using the
@@ -218,8 +218,8 @@ fps <- function(lib, ...) {
 #' alignment. If not defined, then the full range is used.
 #' @param align The maximum shift that is allowed during initial 2theta
 #' alignment (degrees). Default = 0.1.
-#' @param manual_align A logical opertator denoting whether to optimise the alignment within the
-#' negative/position 2theta range defined in the \code{align} arugment, or to use the specified
+#' @param manual_align A logical operator denoting whether to optimise the alignment within the
+#' negative/position 2theta range defined in the \code{align} argument, or to use the specified
 #' value of the \code{align} argument for alignment of the sample to the standards. Default
 #' = \code{FALSE}, i.e. alignment is optimised.
 #' @param tth_fps A vector defining the minimum and maximum 2theta values to be used during
@@ -229,7 +229,7 @@ fps <- function(lib, ...) {
 #' @param shift_res A single integer defining the increase in resolution used during grid search shifting. Higher
 #' values facilitate finer shifts at the expense of longer computation. Default = 4.
 #' @param remove_trace A single numeric value representing the limit for the concentration of trace phases to
-#' be retained, i.e. any mineral with an estimated concentration below `remove_trace` will be ommitted. Default = 0.
+#' be retained, i.e. any mineral with an estimated concentration below `remove_trace` will be omitted. Default = 0.
 #' @param ... other arguments
 #'
 #' @return a list with components:
@@ -324,7 +324,7 @@ fps <- function(lib, ...) {
 #' diffraction using measured and calculated patterns. J. Appl. Crystallogr. 35, 744-749.
 #' doi:10.1107/S0021889802017405
 #'
-#' Eberl, D.D., 2003. User's guide to ROCKJOCK - A program for determining quantitative mineralogy from
+#' Eberl, D.D., 2003. User's guide to RockJock - A program for determining quantitative mineralogy from
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
 fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
