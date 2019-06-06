@@ -44,7 +44,7 @@ The full pattern summation implemented in `powdR` is based on the principle that
 
 ---
 
-#Using `powdR`
+# Using `powdR`
 
 ## The `powdRlib` object
 A key component of the functions within `powdR` is the library of reference patterns. These are stored within a `powdRlib` object created using the `powdRlib()` constructor function. `powdRlib()` builds a `powdRlib` object from two components. The first component, specified via the `xrd_table` argument of `powdRlib()`, is a data frame of the count intensities of the reference patterns, with their 2$\theta$ axis as the first column. The column for a given reference pattern must be named using a unique identifier (a phase ID). An example of such a format is provided in the `minerals_xrd` data:
@@ -85,11 +85,11 @@ plot(my_lib, wavelength = "Cu",
 There are two `powdRlib` objects provided as part of the `powdR` package. The first is `minerals` (accessed via `data(minerals)`), which is a simple and low resolution library designed to facilitate fast computation of basic examples. The second is `rockjock` (accessed via `data(rockjock)`), which is a comprehensive library of 168 reference patterns covering most phases that might be encountered in geological and soil samples. The `rockjock` library in `powdR` uses data from the original RockJock program [@Eberl2003] thanks to the permission of Dennis Eberl. In `rockjock`, each reference pattern from the original RockJock program has been scaled to a maximum intensity of 10000 counts, and the RIR's normalised relative to Corundum. All `rockjock` data were analysed using Cu K$\alpha$ radiation.
 
 
-##RockJock synthetic mixtures
+## RockJock synthetic mixtures
 To accompany the `rockjock` reference library, a list of eight synthetic mixtures from the original RockJock program [@Eberl2003] are also included in `powdR` in the `rockjock_mixtures` data (accessed via `data(rockjock_mixtures)`. Their known weights (see `?rockjock_mixtures`) can be compared to full pattern summation outputs (i.e. from `fps()` and `afps()`, detailed below) to assess accuracy.
 
 
-##Subsetting a `powdRlib` object
+## Subsetting a `powdRlib` object
 Occasionally it may be useful to subset a reference library to a smaller selection. This can be achieved using `subset()`, which for `powdRlib` objects accepts three arguments; `x`, `refs` and `mode`. The `x` argument specifies the `powdRlib` object to be subset, `refs` specifies the ID's of phases to select, and `mode` specifies whether these phases are kept (`mode = "keep"`) or removed (`mode = "remove"`).
 
 ```{r, message = FALSE, warning = FALSE}
@@ -248,7 +248,7 @@ plot(fit_5, wavelength = "Cu")
 
 Alternatively, interactive `ggplotly()` plots can be created by adding `interactive = TRUE` to the function call, e.g. `plot(fit_5, wavelength = "Cu", interactive = TRUE)`.
 
-##Quantifying multiple samples
+## Quantifying multiple samples
 The easiest way to quantify multiple samples is with `lapply()`
 
 ```{r, message = FALSE, warning = FALSE}
@@ -267,7 +267,7 @@ multi_fit <- lapply(rockjock_mixtures[1:3], fps,
 names(multi_fit)
 ```
 
-##Summarising mineralogy
+## Summarising mineralogy
 When multiple samples are quantified, it is often useful to report the phase concentrations of all of the samples in a single table. For a given list of `powdRfps` and/or `powdRafps` objects, the `summarise_mineralogy()` function yields such summary tables, for example:
 
 ```{r, message = FALSE, warning = FALSE}
