@@ -146,7 +146,7 @@ afps <- function(lib, ...) {
 #' value of the \code{align} argument for alignment of the sample to the standards. Default
 #' = \code{FALSE}, i.e. alignment is optimised.
 #' @param shift The maximum shift (degrees 2theta) that is allowed during the grid search phases selected
-#' from the non-negative least squares. Default = 0.05).
+#' from the non-negative least squares. Default = 0).
 #' @param shift_res A single integer defining the increase in resolution used during grid search shifting. Higher
 #' values facilitate finer shifts at the expense of longer computation. Default = 4.
 #' @param tth_fps A vector defining the minimum and maximum 2theta values to be used during

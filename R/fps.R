@@ -226,7 +226,7 @@ fps <- function(lib, ...) {
 #' @param tth_fps A vector defining the minimum and maximum 2theta values to be used during
 #' full pattern summation. If not defined, then the full range is used.
 #' @param shift The maximum shift (degrees 2theta) that is allowed during the grid search phases selected
-#' from the non-negative least squares. Default = 0.05).
+#' from the non-negative least squares. Default = 0).
 #' @param shift_res A single integer defining the increase in resolution used during grid search shifting. Higher
 #' values facilitate finer shifts at the expense of longer computation. Default = 4.
 #' @param remove_trace A single numeric value representing the limit for the concentration of trace phases to
@@ -413,6 +413,7 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
   if(missing(shift)) {
 
     shift = 0
+
   }
 
   #If shift_res is missing then set it to default
