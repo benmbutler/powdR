@@ -34,7 +34,7 @@
 
 *  `fps()` now contains an optional `shift` argument, identical to that already implemented in
    `afps()`. This defines the 2$\theta$ range within with a grid-search algorithm can optimise the
-    aligment of standards to the sample. If not defined in the function call it defaults to 0.
+    alignment of standards to the sample. If not defined in the function call it defaults to 0.
     
 *  `fps()` and `afps()` now have a `shift_res` argument which accepts a single integer to define
    the increase in resolution used during grid search shifting. Higher values facilitate finer

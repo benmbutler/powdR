@@ -22,7 +22,7 @@ packages (e.g
 [`foreach`](https://cran.r-project.org/web/packages/foreach/index.html)
 and
 [`doParallel`](https://cran.r-project.org/web/packages/doParallel/index.html))
-for parralel processing. Secondly, powdR can be run via a `shiny` web
+for parallel processing. Secondly, powdR can be run via a Shiny web
 application, which offers a user friendly interface for fast and
 iterative mineral quantification. Lastly, R represents a powerful tool
 for data manipulation, allowing users to creatively adapt, pre-treat and
@@ -93,7 +93,7 @@ usage instructions are provided in the package vignette.
 
 ## The powdR Shiny app
 
-To run `powdR` via the shiny app, use `run_powdR()`. This loads the
+To run `powdR` via the Shiny app, use `run_powdR()`. This loads the
 application in your default web browser. The application has eight tabs:
 
 1.  **Reference Library Builder:** Allows you to create and export a
@@ -116,7 +116,7 @@ application in your default web browser. The application has eight tabs:
 8.  **Help** Provides a series of video tutorials (via YouTube)
     detailing the use of the `powdR` Shiny application.
 
-\#\#References
+## References
 
 <div id="refs" class="references">
 
