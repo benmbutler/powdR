@@ -79,6 +79,8 @@ To run `powdR` via the Shiny app, use `run_powdR()`. This loads the application 
 7. **Results editor:** Allows for results from previously saved `powdRfps` and `powdRafps` objects to be edited via addition or removal of reference patterns to the fitting process.
 8. **Help** Provides a series of video tutorials (via YouTube) detailing the use of the `powdR` Shiny application.
 
+**Please note that the `powdR` Shiny app may not work in the Microsoft Edge internet browser.**
+
 ## References
 
 

@@ -116,6 +116,9 @@ application in your default web browser. The application has eight tabs:
 8.  **Help** Provides a series of video tutorials (via YouTube)
     detailing the use of the `powdR` Shiny application.
 
+**Please note that the `powdR` Shiny app may not work in the Microsoft
+Edge internet browser.**
+
 ## References
 
 <div id="refs" class="references">
