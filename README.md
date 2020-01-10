@@ -18,11 +18,9 @@ Bish 2002, 2013; Eberl 2003).
 full pattern summation such as FULLPAT (Chipera and Bish 2002) and
 RockJock (Eberl 2003). First, computation is faster and, when
 quantifying multiple samples, can be used in combination with other
-packages (e.g
-[`foreach`](https://cran.r-project.org/web/packages/foreach/index.html)
-and
-[`doParallel`](https://cran.r-project.org/web/packages/doParallel/index.html))
-for parallel processing. Secondly, powdR can be run via a Shiny web
+packages (e.g [`foreach`](https://cran.r-project.org/package=foreach)
+and [`doParallel`](https://cran.r-project.org/package=doParallel)) for
+parallel processing. Secondly, powdR can be run via a Shiny web
 application, which offers a user friendly interface for fast and
 iterative mineral quantification. Lastly, R represents a powerful tool
 for data manipulation, allowing users to creatively adapt, pre-treat and

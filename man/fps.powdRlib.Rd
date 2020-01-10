@@ -4,9 +4,24 @@
 \alias{fps.powdRlib}
 \title{Full pattern summation}
 \usage{
-\method{fps}{powdRlib}(lib, smpl, harmonise, solver, obj, refs, std,
-  std_conc, tth_align, align, manual_align, tth_fps, shift, shift_res,
-  remove_trace, ...)
+\method{fps}{powdRlib}(
+  lib,
+  smpl,
+  harmonise,
+  solver,
+  obj,
+  refs,
+  std,
+  std_conc,
+  tth_align,
+  align,
+  manual_align,
+  tth_fps,
+  shift,
+  shift_res,
+  remove_trace,
+  ...
+)
 }
 \arguments{
 \item{lib}{A \code{powdRlib} object representing the reference library. Created using the
@@ -52,7 +67,7 @@ value of the \code{align} argument for alignment of the sample to the standards.
 full pattern summation. If not defined, then the full range is used.}
 
 \item{shift}{The maximum shift (degrees 2theta) that is allowed during the grid search phases selected
-from the non-negative least squares. Default = 0.05).}
+from the non-negative least squares. Default = 0).}
 
 \item{shift_res}{A single integer defining the increase in resolution used during grid search shifting. Higher
 values facilitate finer shifts at the expense of longer computation. Default = 4.}

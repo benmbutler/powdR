@@ -3,7 +3,6 @@
 \docType{package}
 \name{powdR}
 \alias{powdR}
-\alias{powdR-package}
 \title{powdR: Full Pattern Summation of X-Ray Powder Diffraction Data}
 \description{
 An implementation of the full pattern summation approach to quantitative mineralogy
