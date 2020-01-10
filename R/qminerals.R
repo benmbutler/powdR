@@ -68,10 +68,7 @@
   std_rir <- sum((minerals$rir[which(minerals$phase_id %in% std_ids)]/
                     std_x) * x[which(names(x) %in% std_ids)])
 
-  #Remove any internal standard patterns from x
-  x <- x[-which(names(x) %in% std_ids)]
-
-  #Restrict the xrd library to phases within the names of fpf_pc
+  #Restrict the xrd library to phases within the names of X
   minerals <- minerals[which(minerals$phase_id %in% names(x)),]
 
   #Order to the same as fpf_pc
@@ -83,7 +80,7 @@
 
   for (i in 1:length(x)) {
 
-    min_percent[i] <- (std_conc/(minerals$rir[i]/std_rir)) * (x[i]/std_x) * (1+(std_conc/100))
+    min_percent[i] <- (std_conc/(minerals$rir[i]/std_rir)) * (x[i]/std_x)
 
     #names(min_percent)[i] <- minerals$phase_id[i]
 

@@ -4,7 +4,7 @@
 \alias{summarise_mineralogy}
 \title{Summarise the mineralogy from multiple powdRfps and powdRafps outputs}
 \usage{
-summarise_mineralogy(x, type, order)
+summarise_mineralogy(x, type, order, rwp)
 }
 \arguments{
 \item{x}{a list of \code{powdRfps} or \code{powdRafps} objects.}
@@ -15,6 +15,10 @@ summarises them according to the phase name. One of \code{"all"} or \code{"group
 \item{order}{a logical operator denoting whether the columns of the resulting summary
 table are ordered in descending order according to the summed abundance of each phase
 across the dataset.}
+
+\item{rwp}{a logical operator denoting whether to include the Rwp as the final column
+in the output. This provides an objective measure of the difference between the fitted
+and measured patterns.}
 }
 \value{
 a dataframe
@@ -44,5 +48,10 @@ sm1 <- summarise_mineralogy(multiple_afps,
 sm2 <- summarise_mineralogy(multiple_afps,
                             type = "grouped",
                             order = TRUE)
+
+sm3 <- summarise_mineralogy(multiple_afps,
+                            type = "grouped",
+                            order = TRUE,
+                            rwp = TRUE)
 }
 }

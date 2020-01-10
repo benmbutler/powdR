@@ -5,8 +5,10 @@
 #' that the user wishes to either keep or remove.
 #'
 #' @param x a \code{powdRlib} object.
-#' @param refs a string of the phase ID's of reference patterns to be subset
-#' @param mode denotes whether the phase ID's defined in the \code{refs} argument are
+#' @param refs a string of the phase ID's or names of reference patterns to be subset. The ID's
+#' or names supplied must be present within the \code{lib$phases$phase_id} or
+#' \code{lib$phases$phase_name} columns.
+#' @param mode denotes whether the phase ID's or names defined in the \code{refs} argument are
 #' retained (\code{"keep"}) or removed (\code{"remove"}).
 #' @param ... other arguments
 #'
@@ -26,6 +28,12 @@
 #' @export
 subset.powdRlib <- function(x, refs, mode, ...) {
 
+  if (!identical(names(x$xrd), x$phases$phase_id)) {
+
+    stop("The order of the powRlib objects xrd dataframe does not match that of the phases dataframe.")
+
+  }
+
   if(missing(mode)) {
 
     stop("The mode argument must be defined.")
@@ -40,24 +48,23 @@ subset.powdRlib <- function(x, refs, mode, ...) {
 
   if(missing(refs)) {
 
-    stop("Phase ID's to keep or remove must be set using the refs argument")
+    stop("The ID's or names of phases to keep or remove must be set using the refs argument")
 
   }
 
-  if(!length(which(refs %in% names(x[[1]]))) == length(refs)) {
+  #if(!length(which(refs %in% names(x[[1]]))) == length(refs)) {
 
-    stop("Not all phase ID's defined in the refs argument are present within
-         your powdRlib object.")
+  #  stop("Not all phase ID's or names defined in the refs argument are present within
+  #       your powdRlib object.")
 
-  }
+  #}
 
   if (mode == "keep") {
 
-    keep_index_xrd <- which(names(x[[1]]) %in% refs)
-    keep_index_phases <- which(x[[3]][[1]] %in% refs)
+    keep_index <- which(x$phases$phase_id %in% refs | x$phases$phase_name %in% refs)
 
-    x[[1]] <- x[[1]][keep_index_xrd]
-    x[[3]] <- x[[3]][keep_index_phases, ]
+    x[[1]] <- x[[1]][keep_index]
+    x[[3]] <- x[[3]][keep_index, ]
 
     #Ensure they're ordered
     x[[1]] <- x[[1]][order(names(x[[1]]))]
@@ -65,11 +72,10 @@ subset.powdRlib <- function(x, refs, mode, ...) {
 
   } else {
 
-    remove_index_xrd <- which(names(x[[1]]) %in% refs)
-    remove_index_phases <- which(x[[3]][[1]] %in% refs)
+    remove_index <- which(x$phases$phase_id %in% refs | x$phases$phase_name %in% refs)
 
-    x[[1]] <- x[[1]][-remove_index_xrd]
-    x[[3]] <- x[[3]][-remove_index_phases, ]
+    x[[1]] <- x[[1]][-remove_index]
+    x[[3]] <- x[[3]][-remove_index, ]
 
     #Ensure they're ordered
     x[[1]] <- x[[1]][order(names(x[[1]]))]

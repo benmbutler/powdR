@@ -9,9 +9,11 @@
 \arguments{
 \item{x}{a \code{powdRlib} object.}
 
-\item{refs}{a string of the phase ID's of reference patterns to be subset}
+\item{refs}{a string of the phase ID's or names of reference patterns to be subset. The ID's
+or names supplied must be present within the \code{lib$phases$phase_id} or
+\code{lib$phases$phase_name} columns.}
 
-\item{mode}{denotes whether the phase ID's defined in the \code{refs} argument are
+\item{mode}{denotes whether the phase ID's or names defined in the \code{refs} argument are
 retained (\code{"keep"}) or removed (\code{"remove"}).}
 
 \item{...}{other arguments}

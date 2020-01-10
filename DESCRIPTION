@@ -1,8 +1,8 @@
 Package: powdR
 Type: Package
 Title: Full Pattern Summation of X-Ray Powder Diffraction Data
-Version: 1.0.0
-Date: 2019-04-25
+Version: 1.1.0
+Date: 2019-01-10
 Authors@R: c(
   person("Benjamin", "Butler", email = "benjamin.butler@hutton.ac.uk",
   role = c("aut", "cre")),
@@ -23,6 +23,7 @@ Depends:
 Encoding: UTF-8
 LazyData: true
 Imports:
+  plyr (>= 1.8.4),
   reshape (>= 0.8.6),
   plotly (>= 4.7.1),
   ggplot2 (>= 2.2.1),

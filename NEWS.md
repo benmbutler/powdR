@@ -1,3 +1,17 @@
+# powdR 1.1.0
+## New features
+* The `refs` argument of `fps()` and `subset()` now accepts phase names as well as phase ID's. For example, if
+  the phase name "Quartz" in supplied, then all phase ID's associated with Quartz will be selected.
+  
+* Similarly, the `force` argument of `afps()` now accepts both phase names and phase ID's.
+
+* `summarise_mineralogy()` now contains an optional `rwp` argument (default = `FALSE`). This is a logical
+  parameter used to define whether the Rwp should be included in the summary table as a measure of the
+  difference between the measured and fitted patterns.
+  
+* When the `std_conc` argument is supplied to `fps()` or `afps()`, the computed phase concentrations now
+  include that of the internal standard.
+
 # powdR 1.0.0
 
 ## New features

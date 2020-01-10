@@ -10,6 +10,9 @@
 #' @param order a logical operator denoting whether the columns of the resulting summary
 #' table are ordered in descending order according to the summed abundance of each phase
 #' across the dataset.
+#' @param rwp a logical operator denoting whether to include the Rwp as the final column
+#' in the output. This provides an objective measure of the difference between the fitted
+#' and measured patterns.
 #'
 #' @return a dataframe
 #'
@@ -33,9 +36,14 @@
 #' sm2 <- summarise_mineralogy(multiple_afps,
 #'                             type = "grouped",
 #'                             order = TRUE)
+#'
+#' sm3 <- summarise_mineralogy(multiple_afps,
+#'                             type = "grouped",
+#'                             order = TRUE,
+#'                             rwp = TRUE)
 #' }
 #' @export
-summarise_mineralogy <- function(x, type, order) {
+summarise_mineralogy <- function(x, type, order, rwp) {
 
 #Make sure x is a list
 if (!class(x) == "list") {
@@ -75,13 +83,25 @@ if (length(stats::na.omit(names(x))) < length(x)) {
 
 if (missing(type)) {
 
-  stop("Please specify the type argument as one of 'all' or `grouped`.")
+  stop("Please specify the type argument as one of 'all' or 'grouped'.")
 
 }
 
 if (missing(order)) {
 
   order <- FALSE
+
+}
+
+if (missing(rwp)) {
+
+    rwp <- FALSE
+
+}
+
+if (!is.logical(rwp)) {
+
+  stop("The rwp argument must be logical.")
 
 }
 
@@ -113,6 +133,15 @@ if (type == "all")  {
 
 }
 
+if (rwp == TRUE) {
+
+  rwp_v <- lapply(x, function(y) y$rwp)
+  rwp_df <- data.frame("sample_id" = names(rwp_v),
+                       "rwp" = unname(unlist(rwp_v)),
+                       stringsAsFactors = FALSE)
+
+}
+
 #Rename columns and add sample ID as a column
 for (i in 1:length(mineralogy)) {
 
@@ -133,6 +162,12 @@ if (order == TRUE) {
 
 mineralogy_wide <- mineralogy_wide[, c(1, (order(sapply(mineralogy_wide[-1], sum, na.rm = TRUE),
                                                            decreasing = TRUE)+1))]
+
+}
+
+if (rwp == TRUE) {
+
+  mineralogy_wide <- plyr::join(mineralogy_wide, rwp_df, by = "sample_id")
 
 }
 
