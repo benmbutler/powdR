@@ -129,6 +129,10 @@ afps <- function(lib, ...) {
 #' @param obj The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
 #' Default = \code{"Rwp"}. See Chipera and Bish (2002) and page 247 of Bish and Post (1989)
 #' for definitions of these functions.
+#' @param refs A character string of reference pattern ID's or names from the specified library.
+#' The ID's or names supplied must be present within the \code{lib$phases$phase_id} or
+#' \code{lib$phases$phase_name} columns. If missing from the function call then all phases in
+#' the reference library will be used.
 #' @param std The phase ID (e.g. "QUA.1") to be used as internal
 #' standard. Must match an ID provided in the \code{phases} parameter.
 #' @param force An optional string of phase ID's or names specifying which phases should be forced to
@@ -252,7 +256,7 @@ afps <- function(lib, ...) {
 #' Eberl, D.D., 2003. User's guide to RockJock - A program for determining quantitative mineralogy from
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
-afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, force, std_conc,
+afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, std_conc,
                          tth_align, align, manual_align, shift, shift_res, tth_fps, lod,
                          amorphous, amorphous_lod, ...) {
 
@@ -371,6 +375,14 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, force, std_con
     shift_res = 4
   }
 
+  #If refs are not defined or "all" then use all of them
+  if(missing(refs)) {
+
+    cat("\n-Using all reference patterns in the library")
+    refs = lib$phases$phase_id
+
+  }
+
   #If lod is missing then set it to a default of 1
   if(missing(lod)) {
 
@@ -415,6 +427,11 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, std, force, std_con
   }
 
   }
+
+  #subset lib according to the refs vector
+
+  lib$xrd <- lib$xrd[which(lib$phases$phase_id %in% c(refs, force) | lib$phases$phase_name %in% refs)]
+  lib$phases <- lib$phases[which(lib$phases$phase_id %in% c(refs, force) | lib$phases$phase_name %in% refs), ]
 
 
   #Make sure that the phase identified as the internal standard is contained within the reference library

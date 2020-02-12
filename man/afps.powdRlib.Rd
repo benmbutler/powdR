@@ -10,6 +10,7 @@
   harmonise,
   solver,
   obj,
+  refs,
   std,
   force,
   std_conc,
@@ -41,6 +42,11 @@ available.}
 \item{obj}{The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
 Default = \code{"Rwp"}. See Chipera and Bish (2002) and page 247 of Bish and Post (1989)
 for definitions of these functions.}
+
+\item{refs}{A character string of reference pattern ID's or names from the specified library.
+The ID's or names supplied must be present within the \code{lib$phases$phase_id} or
+\code{lib$phases$phase_name} columns. If missing from the function call then all phases in
+the reference library will be used.}
 
 \item{std}{The phase ID (e.g. "QUA.1") to be used as internal
 standard. Must match an ID provided in the \code{phases} parameter.}

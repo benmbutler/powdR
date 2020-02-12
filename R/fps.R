@@ -209,7 +209,8 @@ fps <- function(lib, ...) {
 #' for definitions of these functions.
 #' @param refs A character string of reference pattern ID's or names from the specified library.
 #' The ID's or names supplied must be present within the \code{lib$phases$phase_id} or
-#' \code{lib$phases$phase_name} columns.
+#' \code{lib$phases$phase_name} columns. If missing from the function call then all phases in
+#' the reference library will be used.
 #' @param std The phase ID (e.g. "QUA.1") to be used as internal
 #' standard. Must match an ID provided in the \code{phases} parameter.
 #' @param std_conc The concentration of the internal standard (if known) in weight percent. If
@@ -426,9 +427,10 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
     remove_trace = 0
   }
 
-  #If solver is NNLS and refs aren't defined then use all of them
-  if(solver == "NNLS" & missing(refs)) {
+  #If refs are not defined or "all" then use all of them
+  if(missing(refs)) {
 
+    cat("\n-Using all reference patterns in the library")
     refs = lib$phases$phase_id
 
   }
@@ -480,19 +482,21 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
   }
 
-  #Make sure that the phase identified as the internal standard is contained within the reference library
-  if (!std == "none" & !std %in% lib$phases$phase_id) {
-  stop("The phase you have specified as the internal standard is not in the reference library")
-  }
+
 
   #subset lib according to the phases vector
 
   lib$xrd <- lib$xrd[which(lib$phases$phase_id %in% refs | lib$phases$phase_name %in% refs)]
   lib$phases <- lib$phases[which(lib$phases$phase_id %in% refs | lib$phases$phase_name %in% refs), ]
 
+  #Make sure that the phase identified as the internal standard is contained within the reference library
+  if (!std == "none" & !std %in% lib$phases$phase_id) {
+    stop("The phase you have specified as the internal standard is not in the subset reference library")
+  }
+
 
   #if only one phase is being used, make sure it's a dataframe and named correctly
-  #if (length(refs) == 1) {
+  #if (length(which(lib$phases$phase_id %in% refs | lib$phases$phase_name %in% refs)) == 1) {
   #  lib$xrd <- data.frame("phase" = lib$xrd)
   #  names(lib$xrd) <- refs
   #}
@@ -568,17 +572,19 @@ lib$tth <- smpl_tth
 #### decrease 2TH scale to the range defined in the function call
 smpl <- smpl[which(smpl$tth >= tth_fps[1] & smpl$tth <= tth_fps[2]), ]
 
+
+### THIS IS WHERE THE BUG IS!!!
 #Subset the xrd dataframe too
-lib$xrd <- lib$xrd[which(lib$tth >= tth_fps[1] & lib$tth <= tth_fps[2]), ]
+lib$xrd <- lib$xrd[which(lib$tth >= tth_fps[1] & lib$tth <= tth_fps[2]), , drop = FALSE]
 
 #Replace the tth in the library with the shortened one
 lib$tth <- smpl[, 1]
 
 #if only one phase is being used, make sure it's a dataframe and named correctly
-if (is.vector(lib$xrd)) {
-  lib$xrd <- data.frame("phase" = lib$xrd)
-  names(lib$xrd) <- lib$xrd$phase_id
-}
+#if (is.vector(lib$xrd)) {
+#  lib$xrd <- data.frame("phase" = lib$xrd)
+#  names(lib$xrd) <- lib$xrd$phase_id
+#}
 
 if (solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
 
