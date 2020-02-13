@@ -127,7 +127,7 @@ shiny::shinyServer(function(input, output, session) {
     })
   })
     #################################
-    ## TAB 2: Reference library Editor
+    ## TAB 3: Reference library Editor
     #################################
 
     shiny::observe({
@@ -353,12 +353,6 @@ shiny::shinyServer(function(input, output, session) {
                                         selected = refs_choices[[1]][[1]]))
       }
     })
-
-    #selectPHASESupdate <- shiny::reactive({
-
-    #  input$selectPHASES_fps
-
-    #  })
 
     #Update the internal standard selectInput so that only phases selected for fitting
     #are available
@@ -586,7 +580,7 @@ shiny::shinyServer(function(input, output, session) {
 
 
     #######################
-    #Results editor
+    #TAB 5: Results editor
     #######################
 
     #Create a recompute button in new results is selected
@@ -847,9 +841,9 @@ shiny::shinyServer(function(input, output, session) {
         })
       })
 
-    #-----------------------
-    #VIDEOS
-    #-----------------------
+    ############################
+    #TAB 6: HELP
+    ############################
 
       output$video <- shiny::renderUI({
         shiny::HTML(paste0('<iframe width="560" height="315" src="https://www.youtube.com/embed/', input$selectVIDEO,

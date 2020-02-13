@@ -154,9 +154,9 @@ shiny::tabPanel("Reference Library Editor",
                   ) #End fluid row
                 ), #End tabpanel
 
-#----------------------------------
+######################################
 # TAB 4: Full pattern summation
-#----------------------------------
+#####################################
 
 shiny::tabPanel("Full Pattern Summation",
                 shiny::fluidRow(
@@ -292,7 +292,7 @@ shiny::tabPanel("Full Pattern Summation",
                 ),
 
 #################################
-## TAB 7: RESULTS EDITOR
+## TAB 5: RESULTS VIEWER EDITOR
 #################################
 
 shiny::tabPanel("Results Viewer/Editor",
@@ -397,7 +397,7 @@ shiny::tabPanel("Results Viewer/Editor",
 
 
 #################################
-## TAB 8: HELP
+## TAB 6: HELP
 #################################
 
 shiny::tabPanel("Help",
