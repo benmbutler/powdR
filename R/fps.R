@@ -494,14 +494,6 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
     stop("The phase you have specified as the internal standard is not in the subset reference library")
   }
 
-
-  #if only one phase is being used, make sure it's a dataframe and named correctly
-  #if (length(which(lib$phases$phase_id %in% refs | lib$phases$phase_name %in% refs)) == 1) {
-  #  lib$xrd <- data.frame("phase" = lib$xrd)
-  #  names(lib$xrd) <- refs
-  #}
-
-
 #Harmonise libraries
   if (harmonise == TRUE & !identical(lib$tth, smpl[[1]])) {
 
@@ -572,19 +564,11 @@ lib$tth <- smpl_tth
 #### decrease 2TH scale to the range defined in the function call
 smpl <- smpl[which(smpl$tth >= tth_fps[1] & smpl$tth <= tth_fps[2]), ]
 
-
-### THIS IS WHERE THE BUG IS!!!
 #Subset the xrd dataframe too
 lib$xrd <- lib$xrd[which(lib$tth >= tth_fps[1] & lib$tth <= tth_fps[2]), , drop = FALSE]
 
 #Replace the tth in the library with the shortened one
 lib$tth <- smpl[, 1]
-
-#if only one phase is being used, make sure it's a dataframe and named correctly
-#if (is.vector(lib$xrd)) {
-#  lib$xrd <- data.frame("phase" = lib$xrd)
-#  names(lib$xrd) <- lib$xrd$phase_id
-#}
 
 if (solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
 
