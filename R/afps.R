@@ -149,10 +149,14 @@ afps <- function(lib, ...) {
 #' negative/position 2theta range defined in the \code{align} argument, or to use the specified
 #' value of the \code{align} argument for alignment of the sample to the standards. Default
 #' = \code{FALSE}, i.e. alignment is optimised.
-#' @param shift The maximum shift (degrees 2theta) that is allowed during the grid search phases selected
-#' from the non-negative least squares. Default = 0).
-#' @param shift_res A single integer defining the increase in resolution used during grid search shifting. Higher
-#' values facilitate finer shifts at the expense of longer computation. Default = 4.
+#' @param shift A single numeric value denoting the maximum (positive or negative) shift,
+#' in degrees 2theta, that is allowed during the shifting of selected phases.
+#' @param shift_mode The mode used of shifting. One of "grid" (default) or "optimise".
+#' "optimise" can also be used in conjunction with "BFGS", "Nelder-Mead" or "CG" solver
+#' routines, and can substantially increase computation time compared to "grid".
+#' @param shift_res A single integer defining the increase in resolution used when
+#' \code{shift_mode = "grid"}. Higher values facilitate finer shifts at the expense of
+#' longer computation. Default = 4.
 #' @param tth_fps A vector defining the minimum and maximum 2theta values to be used during
 #' automated full pattern summation. If not defined, then the full range is used.
 #' @param lod Optional parameter used to define the limit of detection (in weight percent) of the internal standard
@@ -257,8 +261,20 @@ afps <- function(lib, ...) {
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
 afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, std_conc,
-                         tth_align, align, manual_align, shift, shift_res, tth_fps, lod,
-                         amorphous, amorphous_lod, ...) {
+                         tth_align, align, manual_align, shift, shift_mode,
+                         shift_res, tth_fps, lod, amorphous, amorphous_lod, ...) {
+
+  if (missing(shift_mode)) {
+
+    shift_mode <- "grid"
+
+  }
+
+  if (!shift_mode %in% c("grid", "optimise")) {
+
+    stop("The shift_mode argument must be one of 'grid' or 'optimise'")
+
+  }
 
   if (missing(force)) {
 
@@ -411,6 +427,14 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
     stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG' or 'L-BFGS-B'")
   }
 
+  #If shift_mode = "optimise" and the solver is "L-BFGS-B", then stop
+  if (solver == "L-BFGS-B" & shift_mode == "optimise" & shift > 0) {
+
+    stop("When shift_mode = 'optimise', the solver argument must be one of 'BFGS',
+    'Nelder-Mead' or 'CG'.")
+
+  }
+
   if (is.na(std_conc)) {
 
   #If align is 0 and lod isn't being used then the standard can be set to 'none'
@@ -550,10 +574,50 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
     if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
 
-    cat("\n-Optimising...")
-    o <- stats::optim(par = x, .fullpat,
-                      method = solver, pure_patterns = lib$xrd,
-                      sample_pattern = smpl[, 2], obj = obj)
+      #Optimise weighting and shifts if these conditions are met
+      if (shift_mode == "optimise" & shift > 0 & length(x) > 1) {
+
+        #Create x_s parameters
+        x_s <- x
+        names(x_s) <- paste0(names(x), "_s")
+
+        cat("\n-Optimising weighting and shifting coefficients...")
+        o <- stats::optim(par = c(x,x_s), .fullpat_shift_optim,
+                          method = solver, lib = lib,
+                          smpl = smpl, obj = obj)
+
+        x <- o$par
+
+        #Extract the shifted data
+        cat("\n-Harmonising library and sample to same 2theta axis")
+        shifted <- .fullpat_shift(smpl = smpl, lib = lib,
+                                  par_shift = x[((length(x)/2)+1):length(x)],
+                                  limit = shift)
+
+        lib <- shifted$lib
+        smpl <- shifted$smpl
+
+        #Now extract just the weighting coefficients
+        x <- x[1:ncol(lib$xrd)]
+
+        #Now make sure negative coefficients are (almost) zero again
+        if (length(which(x < 0)) > 0) {
+
+          x[which(x < 0)] <- 1*10^-16
+
+        }
+
+      } else {
+
+        cat("\n-Optimising...")
+
+        o <- stats::optim(par = x, .fullpat,
+                          method = solver, pure_patterns = lib$xrd,
+                          sample_pattern = smpl[, 2], obj = obj)
+
+        x <- o$par
+
+      }
 
     } else {
 
@@ -562,11 +626,9 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
                       method = solver, lower = 0, pure_patterns = lib$xrd,
                       sample_pattern = smpl[, 2], obj = obj)
 
-    }
-
     x <- o$par
 
-
+    }
 
   #--------------------------------------------------------------------------------------------
   #Remove negative/zero parameters
@@ -585,7 +647,7 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   #Alignment and then another optimisation ONLY if the shift parameter
   #is included
 
-  if(shift > 0) {
+  if(shift > 0 & shift_mode == "grid") {
 
     fpf_aligned <- .shift(smpl = smpl,
                           lib = lib,
@@ -605,7 +667,7 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   #Re-optimise after shifting
   #----------------------------------------------
 
-  if(shift > 0) {
+  if(shift > 0 & shift_mode == "grid") {
 
     if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
 

@@ -226,12 +226,17 @@ fps <- function(lib, ...) {
 #' = \code{FALSE}, i.e. alignment is optimised.
 #' @param tth_fps A vector defining the minimum and maximum 2theta values to be used during
 #' full pattern summation. If not defined, then the full range is used.
-#' @param shift The maximum shift (degrees 2theta) that is allowed during the grid search phases selected
-#' from the non-negative least squares. Default = 0).
-#' @param shift_res A single integer defining the increase in resolution used during grid search shifting. Higher
-#' values facilitate finer shifts at the expense of longer computation. Default = 4.
-#' @param remove_trace A single numeric value representing the limit for the concentration of trace phases to
-#' be retained, i.e. any mineral with an estimated concentration below `remove_trace` will be omitted. Default = 0.
+#' @param shift A single numeric value denoting the maximum (positive or negative) shift,
+#' in degrees 2theta, that is allowed during the shifting of selected phases.
+#' @param shift_mode The mode used of shifting. One of "grid" (default) or "optimise".
+#' "optimise" can also be used in conjunction with "BFGS", "Nelder-Mead" or "CG" solver
+#' routines, and can substantially increase computation time compared to "grid".
+#' @param shift_res A single integer defining the increase in resolution used when
+#' \code{shift_mode = "grid"}. Higher values facilitate finer shifts at the expense of
+#' longer computation. Default = 4.
+#' @param remove_trace A single numeric value representing the limit for the concentration
+#' of trace phases to be retained, i.e. any mineral with an estimated concentration below
+#' \code{remove_trace} will be omitted. Default = 0.
 #' @param ... other arguments
 #'
 #' @return a list with components:
@@ -330,7 +335,20 @@ fps <- function(lib, ...) {
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
 fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
-                tth_align, align, manual_align, tth_fps, shift, shift_res, remove_trace, ...) {
+                tth_align, align, manual_align, tth_fps, shift, shift_mode,
+                shift_res, remove_trace, ...) {
+
+  if (missing(shift_mode)) {
+
+    shift_mode <- "grid"
+
+  }
+
+  if (!shift_mode %in% c("grid", "optimise")) {
+
+    stop("The shift_mode argument must be one of 'grid' or 'optimise'")
+
+  }
 
   if (missing(harmonise)) {
 
@@ -408,6 +426,7 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
   if(missing(solver)) {
 
     solver = "BFGS"
+
   }
 
   #If shift is missing then set it to default
@@ -467,6 +486,14 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
   #Make only "Nelder-Mead", "BFGS", or "CG", "L-BFGS-B" or "NNLS" optional for the solver
   if (!solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "NNLS")) {
     stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG', 'L-BFGS-B' or 'NNLS'")
+  }
+
+  #If shift_mode = "optimise" and the solver is "L-BFGS-B" or "NNLS", then stop
+  if (solver %in% c("L-BFGS-B", "NNLS") & shift_mode == "optimise" & shift > 0) {
+
+    stop("When shift_mode = 'optimise', the solver argument must be one of 'BFGS',
+    'Nelder-Mead' or 'CG'.")
+
   }
 
   #If there is no internal standard used in computing phase concentrations and
@@ -587,6 +614,43 @@ if (solver == "L-BFGS-B") {
                    method = solver, lower = 0, pure_patterns = lib$xrd,
                    sample_pattern = smpl[, 2], obj = obj)
 
+ x <- o$par
+
+} else {
+
+#Optimise weighting and shifts if these conditions are met
+if (shift_mode == "optimise" & shift > 0 & length(x) > 1) {
+
+#Create x_s parameters
+x_s <- x
+names(x_s) <- paste0(names(x), "_s")
+
+cat("\n-Optimising weighting and shifting coefficients...")
+o <- stats::optim(par = c(x,x_s), .fullpat_shift_optim,
+                  method = solver, lib = lib,
+                  smpl = smpl, obj = obj)
+
+x <- o$par
+
+#Extract the shifted data
+cat("\n-Harmonising library and sample to same 2theta axis")
+shifted <- .fullpat_shift(smpl = smpl, lib = lib,
+                          par_shift = x[((length(x)/2)+1):length(x)],
+                          limit = shift)
+
+lib <- shifted$lib
+smpl <- shifted$smpl
+
+#Now extract just the weighting coefficients
+x <- x[1:ncol(lib$xrd)]
+
+#Now make sure negative coefficients are (almost) zero again
+if (length(which(x < 0)) > 0) {
+
+  x[which(x < 0)] <- 1*10^-16
+
+}
+
 } else {
 
 cat("\n-Optimising...")
@@ -595,9 +659,11 @@ o <- stats::optim(par = x, .fullpat,
            method = solver, pure_patterns = lib$xrd,
            sample_pattern = smpl[, 2], obj = obj)
 
+x <- o$par
+
 }
 
-x <- o$par
+}
 
 #-----------------------------------------------
 # Remove negative parameters or parameters equal to zero
@@ -627,7 +693,7 @@ lib <- remove_neg_out[[2]]
 #Shift and then another optimisation ONLY if the shift parameter
 #is greater than zero
 
-if(shift > 0) {
+if(shift > 0 & shift_mode == "grid") {
 
   fpf_aligned <- .shift(smpl = smpl,
                         lib = lib,
