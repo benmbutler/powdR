@@ -27,6 +27,7 @@ Imports:
   reshape (>= 0.8.6),
   plotly (>= 4.7.1),
   ggplot2 (>= 2.2.1),
+  utils (>= 2.5.0),
   stats (>= 3.4.3),
   ggpubr (>= 0.1.7),
   shiny (>= 1.0.5),

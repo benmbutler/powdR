@@ -15,7 +15,7 @@
 #' @md
 #' @export
 run_powdR <- function(...) {
-  if (packageVersion("shiny") > 1.4) {
+  if (utils::packageVersion("shiny") > 1.4) {
 
     cat("Warning: Parts of this application may not work with shiny versions > 1.3.2.
         \nArchived versions of Shiny can be installed using:
