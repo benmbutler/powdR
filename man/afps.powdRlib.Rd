@@ -18,6 +18,7 @@
   align,
   manual_align,
   shift,
+  shift_mode,
   shift_res,
   tth_fps,
   lod,
@@ -70,11 +71,16 @@ negative/position 2theta range defined in the \code{align} argument, or to use t
 value of the \code{align} argument for alignment of the sample to the standards. Default
 = \code{FALSE}, i.e. alignment is optimised.}
 
-\item{shift}{The maximum shift (degrees 2theta) that is allowed during the grid search phases selected
-from the non-negative least squares. Default = 0).}
+\item{shift}{A single numeric value denoting the maximum (positive or negative) shift,
+in degrees 2theta, that is allowed during the shifting of selected phases.}
 
-\item{shift_res}{A single integer defining the increase in resolution used during grid search shifting. Higher
-values facilitate finer shifts at the expense of longer computation. Default = 4.}
+\item{shift_mode}{The mode used of shifting. One of "grid" (default) or "optimise".
+"optimise" can also be used in conjunction with "BFGS", "Nelder-Mead" or "CG" solver
+routines, and can substantially increase computation time compared to "grid".}
+
+\item{shift_res}{A single integer defining the increase in resolution used when
+\code{shift_mode = "grid"}. Higher values facilitate finer shifts at the expense of
+longer computation. Default = 4.}
 
 \item{tth_fps}{A vector defining the minimum and maximum 2theta values to be used during
 automated full pattern summation. If not defined, then the full range is used.}

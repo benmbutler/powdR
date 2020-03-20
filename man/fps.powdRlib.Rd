@@ -18,6 +18,7 @@
   manual_align,
   tth_fps,
   shift,
+  shift_mode,
   shift_res,
   remove_trace,
   ...
@@ -67,14 +68,20 @@ value of the \code{align} argument for alignment of the sample to the standards.
 \item{tth_fps}{A vector defining the minimum and maximum 2theta values to be used during
 full pattern summation. If not defined, then the full range is used.}
 
-\item{shift}{The maximum shift (degrees 2theta) that is allowed during the grid search phases selected
-from the non-negative least squares. Default = 0).}
+\item{shift}{A single numeric value denoting the maximum (positive or negative) shift,
+in degrees 2theta, that is allowed during the shifting of selected phases.}
 
-\item{shift_res}{A single integer defining the increase in resolution used during grid search shifting. Higher
-values facilitate finer shifts at the expense of longer computation. Default = 4.}
+\item{shift_mode}{The mode used of shifting. One of "grid" (default) or "optimise".
+"optimise" can also be used in conjunction with "BFGS", "Nelder-Mead" or "CG" solver
+routines, and can substantially increase computation time compared to "grid".}
 
-\item{remove_trace}{A single numeric value representing the limit for the concentration of trace phases to
-be retained, i.e. any mineral with an estimated concentration below `remove_trace` will be omitted. Default = 0.}
+\item{shift_res}{A single integer defining the increase in resolution used when
+\code{shift_mode = "grid"}. Higher values facilitate finer shifts at the expense of
+longer computation. Default = 4.}
+
+\item{remove_trace}{A single numeric value representing the limit for the concentration
+of trace phases to be retained, i.e. any mineral with an estimated concentration below
+\code{remove_trace} will be omitted. Default = 0.}
 
 \item{...}{other arguments}
 }
