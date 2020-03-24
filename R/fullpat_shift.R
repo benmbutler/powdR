@@ -23,26 +23,27 @@ l2 <- mapply(.shift_list, x = l, y = par_shift, SIMPLIFY = FALSE)
 
 
 #Calculate the tth range to interpolate to
-tth_min <- max(unlist(lapply(l2, function(x) min(x[[1]]))))
-tth_max <- min(unlist(lapply(l2, function(x) max(x[[1]]))))
-tth_res <- mean(diff(lib$tth))
+#tth_min <- max(unlist(lapply(l2, function(x) min(x[[1]]))))
+#tth_max <- min(unlist(lapply(l2, function(x) max(x[[1]]))))
+#tth_res <- mean(diff(lib$tth))
 
-new_tth <- seq(from = tth_min, to = tth_max, by = tth_res)
+#new_tth <- seq(from = tth_min, to = tth_max, by = tth_res)
 
-#Now approx all of the shifted patterns
+#Now spline all of the shifted patterns
 l3 <- lapply(l2,
-             function(n) stats::approx(x = n[[1]],
+             function(n) stats::spline(x = n[[1]],
                                        y = n[[2]],
-                                       xout = new_tth))
+                                       method = "natural",
+                                       xout = lib$tth))
 
 #Now create a data frame of the shifted xrd data
 lib$xrd <- data.frame(lapply(l3, function(x) x[[2]]))
-lib$tth <- new_tth
+#lib$tth <- new_tth
 
 #
-smpl <- data.frame(stats::approx(x = smpl[[1]],
-                        y = smpl[[2]],
-                        xout = new_tth))
+#smpl <- data.frame(stats::approx(x = smpl[[1]],
+#                        y = smpl[[2]],
+#                        xout = lib$tth))
 
 names(smpl) <- c("tth", "counts")
 

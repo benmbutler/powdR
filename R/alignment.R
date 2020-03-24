@@ -5,7 +5,7 @@
   #res1 <- a
   a1 <- a
   a1[,1] <- a1[,1] + par
-  a2 <- data.frame(stats::approx(x = a1[,1], y = a1[,2], xout = xout))
+  a2 <- data.frame(stats::spline(x = a1[,1], y = a1[,2], method = "natural", xout = xout))
   a3 <- 1-(stats::cor(std[,2],a2[,2]))
 
   return(a3)
@@ -22,28 +22,29 @@
 
 
   #Shorten the data to account for the xmin and xmax used during alignment
-  standard_short <- standard[which(standard[[1]] > xmin &
-                             standard[[1]] < xmax), ]
+  #standard_short <- standard[which(standard[[1]] > xmin &
+  #                           standard[[1]] < xmax), ]
 
   #shorten the data even further to also account for the potential shifting
-  xmin_short <- xmin - -xshift
-  xmax_short <- xmax - xshift
+  #xmin_short <- xmin - -xshift
+  #xmax_short <- xmax - xshift
 
-  standard_shorter <- standard[which(standard[[1]] > xmin_short &
-                               standard[[1]] < xmax_short), ]
+  #standard_shorter <- standard[which(standard[[1]] > xmin_short &
+  #                             standard[[1]] < xmax_short), ]
 
-  TTH_short <- standard_short[,1]
-  TTH_shorter <- standard_shorter[,1]
+  #TTH_short <- standard_short[,1]
+  #TTH_shorter <- standard_shorter[,1]
 
   #Create the data frame that just contains shortened data
-  smpl_short <- data.frame(stats::approx(x = smpl[,1],
-                                        y = smpl[,2],
-                                        xout = TTH_short))
+  smpl_short <- data.frame(stats::spline(x = smpl[[1]],
+                                        y = smpl[[2]],
+                                        method = "natural",
+                                        xout = standard[[1]]))
 
   #Detecting the peak shift required for each sample
   #First define the number that's going to get minimised by the optim routine
   smpl_optim_out <- suppressWarnings(stats::optim(a = smpl_short, par = 0,
-                                xout = TTH_shorter, std = standard_shorter,
+                                xout = standard[[1]], std = standard,
                                 .align_optim, method = "Brent", lower = -xshift, upper = xshift))
 
   #extract the optimised shift (i.e. what to add/subtract from the sample 2theta)
@@ -60,26 +61,26 @@
   smpl_aligned[,1] <- smpl[,1] + smpl_optim
 
   ### Harmonising the data after the shifts
-  xmax_harm <- max(smpl[,1])
-  xmin_harm <- min(smpl[,1])
-  int_TTH <- ((smpl[nrow(smpl),1] - smpl[1,1])/(nrow(smpl)-1))
+  #xmax_harm <- max(smpl[,1])
+  #xmin_harm <- min(smpl[,1])
+  #int_TTH <- ((smpl[nrow(smpl),1] - smpl[1,1])/(nrow(smpl)-1))
 
   #Create a vector that is nearly identical to the original measurements,
   #but with intervals that are exactly equal
-  TTH_constant <- seq(xmin_harm, xmax_harm, int_TTH)
+  #TTH_constant <- seq(xmin_harm, xmax_harm, int_TTH)
 
-  new_xmin <- xmin_harm + smpl_optim
-  new_xmax <- xmax_harm + smpl_optim
+  #new_xmin <- xmin_harm + smpl_optim
+  #new_xmax <- xmax_harm + smpl_optim
 
   #Now I create a slightly shortened version of the constant vector which will allow me to
   #create a new 2theta resolution appropriate for this alignment
-  TTH_constant_short <- TTH_constant[which(TTH_constant > new_xmin & TTH_constant < new_xmax)]
+  #TTH_constant_short <- TTH_constant[which(TTH_constant > new_xmin & TTH_constant < new_xmax)]
 
   #Final harmonisation
-  smpl_aligned_harm <- data.frame(stats::approx(x = smpl_aligned[,1],
+  smpl_aligned_harm <- data.frame(stats::spline(x = smpl_aligned[,1],
                                                y = smpl_aligned[,2],
-                                               method = "linear",
-                                               xout = TTH_constant_short))
+                                               method = "natural",
+                                               xout = standard[[1]]))
 
   names(smpl_aligned_harm) <- c("tth", "counts")
 

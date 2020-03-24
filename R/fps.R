@@ -572,16 +572,17 @@ if(missing(tth_fps)) {
 
 if (align > 0) {
 
-xrd_ref_names <- lib$phases$phase_id
+#xrd_ref_names <- lib$phases$phase_id
 
 #Ensure that samples in the reference library are on the same scale as the sample
 cat("\n-Interpolating library to same 2theta scale as aligned sample")
-lib$xrd <- data.frame(lapply(names(lib$xrd),
-                                       function(n) stats::approx(x = lib$tth,
-                                                          y = unname(unlist(lib$xrd[n])),
-                                                          xout = smpl_tth)[[2]]))
+lib$xrd <- data.frame(lapply(lib$xrd,
+                                       function(n) stats::spline(x = lib$tth,
+                                                                 y = n,
+                                                                 method = "natural",
+                                                                 xout = smpl_tth)[[2]]))
 
-names(lib$xrd) <- xrd_ref_names
+#names(lib$xrd) <- xrd_ref_names
 
 }
 
