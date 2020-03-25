@@ -572,8 +572,6 @@ if(missing(tth_fps)) {
 
 if (align > 0) {
 
-#xrd_ref_names <- lib$phases$phase_id
-
 #Ensure that samples in the reference library are on the same scale as the sample
 cat("\n-Interpolating library to same 2theta scale as aligned sample")
 lib$xrd <- data.frame(lapply(lib$xrd,
@@ -581,8 +579,6 @@ lib$xrd <- data.frame(lapply(lib$xrd,
                                                                  y = n,
                                                                  method = "natural",
                                                                  xout = smpl_tth)[[2]]))
-
-#names(lib$xrd) <- xrd_ref_names
 
 }
 
@@ -694,21 +690,39 @@ lib <- remove_neg_out[[2]]
 #Shift and then another optimisation ONLY if the shift parameter
 #is greater than zero
 
-if(shift > 0 & shift_mode == "grid") {
+if(shift > 0 & shift_mode == "grid" & length(x) > 1) {
 
-  fpf_aligned <- .shift(smpl = smpl,
-                        lib = lib,
-                        max_shift = shift,
-                        x = x,
-                        res = shift_res,
-                        obj = obj)
+  #fpf_aligned <- .shift(smpl = smpl,
+  #                      lib = lib,
+  #                      max_shift = shift,
+  #                      x = x,
+  #                      res = shift_res,
+  #                      obj = obj)
 
-  smpl <- fpf_aligned[["smpl"]]
-  lib$xrd <- data.frame(fpf_aligned[["lib"]])
-  lib$tth <- smpl[,1]
+  #smpl <- fpf_aligned[["smpl"]]
+  #lib$xrd <- data.frame(fpf_aligned[["lib"]])
+  #lib$tth <- smpl[,1]
 
+  #This will replace the grid search shifting
+  cat("\n-Optimising shifting coefficients...")
+  x_s <- rep(0, length(x))
+  names(x_s) <- names(x)
 
+  o <- stats::optim(par = x_s, .fullpat_shift_fast,
+                    weightings = x,
+                    method = solver, lib = lib,
+                    smpl = smpl, obj = obj)
 
+  x_s <- o$par
+
+  #Extract the shifted data
+  cat("\n-Harmonising library and sample to same 2theta axis")
+  shifted <- .fullpat_shift(smpl = smpl, lib = lib,
+                            par_shift = x_s,
+                            limit = shift)
+
+  lib <- shifted$lib
+  smpl <- shifted$smpl
 
 #----------------------------------------------
 #Re-optimise after shifting
