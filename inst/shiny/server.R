@@ -453,7 +453,7 @@ shiny::shinyServer(function(input, output, session) {
 
         output$slide_help_ui <- shiny::renderUI({
 
-          return(shiny::helpText("Adjust the slider represent the LOD of the internal standard (%)."))
+          return(shiny::helpText("Adjust the slider to represent the LOD of the internal standard (%)."))
 
         })
 
