@@ -18,8 +18,6 @@
   manual_align,
   tth_fps,
   shift,
-  shift_mode,
-  shift_res,
   remove_trace,
   ...
 )
@@ -35,10 +33,10 @@ Default = \code{TRUE}. Harmonises to the intersecting 2theta range at the coarse
 available.}
 
 \item{solver}{The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
-"CG", "L-BFGS-B", or "NNLS")}. Default = \code{"BFGS"}.}
+"CG", or "NNLS")}. Default = \code{"BFGS"}.}
 
 \item{obj}{The objective function to minimise when "BFGS", "Nelder-Mead",
-"CG" or "L-BFGS-B" are used as the `solver` argument. One of \code{c("Delta", "R", "Rwp")}.
+or "CG" are used as the `solver` argument. One of \code{c("Delta", "R", "Rwp")}.
 Default = \code{"Rwp"}. See Chipera and Bish (2002) and page 247 of Bish and Post (1989)
 for definitions of these functions.}
 
@@ -70,14 +68,6 @@ full pattern summation. If not defined, then the full range is used.}
 
 \item{shift}{A single numeric value denoting the maximum (positive or negative) shift,
 in degrees 2theta, that is allowed during the shifting of selected phases.}
-
-\item{shift_mode}{The mode used of shifting. One of "grid" (default) or "optimise".
-"optimise" can also be used in conjunction with "BFGS", "Nelder-Mead" or "CG" solver
-routines, and can substantially increase computation time compared to "grid".}
-
-\item{shift_res}{A single integer defining the increase in resolution used when
-\code{shift_mode = "grid"}. Higher values facilitate finer shifts at the expense of
-longer computation. Default = 4.}
 
 \item{remove_trace}{A single numeric value representing the limit for the concentration
 of trace phases to be retained, i.e. any mineral with an estimated concentration below

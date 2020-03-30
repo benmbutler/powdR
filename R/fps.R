@@ -202,9 +202,9 @@ fps <- function(lib, ...) {
 #' Default = \code{TRUE}. Harmonises to the intersecting 2theta range at the coarsest resolution
 #' available.
 #' @param solver The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
-#' "CG", "L-BFGS-B", or "NNLS")}. Default = \code{"BFGS"}.
+#' "CG", or "NNLS")}. Default = \code{"BFGS"}.
 #' @param obj The objective function to minimise when "BFGS", "Nelder-Mead",
-#' "CG" or "L-BFGS-B" are used as the `solver` argument. One of \code{c("Delta", "R", "Rwp")}.
+#' or "CG" are used as the `solver` argument. One of \code{c("Delta", "R", "Rwp")}.
 #' Default = \code{"Rwp"}. See Chipera and Bish (2002) and page 247 of Bish and Post (1989)
 #' for definitions of these functions.
 #' @param refs A character string of reference pattern ID's or names from the specified library.
@@ -228,12 +228,6 @@ fps <- function(lib, ...) {
 #' full pattern summation. If not defined, then the full range is used.
 #' @param shift A single numeric value denoting the maximum (positive or negative) shift,
 #' in degrees 2theta, that is allowed during the shifting of selected phases.
-#' @param shift_mode The mode used of shifting. One of "grid" (default) or "optimise".
-#' "optimise" can also be used in conjunction with "BFGS", "Nelder-Mead" or "CG" solver
-#' routines, and can substantially increase computation time compared to "grid".
-#' @param shift_res A single integer defining the increase in resolution used when
-#' \code{shift_mode = "grid"}. Higher values facilitate finer shifts at the expense of
-#' longer computation. Default = 4.
 #' @param remove_trace A single numeric value representing the limit for the concentration
 #' of trace phases to be retained, i.e. any mineral with an estimated concentration below
 #' \code{remove_trace} will be omitted. Default = 0.
@@ -335,20 +329,8 @@ fps <- function(lib, ...) {
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
 fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
-                tth_align, align, manual_align, tth_fps, shift, shift_mode,
-                shift_res, remove_trace, ...) {
-
-  if (missing(shift_mode)) {
-
-    shift_mode <- "grid"
-
-  }
-
-  if (!shift_mode %in% c("grid", "optimise")) {
-
-    stop("The shift_mode argument must be one of 'grid' or 'optimise'")
-
-  }
+                tth_align, align, manual_align, tth_fps, shift,
+                remove_trace, ...) {
 
   if (missing(harmonise)) {
 
@@ -436,11 +418,6 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
   }
 
-  #If shift_res is missing then set it to default
-  if(missing(shift_res)) {
-    shift_res = 4
-  }
-
   #If remove_trace is missing then set it to default
   if(missing(remove_trace)) {
     remove_trace = 0
@@ -465,6 +442,7 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
   if(missing(obj) & solver == "NNLS" & shift > 0) {
 
     obj = "Rwp"
+
   }
 
   #But if obj definitely isn't needed then set it to NULL
@@ -485,14 +463,21 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
   #Make only "Nelder-Mead", "BFGS", or "CG", "L-BFGS-B" or "NNLS" optional for the solver
   if (!solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "NNLS")) {
-    stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG', 'L-BFGS-B' or 'NNLS'")
+    stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG', or 'NNLS'")
   }
 
-  #If shift_mode = "optimise" and the solver is "L-BFGS-B" or "NNLS", then stop
-  if (solver %in% c("L-BFGS-B", "NNLS") & shift_mode == "optimise" & shift > 0) {
+  if (solver == "L-BFGS-B") {
 
-    stop("When shift_mode = 'optimise', the solver argument must be one of 'BFGS',
-    'Nelder-Mead' or 'CG'.")
+    cat("\n-The 'L-BFGS-B' option for solver has deprecated.
+        Using 'BFGS' instead.")
+
+  }
+
+  #If the solver is "NNLS" and shift > 0, then stop
+  if (solver == "NNLS" & shift > 0) {
+
+    warning("When shift > 0, the solver argument must be one of 'BFGS',
+    'Nelder-Mead' or 'CG'. No shifting will be used.")
 
   }
 
@@ -594,7 +579,7 @@ lib$xrd <- lib$xrd[which(lib$tth >= tth_fps[1] & lib$tth <= tth_fps[2]), , drop 
 #Replace the tth in the library with the shortened one
 lib$tth <- smpl[, 1]
 
-if (solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
+if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
 
 #--------------------------------------------
 #Initial Optimisation
@@ -603,53 +588,42 @@ if (solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
 x <- rep(0, ncol(lib$xrd))
 names(x) <- names(lib$xrd)
 
-if (solver == "L-BFGS-B") {
-
- cat("\n-Optimising using L-BFGS-B constrained to a lower limit of zero...")
-
- o <- stats::optim(par = x, .fullpat,
-                   method = solver, lower = 0, pure_patterns = lib$xrd,
-                   sample_pattern = smpl[, 2], obj = obj)
-
- x <- o$par
-
-} else {
-
 #Optimise weighting and shifts if these conditions are met
-if (shift_mode == "optimise" & shift > 0 & length(x) > 1) {
+#if (shift_mode == "optimise" & shift > 0 & length(x) > 1) {
 
 #Create x_s parameters
-x_s <- x
-names(x_s) <- paste0(names(x), "_s")
+#x_s <- x
+#names(x_s) <- paste0(names(x), "_s")
 
-cat("\n-Optimising weighting and shifting coefficients...")
-o <- stats::optim(par = c(x,x_s), .fullpat_shift_optim,
-                  method = solver, lib = lib,
-                  smpl = smpl, obj = obj)
+#cat("\n-Optimising weighting and shifting coefficients...")
+#o <- stats::optim(par = c(x,x_s), .fullpat_shift_optim,
+#                  method = solver, lib = lib,
+#                  smpl = smpl, obj = obj)
 
-x <- o$par
+#x <- o$par
 
 #Extract the shifted data
-cat("\n-Harmonising library and sample to same 2theta axis")
-shifted <- .fullpat_shift(smpl = smpl, lib = lib,
-                          par_shift = x[((length(x)/2)+1):length(x)],
-                          limit = shift)
+#cat("\n-Harmonising library and sample to same 2theta axis")
+#shifted <- .fullpat_shift(smpl = smpl, lib = lib,
+#                          par_shift = x[((length(x)/2)+1):length(x)],
+#                          limit = shift)
 
-lib <- shifted$lib
-smpl <- shifted$smpl
+#lib <- shifted$lib
+#smpl <- shifted$smpl
 
 #Now extract just the weighting coefficients
-x <- x[1:ncol(lib$xrd)]
+#x <- x[1:ncol(lib$xrd)]
 
 #Now make sure negative coefficients are (almost) zero again
-if (length(which(x < 0)) > 0) {
+#if (length(which(x < 0)) > 0) {
 
-  x[which(x < 0)] <- 1*10^-16
+#  x[which(x < 0)] <- 1*10^-16
 
-}
+#}
 
-} else {
+#} else {
 
+#Initial optimisation
 cat("\n-Optimising...")
 
 o <- stats::optim(par = x, .fullpat,
@@ -658,19 +632,21 @@ o <- stats::optim(par = x, .fullpat,
 
 x <- o$par
 
-}
-
-}
+#}
 
 #-----------------------------------------------
 # Remove negative parameters or parameters equal to zero
 #-----------------------------------------------
+
+if (min(x) < 0) {
 
 remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
                               solver = solver, obj = obj)
 
 x <- remove_neg_out[[1]]
 lib <- remove_neg_out[[2]]
+
+}
 
 } else {
 
@@ -684,13 +660,13 @@ lib <- remove_neg_out[[2]]
 
 
 #----------------------------------------------------
-# Grid search shifting
+# Shifting
 #----------------------------------------------------
 
 #Shift and then another optimisation ONLY if the shift parameter
-#is greater than zero
+#is greater than zero and the correct solver arguments are used
 
-if(shift > 0 & shift_mode == "grid" & length(x) > 1) {
+if(shift > 0 & length(x) > 1 & solver %in% c("Nelder-Mead", "BFGS", "CG")) {
 
   #fpf_aligned <- .shift(smpl = smpl,
   #                      lib = lib,
@@ -708,18 +684,24 @@ if(shift > 0 & shift_mode == "grid" & length(x) > 1) {
   x_s <- rep(0, length(x))
   names(x_s) <- names(x)
 
-  o <- stats::optim(par = x_s, .fullpat_shift_fast,
+  o <- stats::optim(par = x_s, .fullpat_shift_seq,
                     weightings = x,
                     method = solver, lib = lib,
                     smpl = smpl, obj = obj)
 
   x_s <- o$par
 
+  #Make sure any large shifts are avoided
+  if (length(which(x_s > shift | x_s < -shift)) > 0) {
+
+    x_s[which(x_s > shift | x_s < -shift)] <- 0
+
+  }
+
   #Extract the shifted data
   cat("\n-Harmonising library and sample to same 2theta axis")
   shifted <- .fullpat_shift(smpl = smpl, lib = lib,
-                            par_shift = x_s,
-                            limit = shift)
+                            par_shift = x_s)
 
   lib <- shifted$lib
   smpl <- shifted$smpl
@@ -728,7 +710,7 @@ if(shift > 0 & shift_mode == "grid" & length(x) > 1) {
 #Re-optimise after shifting
 #----------------------------------------------
 
-  if (solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
+  #if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
 
     cat("\n-Reoptimising after shifting data")
 
@@ -738,23 +720,25 @@ if(shift > 0 & shift_mode == "grid" & length(x) > 1) {
 
     x <- o$par
 
-  } else {
+  #}
 
-    cat("\n-Applying non-negative least squares")
+  #else {
 
-    nnls_out <- .xrd_nnls(xrd.lib = lib, xrd.sample = smpl[, 2])
+  #  cat("\n-Applying non-negative least squares")
 
-    lib$xrd <- nnls_out$xrd.lib
+  #  nnls_out <- .xrd_nnls(xrd.lib = lib, xrd.sample = smpl[, 2])
 
-    x <- nnls_out$x
+  #  lib$xrd <- nnls_out$xrd.lib
 
-  }
+  #  x <- nnls_out$x
 
-#--------------------------------------------------------------------------------------------
+  #}
+
+#------------------------------------------------------
 #Remove negative/zero parameters after shifting
-#--------------------------------------------------------------------------------------------
+#------------------------------------------------------
 
-if (!solver == 'NNLS') {
+if (min(x) < 0) {
 
 remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
                               solver = solver, obj = obj)
@@ -846,7 +830,6 @@ inputs <- list("harmonise" = harmonise,
                "manual_align" = manual_align,
                "tth_fps" = tth_fps,
                "shift" = shift,
-               "shift_res" = shift_res,
                "remove_trace" = remove_trace)
 
 

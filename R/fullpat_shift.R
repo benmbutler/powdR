@@ -6,13 +6,13 @@
 
 }
 
-.fullpat_shift <- function(smpl, lib, par_shift, limit) {
+.fullpat_shift <- function(smpl, lib, par_shift) {
 
-if (!missing(limit)) {
+#if (!missing(limit)) {
 
-  par_shift[which(par_shift > limit | par_shift < -limit)] <- 0
+#  par_shift[which(par_shift > limit | par_shift < -limit)] <- 0
 
-}
+#}
 
 #Create a list of xy patterns from the xrd data
 l <- lapply(lib$xrd, function(x) data.frame("tth" = lib$tth,
@@ -39,41 +39,41 @@ return(list("smpl" = smpl,
 }
 
 
-.fullpat_shift_optim <- function (par, lib, smpl, obj) {
+# .fullpat_shift_optim <- function (par, lib, smpl, obj) {
+#
+#     par_w <- par[1:(length(par)/2)]
+#     par_s <- par[((length(par)/2)+1):length(par)]
+#
+#     #Shift the data
+#     fs <- .fullpat_shift(smpl = smpl,
+#                          lib = lib,
+#                          par_shift = par_s)
+#
+#     #This calculates the fitted pattern
+#     s_mix <- apply(sweep(fs$lib$xrd, 2, par_w, "*"),
+#                    1, sum)
+#
+#     #objective functions
+#     if(obj == "Delta") {
+#       d <- sum(abs(fs$smpl$counts - s_mix))
+#     }
+#
+#     if(obj == "R") {
+#       d <- sqrt(sum((fs$smpl$counts - s_mix)^2)/sum(fs$smpl$count^2))
+#     }
+#
+#     if(obj == "Rwp") {
+#       d <-  sqrt(sum((1/fs$smpl$counts) * ((fs$smpl$counts - s_mix)^2)) / sum((1/fs$smpl$counts) * (fs$smpl$counts^2)))
+#     }
+#
+#     return(d)
+#
+# }
 
-    par_w <- par[1:(length(par)/2)]
-    par_s <- par[((length(par)/2)+1):length(par)]
 
-    #Shift the data
-    fs <- .fullpat_shift(smpl = smpl,
-                         lib = lib,
-                         par_shift = par_s)
-
-    #This calculates the fitted pattern
-    s_mix <- apply(sweep(fs$lib$xrd, 2, par_w, "*"),
-                   1, sum)
-
-    #objective functions
-    if(obj == "Delta") {
-      d <- sum(abs(fs$smpl$counts - s_mix))
-    }
-
-    if(obj == "R") {
-      d <- sqrt(sum((fs$smpl$counts - s_mix)^2)/sum(fs$smpl$count^2))
-    }
-
-    if(obj == "Rwp") {
-      d <-  sqrt(sum((1/fs$smpl$counts) * ((fs$smpl$counts - s_mix)^2)) / sum((1/fs$smpl$counts) * (fs$smpl$counts^2)))
-    }
-
-    return(d)
-
-}
-
-
-#This should be a faster shifting version that does not optimise all coefficients at one
+#This should be a faster shifting version that does not optimise all coefficients at once
 #and instead JUST optimises the shifts
-.fullpat_shift_fast <- function (par, weightings, lib, smpl, obj) {
+.fullpat_shift_seq <- function (par, weightings, lib, smpl, obj) {
 
   #Shift the data
   fs <- .fullpat_shift(smpl = smpl,

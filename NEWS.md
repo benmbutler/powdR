@@ -1,4 +1,9 @@
+# powdR 1.2.0
+* `fps()` and `afps()` no longer require the `shift_res` argument
+* Shifting is now calculated by optimisation of the objective function.
+
 # powdR 1.1.0
+
 ## New features
 * The `refs` argument of `fps()` and `subset()` now accepts phase names as well as phase ID's. For example, if
   the phase name "Quartz" in supplied, then all phase ID's associated with Quartz will be selected.

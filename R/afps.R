@@ -125,7 +125,7 @@ afps <- function(lib, ...) {
 #' Default = \code{TRUE}. Harmonises to the intersecting 2theta range at the coarsest resolution
 #' available.
 #' @param solver The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
-#' "CG" or "L-BFGS-B")}. Default = \code{"BFGS"}.
+#' or "CG")}. Default = \code{"BFGS"}.
 #' @param obj The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
 #' Default = \code{"Rwp"}. See Chipera and Bish (2002) and page 247 of Bish and Post (1989)
 #' for definitions of these functions.
@@ -151,12 +151,6 @@ afps <- function(lib, ...) {
 #' = \code{FALSE}, i.e. alignment is optimised.
 #' @param shift A single numeric value denoting the maximum (positive or negative) shift,
 #' in degrees 2theta, that is allowed during the shifting of selected phases.
-#' @param shift_mode The mode used of shifting. One of "grid" (default) or "optimise".
-#' "optimise" can also be used in conjunction with "BFGS", "Nelder-Mead" or "CG" solver
-#' routines, and can substantially increase computation time compared to "grid".
-#' @param shift_res A single integer defining the increase in resolution used when
-#' \code{shift_mode = "grid"}. Higher values facilitate finer shifts at the expense of
-#' longer computation. Default = 4.
 #' @param tth_fps A vector defining the minimum and maximum 2theta values to be used during
 #' automated full pattern summation. If not defined, then the full range is used.
 #' @param lod Optional parameter used to define the limit of detection (in weight percent) of the internal standard
@@ -261,20 +255,9 @@ afps <- function(lib, ...) {
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
 afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, std_conc,
-                         tth_align, align, manual_align, shift, shift_mode,
-                         shift_res, tth_fps, lod, amorphous, amorphous_lod, ...) {
+                         tth_align, align, manual_align, shift,
+                         tth_fps, lod, amorphous, amorphous_lod, ...) {
 
-  if (missing(shift_mode)) {
-
-    shift_mode <- "grid"
-
-  }
-
-  if (!shift_mode %in% c("grid", "optimise")) {
-
-    stop("The shift_mode argument must be one of 'grid' or 'optimise'")
-
-  }
 
   if (missing(force)) {
 
@@ -373,9 +356,10 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
   #If a solver other than NNLS is being used but the objective function
   #not defined, then used Rwp
-  if(missing(obj) & solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
+  if(missing(obj)) {
 
     obj = "Rwp"
+
   }
 
   #If shift is missing then set it to default
@@ -383,12 +367,6 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
     shift = 0
 
-  }
-
-  #If shift_res is missing then set it to default
-  if(missing(shift_res)) {
-
-    shift_res = 4
   }
 
   #If refs are not defined or "all" then use all of them
@@ -424,14 +402,13 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
   #Make only "Nelder-Mead", "BFGS", "CG" or "L-BFGS-B" optional for the solver
   if (!solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B")) {
-    stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG' or 'L-BFGS-B'")
+    stop("The solver argument must be one of 'BFGS', 'Nelder Mead' or 'CG'")
   }
 
-  #If shift_mode = "optimise" and the solver is "L-BFGS-B", then stop
-  if (solver == "L-BFGS-B" & shift_mode == "optimise" & shift > 0) {
+  if (solver == "L-BFGS-B") {
 
-    stop("When shift_mode = 'optimise', the solver argument must be one of 'BFGS',
-    'Nelder-Mead' or 'CG'.")
+    cat("\n-The 'L-BFGS-B' option for solver has deprecated.
+        Using 'BFGS' instead.")
 
   }
 
@@ -573,42 +550,40 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
     x <- rep(0, ncol(lib$xrd))
     names(x) <- names(lib$xrd)
 
-    if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
-
       #Optimise weighting and shifts if these conditions are met
-      if (shift_mode == "optimise" & shift > 0 & length(x) > 1) {
+      #if (shift_mode == "optimise" & shift > 0 & length(x) > 1) {
 
         #Create x_s parameters
-        x_s <- x
-        names(x_s) <- paste0(names(x), "_s")
+       # x_s <- x
+        #names(x_s) <- paste0(names(x), "_s")
 
-        cat("\n-Optimising weighting and shifting coefficients...")
-        o <- stats::optim(par = c(x,x_s), .fullpat_shift_optim,
-                          method = solver, lib = lib,
-                          smpl = smpl, obj = obj)
+        #cat("\n-Optimising weighting and shifting coefficients...")
+        #o <- stats::optim(par = c(x,x_s), .fullpat_shift_optim,
+        #                  method = solver, lib = lib,
+        #                  smpl = smpl, obj = obj)
 
-        x <- o$par
+        #x <- o$par
 
         #Extract the shifted data
-        cat("\n-Harmonising library and sample to same 2theta axis")
-        shifted <- .fullpat_shift(smpl = smpl, lib = lib,
-                                  par_shift = x[((length(x)/2)+1):length(x)],
-                                  limit = shift)
+        #cat("\n-Harmonising library and sample to same 2theta axis")
+        #shifted <- .fullpat_shift(smpl = smpl, lib = lib,
+        #                          par_shift = x[((length(x)/2)+1):length(x)],
+        #                          limit = shift)
 
-        lib <- shifted$lib
-        smpl <- shifted$smpl
+        #lib <- shifted$lib
+        #smpl <- shifted$smpl
 
         #Now extract just the weighting coefficients
-        x <- x[1:ncol(lib$xrd)]
+        #x <- x[1:ncol(lib$xrd)]
 
         #Now make sure negative coefficients are (almost) zero again
-        if (length(which(x < 0)) > 0) {
+        #if (length(which(x < 0)) > 0) {
 
-          x[which(x < 0)] <- 1*10^-16
+        #  x[which(x < 0)] <- 1*10^-16
 
-        }
+        #}
 
-      } else {
+      #} else {
 
         cat("\n-Optimising...")
 
@@ -618,22 +593,14 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
         x <- o$par
 
-      }
+      #}
 
-    } else {
 
-    cat("\n-Optimising using L-BFGS-B constrained to a lower limit of zero...")
-    o <- stats::optim(par = x, .fullpat,
-                      method = solver, lower = 0, pure_patterns = lib$xrd,
-                      sample_pattern = smpl[, 2], obj = obj)
-
-    x <- o$par
-
-    }
-
-  #--------------------------------------------------------------------------------------------
+#-------------------------------------------------------
   #Remove negative/zero parameters
-  #--------------------------------------------------------------------------------------------
+#-------------------------------------------------------
+
+  if (min(x) < 0) {
 
   remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
                                 solver = solver, obj = obj, force = force)
@@ -641,25 +608,16 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   x <- remove_neg_out[[1]]
   lib <- remove_neg_out[[2]]
 
+  }
+
   #--------------------------------------------
-  #Grid-search shifting
+  #Shifting
   #--------------------------------------------
 
   #Alignment and then another optimisation ONLY if the shift parameter
   #is included
 
-  if(shift > 0 & shift_mode == "grid" & length(x) > 1) {
-
-    #fpf_aligned <- .shift(smpl = smpl,
-    #                      lib = lib,
-    #                      max_shift = shift,
-    #                      x = x,
-    #                      res = shift_res,
-    #                      obj = obj)
-
-    #smpl <- fpf_aligned[["smpl"]]
-    #lib$xrd <- data.frame(fpf_aligned[["lib"]])
-    #lib$tth <- smpl[,1]
+  if(shift > 0 & length(x) > 1) {
 
     #fpf_aligned <- .shift(smpl = smpl,
     #                      lib = lib,
@@ -677,51 +635,57 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
     x_s <- rep(0, length(x))
     names(x_s) <- names(x)
 
-    o <- stats::optim(par = x_s, .fullpat_shift_fast,
+    o <- stats::optim(par = x_s, .fullpat_shift_seq,
                       weightings = x,
                       method = solver, lib = lib,
                       smpl = smpl, obj = obj)
 
     x_s <- o$par
 
+    #Make sure any large shifts are avoided
+    if (length(which(x_s > abs(shift) | x_s < -abs(shift))) > 0) {
+
+      x_s[which(x_s > abs(shift) | x_s < -abs(shift))] <- 0
+
+    }
+
     #Extract the shifted data
     cat("\n-Harmonising library and sample to same 2theta axis")
     shifted <- .fullpat_shift(smpl = smpl, lib = lib,
-                              par_shift = x_s,
-                              limit = shift)
+                              par_shift = x_s)
 
     lib <- shifted$lib
     smpl <- shifted$smpl
 
-  }
+  #}
 
 
   #----------------------------------------------
   #Re-optimise after shifting
   #----------------------------------------------
 
-  if(shift > 0 & shift_mode == "grid" & length(x) > 1) {
+  #if(shift > 0 & shift_mode == "grid" & length(x) > 1) {
 
-    if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
+  cat("\n-Reoptimising after shifting data")
 
-      cat("\n-Reoptimising after shifting data")
+  o <- stats::optim(par = x, .fullpat,
+                    method = solver, pure_patterns = lib$xrd,
+                    sample_pattern = smpl[, 2], obj = obj)
 
-      o <- stats::optim(par = x, .fullpat,
-                        method = solver, pure_patterns = lib$xrd,
-                        sample_pattern = smpl[, 2], obj = obj)
+  x <- o$par
 
-    } else {
 
-      cat("\n-Reoptimising after shifting data. Using L-BFGS-B constrained
-        to a lower limit of zero")
+  #Now remove negative parameters if they exist
+  if (min(x) < 0) {
 
-      o <- stats::optim(par = x, .fullpat,
-                        method = solver, lower = 0, pure_patterns = lib$xrd,
-                        sample_pattern = smpl[, 2], obj = obj)
+        remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
+                                      solver = solver, obj = obj,
+                                      force = force)
 
-    }
+        x <- remove_neg_out[[1]]
+        lib <- remove_neg_out[[2]]
 
-    x <- o$par
+  }
 
   }
 
@@ -762,24 +726,11 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
   if (logical_reoptimise == FALSE) {
 
-  if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
-
   cat("\n-Reoptimising after removing crystalline phases below the limit of detection")
 
   o <- stats::optim(par = x, .fullpat,
                     method = solver, pure_patterns = lib$xrd,
                     sample_pattern = smpl[, 2], obj = obj)
-
-  } else {
-
-  cat("\n--Reoptimising after removing crystalline phases below the limit of detection. Using L-BFGS-B
-      constrained to a lower limit of zero")
-
-  o <- stats::optim(par = x, .fullpat,
-                    method = solver, lower = 0, pure_patterns = lib$xrd,
-                    sample_pattern = smpl[, 2], obj = obj)
-
-  }
 
   x <- o$par
 
@@ -836,12 +787,14 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
 
   #Remove negative parameters again because some can creep in late-on
+  if (min(x) < 0) {
   remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
-                                  solver = solver, obj = obj,
+                                solver = solver, obj = obj,
                                 force = force)
 
   x <- remove_neg_out[[1]]
   lib <- remove_neg_out[[2]]
+  }
 
   #compute fitted pattern and residuals
   fitted_pattern <- apply(sweep(as.matrix(lib$xrd), 2, x, "*"), 1, sum)
@@ -907,7 +860,6 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
                  "align" = align,
                  "manual_align" = manual_align,
                  "shift" = shift,
-                 "shift_res" = shift_res,
                  "tth_fps" = tth_fps,
                  "lod" = lod,
                  "amorphous" = amorphous,
