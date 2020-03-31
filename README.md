@@ -72,12 +72,12 @@ q <-  fps(lib = minerals,
 #Inspect the phase concentrations (summarised by name)
 q$phases_grouped
 #>       phase_name phase_percent
-#> 1         Illite        1.2599
-#> 2     K-feldspar        1.2666
-#> 3      Kaolinite        1.3476
-#> 4 Organic-Matter       41.2340
-#> 5    Plagioclase        1.1540
-#> 6         Quartz       53.7379
+#> 1         Illite        1.3290
+#> 2     K-feldspar        1.3020
+#> 3      Kaolinite        1.3697
+#> 4 Organic-Matter       41.1591
+#> 5    Plagioclase        1.1632
+#> 6         Quartz       53.6769
 
 #Inspect the quantification
 plot(q, wavelength = "Cu")
@@ -92,7 +92,7 @@ usage instructions are provided in the package vignette.
 ## The powdR Shiny app
 
 To run `powdR` via the Shiny app, use `run_powdR()`. This loads the
-application in your default web browser. The application has eight tabs:
+application in your default web browser. The application has six tabs:
 
 1.  **Reference Library Builder:** Allows you to create and export a
     `powdRlib` reference library from two .csv files: one for the XRPD
@@ -102,16 +102,12 @@ application in your default web browser. The application has eight tabs:
     phases within a `powdRlib` reference library.
 3.  **Reference Library Editor:** Allows the user to easily subset a
     `powdRlib` reference library .
-4.  **Full Pattern Summation:** A user friendly interface for iterative
-    full pattern summation of single samples.
-5.  **Automated Full Pattern Summation:** A user friendly interface for
+4.  **Full Pattern Summation:** A user friendly interface for manual and
     automated full pattern summation of single samples.
-6.  **Results viewer:** Allows for quick inspection of results derived
-    from full pattern summation.
-7.  **Results editor:** Allows for results from previously saved
-    `powdRfps` and `powdRafps` objects to be edited via addition or
-    removal of reference patterns to the fitting process.
-8.  **Help** Provides a series of video tutorials (via YouTube)
+5.  **Results Viewer/Editor:** Allows for results from previously saved
+    `powdRfps` and `powdRafps` objects to be viewed and edited via
+    addition or removal of reference patterns.
+6.  **Help** Provides a series of video tutorials (via YouTube)
     detailing the use of the `powdR` Shiny application.
 
 **Please note that the `powdR` Shiny app may not work in the Microsoft
