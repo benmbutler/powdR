@@ -1,4 +1,6 @@
 # powdR 1.2.0
+
+## New features
 * `fps()` and `afps()` no longer require the `shift_res` argument.
 * Shifting is now calculated by optimisation of the objective function.
 * Natural splines are now used instead of linear splines throughout `fps()` and `afps()`.
