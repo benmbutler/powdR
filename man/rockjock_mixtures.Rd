@@ -36,7 +36,8 @@ plagioclase (LABRADORITE), kaolinite (KAOLINITE_DRY_BRANCH), dioctahedral smecti
 (MONTMORILLIONITE_WYO), illite (ILLITE_1M_RM30) and corundum (CORUNDUM).
 }
 \references{
-\url{https://pubs.er.usgs.gov/publication/ofr200378}
+Eberl, D.D., 2003. User's guide to RockJock - A program for determining quantitative mineralogy from
+powder X-ray diffraction data. Boulder, CA.
 }
 \author{
 Dennis Eberl

@@ -78,7 +78,9 @@
 #' }
 #'
 #' @author Dennis Eberl
-#' @references \url{https://pubs.er.usgs.gov/publication/ofr200378}
+#' @references
+#' Eberl, D.D., 2003. User's guide to RockJock - A program for determining quantitative mineralogy from
+#' powder X-ray diffraction data. Boulder, CA.
 "rockjock"
 
 #' RockJock synthetic mixtures
@@ -112,5 +114,7 @@
 #' }
 #'
 #' @author Dennis Eberl
-#' @references \url{https://pubs.er.usgs.gov/publication/ofr200378}
+#' @references
+#' Eberl, D.D., 2003. User's guide to RockJock - A program for determining quantitative mineralogy from
+#' powder X-ray diffraction data. Boulder, CA.
 "rockjock_mixtures"

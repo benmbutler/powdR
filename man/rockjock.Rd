@@ -24,7 +24,8 @@ concentrations are available in the \code{rockjock_mixtures} data. See
 \code{?rockjock_mixtures}.
 }
 \references{
-\url{https://pubs.er.usgs.gov/publication/ofr200378}
+Eberl, D.D., 2003. User's guide to RockJock - A program for determining quantitative mineralogy from
+powder X-ray diffraction data. Boulder, CA.
 }
 \author{
 Dennis Eberl
