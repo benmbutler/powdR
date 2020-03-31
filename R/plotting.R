@@ -8,7 +8,6 @@
 #' \code{plot.powdRfps} is designed to provide easy, adaptable plots
 #' of full pattern summation outputs produced from \code{\link{fps}}.
 #'
-#' The only mandatory argument is \code{x}, which must be a powdRlib object.
 #' When seeking to inspect the results from full pattern summation, interactive
 #' plots are particularly useful and can be specified with the \code{interactive}
 #' argument.
@@ -156,7 +155,6 @@ plot.powdRfps <- function(x, wavelength, interactive, ...) {
 #' \code{plot.powdRafps} is designed to provide easy, adaptable plots
 #' of full pattern summation outputs produced from \code{\link{afps}}.
 #'
-#' The only mandatory argument is \code{x}, which must be a powdRlib object.
 #' When seeking to inspect the results from full pattern summation, interactive
 #' plots are particularly useful and can be specified with the \code{interactive}
 #' argument.
@@ -308,8 +306,7 @@ plot.powdRafps <- function(x, wavelength, interactive, ...) {
 #' of an XRPD reference library built using the \code{powdRlib} constructor
 #' function.
 #'
-#' The only mandatory argument is x, which must be a powdRlib object. Plots can
-#' be made interactive using the logical \code{interactive} argument.
+#' Plots can be made interactive using the logical \code{interactive} argument.
 #'
 #' @param x a powdRlib object
 #' @param wavelength One of "Cu", "Co" or a custom numeric value defining the wavelength

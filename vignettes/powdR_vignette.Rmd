@@ -281,17 +281,15 @@ where `type = "grouped"` denotes that phases with the same `phase_name` will be 
 
 ## The powdR Shiny app
 
-To run `powdR` via the Shiny app, use `run_powdR()`. This loads the application in your default web browser. The application has eight tabs:
+To run `powdR` via the Shiny app, use `run_powdR()`. This loads the application in your default web browser. The application has six tabs:
 
 1. **Reference Library Builder:** Allows you to create and export a `powdRlib` reference library from two .csv files: one for the XRPD measurements, and the other for the ID, name and reference intensity ratio of each pattern.
 2. **Reference Library Viewer:** Facilitates quick inspection of the phases within a `powdRlib` reference library.
 3. **Reference Library Editor:** Allows the user to easily subset a `powdRlib` reference library .
-4. **Full Pattern Summation:** A user friendly interface for iterative full pattern summation of single samples.
-5. **Automated Full Pattern Summation:** A user friendly interface for automated full pattern summation of single samples.
-6. **Results viewer:** Allows for quick inspection of results derived from full pattern summation.
-7. **Results editor:** Allows for results from previously saved `powdRfps` and `powdRafps` objects to be edited via addition or removal of reference patterns to the fitting process.
-8. **Help** Provides a series of video tutorials (via YouTube) detailing the use of the `powdR` Shiny application.
+4. **Full Pattern Summation:** A user friendly interface for iterative full pattern summation of single samples using `fps()` or `afps()`.
+5. **Results editor:** Allows for results from previously saved `powdRfps` and `powdRafps` objects to be edited via addition or removal of reference patterns to the fitting process.
+6. **Help** Provides a series of video tutorials (via YouTube) detailing the use of the `powdR` Shiny application.
 
-**Note: that the Shiny application may not work properly in Microsoft Edge web browsers.**
+**Note: that the Shiny application may not work properly in Microsoft Edge web browsers. Please get in touch if you experience any other issues with the Shiny application.**
 
 ## References

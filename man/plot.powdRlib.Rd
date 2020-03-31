@@ -26,8 +26,7 @@ of an XRPD reference library built using the \code{powdRlib} constructor
 function.
 }
 \details{
-The only mandatory argument is x, which must be a powdRlib object. Plots can
-be made interactive using the logical \code{interactive} argument.
+Plots can be made interactive using the logical \code{interactive} argument.
 }
 \examples{
 # Load the minerals library

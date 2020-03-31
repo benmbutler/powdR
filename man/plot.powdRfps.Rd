@@ -23,7 +23,6 @@ ggplotly object. If FALSE then the output will be a ggplot object.}
 of full pattern summation outputs produced from \code{\link{fps}}.
 }
 \details{
-The only mandatory argument is \code{x}, which must be a powdRlib object.
 When seeking to inspect the results from full pattern summation, interactive
 plots are particularly useful and can be specified with the \code{interactive}
 argument.

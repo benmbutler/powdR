@@ -123,7 +123,7 @@ afps <- function(lib, ...) {
 #' @param smpl A data frame. First column is 2theta, second column is counts
 #' @param harmonise logical parameter defining whether to harmonise the \code{lib} and \code{smpl}.
 #' Default = \code{TRUE}. Harmonises to the intersecting 2theta range at the coarsest resolution
-#' available.
+#' available using natural splines.
 #' @param solver The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
 #' or "CG")}. Default = \code{"BFGS"}.
 #' @param obj The objective function to minimise. One of \code{c("Delta", "R", "Rwp")}.
@@ -134,7 +134,7 @@ afps <- function(lib, ...) {
 #' \code{lib$phases$phase_name} columns. If missing from the function call then all phases in
 #' the reference library will be used.
 #' @param std The phase ID (e.g. "QUA.1") to be used as internal
-#' standard. Must match an ID provided in the \code{phases} parameter.
+#' standard. Must match an ID provided in the \code{refs} parameter.
 #' @param force An optional string of phase ID's or names specifying which phases should be forced to
 #' remain throughout the automated full pattern summation. The ID's or names supplied must be present
 #' within the \code{lib$phases$phase_id} or \code{lib$phases$phase_name} columns.
@@ -142,7 +142,7 @@ afps <- function(lib, ...) {
 #' unknown then use \code{std_conc = NA}, in which case it will be assumed that all phases sum
 #' to 100 percent (default).
 #' @param tth_align A vector defining the minimum and maximum 2theta values to be used during
-#' alignment. If not defined, then the full range is used.
+#' alignment (e.g. \code{c(5,65)}). If not defined, then the full range is used.
 #' @param align The maximum shift that is allowed during initial 2theta
 #' alignment (degrees). Default = 0.1.
 #' @param manual_align A logical operator denoting whether to optimise the alignment within the
@@ -150,15 +150,15 @@ afps <- function(lib, ...) {
 #' value of the \code{align} argument for alignment of the sample to the standards. Default
 #' = \code{FALSE}, i.e. alignment is optimised.
 #' @param shift A single numeric value denoting the maximum (positive or negative) shift,
-#' in degrees 2theta, that is allowed during the shifting of selected phases.
+#' in degrees 2theta, that is allowed during the shifting of selected phases. Default = 0.
 #' @param tth_fps A vector defining the minimum and maximum 2theta values to be used during
-#' automated full pattern summation. If not defined, then the full range is used.
+#' automated full pattern summation (e.g. \code{c(5,65)}). If not defined, then the full range is used.
 #' @param lod Optional parameter used to define the limit of detection (in weight percent) of the internal standard
 #' (i.e. the phase provided in the \code{std} argument). The \code{lod} value is used to estimate the lod of other
 #' phases during the fitting process and hence remove reference patterns that are considered below detection limit.
 #' Default = 0.1. If \code{lod = 0} then limits of detection are not computed.
-#' @param amorphous A character string of any phase id's that should be treated as amorphous. Each must
-#' match a phase_id in the phases table of `lib`.
+#' @param amorphous A character string of any phase ID's that should be treated as amorphous. These must
+#' match phases present in \code{lib$phases$phase_id}.
 #' @param amorphous_lod Optional parameter used to exclude amorphous phases if they are below this
 #' specified limit (percent). Must be between 0 and 100. Default = 0.
 #' @param ... other arguments
@@ -166,10 +166,10 @@ afps <- function(lib, ...) {
 #' @return a list with components:
 #' \item{tth}{a vector of the 2theta scale of the fitted data}
 #' \item{fitted}{a vector of the fitted XRPD pattern}
-#' \item{measured}{a vector of the original XRPD measurement (aligned)}
+#' \item{measured}{a vector of the original XRPD measurement (aligned and harmonised)}
 #' \item{residuals}{a vector of the residuals (fitted vs measured)}
-#' \item{phases}{a dataframe of the phases used to produce the fitted pattern}
-#' \item{phases_grouped}{the phases dataframe grouped by phase_name and summed}
+#' \item{phases}{a dataframe of the phases used to produce the fitted pattern and their concentrations}
+#' \item{phases_grouped}{the phases dataframe grouped by phase_name and concentrations summed}
 #' \item{rwp}{the Rwp of the fitted vs measured pattern}
 #' \item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 #' All patterns have been weighted according to the coefficients used in the fit}

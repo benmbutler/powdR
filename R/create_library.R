@@ -1,20 +1,19 @@
-#' Create an XRD reference library
+#' Create an XRPD reference library
 #'
 #' A constructor function for creating a \code{powdRlib} object from two tables of
-#' data. The resulting reference library object is required when
-#' using \code{\link{fps}}.
+#' data. The resulting \code{powdRlib} object is required when
+#' using \code{\link{fps}} or \code{\link{afps}}.
 #'
-#' @param xrd_table A data frame of the count intensities of the xrd reference patterns,
+#' @param xrd_table A data frame of the count intensities of the XRPD reference patterns,
 #' all scaled to same maximum intensity, with their 2theta axis as the first column.
-#' Must all be on the same 2theta scale.
 #' @param phases_table A data frame of the required data (phase ID, phase name, and reference
 #' intensity ratio) for each reference pattern.
 #'
 #' @return a list with components:
 #' \item{xrd}{a data frame of reference patterns}
-#' \item{tth}{a vector of the 2theta measurement intervals}
-#' \item{phases}{a data frame of the id, name and reference
-#' intensity ratio of each reference pattern}
+#' \item{tth}{a vector of the 2theta axis}
+#' \item{phases}{a 3 column data frame of the IDs, names and reference
+#' intensity ratios of the reference pattern}
 #'
 #' @examples
 #' #load an example xrd_table

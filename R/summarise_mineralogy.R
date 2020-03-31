@@ -1,7 +1,7 @@
 #' Summarise the mineralogy from multiple powdRfps and powdRafps outputs
 #'
 #' \code{summarise_mineralogy} creates a summary table of quantified mineral
-#' concentrations across a given dataset using list of multiple \code{powdRfps}
+#' concentrations across a given dataset using a list of multiple \code{powdRfps}
 #' or \code{powdRafps} derived from \code{fps()} and \code{afps()}, respectively.
 #'
 #' @param x a list of \code{powdRfps} or \code{powdRafps} objects.
