@@ -222,12 +222,8 @@ shiny::tabPanel("Full Pattern Summation",
                                        multiple = TRUE,
                                        selectize = TRUE,
                                        selected = "Upload a powdRlib object in section 2"),
-                    shiny::helpText("Choose an internal standard for peak
-                                                       alignment. If the manual alignment
-                                                       box in section 6 is ticked, then this internal
-                                                       standard is not used and instead
-                                                       the sample is aligned by the amount
-                                                       selected in the alignment slider."),
+                    shiny::helpText("Choose an internal standard that may be used for peak
+                                    alignment or estimation of limits of detection."),
                     shiny::selectInput(inputId = "selectINT_fps",
                                        label = NULL,
                                        choices = c("")),
