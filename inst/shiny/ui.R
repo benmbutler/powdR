@@ -408,6 +408,7 @@ shiny::tabPanel("Help",
                                                    choices = list("Reference Library Builder" = "RGEhe_hdDkM",
                                                                   "Reference Library Viewer" = "9hVdSXk2uyw",
                                                                   "Reference Library Editor" = "mNQC1TLXJWM",
+                                                                  "Full Pattern Summation" = "w3qO2U3UqT0",
                                                                   "Results Editor" = "R7i8vJgVCvQ")),
                                 shiny::uiOutput("video")
                                 )
