@@ -151,8 +151,7 @@ shiny::shinyServer(function(input, output, session) {
                                  label = paste("Select reference patterns to subset"),
                                  choices = paste0(lib_editor_load()[[3]][[2]], ": ",
                                                   lib_editor_load()[[3]][[1]]),
-                                 selected = head(paste0(lib_editor_load()[[3]][[2]], ": ",
-                                                        lib_editor_load()[[3]][[1]]), 1))
+                                 selected = NULL)
         }
 
       #Create a powdRlib object
@@ -342,7 +341,7 @@ shiny::shinyServer(function(input, output, session) {
 
         return(shiny::updateSelectInput(session, "selectPHASES_fps",
                                         choices = refs_choices,
-                                        selected = refs_choices[[1]][[1]]))
+                                        selected = NULL))
       }
     })
 
@@ -358,35 +357,6 @@ shiny::shinyServer(function(input, output, session) {
                                         selected = int_choices[1]))
       }
     })
-
-    #Update the internal standard selectInput so that only phases selected for fitting
-    #are available
-    # shiny::observe({
-    #
-    #   scu2 <- as.character(input$selectPHASES_fps)
-    #   scu2 <- filedata3()[[3]][which(filedata3()[[3]][[1]] %in% sub(".*: ", "", scu2) |
-    #                                    filedata3()[[3]][[2]] %in% sub(".*: ", "", scu2)), 1:2]
-    #   scu2 <- paste0(scu2[[2]], ": ", scu2[[1]])
-    #
-    #   return(shiny::updateSelectInput(session, "selectINT_fps",
-    #                                   label = NULL,
-    #                                   choices = scu2,
-    #                                   selected = head(scu2, 1)))
-    # })
-
-    # shiny::observe({
-    #
-    #   scu <- as.character(input$selectPHASES_fps)
-    #   scu <- filedata3()[[3]][which(filedata3()[[3]][[1]] %in% sub(".*: ", "", scu) |
-    #                                   filedata3()[[3]][[2]] %in% sub(".*: ", "", scu)), 1:2]
-    #   scu <- paste0(scu[[2]], ": ", scu[[1]])
-    #
-    #   return(shiny::updateSelectInput(session, "selectINT_fps",
-    #                                   label = NULL,
-    #                                   choices = scu,
-    #                                   selected = head(scu, 1)))
-    #
-    # })
 
 
     shiny::observe({
@@ -552,26 +522,14 @@ shiny::shinyServer(function(input, output, session) {
 
         })
 
-        #Export the mineral concentrations to a .csv file
-        #minout <- fps_reactive()[[input$selectOUTPUT_fps]]
-        #minout <- data.frame(minout$phases)
-        #output$download_meas <- shiny::downloadHandler(
-        #  filename = function() {
-        #    paste("minerals-", Sys.Date(), ".csv", sep="")
-        #  },
-        #  content = function(file) {
-        #    write.table(fps_reactive()[[input$selectOUTPUT_fps]]$phases,
-        #                file, sep = ",", col.names = TRUE, row.names = FALSE)
-        #  }
-        #)
-
         output$download_meas <- shiny::downloadHandler(
           filename = function() {
             paste("measured_", Sys.Date(), ".xy", sep="")
           },
           content = function(file) {
             write.table(data.frame("X" = fps_reactive()[[1]]$tth,
-                                   "Y" = fps_reactive()[[1]]$measured), file, sep = " ", col.names = FALSE, row.names = FALSE)
+                                   "Y" = fps_reactive()[[1]]$measured), file,
+                        sep = " ", col.names = FALSE, row.names = FALSE)
           }
         )
 
@@ -581,7 +539,8 @@ shiny::shinyServer(function(input, output, session) {
           },
           content = function(file) {
             write.table(data.frame("X" = fps_reactive()[[1]]$tth,
-                                   "Y" = fps_reactive()[[1]]$measured), file, sep = " ", col.names = FALSE, row.names = FALSE)
+                                   "Y" = fps_reactive()[[1]]$measured), file,
+                        sep = " ", col.names = FALSE, row.names = FALSE)
           }
         )
 
@@ -603,16 +562,6 @@ shiny::shinyServer(function(input, output, session) {
             save(list="fps_output", file=con)
           }
         )
-
-
-        #Download the whole fps output as .Rdata format
-        #output$download_fps <- shiny::downloadHandler(
-        #  filename = "fps_output.Rdata",
-        #  content = function(con) {
-        #    assign("fps_output", fps_reactive()[[input$selectOUTPUT_fps]])
-        #    save(list="fps_output", file=con)
-        #  }
-        #)
 
 
       })
@@ -720,51 +669,8 @@ shiny::shinyServer(function(input, output, session) {
 
     })
 
-      #selectSTDupdate <- shiny::reactive({
-      #  if(class(results_editor_load_lib()) == "powdRlib" &
-      #     class(results_editor_load()) %in% c("powdRfps", "powdRafps")) {
-      #    return(input$selectADD_editor)
-      #    } else {
-      #      return(c(""))
-      #      }
-      #  })
 
-      #removeSTDupdate <- shiny::reactive({
-      #  if(class(results_editor_load_lib()) == "powdRlib" &
-      #     class(results_editor_load()) %in% c("powdRfps", "powdRafps")) {
-      #    return(input$selectREMOVE_editor)
-      #    } else {
-      #      return(c(""))
-      #      }
-      #  })
-
-      # shiny::observe({
-      #
-      #   #Update the internal standard
-      #   if(class(results_editor_load_lib()) == "powdRlib" &
-      #      class(results_editor_load()) %in% c("powdRfps", "powdRafps")) {
-      #
-      #     added_phases <- as.character(selectSTDupdate())
-      #     removed_phases <- as.character(removeSTDupdate())
-      #
-      #     #The selection needs to include all of the phases in the library that are not already in the results
-      #     std_options <- c(paste0(results_editor_load()[[5]][[2]], ": ",
-      #                             results_editor_load()[[5]][[1]]),
-      #                      added_phases)
-      #
-      #     if(length(removed_phases) > 0) {
-      #       std_options <- std_options[-which(std_options %in% removed_phases)]
-      #       }
-      #
-      #     std_options <- std_options[order(std_options)]
-      #
-      #     shiny::updateSelectInput(session, "selectSTD_editor",
-      #                              label = NULL,
-      #                              choices = std_options,
-      #                              selected = NULL)
-      #     }
-      #   })
-
+#Update the standard selector based on the phases in the library
       shiny::observe({
         if (class(results_editor_load_lib()) == "powdRlib") {
 
