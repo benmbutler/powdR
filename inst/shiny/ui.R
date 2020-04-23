@@ -304,7 +304,7 @@ shiny::tabPanel("Results Viewer/Editor",
                     shiny::helpText("Must be a .Rdata powdRlib object of the library used to
                                     produce the original results"),
                     shiny::div(style="display: inline-block;vertical-align:top; width: 225px;",
-                               shiny::fileInput(inputId = "loadLib_editor",
+                               shiny::fileInput(inputId = "loadLIB_fps_editor",
                                                 label = NULL,
                                                 multiple = FALSE,
                                                 accept = ".Rdata")),

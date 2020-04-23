@@ -96,7 +96,7 @@ shiny::shinyServer(function(input, output, session) {
   #if it is, update the selectInput
   if(class(lib_plotter_load()) == "powdRlib") {
     shiny::updateSelectInput(session, "selectPHASES_plotter",
-                             label = paste("Choose phases from the library to plot."),
+                             label = NULL
                              choices = paste0(lib_plotter_load()[[3]][[2]], ": ",
                                               lib_plotter_load()[[3]][[1]]),
                              selected = head(paste0(lib_plotter_load()[[3]][[2]], ": ",
@@ -113,6 +113,10 @@ shiny::shinyServer(function(input, output, session) {
 
     #Subset the library based on the selection
     lib_sub <- lib_plotter_load()
+
+    if (length(which(gsub(".*: ", "", input$selectPHASES_plotter) %in% lib_sub$phases$phase_id)) < 1) {
+      return(NULL)
+    }
 
     if (length(input$selectPHASES_plotter > 0)) {
       lib_sub$xrd <- lib_sub$xrd[which(names(lib_sub$xrd) %in% gsub(".*: ", "", input$selectPHASES_plotter))]
@@ -148,7 +152,7 @@ shiny::shinyServer(function(input, output, session) {
       #if it is, update the selectInput
       if(class(lib_editor_load()) == "powdRlib") {
         shiny::updateSelectInput(session, "selectPHASES_editor",
-                                 label = paste("Select reference patterns to subset"),
+                                 label = NULL,
                                  choices = paste0(lib_editor_load()[[3]][[2]], ": ",
                                                   lib_editor_load()[[3]][[1]]),
                                  selected = NULL)
@@ -642,7 +646,7 @@ shiny::shinyServer(function(input, output, session) {
 
     #Load the results
     results_editor_load_lib <- shiny::reactive({
-      infile_results_editor2 <- input$loadLib_editor
+      infile_results_editor2 <- input$loadLIB_fps_editor
       if (is.null(infile_results_editor2)) {
         #User has not uploaded a file yet
         return(NULL)

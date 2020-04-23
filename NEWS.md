@@ -4,6 +4,8 @@
 * Bug stopping the shiny app working in shiny versions >1.3.2 now fixed.
 * Couple of other small edits to phase selection in the shiny app that should
   keep things simple.
+* `powdRlib()` no longer orders the reference patterns alphabetically, and instead
+  retains the original order that they are supplied in.
 
 # powdR 1.2.0
 
