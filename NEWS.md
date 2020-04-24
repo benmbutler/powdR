@@ -6,6 +6,9 @@
   keep things simple.
 * `powdRlib()` no longer orders the reference patterns alphabetically, and instead
   retains the original order that they are supplied in.
+* Negative values from natural spline interpolation now removed from data as these
+  can prevent the optimisation routines from working.
+* Phases are no longer ordered alphabetically in outputs from `fps()` and `afps()`.
 
 # powdR 1.2.0
 

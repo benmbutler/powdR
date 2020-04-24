@@ -550,41 +550,6 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
     x <- rep(0, ncol(lib$xrd))
     names(x) <- names(lib$xrd)
 
-      #Optimise weighting and shifts if these conditions are met
-      #if (shift_mode == "optimise" & shift > 0 & length(x) > 1) {
-
-        #Create x_s parameters
-       # x_s <- x
-        #names(x_s) <- paste0(names(x), "_s")
-
-        #cat("\n-Optimising weighting and shifting coefficients...")
-        #o <- stats::optim(par = c(x,x_s), .fullpat_shift_optim,
-        #                  method = solver, lib = lib,
-        #                  smpl = smpl, obj = obj)
-
-        #x <- o$par
-
-        #Extract the shifted data
-        #cat("\n-Harmonising library and sample to same 2theta axis")
-        #shifted <- .fullpat_shift(smpl = smpl, lib = lib,
-        #                          par_shift = x[((length(x)/2)+1):length(x)],
-        #                          limit = shift)
-
-        #lib <- shifted$lib
-        #smpl <- shifted$smpl
-
-        #Now extract just the weighting coefficients
-        #x <- x[1:ncol(lib$xrd)]
-
-        #Now make sure negative coefficients are (almost) zero again
-        #if (length(which(x < 0)) > 0) {
-
-        #  x[which(x < 0)] <- 1*10^-16
-
-        #}
-
-      #} else {
-
         cat("\n-Optimising...")
 
 
@@ -603,8 +568,6 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
                           sample_pattern = smpl[, 2], obj = obj)
 
         x <- o$par
-
-      #}
 
 
 #-------------------------------------------------------
@@ -629,17 +592,6 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   #is included
 
   if(shift > 0 & length(x) > 1) {
-
-    #fpf_aligned <- .shift(smpl = smpl,
-    #                      lib = lib,
-    #                      max_shift = shift,
-    #                      x = x,
-    #                      res = shift_res,
-    #                      obj = obj)
-
-    #smpl <- fpf_aligned[["smpl"]]
-    #lib$xrd <- data.frame(fpf_aligned[["lib"]])
-    #lib$tth <- smpl[,1]
 
     #This will replace the grid search shifting
     cat("\n-Optimising shifting coefficients...")
@@ -674,8 +626,6 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   #----------------------------------------------
   #Re-optimise after shifting
   #----------------------------------------------
-
-  #if(shift > 0 & shift_mode == "grid" & length(x) > 1) {
 
   cat("\n-Reoptimising after shifting data")
 

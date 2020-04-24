@@ -1,10 +1,5 @@
 .qminerals <- function(x, xrd_lib) {
 
-  #Make sure x is ordered if there are more than 1 phases in the library
-  #if (length(x) > 1) {
-  #  x <- x[order(names(x))]
-  #}
-
   #Restrict the xrd library to phases within the names of x
   minerals <- xrd_lib$phases
 
@@ -18,21 +13,6 @@
     stop("The phase ID's for quantification do not match the names of the scaling coefficients.")
 
   }
-
-  #if !(identical(minerals$phase_id, names x)) {
-  #
-   # stop("The names ")
-
-  #}
-
-  #Order to the same as fpf_pc
-  #if (length(x) > 1) {
-  #  minerals <- minerals[order(minerals$phase_id),]
-  #}
-
-  #min_percent <- (x/minerals$rir)/sum(x/minerals$rir)*100
-
-  #names(min_percent) == minerals$phase_id
 
   minerals$phase_percent <- (x/minerals$rir)/sum(x/minerals$rir)*100
 
@@ -69,11 +49,6 @@
 
 .qminerals2 <- function(x, xrd_lib, std, std_conc) {
 
-  #Make sure x is ordered if there are more than 1 phases in the library
-  #if (length(x) > 1) {
-  #  x <- x[order(names(x))]
-  #}
-
   #Get the name of the internal standard
   std_name <- xrd_lib$phases$phase_name[which(xrd_lib$phases$phase_id == std)]
 
@@ -102,13 +77,6 @@
   #Restrict the xrd library to phases within the names of X
   minerals <- minerals[which(minerals$phase_id %in% names(x)),]
 
-
-
-  #Order to the same as fpf_pc
-  #if (length(x) > 1) {
-  #  minerals <- minerals[order(minerals$phase_id),]
-  #}
-
   #make sure the minerals data frame is in the same order as x
   minerals <- minerals[match(names(x), minerals$phase_id),]
 
@@ -126,13 +94,10 @@
 
     min_percent[i] <- (std_conc/(minerals$rir[i]/std_rir)) * (x[i]/std_x)
 
-    #names(min_percent)[i] <- minerals$phase_id[i]
-
   }
 
 
   minerals$phase_percent <- min_percent
-  #df <- data.frame(minerals, "phase_percent" = min_percent)
   row.names(minerals) = c(1:nrow(minerals))
 
   minerals$phase_order <- c(1:nrow(minerals))

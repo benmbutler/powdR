@@ -40,13 +40,6 @@ powdRlib <- function(xrd_table, phases_table) {
 
   }
 
-  # if (!identical(names(xrd_table[-1]), phases_table[[1]])) {
-  #
-  #   stop("The column names of the xrd_table (excluding column 1, which is 2theta),
-  #        must exactly match the row names of the phases_table")
-  #
-  # }
-
   tth <- xrd_table[[1]]
   xrd <- data.frame(xrd_table[-1])
   phases <- phases_table
@@ -61,8 +54,6 @@ powdRlib <- function(xrd_table, phases_table) {
           do not match the row names of the phases_table")
 
   }
-
-
 
   #Checks on the phases table
   if(!is.character(phases[[1]])) {
@@ -79,29 +70,8 @@ powdRlib <- function(xrd_table, phases_table) {
     stop("Please make sure that the third column in phases_table is a numeric vector.")
   }
 
-  #R can adjust the names of a data frame to ensure they meet the requirements
-  #by replacing spaces and dashes with dots. Here I can ensure this is done.
-  #xrd2 <- xrd
-  #names(xrd2) <- phases[[1]]
-  #xrd2 <- data.frame(xrd2)
-
-  #Check that all phase id's match the column names
-  #if(!length(which(names(xrd) %in% names(xrd2))) == ncol(xrd)) {
-  #  stop("The id's in the phase_id column of the phases_table do not match the id's
-  #       provided as column names in the xrd_table")
-  #}
-
   #Make sure the phases id column matches the names in the xrd dataframe
   phases[[1]] <- names(xrd2)
-
-  #Ensure the order of the xrd_table and phases_table are the same
-  #xrd <- xrd[order(names(xrd))]
-  #phases <- phases[order(phases[[1]]), ]
-
-  #if(!ncol(xrd) == length(which((names(xrd) == phases[[1]]) == TRUE))) {
-  #  stop("Please check that the first column in the phases_table matches the
-  #       phase ids provided as column names in the xrd_table.")
-  #}
 
   names(phases) <- c("phase_id", "phase_name", "rir")
 
