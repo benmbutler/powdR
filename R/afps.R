@@ -537,6 +537,16 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   #Initial NNLS to remove some samples
   #--------------------------------------------
 
+  #The optimisation can fail if negative have creeped in during interpolation
+  if(length(which(smpl[[2]] < 0) > 0)) {
+
+    delete_negs <- which(smpl[[2]] < 0)
+    smpl <- smpl[-delete_negs,]
+    lib$tth <- lib$tth[-delete_negs]
+    lib$xrd <- lib$xrd[-delete_negs, ]
+
+  }
+
   cat("\n-Applying non-negative least squares")
   nnls_out <- .xrd_nnls(xrd.lib = lib, xrd.sample = smpl[, 2], force = force)
 
@@ -551,17 +561,6 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
     names(x) <- names(lib$xrd)
 
         cat("\n-Optimising...")
-
-
-        #The optimisation can fail if negative have creeped in during interpolation
-        if(length(which(smpl[[2]] < 0) > 0)) {
-
-          delete_negs <- which(smpl[[2]] < 0)
-          smpl <- smpl[-delete_negs,]
-          lib$tth <- lib$tth[-delete_negs]
-          lib$xrd <- lib$xrd[-delete_negs, ]
-
-        }
 
         o <- stats::optim(par = x, .fullpat,
                           method = solver, pure_patterns = lib$xrd,

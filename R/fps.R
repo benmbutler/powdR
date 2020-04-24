@@ -579,6 +579,16 @@ lib$xrd <- lib$xrd[which(lib$tth >= tth_fps[1] & lib$tth <= tth_fps[2]), , drop 
 #Replace the tth in the library with the shortened one
 lib$tth <- smpl[, 1]
 
+#The optimisation can fail if negative have creeped in during interpolation
+if(length(which(smpl[[2]] < 0) > 0)) {
+
+  delete_negs <- which(smpl[[2]] < 0)
+  smpl <- smpl[-delete_negs,]
+  lib$tth <- lib$tth[-delete_negs]
+  lib$xrd <- lib$xrd[-delete_negs, ]
+
+}
+
 if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
 
 #--------------------------------------------
@@ -590,16 +600,6 @@ names(x) <- names(lib$xrd)
 
 #Initial optimisation
 cat("\n-Optimising...")
-
-#The optimisation can fail if negative have creeped in during interpolation
-if(length(which(smpl[[2]] < 0) > 0)) {
-
-  delete_negs <- which(smpl[[2]] < 0)
-  smpl <- smpl[-delete_negs,]
-  lib$tth <- lib$tth[-delete_negs]
-  lib$xrd <- lib$xrd[-delete_negs, ]
-
-}
 
 o <- stats::optim(par = x, .fullpat,
            method = solver, pure_patterns = lib$xrd,
