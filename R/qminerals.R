@@ -53,6 +53,8 @@
 
   minerals_g <- minerals_g[order(minerals_g$phase_order),]
 
+  row.names(minerals_g) <- c(1:nrow(minerals_g))
+
   minerals$phase_order <- NULL
   minerals_g$phase_order <- NULL
 
@@ -128,19 +130,34 @@
 
   }
 
-  df <- data.frame(minerals, "phase_percent" = min_percent)
-  row.names(df) = c(1:nrow(df))
 
-  #Summarise by summing the concentrations from each mineral group
+  minerals$phase_percent <- min_percent
+  #df <- data.frame(minerals, "phase_percent" = min_percent)
+  row.names(minerals) = c(1:nrow(minerals))
 
-  dfs <- data.frame(stats::aggregate(phase_percent ~ phase_name, data = df, FUN = sum),
-                    stringsAsFactors = FALSE)
+  minerals$phase_order <- c(1:nrow(minerals))
+
+  minerals_g <- data.frame(stats::aggregate(phase_percent ~ phase_name, data = minerals, FUN = sum),
+                           stringsAsFactors = FALSE)
+
+  minerals_o <- data.frame(stats::aggregate(phase_order ~ phase_name, data = minerals, FUN = mean),
+                           stringsAsFactors = FALSE)
+
+  minerals_g <- plyr::join(minerals_g, minerals_o, by = "phase_name")
+
+  minerals_g <- minerals_g[order(minerals_g$phase_order),]
+
+  row.names(minerals_g) <- c(1:nrow(minerals_g))
+
+  minerals$phase_order <- NULL
+  minerals_g$phase_order <- NULL
+
 
   #Ensure that the phase concentrations are rounded to 4 dp
-  df$phase_percent <- round(df$phase_percent, 4)
-  dfs$phase_percent <- round(dfs$phase_percent, 4)
+  minerals$phase_percent <- round(minerals$phase_percent, 4)
+  minerals_g$phase_percent <- round(minerals_g$phase_percent, 4)
 
-  out <- list("df" = df, "dfs" = dfs)
+  out <- list("df" = minerals, "dfs" = minerals_g)
 
   return(out)
 }

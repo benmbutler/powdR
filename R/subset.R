@@ -67,8 +67,8 @@ subset.powdRlib <- function(x, refs, mode, ...) {
     x[[3]] <- x[[3]][keep_index, ]
 
     #Ensure they're ordered
-    x[[1]] <- x[[1]][order(names(x[[1]]))]
-    x[[3]] <- x[[3]][order(x[[3]][[1]]),]
+    #x[[1]] <- x[[1]][order(names(x[[1]]))]
+    #x[[3]] <- x[[3]][order(x[[3]][[1]]),]
 
   } else {
 
@@ -78,8 +78,8 @@ subset.powdRlib <- function(x, refs, mode, ...) {
     x[[3]] <- x[[3]][-remove_index, ]
 
     #Ensure they're ordered
-    x[[1]] <- x[[1]][order(names(x[[1]]))]
-    x[[3]] <- x[[3]][order(x[[3]][[1]]),]
+    #x[[1]] <- x[[1]][order(names(x[[1]]))]
+    #x[[3]] <- x[[3]][order(x[[3]][[1]]),]
 
   }
 

@@ -719,7 +719,7 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   }
 
   #Reoptimise if things have changed
-  logical_reoptimise <- identical(x[order(names(x))], xrd_detectable[["x"]])
+  logical_reoptimise <- identical(x, xrd_detectable[["x"]])
 
   x <- xrd_detectable[["x"]]
   lib$xrd <- xrd_detectable[["lib"]]
