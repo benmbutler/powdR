@@ -4,14 +4,16 @@
 \name{rockjock}
 \alias{rockjock}
 \title{RockJock reference library}
-\format{A list of 3 components
+\format{
+A list of 3 components
 \describe{
 \item{xrd}{A dataframe of all xrd data (counts only). Column names denote the
 reference sample}
 \item{tth}{A vector of 2theta intervals of all measurements in the library}
 \item{phases}{A dataframe the phase ID's, names and reference intensity
 ratios (RIR)}
-}}
+}
+}
 \usage{
 rockjock
 }

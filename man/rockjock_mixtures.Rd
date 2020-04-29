@@ -4,7 +4,8 @@
 \name{rockjock_mixtures}
 \alias{rockjock_mixtures}
 \title{RockJock synthetic mixtures}
-\format{A list of 8 components, each comprised of two columns. Column \code{tth} specifies
+\format{
+A list of 8 components, each comprised of two columns. Column \code{tth} specifies
 the 2theta axis and \code{counts} specifies the count intensities
 \describe{
 \item{Mix1}{Contains: 4 \% K-feldspar, 20 \% plagioclase, 12 \% kaolinite, 36 \% dioctahedral
@@ -23,7 +24,8 @@ smectite, 4 \% illite and 20 \% corundum.}
 smectite, 16 \% illite and 20 \% corundum.}
 \item{Mix8}{Contains: 8 \% quartz, 4 \% K-feldspar, 4 \% plagioclase, 24 \% dioctahedral
 smectite, 40 \% illite and 20 \% corundum.}
-}}
+}
+}
 \usage{
 rockjock_mixtures
 }

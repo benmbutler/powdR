@@ -7,7 +7,8 @@
 xrd data table to create a \code{powdRlib} object when using the
 \code{powdRlib} constructor function. Use the same layout to create custom reference
 libraries.}
-\format{A 3 column dataframe
+\format{
+A 3 column dataframe
 \describe{
 The first column is a character string defining the unique mineral ID's that
 should match those defined as column names of the minerals table
@@ -18,7 +19,8 @@ reference pattern belongs to.
 
 The third column is a numeric vector defining the reference intensity ratios
 of each reference pattern.
-}}
+}
+}
 \usage{
 minerals_phases
 }

@@ -4,14 +4,16 @@
 \name{minerals}
 \alias{minerals}
 \title{An example powdRlib reference library}
-\format{A list of 3
+\format{
+A list of 3
 \describe{
 \item{xrd}{A dataframe of all xrd data (counts only). Column names denote the
 reference sample}
 \item{tth}{A vector of 2theta intervals of all measurements in the library}
 \item{phases}{A dataframe the phase ID's, names and reference intensity
 ratios (RIR)}
-}}
+}
+}
 \usage{
 minerals
 }

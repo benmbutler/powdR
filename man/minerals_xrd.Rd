@@ -7,12 +7,14 @@
 be combined with the \code{minerals_phases} table to create a \code{powdRlib} object when using
 the \code{powdRlib} constructor function. Use the same layout to create custom
 reference libraries.}
-\format{A dataframe
+\format{
+A dataframe
 \describe{
 The first column defines the two theta scale, and remaining columns are individual
 reference patterns of pure minerals or amorphous phases. Each column title
 should be a unique mineral ID
-}}
+}
+}
 \usage{
 minerals_xrd
 }
