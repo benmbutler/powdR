@@ -2,7 +2,6 @@
 
 .align_optim <- function(a, par, xout, std) {
 
-  #res1 <- a
   a1 <- a
   a1[,1] <- a1[,1] + par
   a2 <- data.frame(stats::spline(x = a1[,1], y = a1[,2], method = "natural", xout = xout))
@@ -20,17 +19,16 @@
 
   xshift <- abs(xshift)
 
-  #Create the data frame that just contains shortened data
-  smpl_short <- data.frame(stats::spline(x = smpl[[1]],
-                                        y = smpl[[2]],
-                                        method = "natural",
-                                        xout = standard[[1]]))
-
-  #Detecting the peak shift required for each sample
-  #First define the number that's going to get minimised by the optim routine
-  smpl_optim_out <- suppressWarnings(stats::optim(a = smpl_short, par = 0,
-                                xout = standard[[1]], std = standard,
-                                .align_optim, method = "Brent", lower = -xshift, upper = xshift))
+ #Optimise alignment
+  smpl_optim_out <- suppressWarnings(stats::optim(a = smpl[which(smpl[[1]] >= xmin &
+                                                                   smpl[[1]] <= xmax), ],
+                                                  par = 0,
+                                                  xout = standard[which(standard[[1]] >= xmin &
+                                                                          standard[[1]] <= xmax), 1],
+                                                  std = standard[which(standard[[1]] >= xmin &
+                                                                         standard[[1]] <= xmax), ],
+                                                  .align_optim, method = "Brent",
+                                                  lower = -xshift, upper = xshift))
 
   #extract the optimised shift (i.e. what to add/subtract from the sample 2theta)
   smpl_optim <- smpl_optim_out$par

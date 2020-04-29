@@ -332,18 +332,25 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
                 tth_align, align, manual_align, tth_fps, shift,
                 remove_trace, ...) {
 
+#---------------------------------------------------
+#Conditions
+#---------------------------------------------------
+
+#Set harmonise = TRUE as the default if missing
   if (missing(harmonise)) {
 
     harmonise <- TRUE
 
   }
 
+#Make sure harmonise is logical
   if (!is.logical(harmonise)) {
 
     stop("The harmonise argument must be logical.")
 
   }
 
+#Make sure that the user knows to use harmonise if needed
   if (harmonise == FALSE & !identical(lib$tth, smpl[[1]])) {
 
     stop("The 2theta scale of the library and sample do not match. Try
@@ -351,18 +358,21 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
   }
 
+#Set the std_conc to NA if missing
   if (missing(std_conc)) {
 
     std_conc <- NA
 
   }
 
+#Make sure that the std_conc is numeric if needed
   if (!(is.numeric(std_conc) | is.na(std_conc))) {
 
     stop("\n-The std_conc argument must either be NA or a numeric value greater than 0 and less than 100.")
 
   }
 
+#Ensure the std argument is defined if needed and that it is between 0 and 100
   if (is.numeric(std_conc)) {
 
     if (missing(std)) {
@@ -392,12 +402,14 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
     align = 0.1
   }
 
+#Set the default alignment type to automated
   if(missing(manual_align)) {
 
     manual_align <- FALSE
 
   }
 
+#Make sure manual_align is logical
   if(!is.logical(manual_align)) {
 
     stop("The manual_align argument must be logical")
@@ -423,7 +435,7 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
     remove_trace = 0
   }
 
-  #If refs are not defined or "all" then use all of them
+  #If refs are not defined then use all of them
   if(missing(refs)) {
 
     cat("\n-Using all reference patterns in the library")
@@ -456,7 +468,7 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
     warning("Be cautious of large 2theta shifts. These can cause issues in sample alignment.")
   }
 
-  #Create a warning message if the shift is greater than 0.5, since this can confuse the optimisation
+  #Ensure that remove_trace is not less than zero
   if (remove_trace < 0) {
     stop("The remove_trace argument must be greater than 0.")
   }
@@ -466,14 +478,17 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
     stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG', or 'NNLS'")
   }
 
+  #Use "BFGS" instead of "L-BFGS-B" if defined
   if (solver == "L-BFGS-B") {
 
     cat("\n-The 'L-BFGS-B' option for solver has deprecated.
         Using 'BFGS' instead.")
 
+    solver <- "BFGS"
+
   }
 
-  #If the solver is "NNLS" and shift > 0, then stop
+  #If the solver is "NNLS" and shift > 0, then don't shift
   if (solver == "NNLS" & shift > 0) {
 
     warning("When shift > 0, the solver argument must be one of 'BFGS',
@@ -496,10 +511,8 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
 
 
-  #subset lib according to the phases vector
-
-  lib$xrd <- lib$xrd[which(lib$phases$phase_id %in% refs | lib$phases$phase_name %in% refs)]
-  lib$phases <- lib$phases[which(lib$phases$phase_id %in% refs | lib$phases$phase_name %in% refs), ]
+  #subset lib according to the refs vector
+  lib <- subset(lib, refs = refs, mode = "keep")
 
   #Make sure that the phase identified as the internal standard is contained within the reference library
   if (!std == "none" & !std %in% lib$phases$phase_id) {
@@ -516,6 +529,9 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
   }
 
+#--------------------------------------------------------
+#Alignment
+#--------------------------------------------------------
 
 if (!align == 0) {
 
@@ -579,6 +595,11 @@ lib$xrd <- lib$xrd[which(lib$tth >= tth_fps[1] & lib$tth <= tth_fps[2]), , drop 
 #Replace the tth in the library with the shortened one
 lib$tth <- smpl[, 1]
 
+
+#-----------------------------------------------------------
+#Initial optimisation
+#-----------------------------------------------------------
+
 #The optimisation can fail if negative have creeped in during interpolation
 if(length(which(smpl[[2]] < 0) > 0)) {
 
@@ -590,10 +611,6 @@ if(length(which(smpl[[2]] < 0) > 0)) {
 }
 
 if (solver %in% c("Nelder-Mead", "BFGS", "CG")) {
-
-#--------------------------------------------
-#Initial Optimisation
-#--------------------------------------------
 
 x <- rep(0, ncol(lib$xrd))
 names(x) <- names(lib$xrd)
@@ -608,9 +625,9 @@ o <- stats::optim(par = x, .fullpat,
 x <- o$par
 
 
-#-----------------------------------------------
+#------------------------------------------------------------
 # Remove negative parameters or parameters equal to zero
-#-----------------------------------------------
+#------------------------------------------------------------
 
 if (min(x) < 0) {
 

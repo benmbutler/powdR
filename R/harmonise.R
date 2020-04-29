@@ -56,15 +56,12 @@
 
     cat("\n-Harmonising library to the same 2theta resolution as the sample")
 
-    #xrd_names <- names(lib$xrd)
-
     lib$xrd <- data.frame(lapply(lib$xrd,
                                  function(n) stats::spline(x = lib$tth,
                                                            y = n,
                                                            method = "natural",
                                                            xout = smpl[[1]])[[2]]))
 
-    #names(lib$xrd) <- xrd_names
 
     lib$tth <- smpl[[1]]
 

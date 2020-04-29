@@ -8,12 +8,6 @@
 
 .fullpat_shift <- function(smpl, lib, par_shift) {
 
-#if (!missing(limit)) {
-
-#  par_shift[which(par_shift > limit | par_shift < -limit)] <- 0
-
-#}
-
 #Create a list of xy patterns from the xrd data
 l <- lapply(lib$xrd, function(x) data.frame("tth" = lib$tth,
                                                  "counts" = x))

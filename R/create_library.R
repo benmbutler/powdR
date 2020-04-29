@@ -75,10 +75,6 @@ powdRlib <- function(xrd_table, phases_table) {
 
   names(phases) <- c("phase_id", "phase_name", "rir")
 
-  #Ensure that the data frame names are suitable and rename phase ID's
-  #xrd <- data.frame(xrd)
-  #phases[[1]] <- names(xrd)
-
   out <- list("xrd" = xrd,
               "tth" = tth,
               "phases" = phases)
