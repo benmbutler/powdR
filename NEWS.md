@@ -1,6 +1,7 @@
 # powdR 1.2.1
 
 ## Bug fixes
+* Dependency on packages `DT` and `shinyWidgets` now defined in namespace.
 * Bug stopping the shiny app working in shiny versions >1.3.2 now fixed.
 * Couple of other small edits to phase selection in the shiny app that should
   keep things simple.
