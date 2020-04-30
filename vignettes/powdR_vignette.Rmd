@@ -251,6 +251,16 @@ plot(fit_5, wavelength = "Cu")
 
 Alternatively, interactive `ggplotly()` plots can be created by adding `interactive = TRUE` to the function call, e.g. `plot(fit_5, wavelength = "Cu", interactive = TRUE)`.
 
+In addition to above, plotting for `powdRfps` and `powdRafps` objects can be further adjusted by the `mode` and `xlim` arguments. The `mode` argument can be one of "fit" (the default), "residuals" or "both", for example:
+```{r, message = FALSE, warning = FALSE}
+plot(fit_5, wavelength = "Cu", mode = "residuals")
+```
+
+or alternatively:
+```{r, message = FALSE, warning = FALSE}
+plot(fit_5, wavelength = "Cu", mode = "both", xlim = c(20,30))
+```
+
 ## Quantifying multiple samples
 The easiest way to quantify multiple samples is with `lapply()`
 
