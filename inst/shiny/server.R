@@ -539,7 +539,7 @@ shiny::shinyServer(function(input, output, session) {
 
         output$download_calc <- shiny::downloadHandler(
           filename = function() {
-            paste("calculated_", Sys.Date(), ".xy", sep="")
+            paste("fitted_", Sys.Date(), ".xy", sep="")
           },
           content = function(file) {
             write.table(data.frame("X" = fps_reactive()[[1]]$tth,
@@ -798,7 +798,7 @@ shiny::shinyServer(function(input, output, session) {
 
         output$download_calc_editor <- shiny::downloadHandler(
           filename = function() {
-            paste("calculated_", Sys.Date(), ".xy", sep="")
+            paste("fitted_", Sys.Date(), ".xy", sep="")
           },
           content = function(file) {
             write.table(data.frame("X" = fps_reactive_editor()$tth,
