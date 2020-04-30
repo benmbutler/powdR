@@ -4,7 +4,7 @@
 \alias{plot.powdRafps}
 \title{Plotting elements of a powdRafps object}
 \usage{
-\method{plot}{powdRafps}(x, wavelength, interactive, ...)
+\method{plot}{powdRafps}(x, wavelength, mode, xlim, interactive, ...)
 }
 \arguments{
 \item{x}{a powdRfps object}
@@ -12,6 +12,12 @@
 \item{wavelength}{One of "Cu", "Co" or a custom numeric value defining the wavelength
 (in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
 of 1.54056 or 1.78897 are used, respectively.}
+
+\item{mode}{One of "fit", "residuals" or "both" defining whether to plot the fitted
+patterns, the residuals of the fit, or both, respectively. Default = "fit".}
+
+\item{xlim}{A numeric vector of length two providing limits of the x-axis. Defaults
+to full x-axis unless specified.}
 
 \item{interactive}{logical. If TRUE then the output will be an interactive
 ggplotly object. If FALSE then the output will be a ggplot object.}
