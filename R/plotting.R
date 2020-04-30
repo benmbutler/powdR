@@ -16,6 +16,10 @@
 #' @param wavelength One of "Cu", "Co" or a custom numeric value defining the wavelength
 #' (in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
 #' of 1.54056 or 1.78897 are used, respectively.
+#' @param mode One of "fit", "residuals" or "both" defining whether to plot the fitted
+#' patterns, the residuals of the fit, or both, respectively. Default = "fit".
+#' @param xlim A numeric vector of length two providing limits of the x-axis. Defaults
+#' to full x-axis unless specified.
 #' @param interactive logical. If TRUE then the output will be an interactive
 #' ggplotly object. If FALSE then the output will be a ggplot object.
 #' @param ... other arguments
@@ -39,7 +43,44 @@
 #' plot(fps_sand, wavelength = "Cu", interactive = TRUE)
 #' }
 #' @export
-plot.powdRfps <- function(x, wavelength, interactive, ...) {
+plot.powdRfps <- function(x, wavelength, mode, xlim, interactive, ...) {
+
+  if (missing(xlim)) {
+
+    xlim <- c(min(x$tth), max(x$tth))
+
+  }
+
+  if (length(xlim) > 2) {
+
+    stop("xlim must be a numeric vector of length 2")
+
+  }
+
+  if (!is.numeric(xlim)) {
+
+    stop("xlim must be a numeric vector of length 2")
+
+  }
+
+  if (xlim[1] < min(x$tth) | xlim[2] > max(x$tth)) {
+
+    stop("The limits defined in xlim are outside of the 2theta range of the data")
+
+  }
+
+
+  if (missing(mode)) {
+
+    mode <- "fit"
+
+  }
+
+  if (!mode %in% c("fit", "residuals", "both")) {
+
+    stop("The mode arugment must be one of `fit`, `residuals`, or `both`")
+
+  }
 
   if(missing(interactive)) {
     interactive <- FALSE
@@ -115,6 +156,7 @@ plot.powdRfps <- function(x, wavelength, interactive, ...) {
                                                                      rep("dotted", ncol(x$weighted_pure_patterns)))) +
                            ggplot2::ylab("Counts") +
                            ggplot2::xlab("2theta") +
+                           ggplot2::scale_x_continuous(limits = xlim) +
                            ggplot2::theme(legend.title = ggplot2::element_blank()))
 
   g2 <- suppressWarnings(ggplot2::ggplot() +
@@ -122,6 +164,7 @@ plot.powdRfps <- function(x, wavelength, interactive, ...) {
                                               ggplot2::aes_(x = ~tth, y = ~Counts, color = "Residuals", d = ~d), size = 0.15) +
                            ggplot2::ylab("Counts") +
                            ggplot2::xlab("2theta") +
+                           ggplot2::scale_x_continuous(limits = xlim) +
                            ggplot2::scale_colour_manual(name = "",
                                                         values = c("Residuals" = "blue")))
 
@@ -131,20 +174,55 @@ plot.powdRfps <- function(x, wavelength, interactive, ...) {
     #Convert to ggplotly
     p1 <- plotly::ggplotly(g1, tooltip = c("x", "y", "d", "colour"))
     p2 <- plotly::ggplotly(g2, tooltip = c("x", "y", "d", "colour"))
-    p3 <- plotly::subplot(p1, p2,
-                          nrows = 2,
-                          heights = c((2/3), (1/3)),
-                          widths = c(1),
-                          shareX = TRUE,
-                          titleY = TRUE)
 
-    return(p3)
+
+    if (mode == "fit") {
+
+      return(p1)
+
+    }
+
+    if (mode == "residuals") {
+
+      return(p2)
+
+    }
+
+    if (mode  == "both") {
+
+      p3 <- plotly::subplot(p1, p2,
+                            nrows = 2,
+                            heights = c((2/3), (1/3)),
+                            widths = c(1),
+                            shareX = TRUE,
+                            titleY = TRUE)
+
+      return(p3)
+
+    }
+
 
   } else {
+
+    if (mode == "fit") {
+
+      return(g1)
+
+    }
+
+    if (mode == "residuals") {
+
+      return(g2)
+
+    }
+
+    if (mode == "both") {
 
     g3 <- ggpubr::ggarrange(g1, g2, nrow = 2,
                             heights = c(2,1))
     return(g3)
+
+    }
 
   }
 
@@ -163,6 +241,10 @@ plot.powdRfps <- function(x, wavelength, interactive, ...) {
 #' @param wavelength One of "Cu", "Co" or a custom numeric value defining the wavelength
 #' (in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
 #' of 1.54056 or 1.78897 are used, respectively.
+#' @param mode One of "fit", "residuals" or "both" defining whether to plot the fitted
+#' patterns, the residuals of the fit, or both, respectively. Default = "fit".
+#' @param xlim A numeric vector of length two providing limits of the x-axis. Defaults
+#' to full x-axis unless specified.
 #' @param interactive logical. If TRUE then the output will be an interactive
 #' ggplotly object. If FALSE then the output will be a ggplot object.
 #' @param ... other arguments
@@ -188,7 +270,43 @@ plot.powdRfps <- function(x, wavelength, interactive, ...) {
 #'
 #' }
 #' @export
-plot.powdRafps <- function(x, wavelength, interactive, ...) {
+plot.powdRafps <- function(x, wavelength, mode, xlim, interactive, ...) {
+
+  if (missing(xlim)) {
+
+    xlim <- c(min(x$tth), max(x$tth))
+
+  }
+
+  if (length(xlim) > 2) {
+
+    stop("xlim must be a numeric vector of length 2")
+
+  }
+
+  if (!is.numeric(xlim)) {
+
+    stop("xlim must be a numeric vector of length 2")
+
+  }
+
+  if (xlim[1] < min(x$tth) | xlim[2] > max(x$tth)) {
+
+    stop("The limits defined in xlim are outside of the 2theta range of the data")
+
+  }
+
+  if (missing(mode)) {
+
+    mode <- "fit"
+
+  }
+
+  if (!mode %in% c("fit", "residuals", "both")) {
+
+    stop("The mode arugment must be one of `fit`, `residuals`, or `both`")
+
+  }
 
   if(missing(interactive)) {
     interactive <- FALSE
@@ -264,6 +382,7 @@ plot.powdRafps <- function(x, wavelength, interactive, ...) {
                                                                      rep("dotted", ncol(x$weighted_pure_patterns)))) +
                            ggplot2::ylab("Counts") +
                            ggplot2::xlab("2theta") +
+                           ggplot2::scale_x_continuous(limits = xlim) +
                            ggplot2::theme(legend.title = ggplot2::element_blank()))
 
   g2 <- suppressWarnings(ggplot2::ggplot() +
@@ -271,6 +390,7 @@ plot.powdRafps <- function(x, wavelength, interactive, ...) {
                                               ggplot2::aes_(x = ~tth, y = ~Counts, color = "Residuals", d = ~d), size = 0.15) +
                            ggplot2::ylab("Counts") +
                            ggplot2::xlab("2theta") +
+                           ggplot2::scale_x_continuous(limits = xlim) +
                            ggplot2::scale_colour_manual(name = "",
                                                         values = c("Residuals" = "blue")))
 
@@ -280,20 +400,54 @@ plot.powdRafps <- function(x, wavelength, interactive, ...) {
     #Convert to ggplotly
     p1 <- plotly::ggplotly(g1, tooltip = c("x", "y", "d", "colour"))
     p2 <- plotly::ggplotly(g2, tooltip = c("x", "y", "d", "colour"))
-    p3 <- plotly::subplot(p1, p2,
-                          nrows = 2,
-                          heights = c((2/3), (1/3)),
-                          widths = c(1),
-                          shareX = TRUE,
-                          titleY = TRUE)
 
-    return(p3)
+
+    if (mode == "fit") {
+
+      return(p1)
+
+    }
+
+    if (mode == "residuals") {
+
+      return(p2)
+
+    }
+
+    if (mode  == "both") {
+
+      p3 <- plotly::subplot(p1, p2,
+                            nrows = 2,
+                            heights = c((2/3), (1/3)),
+                            widths = c(1),
+                            shareX = TRUE,
+                            titleY = TRUE)
+
+      return(p3)
+
+    }
 
   } else {
 
-    g3 <- ggpubr::ggarrange(g1, g2, nrow = 2,
-                            heights = c(2,1))
-    return(g3)
+    if (mode == "fit") {
+
+      return(g1)
+
+    }
+
+    if (mode == "residuals") {
+
+      return(g2)
+
+    }
+
+    if (mode == "both") {
+
+      g3 <- ggpubr::ggarrange(g1, g2, nrow = 2,
+                              heights = c(2,1))
+      return(g3)
+
+    }
 
   }
 

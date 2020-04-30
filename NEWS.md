@@ -1,5 +1,9 @@
 # powdR 1.2.1
 
+## New features
+* `plot()` methods for `powdRfps` and `powdRafps` objects now include `mode`
+  and `xlim` arguments, allowing for different plot types and x-axis adjustment.
+
 ## Bug fixes
 * Dependency on packages `DT` and `shinyWidgets` now defined in namespace.
 * Bug stopping the shiny app working in shiny versions >1.3.2 now fixed.

@@ -96,7 +96,7 @@ shiny::shinyServer(function(input, output, session) {
   #if it is, update the selectInput
   if(class(lib_plotter_load()) == "powdRlib") {
     shiny::updateSelectInput(session, "selectPHASES_plotter",
-                             label = NULL
+                             label = NULL,
                              choices = paste0(lib_plotter_load()[[3]][[2]], ": ",
                                               lib_plotter_load()[[3]][[1]]),
                              selected = head(paste0(lib_plotter_load()[[3]][[2]], ": ",
@@ -543,7 +543,7 @@ shiny::shinyServer(function(input, output, session) {
           },
           content = function(file) {
             write.table(data.frame("X" = fps_reactive()[[1]]$tth,
-                                   "Y" = fps_reactive()[[1]]$measured), file,
+                                   "Y" = fps_reactive()[[1]]$fitted), file,
                         sep = " ", col.names = FALSE, row.names = FALSE)
           }
         )
@@ -802,7 +802,7 @@ shiny::shinyServer(function(input, output, session) {
           },
           content = function(file) {
             write.table(data.frame("X" = fps_reactive_editor()$tth,
-                                   "Y" = fps_reactive_editor()$measured), file, sep = " ", col.names = FALSE, row.names = FALSE)
+                                   "Y" = fps_reactive_editor()$fitted), file, sep = " ", col.names = FALSE, row.names = FALSE)
           }
         )
 

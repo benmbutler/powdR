@@ -258,6 +258,13 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
                          tth_align, align, manual_align, shift,
                          tth_fps, lod, amorphous, amorphous_lod, ...) {
 
+#Make sure there aren't any negative counts
+  if (min(smpl[[2]]) < 0) {
+
+    stop("Please make sure that there are no negative count intensities in the sample data")
+
+  }
+
 #Define force if missing
   if (missing(force)) {
 

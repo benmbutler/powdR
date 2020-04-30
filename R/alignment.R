@@ -43,11 +43,18 @@
   smpl_aligned <- smpl
   smpl_aligned[,1] <- smpl[,1] + smpl_optim
 
+  #create a new tth
+  tth_min <- max(c(min(smpl_aligned[[1]]), min(smpl[[1]])))
+  tth_max <- min(c(max(smpl_aligned[[1]]), max(smpl[[1]])))
+  tth_res <- mean(diff(smpl[[1]]))
+
+  tth_new <- seq(from = tth_min, to = tth_max, by = tth_res)
+
   #Final harmonisation
   smpl_aligned_harm <- data.frame(stats::spline(x = smpl_aligned[[1]],
                                                y = smpl_aligned[[2]],
                                                method = "natural",
-                                               xout = standard[[1]]))
+                                               xout = tth_new))
 
   names(smpl_aligned_harm) <- c("tth", "counts")
 

@@ -336,6 +336,13 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 #Conditions
 #---------------------------------------------------
 
+#Make sure there aren't any negative counts
+  if (min(smpl[[2]]) < 0) {
+
+    stop("Please make sure that there are no negative count intensities in the sample data")
+
+  }
+
 #Set harmonise = TRUE as the default if missing
   if (missing(harmonise)) {
 
@@ -509,7 +516,9 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
   }
 
-
+#-------------------------------------------------------------
+#END OF CONDITIONS, NOW SUBSET LIBRARY
+#-------------------------------------------------------------
 
   #subset lib according to the refs vector
   lib <- subset(lib, refs = refs, mode = "keep")
