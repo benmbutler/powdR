@@ -1,6 +1,6 @@
 ## Test environments
-* local Windows 10 install, R 3.6.3
-* ubuntu 16.04.6 (on travis-ci), R 3.6.3
+* local Windows 10 install, R 4.0.0
+* ubuntu 16.04.6 (on travis-ci), R 4.0.0
 * win-builder (devel and release)
 * R-hub builder (devel and release)
 
