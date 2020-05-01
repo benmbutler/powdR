@@ -33,7 +33,7 @@ Imports:
   shiny (>= 1.4.0.2),
   DT (>= 0.13),
   nnls (>= 1.4),
-  shinyWidgets (>= 0.4.3),
+  shinyWidgets (>= 0.5.1),
   baseline (>= 1.2),
   tidyr (>= 1.0.2)
 Suggests:
