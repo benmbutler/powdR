@@ -831,7 +831,7 @@ shiny::shinyServer(function(input, output, session) {
     ############################
 
       output$video <- shiny::renderUI({
-        shiny::HTML(paste0('<iframe width="840" height="472.5" src="https://www.youtube.com/embed/', "kDUutn41VgE",
+        shiny::HTML(paste0('<iframe width="840" height="472.5" src="https://www.youtube.com/embed/', "dDd6cr8kpTc",
                            '" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>'))
         })
 
