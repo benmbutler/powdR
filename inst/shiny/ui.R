@@ -350,7 +350,7 @@ shiny::tabPanel("Results Viewer/Editor",
                     shiny::uiOutput("align_editor_ui"),
                     shiny::helpText("Adjust the shifting parameter"),
                     shiny::sliderInput("shift_editor", label = NULL, min = 0,
-                                       max = 0.1,
+                                       max = 0.5,
                                        value = c(0)),
                                        shiny::helpText(shiny::withMathJax("Adjust the 2\\(\\theta\\) range for
                                                                           full pattern summation")),
@@ -400,17 +400,7 @@ shiny::tabPanel("Results Viewer/Editor",
 shiny::tabPanel("Help",
                 shiny::fluidRow(
                   shiny::column(12, align = "center",
-                                shiny::h1("Video tutorials"),
-                                shiny::helpText("Select an option to view a video tutorial for each tab of this
-                                                Shiny application"),
-                                shiny::selectInput(inputId = "selectVIDEO",
-                                                   label = NULL,
-                                                   multiple = FALSE,
-                                                   choices = list("Reference Library Builder" = "RGEhe_hdDkM",
-                                                                  "Reference Library Viewer" = "9hVdSXk2uyw",
-                                                                  "Reference Library Editor" = "mNQC1TLXJWM",
-                                                                  "Full Pattern Summation" = "w3qO2U3UqT0",
-                                                                  "Results Editor" = "R7i8vJgVCvQ")),
+                                shiny::h1("Video tutorial"),
                                 shiny::uiOutput("video")
                                 )
                   ) # end fluidRow
