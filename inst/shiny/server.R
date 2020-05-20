@@ -323,8 +323,8 @@ shiny::shinyServer(function(input, output, session) {
                          "PHASE IDs" = as.list(paste0(filedata3()[[3]][[2]], ": ", filedata3()[[3]][[1]])))
 
       #Order alphabetically
-      refs_force[[1]] <- refs_force[[1]][order(unlist(refs_force[[1]]))]
-      refs_force[[2]] <- refs_force[[2]][order(unlist(refs_force[[2]]))]
+      #refs_force[[1]] <- refs_force[[1]][order(unlist(refs_force[[1]]))]
+      #refs_force[[2]] <- refs_force[[2]][order(unlist(refs_force[[2]]))]
 
       return(shiny::selectInput("selectFORCE",
                                 label = NULL,
@@ -340,8 +340,8 @@ shiny::shinyServer(function(input, output, session) {
         refs_choices <- list("PHASE_NAMES" = as.list(paste0(filedata3()[[3]][[2]])),
                              "PHASE IDs" = as.list(paste0(filedata3()[[3]][[2]], ": ", filedata3()[[3]][[1]])))
         #Order alphabetically
-        refs_choices[[1]] <- refs_choices[[1]][order(unlist(refs_choices[[1]]))]
-        refs_choices[[2]] <- refs_choices[[2]][order(unlist(refs_choices[[2]]))]
+        #refs_choices[[1]] <- refs_choices[[1]][order(unlist(refs_choices[[1]]))]
+        #refs_choices[[2]] <- refs_choices[[2]][order(unlist(refs_choices[[2]]))]
 
         return(shiny::updateSelectInput(session, "selectPHASES_fps",
                                         choices = refs_choices,
