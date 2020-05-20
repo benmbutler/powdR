@@ -461,6 +461,8 @@ shiny::shinyServer(function(input, output, session) {
 
       fps_reactive <- shiny::eventReactive(input$goButton_fps, {
 
+        shiny::withProgress(message = "Computing...", value = 1,{
+
         if (input$std_conc_check_fps == FALSE) {
           std_conc_fps <- NA
         }
@@ -507,6 +509,8 @@ shiny::shinyServer(function(input, output, session) {
                              amorphous = sub(".*: ", "", input$selectAMORPH))
           return(afps_out)
         }
+
+        }) #end with progress
       })
 
       observe({
@@ -714,6 +718,8 @@ shiny::shinyServer(function(input, output, session) {
     shiny::observe({
       fps_reactive_editor <- shiny::eventReactive(input$goButton_editor, {
 
+        shiny::withProgress(message = "Computing...", value = 1,{
+
         if(input$std_conc_check_editor == FALSE) {
           std_conc_editor <- NA
           } else {
@@ -748,6 +754,9 @@ shiny::shinyServer(function(input, output, session) {
                               shift = input$shift_editor,
                               obj = input$selectOBJ_editor,
                               solver = input$selectSolver_editor)
+
+        }) #end withProgress
+
         })
 
       shiny::observe({
