@@ -1,3 +1,11 @@
+# powdR 1.2.1.999
+
+## New features
+* Progress bar now included in the Shiny app when computing `fps()` and `afps()`.
+
+## Bug fixes
+* `utils` no longer in imports (hence fixing associated note in CRAN checks).
+
 # powdR 1.2.1
 
 ## New features
