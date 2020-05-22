@@ -69,7 +69,7 @@ if (!length(table(names(x))) == length(x)) {
 #Make sure more than one sample is being used
 if (length(x) == 1) {
 
-  stop("The summarise_mineralogy function is for list containing more than one
+  stop("The summarise_mineralogy function is for lists containing more than one
        powdRfps or powdRafps object.")
 
 }
