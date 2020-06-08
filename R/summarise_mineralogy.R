@@ -1,40 +1,3 @@
-#This function is used when single samples are to be summarised
-.summarise_mineralogy_single <- function(x, type, order, rwp) {
-
-  if (type == "all") {
-
-    mineralogy <- x$phases[c(1,4)]
-
-
-  } else {
-
-    mineralogy <- x$phases_grouped
-
-  }
-
-  names(mineralogy) <- c("phase", "percent")
-
-  #Now transpose to a wide dataframe
-  mineralogy <- tidyr::spread(mineralogy, "phase", "percent")
-
-  if (order == TRUE) {
-
-    mineralogy <- mineralogy[, order(mineralogy[1,], decreasing = TRUE)]
-
-  }
-
-  if (rwp == TRUE) {
-
-    mineralogy$rwp <- round(x$rwp, 4)
-
-  }
-
-  return(mineralogy)
-
-}
-
-
-
 #' Summarise the mineralogy from multiple powdRfps and powdRafps outputs
 #'
 #' \code{summarise_mineralogy} creates a summary table of quantified mineral
@@ -83,14 +46,13 @@
 summarise_mineralogy <- function(x, type, order, rwp) {
 
 #Make sure x is a list
-if (!class(x) %in% c("list", "powdRfps", "powdRafps")) {
+if (!class(x) %in% c("list")) {
 
-  stop("x must be a list of powdRfps or powdRafps objects, or a single powdRfps/powdRafps object.")
+  stop("x must be a list of powdRfps or powdRafps objects")
 
 }
 
 
-if (class(x) == "list") {
 #Check that each sample in the list is an powdRfps or powdRafps object
 if (!all(names(table(unlist(lapply(x, class)))) %in% c("powdRfps", "powdRafps"))) {
 
@@ -103,15 +65,6 @@ if (!all(names(table(unlist(lapply(x, class)))) %in% c("powdRfps", "powdRafps"))
 if (!length(table(names(x))) == length(x)) {
 
   stop("Each item in x needs to be named with a unique sample ID")
-
-}
-
-}
-
-#If only one samples is being used, extract it.
-if (length(x) == 1) {
-
-  x <- x[[1]]
 
 }
 
@@ -167,16 +120,6 @@ if (type == "summary") {
 
 
 #Now onto the analysis
-if (class(x) %in% c("powdRfps", "powdRafps")) {
-
-  mineralogy_wide <- .summarise_mineralogy_single(x = x,
-                                                  type = type,
-                                                  order = order,
-                                                  rwp = rwp)
-
-}
-
-if (class(x) == "list") {
 
 if (type == "all")  {
 
@@ -223,8 +166,6 @@ mineralogy_wide <- mineralogy_wide[, c(1, (order(sapply(mineralogy_wide[-1], sum
 if (rwp == TRUE) {
 
   mineralogy_wide <- plyr::join(mineralogy_wide, rwp_df, by = "sample_id")
-
-}
 
 }
 

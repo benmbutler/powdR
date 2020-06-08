@@ -2,6 +2,7 @@
 
 ## New features
 * Progress bar now included in the Shiny app when computing `fps()` and `afps()`.
+* `summarise_mineralogy()` now accepts single samples (i.e. a list of 1 `powdRfps` or `powdRafps` object).
 
 ## Bug fixes
 * `utils` no longer in imports (hence fixing associated note in CRAN checks).
