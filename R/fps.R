@@ -339,7 +339,8 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 #Make sure there aren't any negative counts
   if (min(smpl[[2]]) < 0) {
 
-    stop("Please make sure that there are no negative count intensities in the sample data")
+    stop("Please make sure that there are no negative count intensities in the sample data",
+         call. = FALSE)
 
   }
 
@@ -353,7 +354,8 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 #Make sure harmonise is logical
   if (!is.logical(harmonise)) {
 
-    stop("The harmonise argument must be logical.")
+    stop("The harmonise argument must be logical.",
+         call. = FALSE)
 
   }
 
@@ -361,7 +363,8 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
   if (harmonise == FALSE & !identical(lib$tth, smpl[[1]])) {
 
     stop("The 2theta scale of the library and sample do not match. Try
-         setting the harmonise argument to TRUE.")
+         setting the harmonise argument to TRUE.",
+         call. = FALSE)
 
   }
 
@@ -375,7 +378,8 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 #Make sure that the std_conc is numeric if needed
   if (!(is.numeric(std_conc) | is.na(std_conc))) {
 
-    stop("\n-The std_conc argument must either be NA or a numeric value greater than 0 and less than 100.")
+    stop("\n-The std_conc argument must either be NA or a numeric value greater than 0 and less than 100.",
+         call. = FALSE)
 
   }
 
@@ -384,13 +388,15 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
     if (missing(std)) {
 
-      stop("\n-Please define the std argument")
+      stop("\n-Please define the std argument",
+           call. = FALSE)
 
     }
 
     if(std_conc <= 0 | std_conc >= 100) {
 
-      stop("\n-The std_conc argument must either be NA or a numeric value greater than 0 and less than 100.")
+      stop("\n-The std_conc argument must either be NA or a numeric value greater than 0 and less than 100.",
+           call. = FALSE)
 
     }
 
@@ -419,7 +425,8 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 #Make sure manual_align is logical
   if(!is.logical(manual_align)) {
 
-    stop("The manual_align argument must be logical")
+    stop("The manual_align argument must be logical",
+         call. = FALSE)
 
   }
 
@@ -472,17 +479,20 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
   #Create a warning message if the shift is greater than 0.5, since this can confuse the optimisation
   if (abs(align) > 0.5 & manual_align == FALSE) {
-    warning("Be cautious of large 2theta shifts. These can cause issues in sample alignment.")
+    warning("Be cautious of large 2theta shifts. These can cause issues in sample alignment.",
+            call. = FALSE)
   }
 
   #Ensure that remove_trace is not less than zero
   if (remove_trace < 0) {
-    stop("The remove_trace argument must be greater than 0.")
+    stop("The remove_trace argument must be greater than 0.",
+         call. = FALSE)
   }
 
   #Make only "Nelder-Mead", "BFGS", or "CG", "L-BFGS-B" or "NNLS" optional for the solver
   if (!solver %in% c("Nelder-Mead", "BFGS", "CG", "L-BFGS-B", "NNLS")) {
-    stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG', or 'NNLS'")
+    stop("The solver argument must be one of 'BFGS', 'Nelder Mead', 'CG', or 'NNLS'",
+         call. = FALSE)
   }
 
   #Use "BFGS" instead of "L-BFGS-B" if defined
@@ -499,7 +509,8 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
   if (solver == "NNLS" & shift > 0) {
 
     warning("When shift > 0, the solver argument must be one of 'BFGS',
-    'Nelder-Mead' or 'CG'. No shifting will be used.")
+    'Nelder-Mead' or 'CG'. No shifting will be used.",
+            call. = FALSE)
 
   }
 
@@ -516,6 +527,17 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
   }
 
+  #Check that none of the refs are spelt wrong
+  wrong_spellings <- which(!refs %in% lib$phases$phase_id & !refs %in% lib$phases$phase_name)
+
+  if (length(wrong_spellings) > 0) {
+
+    stop(paste(c("\nThe following reference patterns are not in the library:\n",
+                    paste(c(refs[wrong_spellings]), collapse = ", "))),
+            call. = FALSE)
+
+  }
+
 #-------------------------------------------------------------
 #END OF CONDITIONS, NOW SUBSET LIBRARY
 #-------------------------------------------------------------
@@ -525,7 +547,8 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, std_conc,
 
   #Make sure that the phase identified as the internal standard is contained within the reference library
   if (!std == "none" & !std %in% lib$phases$phase_id) {
-    stop("The phase you have specified as the internal standard is not in the subset reference library")
+    stop("The phase you have specified as the internal standard is not in the subset reference library",
+         call. = FALSE)
   }
 
 #Harmonise libraries
@@ -556,7 +579,8 @@ smpl <- .xrd_align(smpl = smpl,
 #If the alignment is close to the limit, provide a warning
 if (sqrt(smpl[[1]]^2) > (align*0.95) & manual_align == FALSE) {
   warning("The optimised shift used in alignment is equal to the maximum shift defined
-          in the function call. We advise visual inspection of this alignment.")
+          in the function call. We advise visual inspection of this alignment.",
+          call. = FALSE)
 }
 
 #smpl becomes a data frame

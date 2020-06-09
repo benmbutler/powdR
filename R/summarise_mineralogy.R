@@ -48,7 +48,8 @@ summarise_mineralogy <- function(x, type, order, rwp) {
 #Make sure x is a list
 if (!class(x) %in% c("list")) {
 
-  stop("x must be a list of powdRfps or powdRafps objects")
+  stop("x must be a list of powdRfps or powdRafps objects",
+       call. = FALSE)
 
 }
 
@@ -56,7 +57,8 @@ if (!class(x) %in% c("list")) {
 #Check that each sample in the list is an powdRfps or powdRafps object
 if (!all(names(table(unlist(lapply(x, class)))) %in% c("powdRfps", "powdRafps"))) {
 
-  stop("All items in x must be either powdRfps or powdRafps objects.")
+  stop("All items in x must be either powdRfps or powdRafps objects.",
+       call. = FALSE)
 
 }
 
@@ -64,20 +66,23 @@ if (!all(names(table(unlist(lapply(x, class)))) %in% c("powdRfps", "powdRafps"))
 #Check that all the items are named
 if (!length(table(names(x))) == length(x)) {
 
-  stop("Each item in x needs to be named with a unique sample ID")
+  stop("Each item in x needs to be named with a unique sample ID",
+       call. = FALSE)
 
 }
 
 #Check that each item in the list has a name.
 if (length(stats::na.omit(names(x))) < length(x)) {
 
-    stop("Please ensure that each item in x is provided with a name that corresponds to its sample ID.")
+    stop("Please ensure that each item in x is provided with a name that corresponds to its sample ID.",
+         call. = FALSE)
 
 }
 
 if (missing(type)) {
 
-  stop("Please specify the type argument as one of 'all' or 'grouped'.")
+  stop("Please specify the type argument as one of 'all' or 'grouped'.",
+       call. = FALSE)
 
 }
 
@@ -95,25 +100,29 @@ if (missing(rwp)) {
 
 if (!is.logical(rwp)) {
 
-  stop("The rwp argument must be logical.")
+  stop("The rwp argument must be logical.",
+       call. = FALSE)
 
 }
 
 if (!is.logical(order)) {
 
-  stop("The order argument must be logical.")
+  stop("The order argument must be logical.",
+       call. = FALSE)
 
 }
 
 if (!type %in% c("all", "grouped", "summary")) {
 
-  stop("The type argument must be one of 'all' or 'grouped'.")
+  stop("The type argument must be one of 'all' or 'grouped'.",
+       call. = FALSE)
 
 }
 
 if (type == "summary") {
 
-  warning("Use of 'summary' in the type argument has deprecated, please use 'grouped' instead.")
+  warning("Use of 'summary' in the type argument has deprecated, please use 'grouped' instead.",
+          call. = FALSE)
 
 }
 

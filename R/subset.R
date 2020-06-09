@@ -30,25 +30,29 @@ subset.powdRlib <- function(x, refs, mode, ...) {
 
   if (!identical(names(x$xrd), x$phases$phase_id)) {
 
-    stop("The order of the powRlib objects xrd dataframe does not match that of the phases dataframe.")
+    stop("The order of the powRlib objects xrd dataframe does not match that of the phases dataframe.",
+         call. = FALSE)
 
   }
 
   if(missing(mode)) {
 
-    stop("The mode argument must be defined.")
+    stop("The mode argument must be defined.",
+         call. = FALSE)
 
   }
 
   if(!mode %in% c("keep", "remove")) {
 
-  stop("The mode argument must be either 'keep' or 'remove'.")
+  stop("The mode argument must be either 'keep' or 'remove'.",
+       call. = FALSE)
 
   }
 
   if(missing(refs)) {
 
-    stop("The ID's or names of phases to keep or remove must be set using the refs argument")
+    stop("The ID's or names of phases to keep or remove must be set using the refs argument",
+         call. = FALSE)
 
   }
 

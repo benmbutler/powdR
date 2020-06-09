@@ -53,19 +53,22 @@ plot.powdRfps <- function(x, wavelength, mode, xlim, interactive, ...) {
 
   if (length(xlim) > 2) {
 
-    stop("xlim must be a numeric vector of length 2")
+    stop("xlim must be a numeric vector of length 2",
+         call. = FALSE)
 
   }
 
   if (!is.numeric(xlim)) {
 
-    stop("xlim must be a numeric vector of length 2")
+    stop("xlim must be a numeric vector of length 2",
+         call. = FALSE)
 
   }
 
   if (xlim[1] < min(x$tth) | xlim[2] > max(x$tth)) {
 
-    stop("The limits defined in xlim are outside of the 2theta range of the data")
+    stop("The limits defined in xlim are outside of the 2theta range of the data",
+         call. = FALSE)
 
   }
 
@@ -78,7 +81,8 @@ plot.powdRfps <- function(x, wavelength, mode, xlim, interactive, ...) {
 
   if (!mode %in% c("fit", "residuals", "both")) {
 
-    stop("The mode arugment must be one of `fit`, `residuals`, or `both`")
+    stop("The mode arugment must be one of `fit`, `residuals`, or `both`",
+         call. = FALSE)
 
   }
 
@@ -87,13 +91,15 @@ plot.powdRfps <- function(x, wavelength, mode, xlim, interactive, ...) {
   }
 
   if(!missing(interactive) & !is.logical(interactive)) {
-    stop("The interactive arugment must be logical.")
+    stop("The interactive arugment must be logical.",
+         call. = FALSE)
   }
 
   #If wavelength is missing then stop the function call
   if (missing(wavelength)) {
 
-    stop("Provide a wavelength so that d-spacings can be calculated")
+    stop("Provide a wavelength so that d-spacings can be calculated",
+         call. = FALSE)
 
   }
 
@@ -115,7 +121,8 @@ plot.powdRfps <- function(x, wavelength, mode, xlim, interactive, ...) {
   if (!is.numeric(wavelength)) {
 
     stop("The wavelength argument must be one of either 'Cu', 'Co', or
-         a custom numeric value")
+         a custom numeric value",
+         call. = FALSE)
 
   }
 
@@ -280,19 +287,22 @@ plot.powdRafps <- function(x, wavelength, mode, xlim, interactive, ...) {
 
   if (length(xlim) > 2) {
 
-    stop("xlim must be a numeric vector of length 2")
+    stop("xlim must be a numeric vector of length 2",
+         call. = FALSE)
 
   }
 
   if (!is.numeric(xlim)) {
 
-    stop("xlim must be a numeric vector of length 2")
+    stop("xlim must be a numeric vector of length 2",
+         call. = FALSE)
 
   }
 
   if (xlim[1] < min(x$tth) | xlim[2] > max(x$tth)) {
 
-    stop("The limits defined in xlim are outside of the 2theta range of the data")
+    stop("The limits defined in xlim are outside of the 2theta range of the data",
+         call. = FALSE)
 
   }
 
@@ -304,7 +314,8 @@ plot.powdRafps <- function(x, wavelength, mode, xlim, interactive, ...) {
 
   if (!mode %in% c("fit", "residuals", "both")) {
 
-    stop("The mode arugment must be one of `fit`, `residuals`, or `both`")
+    stop("The mode arugment must be one of `fit`, `residuals`, or `both`",
+         call. = FALSE)
 
   }
 
@@ -313,13 +324,15 @@ plot.powdRafps <- function(x, wavelength, mode, xlim, interactive, ...) {
   }
 
   if(!missing(interactive) & !is.logical(interactive)) {
-    stop("The interactive arugment must be logical.")
+    stop("The interactive arugment must be logical.",
+         call. = FALSE)
   }
 
   #If wavelength is missing then stop the function call
   if (missing(wavelength)) {
 
-    stop("Provide a wavelength so that d-spacings can be calculated")
+    stop("Provide a wavelength so that d-spacings can be calculated",
+         call. = FALSE)
 
   }
 
@@ -341,7 +354,8 @@ plot.powdRafps <- function(x, wavelength, mode, xlim, interactive, ...) {
   if (!is.numeric(wavelength)) {
 
     stop("The wavelength argument must be one of either 'Cu', 'Co', or
-         a custom numeric value")
+         a custom numeric value",
+         call. = FALSE)
 
   }
 
@@ -487,7 +501,8 @@ plot.powdRlib <- function(x, wavelength, refs, interactive, ...) {
   if (!missing(refs)) {
 
     if (!length(which(refs %in% x$phases$phase_id)) == length(refs)) {
-      stop("Not all refs defined relate to phase ID's in the library")
+      stop("Not all refs defined relate to phase ID's in the library",
+           call. = FALSE)
     }
 
   }
@@ -499,7 +514,8 @@ plot.powdRlib <- function(x, wavelength, refs, interactive, ...) {
   #If wavelength is missing then stop the function call
   if (missing(wavelength)) {
 
-    stop("Provide a wavelength so that d-spacings can be calculated")
+    stop("Provide a wavelength so that d-spacings can be calculated",
+         call. = FALSE)
 
   }
 
@@ -521,13 +537,15 @@ plot.powdRlib <- function(x, wavelength, refs, interactive, ...) {
   if (!is.numeric(wavelength)) {
 
     stop("The wavelength argument must be one of either 'Cu', 'Co', or
-         a custom numeric value")
+         a custom numeric value",
+         call. = FALSE)
 
   }
 
   if(!missing(refs) & !is.character(refs)) {
     stop("The refs argument must be a character string
-         of the reference pattern ID's to be plotted")
+         of the reference pattern ID's to be plotted",
+         call. = FALSE)
   }
 
   if(missing(interactive)) {
@@ -535,7 +553,8 @@ plot.powdRlib <- function(x, wavelength, refs, interactive, ...) {
   }
 
   if(!missing(interactive) & !is.logical(interactive)) {
-    stop("The interactive arugment must be logical.")
+    stop("The interactive arugment must be logical.",
+         call. = FALSE)
   }
 
   d_v <- round(wavelength/(2*sin((x$tth/2)*pi/180)), 3)
@@ -599,7 +618,8 @@ plot.powdRbkg <- function(x, interactive, ...) {
   }
 
   if(!missing(interactive) & !is.logical(interactive)) {
-    stop("The interactive arugment must be logical.")
+    stop("The interactive arugment must be logical.",
+         call. = FALSE)
   }
 
   observed <- data.frame("tth" = x[[1]],

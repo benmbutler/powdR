@@ -1,6 +1,9 @@
 # powdR 1.2.1.999
 
 ## New features
+* `fps()` and `afps()` will now stop if any of the phases specified in the `refs` argument are not
+  in the library.
+* Warning messages now generally do not include the call.
 * Progress bar now included in the Shiny app when computing `fps()` and `afps()`.
 * `summarise_mineralogy()` now accepts single samples (i.e. a list of 1 `powdRfps` or `powdRafps` object).
 

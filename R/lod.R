@@ -132,7 +132,7 @@
   #Check the order
   if (length(id_match) < 1) {
 
-    stop("\n-The phases specified as the std is not present. Cannot compute
+    stop("\n-The phase specified as the std is not present. Cannot compute
          limits of detection.")
 
   }

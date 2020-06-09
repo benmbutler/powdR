@@ -30,13 +30,15 @@ powdRlib <- function(xrd_table, phases_table) {
   #Checks on the xrd table
   if(!names(table(is.na(xrd_table))) == FALSE) {
     stop("Please ensure that the xrd_table does not contain any
-         NA's")
+         NA's",
+         call. = FALSE)
   }
 
   #Check all columns in xrd_table are numeric
   if(!ncol(xrd_table) == as.numeric(summary(unlist(lapply(xrd_table, is.numeric)))[[2]])) {
 
-    stop("All columns in the xrd_table should be numeric")
+    stop("All columns in the xrd_table should be numeric",
+         call. = FALSE)
 
   }
 
@@ -51,23 +53,27 @@ powdRlib <- function(xrd_table, phases_table) {
   if (!identical(names(xrd), names(xrd2))) {
 
      stop("The column names of the xrd_table (excluding column 1, which is 2theta),
-          do not match the row names of the phases_table")
+          do not match the row names of the phases_table",
+          call. = FALSE)
 
   }
 
   #Checks on the phases table
   if(!is.character(phases[[1]])) {
     stop("Please make sure that the first column in phases_table is a character
-         string.")
+         string.",
+         call. = FALSE)
   }
 
   if(!is.character(phases[[2]])) {
     stop("Please make sure that the second column in phases_table is a character
-         string.")
+         string.",
+         call. = FALSE)
   }
 
   if(!is.numeric(phases[[3]])) {
-    stop("Please make sure that the third column in phases_table is a numeric vector.")
+    stop("Please make sure that the third column in phases_table is a numeric vector.",
+         call. = FALSE)
   }
 
   #Make sure the phases id column matches the names in the xrd dataframe
