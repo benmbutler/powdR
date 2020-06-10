@@ -276,6 +276,16 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 #Extract phase ID's from force
   if (length(force) > 0) {
 
+    wrong_force <- which(!force %in% lib$phases$phase_id & !force %in% lib$phases$phase_name)
+
+    if (length(wrong_force) > 0) {
+
+      stop(paste(c("\nThe following reference patterns specified in the force argument are not in the library:\n",
+                   paste(c(force[wrong_force]), collapse = ", "))),
+           call. = FALSE)
+
+    }
+
     force <- lib$phases$phase_id[which(lib$phases$phase_id %in% force | lib$phases$phase_name %in% force)]
 
   }
@@ -464,7 +474,7 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
   if (length(wrong_spellings) > 0) {
 
-    stop(paste(c("\nThe following reference patterns are not in the library:\n",
+    stop(paste(c("\nThe following reference patterns specified in the refs argument are not in the library:\n",
                  paste(c(refs[wrong_spellings]), collapse = ", "))),
          call. = FALSE)
 

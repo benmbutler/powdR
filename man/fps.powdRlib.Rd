@@ -12,6 +12,7 @@
   obj,
   refs,
   std,
+  force,
   std_conc,
   tth_align,
   align,
@@ -47,6 +48,10 @@ the reference library will be used.}
 
 \item{std}{The phase ID (e.g. "QUA.1") to be used as internal
 standard. Must match an ID provided in the \code{refs} parameter.}
+
+\item{force}{An optional string of phase ID's or names specifying which phases should be forced to
+remain throughout the automated full pattern summation. The ID's or names supplied must be present
+within the \code{lib$phases$phase_id} or \code{lib$phases$phase_name} columns.}
 
 \item{std_conc}{The concentration of the internal standard (if known) in weight percent. If
 unknown then use \code{std_conc = NA} (default), in which case it will be assumed that all phases sum
