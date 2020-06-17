@@ -1,4 +1,4 @@
-# powdR 1.2.1.999
+# powdR 1.2.2
 
 ## New features
 * `fps()` now accepts the `force` argument, forcing phases to remain in the final output even if their
