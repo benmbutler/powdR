@@ -258,6 +258,14 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
                          tth_align, align, manual_align, shift,
                          tth_fps, lod, amorphous, amorphous_lod, ...) {
 
+#Create a vector that will be populated with the library size at different points
+lib_size <- c("Full" = NA,
+              "NNLS" = NA,
+              "Optimise" = NA,
+              "Shift" = NA,
+              "LOD" = NA,
+              "Reoptimise" = NA)
+
 #Make sure there aren't any negative counts
   if (min(smpl[[2]]) < 0) {
 
@@ -483,6 +491,9 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   #subset lib according to the refs and force vector vectors
   lib <- subset(lib, refs = c(refs, force), mode = "keep")
 
+  #Update lib_size vector
+  lib_size[1] <- ncol(lib$xrd)
+
 
   #Make sure that the phase identified as the internal standard is contained within the reference library
   if (!std == "none" & !std %in% lib$phases$phase_id) {
@@ -610,6 +621,9 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   lib$xrd <- nnls_out$xrd.lib
   x <- nnls_out$x
 
+  #Update lib_size vector
+  lib_size[2] <- ncol(lib$xrd)
+
   #--------------------------------------------
   #Initial Optimisation
   #--------------------------------------------
@@ -639,6 +653,9 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   lib <- remove_neg_out[[2]]
 
   }
+
+  #Update lib_size vector
+  lib_size[3] <- ncol(lib$xrd)
 
   #--------------------------------------------
   #Shifting
@@ -711,6 +728,9 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
   }
 
+  #Update lib_size vector
+  lib_size[4] <- ncol(lib$xrd)
+
   }
 
 
@@ -748,6 +768,9 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
   x <- xrd_detectable[["x"]]
   lib$xrd <- xrd_detectable[["lib"]]
+
+  #Update lib_size vector
+  lib_size[5] <- ncol(lib$xrd)
 
   if (logical_reoptimise == FALSE) {
 
@@ -824,6 +847,9 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   x <- remove_neg_out[[1]]
   lib <- remove_neg_out[[2]]
   }
+
+  #Update lib_size vector
+  lib_size[6] <- ncol(lib$xrd)
 
 
 #-----------------------------------------------------------------------
@@ -912,7 +938,8 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
               "rwp" = R_fit,
               "weighted_pure_patterns" = xrd,
               "coefficients" = x,
-              "inputs" = inputs)
+              "inputs" = inputs,
+              "lib_size" = lib_size)
 
   #Define the class
   class(out) <- "powdRafps"
