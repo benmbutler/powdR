@@ -17,9 +17,10 @@ tth_transform(tth, from, to)
 a transformed 2theta vector
 }
 \description{
-\code{tth_transform} converts the two theta axis from one wavelength to another. Use with caution
-if intending the apply \code{fps()} or \code{afps()} to wavelength transformed samples or libraries
-because background signals can vary with wavelength and therefore affect the quality of the fit.
+\code{tth_transform} converts the two theta axis from one wavelength to another via Bragg's law.
+Use this function with caution if intending the apply \code{fps()} or \code{afps()} to wavelength
+transformed samples or libraries because background signals can vary with wavelength which may
+therefore affect the quality of the fit.
 }
 \examples{
 data(soils)
@@ -44,7 +45,7 @@ minerals2$tth <- tth_transform(minerals2$tth,
 
 #Plot the difference
 plot(x = minerals$tth, y = minerals$xrd$QUA.1,
-     type = "l")
+     type = "l", xlim = c(0, 85))
 lines(x = minerals2$tth, y = minerals2$xrd$QUA.1,
       col = "red")
 }
