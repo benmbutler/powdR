@@ -221,7 +221,7 @@ fps <- function(lib, ...) {
 #' to 100 percent.
 #' @param normalise A logical parameter to be used when the \code{std_conc} argument is defined. When
 #' \code{normalise = TRUE} the internal standard concentration is removed and the remaining phase
-#' concentrations normalised to sum to 100 %.
+#' concentrations normalised to sum to 100 percent.
 #' @param tth_align A vector defining the minimum and maximum 2theta values to be used during
 #' alignment (e.g. \code{c(5,65)}). If not defined, then the full range is used.
 #' @param align The maximum shift that is allowed during initial 2theta
