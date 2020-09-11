@@ -258,14 +258,6 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
                          tth_align, align, manual_align, shift,
                          tth_fps, lod, amorphous, amorphous_lod, ...) {
 
-#Create a vector that will be populated with the library size at different points
-lib_size <- c("Full" = NA,
-              "NNLS" = NA,
-              "Optimise" = NA,
-              "Shift" = NA,
-              "LOD" = NA,
-              "Reoptimise" = NA)
-
 #Make sure there aren't any negative counts
   if (min(smpl[[2]]) < 0) {
 
@@ -491,10 +483,6 @@ lib_size <- c("Full" = NA,
   #subset lib according to the refs and force vector vectors
   lib <- subset(lib, refs = c(refs, force), mode = "keep")
 
-  #Update lib_size vector
-  lib_size[1] <- ncol(lib$xrd)
-
-
   #Make sure that the phase identified as the internal standard is contained within the reference library
   if (!std == "none" & !std %in% lib$phases$phase_id) {
     stop("The phase you have specified as the internal standard is not in the reference library",
@@ -621,9 +609,6 @@ lib_size <- c("Full" = NA,
   lib$xrd <- nnls_out$xrd.lib
   x <- nnls_out$x
 
-  #Update lib_size vector
-  lib_size[2] <- ncol(lib$xrd)
-
   #--------------------------------------------
   #Initial Optimisation
   #--------------------------------------------
@@ -653,9 +638,6 @@ lib_size <- c("Full" = NA,
   lib <- remove_neg_out[[2]]
 
   }
-
-  #Update lib_size vector
-  lib_size[3] <- ncol(lib$xrd)
 
   #--------------------------------------------
   #Shifting
@@ -728,9 +710,6 @@ lib_size <- c("Full" = NA,
 
   }
 
-  #Update lib_size vector
-  lib_size[4] <- ncol(lib$xrd)
-
   }
 
 
@@ -768,9 +747,6 @@ lib_size <- c("Full" = NA,
 
   x <- xrd_detectable[["x"]]
   lib$xrd <- xrd_detectable[["lib"]]
-
-  #Update lib_size vector
-  lib_size[5] <- ncol(lib$xrd)
 
   if (logical_reoptimise == FALSE) {
 
@@ -848,11 +824,8 @@ lib_size <- c("Full" = NA,
   lib <- remove_neg_out[[2]]
   }
 
-  #Update lib_size vector
-  lib_size[6] <- ncol(lib$xrd)
 
-
-#-----------------------------------------------------------------------
+  #-----------------------------------------------------------------------
 #Computing fitted pattern and residuals
 #-----------------------------------------------------------------------
 
@@ -938,8 +911,7 @@ lib_size <- c("Full" = NA,
               "rwp" = R_fit,
               "weighted_pure_patterns" = xrd,
               "coefficients" = x,
-              "inputs" = inputs,
-              "lib_size" = lib_size)
+              "inputs" = inputs)
 
   #Define the class
   class(out) <- "powdRafps"
