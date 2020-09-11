@@ -47,7 +47,13 @@
   return(out)
 }
 
-.qminerals2 <- function(x, xrd_lib, std, std_conc) {
+.qminerals2 <- function(x, xrd_lib, std, std_conc, normalise) {
+
+  if (missing(normalise)) {
+
+    normalise <- FALSE
+
+  }
 
   #Get the name of the internal standard
   std_name <- xrd_lib$phases$phase_name[which(xrd_lib$phases$phase_id == std)]
@@ -101,6 +107,14 @@
   row.names(minerals) = c(1:nrow(minerals))
 
   minerals$phase_order <- c(1:nrow(minerals))
+
+  if (normalise == TRUE) {
+
+    cat("\n-Removing internal standard concentration and normalising to 100 %")
+    minerals <- minerals[-which(minerals$phase_name == std_name),]
+    minerals$phase_percent <- minerals$phase_percent / sum(minerals$phase_percent) * 100
+
+  }
 
   minerals_g <- data.frame(stats::aggregate(phase_percent ~ phase_name, data = minerals, FUN = sum),
                            stringsAsFactors = FALSE)

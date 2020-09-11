@@ -141,6 +141,9 @@ afps <- function(lib, ...) {
 #' @param std_conc The concentration of the internal standard (if known) in weight percent. If
 #' unknown then use \code{std_conc = NA}, in which case it will be assumed that all phases sum
 #' to 100 percent (default).
+#' @param normalise A logical parameter to be used when the \code{std_conc} argument is defined. When
+#' \code{normalise = TRUE} the internal standard concentration is removed and the remaining phase
+#' concentrations normalised to sum to 100 %.
 #' @param tth_align A vector defining the minimum and maximum 2theta values to be used during
 #' alignment (e.g. \code{c(5,65)}). If not defined, then the full range is used.
 #' @param align The maximum shift that is allowed during initial 2theta
@@ -254,7 +257,7 @@ afps <- function(lib, ...) {
 #' Eberl, D.D., 2003. User's guide to RockJock - A program for determining quantitative mineralogy from
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
-afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, std_conc,
+afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, std_conc, normalise,
                          tth_align, align, manual_align, shift,
                          tth_fps, lod, amorphous, amorphous_lod, ...) {
 
@@ -859,7 +862,8 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   } else {
 
     cat("\n-Using internal standard concentration of", std_conc, "% to compute phase concentrations")
-    min_concs <- .qminerals2(x = x, xrd_lib = lib, std = std, std_conc = std_conc)
+    min_concs <- .qminerals2(x = x, xrd_lib = lib, std = std, std_conc = std_conc,
+                             normalise = normalise)
 
   }
 
