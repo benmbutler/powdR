@@ -9,7 +9,7 @@
 \arguments{
 \item{x}{A \code{powdRfps} or \code{powdRafps} object}
 
-\item{y}{A data frame. First column contains the phase ID covering all those present in
+\item{y}{A data frame. First column contains the phase IDs covering all those present in
 \code{x$phases$phase_id}. Second column contains the desired grouping of each phase.}
 
 \item{...}{other arguments}
@@ -59,6 +59,7 @@ afps_sandstone <- afps(lib = minerals,
 
 afps_sandstone_regrouped <- regroup(afps_sandstone,
                                     minerals_regroup_structure)
+
 afps_sandstone_regrouped$phases_grouped
 }
 }

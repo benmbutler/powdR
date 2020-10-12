@@ -44,7 +44,7 @@
 #'
 #' fps_sandstone_regrouped <- regroup(fps_sandstone,
 #'                                    minerals_regroup_structure)
-#
+#'
 #' fps_sandstone_regrouped$phases_grouped
 #'
 #' }
@@ -65,7 +65,7 @@ regroup <- function(x, ...) {
 #' new group identities.
 #'
 #' @param x A \code{powdRfps} or \code{powdRafps} object
-#' @param y A data frame. First column contains the phase ID covering all those present in
+#' @param y A data frame. First column contains the phase IDs covering all those present in
 #' \code{x$phases$phase_id}. Second column contains the desired grouping of each phase.
 #' @param ... other arguments
 #'
@@ -101,7 +101,7 @@ regroup <- function(x, ...) {
 #'
 #' fps_sandstone_regrouped <- regroup(fps_sandstone,
 #'                                    minerals_regroup_structure)
-#
+#'
 #' fps_sandstone_regrouped$phases_grouped
 #'
 #' }
@@ -149,7 +149,7 @@ regroup.powdRfps <- function(x, y, ...) {
 #' new group identities.
 #'
 #' @param x A \code{powdRfps} or \code{powdRafps} object
-#' @param y A data frame. First column contains the phase ID covering all those present in
+#' @param y A data frame. First column contains the phase IDs covering all those present in
 #' \code{x$phases$phase_id}. Second column contains the desired grouping of each phase.
 #' @param ... other arguments
 #'
@@ -187,7 +187,7 @@ regroup.powdRfps <- function(x, y, ...) {
 #'
 #' afps_sandstone_regrouped <- regroup(afps_sandstone,
 #'                                     minerals_regroup_structure)
-#
+#'
 #' afps_sandstone_regrouped$phases_grouped
 #' }
 #' @export
