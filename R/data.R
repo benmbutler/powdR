@@ -27,6 +27,15 @@
 #' }
 "minerals"
 
+
+#' Example regrouping structure for the \code{minerals} data
+#'
+#' @format A 2 column data frame.
+#' \describe{First column contains the unique phase ID's of all phases
+#' in the \code{minerals} data. Second column contains the grouping structure for the data
+#' (Non-clay, Clay or Amorphous).}
+"minerals_regroup_structure"
+
 #' A table of 14 reference patterns and their corresponding two theta scale that can
 #' be combined with the \code{minerals_phases} table to create a \code{powdRlib} object when using
 #' the \code{powdRlib} constructor function. Use the same layout to create custom
