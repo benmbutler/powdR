@@ -114,7 +114,7 @@ nrow(rockjock_2$phases)
 ```
 
 ## RockJock
-There are two `powdRlib` objects provided as part of the `powdR` package. The first is `minerals` (accessed via `data(minerals)`), which is a simple and low resolution library designed to facilitate fast computation of basic examples. The second is `rockjock` (accessed via `data(rockjock)`), which is a comprehensive library of 169 reference patterns covering most phases that might be encountered in geological and soil samples. The `rockjock` library in `powdR` uses data from the original RockJock program [@Eberl2003] thanks to the permission of Dennis Eberl. In `rockjock`, each reference pattern from the original RockJock program has been scaled to a maximum intensity of 10000 counts, and the RIR's normalised relative to Corundum. All `rockjock` data were analysed using Cu K$\alpha$ radiation.
+There are two `powdRlib` objects provided as part of the `powdR` package. The first is `minerals` (accessed via `data(minerals)`), which is a simple and low resolution library designed to facilitate fast computation of basic examples. The second is `rockjock` (accessed via `data(rockjock)`), which is a comprehensive library of 169 reference patterns covering most phases that might be encountered in geological and soil samples. The `rockjock` library in `powdR` uses data from the original RockJock program [@Eberl2003] thanks to the permission of Dennis Eberl. In `rockjock`, each reference pattern from the original RockJock program has been scaled to a maximum intensity of 10000 counts, and the RIRs normalised relative to Corundum. All `rockjock` data were analysed using Cu K$\alpha$ radiation.
 
 
 ## RockJock synthetic mixtures
