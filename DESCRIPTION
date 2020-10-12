@@ -16,8 +16,8 @@ Description: Full pattern summation of X-ray powder diffraction data as
   Derives quantitative estimates of crystalline and amorphous phase
   concentrations in complex mixtures.
 License: GPL-2 | file LICENSE
-URL: http://github.com/benmbutler/powdR
-BugReports: http://github.com/benmbutler/powdR/issues
+URL: https://github.com/benmbutler/powdR
+BugReports: https://github.com/benmbutler/powdR/issues
 Depends:
   R (>= 3.2.0)
 Encoding: UTF-8
