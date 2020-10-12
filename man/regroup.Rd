@@ -55,6 +55,7 @@ fps_sandstone <- fps(lib = minerals,
 
 fps_sandstone_regrouped <- regroup(fps_sandstone,
                                    minerals_regroup_structure)
+
 fps_sandstone_regrouped$phases_grouped
 
 }
