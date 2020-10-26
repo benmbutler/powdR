@@ -330,6 +330,14 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
   }
 
+
+#Set normalise to FALSE if missing
+  if (missing(normalise)) {
+
+    normalise <- FALSE
+
+  }
+
 #If std_conc is either NA or numeric then stop
   if (!(is.numeric(std_conc) | is.na(std_conc))) {
 
