@@ -895,6 +895,7 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
                  "std" = std,
                  "force" = force,
                  "std_conc" = std_conc,
+                 "normalise" = normalise,
                  "tth_align" = tth_align,
                  "align" = align,
                  "manual_align" = manual_align,
