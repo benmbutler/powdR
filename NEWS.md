@@ -6,9 +6,9 @@
   are not duplicated.
 
 ## Bug fixes
-# Default value for the normalise argument in `fps()` and `afps()` now supplied (`FALSE`)
+# Default value for the normalise argument in `fps()` and `afps()` is now supplied
+  (`FALSE`)
 # `powdRlib()` now ensures that the `phases` object is a dataframe.
-
 
 # powdR 1.2.3
 
