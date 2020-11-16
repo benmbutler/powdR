@@ -4,7 +4,8 @@
 
   a1 <- a
   a1[,1] <- a1[,1] + par
-  a2 <- data.frame(stats::spline(x = a1[,1], y = a1[,2], method = "natural", xout = xout))
+  a2 <- data.frame(stats::spline(x = a1[,1], y = a1[,2], method = "natural", xout = xout),
+                   check.names = FALSE)
   a3 <- 1-(stats::cor(std[,2],a2[,2]))
 
   return(a3)
@@ -54,7 +55,8 @@
   smpl_aligned_harm <- data.frame(stats::spline(x = smpl_aligned[[1]],
                                                y = smpl_aligned[[2]],
                                                method = "natural",
-                                               xout = tth_new))
+                                               xout = tth_new),
+                                  check.names = FALSE)
 
   names(smpl_aligned_harm) <- c("tth", "counts")
 

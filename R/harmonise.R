@@ -30,7 +30,8 @@
     } else {
 
     phase_id_keep <- names(lib$xrd)
-    lib$xrd <- data.frame(lib$xrd[keep_tth_lib,])
+    lib$xrd <- data.frame(lib$xrd[keep_tth_lib,],
+                          check.names = FALSE)
     names(lib$xrd) <- phase_id_keep
 
     }
@@ -60,7 +61,8 @@
                                  function(n) stats::spline(x = lib$tth,
                                                            y = n,
                                                            method = "natural",
-                                                           xout = smpl[[1]])[[2]]))
+                                                           xout = smpl[[1]])[[2]]),
+                          check.names = FALSE)
 
 
     lib$tth <- smpl[[1]]
@@ -83,7 +85,8 @@
   df <- data.frame("tth_smpl" = smpl[[1]],
                    "counts_smpl" = smpl[[2]],
                    "tth_lib" = lib$tth,
-                   lib$xrd)
+                   lib$xrd,
+                   check.names = FALSE)
 
   df2 <- stats::na.omit(df)
 

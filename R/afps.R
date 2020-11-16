@@ -261,6 +261,25 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
                          tth_align, align, manual_align, shift,
                          tth_fps, lod, amorphous, amorphous_lod, ...) {
 
+#---------------------------------------------------
+#Conditions
+#---------------------------------------------------
+
+  #Make sure the reference library is formatted correctly:
+  if (!identical(names(lib$xrd), lib$phases$phase_id)) {
+
+    stop("The names of the lib$xrd do not match the phase IDs in lib$phases$phase_id")
+
+  }
+
+  #Make sure the reference library is formatted correctly:
+  if (!length(names(lib$xrd)) == length(unique(names(lib$xrd)))) {
+
+    stop("The reference library contains duplicate phase IDs. Make sure that they
+         are all unique.")
+
+  }
+
 #Make sure there aren't any negative counts
   if (min(smpl[[2]]) < 0) {
 
@@ -531,7 +550,8 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   cat("\n-Aligning sample to the internal standard")
   smpl <- .xrd_align(smpl = smpl,
                      standard = data.frame(tth = lib$tth,
-                                           counts = lib$xrd[, which(lib$phases$phase_id == std)]),
+                                           counts = lib$xrd[, which(lib$phases$phase_id == std)],
+                                           check.names = FALSE),
                      xmin = tth_align[1],
                      xmax = tth_align[2], xshift = align,
                      manual = manual_align)
@@ -572,7 +592,8 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
                                function(n) stats::spline(x = lib$tth,
                                                          y = n,
                                                          method = "natural",
-                                                         xout = smpl_tth)[[2]]))
+                                                         xout = smpl_tth)[[2]]),
+                        check.names = FALSE)
 
   #Replace the library tth with that of the sample
   lib$tth <- smpl_tth
@@ -883,7 +904,8 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   R_fit <- sqrt(sum((1/smpl[,2]) * ((smpl[,2] - fitted_pattern)^2)) / sum((1/smpl[,2]) * (smpl[,2]^2)))
 
   #Extract the xrd data
-  xrd <- data.frame(lib$xrd)
+  xrd <- data.frame(lib$xrd,
+                    check.names = FALSE)
 
   #Scale them by the optimised weightings
   for (i in 1:ncol(xrd)) {

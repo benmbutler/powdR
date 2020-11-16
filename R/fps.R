@@ -9,7 +9,8 @@
 
   x <- nnls::nnls(as.matrix(mat), xrd.sample)
   x <- x$x
-  names(x) <- names(data.frame(mat))
+  names(x) <- names(data.frame(mat,
+                               check.names = FALSE))
 
   #If force isn't being used then just remove any phase = 0
 
@@ -342,6 +343,22 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, st
 #Conditions
 #---------------------------------------------------
 
+#Make sure the reference library is formatted correctly:
+  if (!identical(names(lib$xrd), lib$phases$phase_id)) {
+
+    stop("The names of the lib$xrd do not match the phase IDs in lib$phases$phase_id")
+
+  }
+
+  #Make sure the reference library is formatted correctly:
+  if (!length(names(lib$xrd)) == length(unique(names(lib$xrd)))) {
+
+    stop("The reference library contains duplicate phase IDs. Make sure that they
+         are all unique.")
+
+  }
+
+
 #Make sure there aren't any negative counts
   if (min(smpl[[2]]) < 0) {
 
@@ -608,7 +625,8 @@ if (!align == 0) {
 cat("\n-Aligning sample to the internal standard")
 smpl <- .xrd_align(smpl = smpl,
                    standard = data.frame(tth = lib$tth,
-                                         counts = lib$xrd[, which(lib$phases$phase_id == std)]),
+                                         counts = lib$xrd[, which(lib$phases$phase_id == std)],
+                                         check.names = FALSE),
                    xmin = tth_align[1],
                    xmax = tth_align[2], xshift = align,
                    manual = manual_align)
@@ -649,7 +667,8 @@ lib$xrd <- data.frame(lapply(lib$xrd,
                                        function(n) stats::spline(x = lib$tth,
                                                                  y = n,
                                                                  method = "natural",
-                                                                 xout = smpl_tth)[[2]]))
+                                                                 xout = smpl_tth)[[2]]),
+                      check.names = FALSE)
 
 }
 
@@ -852,7 +871,8 @@ dfs <- min_concs[[2]]
 R_fit <- sqrt(sum((1/smpl[,2]) * ((smpl[,2] - fitted_pattern)^2)) / sum((1/smpl[,2]) * (smpl[,2]^2)))
 
 #Extract the xrd data
-xrd <- data.frame(lib$xrd)
+xrd <- data.frame(lib$xrd,
+                  check.names = FALSE)
 
 #Scale them by the optimised weightings
 for (i in 1:ncol(xrd)) {

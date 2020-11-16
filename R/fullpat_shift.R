@@ -23,7 +23,8 @@ l3 <- lapply(l2,
                                        xout = lib$tth))
 
 #Now create a data frame of the shifted xrd data
-lib$xrd <- data.frame(lapply(l3, function(x) x[[2]]))
+lib$xrd <- data.frame(lapply(l3, function(x) x[[2]]),
+                      check.names = FALSE)
 
 names(smpl) <- c("tth", "counts")
 

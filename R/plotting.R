@@ -134,7 +134,8 @@ plot.powdRfps <- function(x, wavelength, mode, xlim, interactive, ...) {
                               d = d_v,
                               Measured = x$measured,
                               Fitted = x$fitted,
-                              x$weighted_pure_patterns)
+                              x$weighted_pure_patterns,
+                              check.names = FALSE)
 
   refs_colors <- .gg_color_hue(ncol(x$weighted_pure_patterns))
 
@@ -367,7 +368,8 @@ plot.powdRafps <- function(x, wavelength, mode, xlim, interactive, ...) {
                               d = d_v,
                               Measured = x$measured,
                               Fitted = x$fitted,
-                              x$weighted_pure_patterns)
+                              x$weighted_pure_patterns,
+                              check.names = FALSE)
 
   refs_colors <- .gg_color_hue(ncol(x$weighted_pure_patterns))
 
@@ -561,7 +563,8 @@ plot.powdRlib <- function(x, wavelength, refs, interactive, ...) {
 
   melted <- reshape::melt(data.frame("tth" = x[[2]],
                                      "d" = d_v,
-                                     x[[1]]), id = c("tth", "d"))
+                                     x[[1]],
+                                     check.names = FALSE), id = c("tth", "d"))
 
   names(melted) <- c("tth", "d", "phase", "Counts")
 
