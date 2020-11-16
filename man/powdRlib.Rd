@@ -4,7 +4,7 @@
 \alias{powdRlib}
 \title{Create an XRPD reference library}
 \usage{
-powdRlib(xrd_table, phases_table)
+powdRlib(xrd_table, phases_table, check_names)
 }
 \arguments{
 \item{xrd_table}{A data frame of the count intensities of the XRPD reference patterns,
@@ -12,6 +12,10 @@ all scaled to same maximum intensity, with their 2theta axis as the first column
 
 \item{phases_table}{A data frame of the required data (phase ID, phase name, and reference
 intensity ratio) for each reference pattern.}
+
+\item{check_names}{A logical argument defining whether the column names in the data
+supplied in \code{xrd_table} are syntactically valid variable names and are not
+duplicated. Default = \code{TRUE}.}
 }
 \value{
 a list with components:

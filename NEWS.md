@@ -1,3 +1,15 @@
+# powdR 1.2.4
+
+## New features
+# `powdRlib()` now accepts a logical `check_names` argument. If `TRUE` (the default) then
+  the names of the variables are checked to ensure that they are syntactically valid and
+  are not duplicated.
+
+## Bug fixes
+# Default value for the normalise argument in `fps()` and `afps()` now supplied (`FALSE`)
+# `powdRlib()` now ensures that the `phases` object is a dataframe.
+
+
 # powdR 1.2.3
 
 ## New features
