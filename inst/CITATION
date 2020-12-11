@@ -1,0 +1,11 @@
+citHeader("To cite powdR in publications, please use:")
+
+citEntry(entry = "Article",
+    author = personList(as.person("BM Butler"),
+        as.person("S Hillier")), title = "powdR:An R package for quantitative mineralogy using full pattern summation of X-ray powder diffraction data",
+    journal = "Computers and Geosciences", year = 2021, volume = 147, pages = "104662",
+    url = "https://doi.org/10.1016/j.cageo.2020.104662",
+    textVersion = paste("Butler B.M. and Hillier S. (2021)",
+        "powdR:An R package for quantitative mineralogy using full pattern summation of X-ray powder diffraction data.",
+        "Computers and Geosciences, 147, 104662,",
+        "https://doi.org/10.1016/j.cageo.2020.104662."))
