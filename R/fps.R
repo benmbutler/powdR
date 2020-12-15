@@ -358,15 +358,6 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, st
 
   }
 
-
-#Make sure there aren't any negative counts
-  if (min(smpl[[2]]) < 0) {
-
-    stop("Please make sure that there are no negative count intensities in the sample data",
-         call. = FALSE)
-
-  }
-
 #Define force if missing
   if (missing(force)) {
 
@@ -556,6 +547,17 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, st
         Using 'BFGS' instead.")
 
     solver <- "BFGS"
+
+  }
+
+  #Make sure there aren't any negative counts if Rwp is being used
+  if (min(smpl[[2]]) < 0 & obj = "Rwp") {
+
+    warning("Rwp canot be used as the objective function because there are negative
+            values in the counts data. Switching to R as the objective function instead",
+            call. = FALSE)
+
+    obj = "R"
 
   }
 
