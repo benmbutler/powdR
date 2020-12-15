@@ -551,10 +551,10 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, st
   }
 
   #Make sure there aren't any negative counts if Rwp is being used
-  if (min(smpl[[2]]) < 0 & obj = "Rwp") {
+  if (min(smpl[[2]]) < 0 & obj == "Rwp") {
 
-    warning("Rwp canot be used as the objective function because there are negative
-            values in the counts data. Switching to R as the objective function instead",
+    warning("Rwp could not be used as the objective function because there were negative
+            values in the counts data. Switched to the use of R as the objective function.",
             call. = FALSE)
 
     obj = "R"
