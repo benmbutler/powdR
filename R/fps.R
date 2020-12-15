@@ -692,12 +692,15 @@ lib$tth <- smpl[, 1]
 #-----------------------------------------------------------
 
 #The optimisation can fail if negative have creeped in during interpolation
-if(length(which(smpl[[2]] < 0) > 0)) {
+if(length(which(smpl[[2]] < 0) > 0) & obj == "Rwp") {
 
-  delete_negs <- which(smpl[[2]] < 0)
-  smpl <- smpl[-delete_negs,]
-  lib$tth <- lib$tth[-delete_negs]
-  lib$xrd <- lib$xrd[-delete_negs, ]
+  warning("Negative values present in interpolated data. Switching objective
+          function to R instead of Rwp to avoid errors.")
+  obj <- "R"
+  #delete_negs <- which(smpl[[2]] < 0)
+  #smpl <- smpl[-delete_negs,]
+  #lib$tth <- lib$tth[-delete_negs]
+  #lib$xrd <- lib$xrd[-delete_negs, ]
 
 }
 
@@ -784,12 +787,15 @@ if(shift > 0 & length(x) > 1 & solver %in% c("Nelder-Mead", "BFGS", "CG")) {
     cat("\n-Reoptimising after shifting data")
 
   #The optimisation can fail if negative have creeped in during interpolation
-  if(length(which(smpl[[2]] < 0) > 0)) {
+  if(length(which(smpl[[2]] < 0) > 0) & obj == "Rwp") {
 
-    delete_negs <- which(smpl[[2]] < 0)
-    smpl <- smpl[-delete_negs,]
-    lib$tth <- lib$tth[-delete_negs]
-    lib$xrd <- lib$xrd[-delete_negs, ]
+    warning("Negative values present in interpolated data. Switching objective
+          function to R instead of Rwp to avoid errors.")
+    obj <- "R"
+    #delete_negs <- which(smpl[[2]] < 0)
+    #smpl <- smpl[-delete_negs,]
+    #lib$tth <- lib$tth[-delete_negs]
+    #lib$xrd <- lib$xrd[-delete_negs, ]
 
   }
 
