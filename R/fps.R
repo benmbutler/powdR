@@ -96,7 +96,7 @@
 #' \item{residuals}{a vector of the residuals (fitted vs measured)}
 #' \item{phases}{a dataframe of the phases used to produce the fitted pattern}
 #' \item{phases_grouped}{the phases dataframe grouped by phase_name and summed}
-#' \item{rwp}{the Rwp of the fitted vs measured pattern}
+#' \item{obj}{named vector of the objective parameters summarising the quality of the fit}
 #' \item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 #' All patterns have been weighted according to the coefficients used in the fit}
 #' \item{coefficients}{a named vector of coefficients used to produce the fitted pattern}
@@ -247,7 +247,7 @@ fps <- function(lib, ...) {
 #' \item{residuals}{a vector of the residuals (fitted vs measured)}
 #' \item{phases}{a dataframe of the phases used to produce the fitted pattern and their concentrations}
 #' \item{phases_grouped}{the phases dataframe grouped by phase_name and concentrations summed}
-#' \item{rwp}{the Rwp of the fitted vs measured pattern}
+#' \item{obj}{named vector of the objective parameters summarising the quality of the fit}
 #' \item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 #' All patterns have been weighted according to the coefficients used in the fit}
 #' \item{coefficients}{a named vector of coefficients used to produce the fitted pattern}
@@ -550,12 +550,11 @@ fps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, st
 
   }
 
-  #Make sure there aren't any negative counts if Rwp is being used
+  #Make sure that Rwp isn't used if there are any negative counts
   if (min(smpl[[2]]) < 0 & obj == "Rwp") {
 
-    warning("Rwp could not be used as the objective function because there were negative
-            values in the counts data. Switched to the use of R as the objective function.",
-            call. = FALSE)
+    cat("\n-Rwp could not be used as the objective function because there were negative
+         values in the counts data. Switched to the use of R as the objective function.")
 
     obj = "R"
 
@@ -694,7 +693,7 @@ lib$tth <- smpl[, 1]
 #The optimisation can fail if negative have creeped in during interpolation
 if(length(which(smpl[[2]] < 0) > 0) & obj == "Rwp") {
 
-  warning("Negative values present in interpolated data. Switching objective
+  cat("Negative values present in interpolated data. Switching objective
           function to R instead of Rwp to avoid errors.")
   obj <- "R"
   #delete_negs <- which(smpl[[2]] < 0)
@@ -789,8 +788,8 @@ if(shift > 0 & length(x) > 1 & solver %in% c("Nelder-Mead", "BFGS", "CG")) {
   #The optimisation can fail if negative have creeped in during interpolation
   if(length(which(smpl[[2]] < 0) > 0) & obj == "Rwp") {
 
-    warning("Negative values present in interpolated data. Switching objective
-          function to R instead of Rwp to avoid errors.")
+    cat("Negative values present in interpolated data. Switching objective
+         function to R instead of Rwp to avoid errors.")
     obj <- "R"
     #delete_negs <- which(smpl[[2]] < 0)
     #smpl <- smpl[-delete_negs,]
@@ -875,8 +874,20 @@ if (is.na(std_conc) | identical(names(x), std)) {
 df <- min_concs[[1]]
 dfs <- min_concs[[2]]
 
-#### Compute the Rwp
-R_fit <- sqrt(sum((1/smpl[,2]) * ((smpl[,2] - fitted_pattern)^2)) / sum((1/smpl[,2]) * (smpl[,2]^2)))
+#Objective parameters for results
+if (min(smpl[[2]]) < 0) {
+
+  Rwp_fit <- NA
+
+} else {
+
+  Rwp_fit <- sqrt(sum((1/smpl[[2]]) * ((smpl[[2]] - fitted_pattern)^2)) / sum((1/smpl[[2]]) * (smpl[[2]]^2)))
+
+}
+
+R_fit <- sqrt(sum((smpl[[2]] - fitted_pattern)^2)/sum(smpl[[2]]^2))
+
+delta_fit <- sum(abs(smpl[[2]] - fitted_pattern))
 
 #Extract the xrd data
 xrd <- data.frame(lib$xrd,
@@ -916,7 +927,9 @@ out <- list("tth" = smpl[,1],
             "residuals" = unname(resid_x),
             "phases" = df,
             "phases_grouped" = dfs,
-            "rwp" = R_fit,
+            "obj" = c("Rwp" = Rwp_fit,
+                      "R" = R_fit,
+                      "Delta" = delta_fit),
             "weighted_pure_patterns" = xrd,
             "coefficients" = x,
             "inputs" = inputs)

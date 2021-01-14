@@ -1,3 +1,16 @@
+# powdR 1.2.4.999
+
+## New features
+# `fps()` and `afps()` now accept diffraction data that has negative values for count
+  intensities. In such cases Rwp cannot be used as the objective function and R will
+  be used as the default instead.
+# The `rwp` item in the outputs from `fps()` and `afps()` has been renamed `obj`, which
+  contains a named vector of the values for three objective parameters: Rwp, R and
+  Delta.
+# `summarise_mineralogy` now accepts two additional arguments: `r` and `delta` which are
+  logical parameters used to specify whether the R and Delta objective parameters,
+  respectively,are included in the summary table.
+
 # powdR 1.2.4
 
 ## New features

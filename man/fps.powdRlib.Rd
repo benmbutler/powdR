@@ -93,7 +93,7 @@ a list with components:
 \item{residuals}{a vector of the residuals (fitted vs measured)}
 \item{phases}{a dataframe of the phases used to produce the fitted pattern and their concentrations}
 \item{phases_grouped}{the phases dataframe grouped by phase_name and concentrations summed}
-\item{rwp}{the Rwp of the fitted vs measured pattern}
+\item{obj}{named vector of the objective parameters summarising the quality of the fit}
 \item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 All patterns have been weighted according to the coefficients used in the fit}
 \item{coefficients}{a named vector of coefficients used to produce the fitted pattern}

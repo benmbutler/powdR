@@ -10,7 +10,13 @@
 #' @param order a logical operator denoting whether the columns of the resulting summary
 #' table are ordered in descending order according to the summed abundance of each phase
 #' across the dataset.
-#' @param rwp a logical operator denoting whether to include the Rwp as the final column
+#' @param rwp a logical operator denoting whether to include the Rwp value as the final column
+#' in the output. This provides an objective measure of the difference between the fitted
+#' and measured patterns.
+#' @param r a logical operator denoting whether to include the R value as the final column
+#' in the output. This provides an objective measure of the difference between the fitted
+#' and measured patterns.
+#' @param delta a logical operator denoting whether to include the Delta value as the final column
 #' in the output. This provides an objective measure of the difference between the fitted
 #' and measured patterns.
 #'
@@ -43,7 +49,8 @@
 #'                             rwp = TRUE)
 #' }
 #' @export
-summarise_mineralogy <- function(x, type, order, rwp) {
+summarise_mineralogy <- function(x, type, order, rwp,
+                                 r, delta) {
 
 #Make sure x is a list
 if (!class(x) %in% c("list")) {
@@ -98,6 +105,18 @@ if (missing(rwp)) {
 
 }
 
+if (missing(r)) {
+
+   r <- FALSE
+
+}
+
+if (missing(delta)) {
+
+   delta <- FALSE
+
+}
+
 if (!is.logical(rwp)) {
 
   stop("The rwp argument must be logical.",
@@ -142,12 +161,31 @@ if (type == "all")  {
 
 if (rwp == TRUE) {
 
-  rwp_v <- lapply(x, function(y) y$rwp)
+  rwp_v <- lapply(x, function(y) y$obj[[1]])
   rwp_df <- data.frame("sample_id" = names(rwp_v),
-                       "rwp" = unname(unlist(rwp_v)),
+                       "Rwp" = unname(unlist(rwp_v)),
                        stringsAsFactors = FALSE)
 
 }
+
+if (r == TRUE) {
+
+  r_v <- lapply(x, function(y) y$obj[[2]])
+  r_df <- data.frame("sample_id" = names(r_v),
+                     "R" = unname(unlist(r_v)),
+                       stringsAsFactors = FALSE)
+
+}
+
+if (delta == TRUE) {
+
+  delta_v <- lapply(x, function(y) y$obj[[3]])
+  delta_df <- data.frame("sample_id" = names(delta_v),
+                         "Delta" = unname(unlist(delta_v)),
+                         stringsAsFactors = FALSE)
+
+}
+
 
 #Rename columns and add sample ID as a column
 for (i in 1:length(mineralogy)) {
@@ -175,6 +213,18 @@ mineralogy_wide <- mineralogy_wide[, c(1, (order(sapply(mineralogy_wide[-1], sum
 if (rwp == TRUE) {
 
   mineralogy_wide <- plyr::join(mineralogy_wide, rwp_df, by = "sample_id")
+
+}
+
+if (r == TRUE) {
+
+  mineralogy_wide <- plyr::join(mineralogy_wide, r_df, by = "sample_id")
+
+}
+
+if (delta == TRUE) {
+
+  mineralogy_wide <- plyr::join(mineralogy_wide, delta_df, by = "sample_id")
 
 }
 

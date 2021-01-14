@@ -71,7 +71,7 @@
 #' RockJock reference library
 #'
 #' A \code{powdRlib} object of 168 pure reference patterns from the RockJock
-#' library (Cu K-alpha radiation) along with reference intensity ratios. Note compared
+#' library (Cu K-alpha radiation) along with reference intensity ratios. Note that compared
 #' to same library supplied with RockJock the powdR patterns have been normalised to 10,000
 #' counts and reference intensity ratios transformed so that all are relative
 #' to that of corundum, which has been set to a value of 1.0.
