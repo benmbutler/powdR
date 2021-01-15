@@ -1,4 +1,4 @@
-# powdR 1.2.4.999
+# powdR 1.2.5
 
 ## New features
 # `fps()` and `afps()` now accept diffraction data that has negative values for count
