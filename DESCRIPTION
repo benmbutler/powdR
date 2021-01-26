@@ -12,7 +12,8 @@ Authors@R: c(
   person("Dennis", "Eberl", role = "ctb"))
 Maintainer: Benjamin Butler <benjamin.butler@hutton.ac.uk>
 Description: Full pattern summation of X-ray powder diffraction data as
-  described in Chipera and Bish (2002) <doi:10.1107/S0021889802017405>.
+  described in Chipera and Bish (2002) <doi:10.1107/S0021889802017405> and
+  Butler and Hillier (2021) <doi:10.1016/j.cageo.2020.104662>.
   Derives quantitative estimates of crystalline and amorphous phase
   concentrations in complex mixtures.
 License: GPL-2 | file LICENSE
