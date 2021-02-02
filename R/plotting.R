@@ -1,3 +1,31 @@
+.group_patterns <- function(x) {
+
+  wpp_df <- x$weighted_pure_patterns
+
+  if (!identical(names(wpp_df), x$phases$phase_id)) {
+
+    stop("The ID's and names don't match")
+
+  }
+
+  wpp_df <- data.frame(t(wpp_df))
+
+  wpp_df <- data.frame("phase_name" = x$phases$phase_name,
+                       wpp_df)
+
+  wpp_df <- stats::aggregate(. ~ phase_name, data = wpp_df, FUN = sum)
+  wpp_df_names <- wpp_df$phase_name
+  wpp_df <- data.frame(t(wpp_df[-1]))
+  names(wpp_df) <- wpp_df_names
+  rownames(wpp_df) <- NULL
+
+  x$weighted_pure_patterns <- wpp_df
+
+  return(x)
+
+}
+
+
 .gg_color_hue <- function(n) {
   hues = seq(15, 375, length = n + 1)
   grDevices::hcl(h = hues, l = 65, c = 100)[1:n]
@@ -357,6 +385,267 @@ plot.powdRafps <- function(x, wavelength, mode, xlim, interactive, ...) {
     stop("The wavelength argument must be one of either 'Cu', 'Co', or
          a custom numeric value",
          call. = FALSE)
+
+  }
+
+  #compute d
+  d_v <- round(wavelength/(2*sin((x$tth/2)*pi/180)), 3)
+
+  #Create a dataframe of the weighted pure patterns and fitted pattern
+  pure_patterns <- data.frame(tth = x$tth,
+                              d = d_v,
+                              Measured = x$measured,
+                              Fitted = x$fitted,
+                              x$weighted_pure_patterns,
+                              check.names = FALSE)
+
+  refs_colors <- .gg_color_hue(ncol(x$weighted_pure_patterns))
+
+  #Residuals
+  resids <- data.frame(tth = x$tth,
+                       d = d_v,
+                       Counts = x$residuals)
+
+  #melt the pure patterns data frame
+  pure_patterns_long <- reshape::melt(pure_patterns, id = c("tth", "d"))
+
+  #Name the counts column
+  names(pure_patterns_long)[4] <- "Counts"
+
+
+  g1 <- suppressWarnings(ggplot2::ggplot() +
+                           ggplot2::geom_line(data = pure_patterns_long,
+                                              ggplot2::aes_(x = ~tth, y = ~Counts,
+                                                            color = ~variable,
+                                                            linetype = ~variable,
+                                                            d = ~d),
+                                              size = 0.25) +
+                           ggplot2::scale_color_manual(values = c("black", "red",
+                                                                  refs_colors)) +
+                           ggplot2::scale_linetype_manual(values = c("solid", "solid",
+                                                                     rep("dotted", ncol(x$weighted_pure_patterns)))) +
+                           ggplot2::ylab("Counts") +
+                           ggplot2::xlab("2theta") +
+                           ggplot2::scale_x_continuous(limits = xlim) +
+                           ggplot2::theme(legend.title = ggplot2::element_blank()))
+
+  g2 <- suppressWarnings(ggplot2::ggplot() +
+                           ggplot2::geom_line(data = resids,
+                                              ggplot2::aes_(x = ~tth, y = ~Counts, color = "Residuals", d = ~d), size = 0.15) +
+                           ggplot2::ylab("Counts") +
+                           ggplot2::xlab("2theta") +
+                           ggplot2::scale_x_continuous(limits = xlim) +
+                           ggplot2::scale_colour_manual(name = "",
+                                                        values = c("Residuals" = "blue")))
+
+
+  if (interactive == TRUE) {
+
+    #Convert to ggplotly
+    p1 <- plotly::ggplotly(g1, tooltip = c("x", "y", "d", "colour"))
+    p2 <- plotly::ggplotly(g2, tooltip = c("x", "y", "d", "colour"))
+
+
+    if (mode == "fit") {
+
+      return(p1)
+
+    }
+
+    if (mode == "residuals") {
+
+      return(p2)
+
+    }
+
+    if (mode  == "both") {
+
+      p3 <- plotly::subplot(p1, p2,
+                            nrows = 2,
+                            heights = c((2/3), (1/3)),
+                            widths = c(1),
+                            shareX = TRUE,
+                            titleY = TRUE)
+
+      return(p3)
+
+    }
+
+  } else {
+
+    if (mode == "fit") {
+
+      return(g1)
+
+    }
+
+    if (mode == "residuals") {
+
+      return(g2)
+
+    }
+
+    if (mode == "both") {
+
+      g3 <- ggpubr::ggarrange(g1, g2, nrow = 2,
+                              heights = c(2,1))
+      return(g3)
+
+    }
+
+  }
+
+}
+
+#' Plotting elements of a powdRlm object
+#'
+#' \code{plot.powdRlm} is designed to provide easy, adaptable plots
+#' of full pattern summation outputs produced from \code{\link{fps_lm}}.
+#'
+#' When seeking to inspect the results from full pattern summation, interactive
+#' plots are particularly useful and can be specified with the \code{interactive}
+#' argument.
+#'
+#' @param x a powdRfps object
+#' @param wavelength One of "Cu", "Co" or a custom numeric value defining the wavelength
+#' (in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
+#' of 1.54056 or 1.78897 are used, respectively.
+#' @param mode One of "fit", "residuals" or "both" defining whether to plot the fitted
+#' patterns, the residuals of the fit, or both, respectively. Default = "fit".
+#' @param xlim A numeric vector of length two providing limits of the x-axis. Defaults
+#' to full x-axis unless specified.
+#' @param group A logical parameter used to specify whether the plotted data are grouped
+#' according to the phase name. Default = FALSE.
+#' @param interactive logical. If TRUE then the output will be an interactive
+#' ggplotly object. If FALSE then the output will be a ggplot object.
+#' @param ... other arguments
+#'
+#' @method plot powdRlm
+#' @examples
+#' #Load the rockjock library
+#' data(rockjock)
+#'
+#' # Load the rockjock loadings data
+#' data(rockjock_loadings)
+#'
+#' \dontrun{
+#' fps_lm_out <- fps_lm(rockjock,
+#'                      smpl = rockjock_loadings$Dim.1,
+#'                      refs = rockjock$phases$phase_id,
+#'                      std = "QUARTZ",
+#'                      align = 0.3,
+#'                      p = 0.01)
+#'
+#' plot(fps_lm_out,
+#'      wavelength = "Cu",
+#'      interactive = TRUE,
+#'      group = TRUE)
+#'
+#' }
+#' @export
+plot.powdRlm <- function(x, wavelength, mode, xlim, interactive, group, ...) {
+
+  if (missing(xlim)) {
+
+    xlim <- c(min(x$tth), max(x$tth))
+
+  }
+
+  if (missing(group)) {
+
+    group <- FALSE
+
+  }
+
+  if (!is.logical(group)) {
+
+    stop("group must be logical",
+         call. = FALSE)
+
+  }
+
+  if (length(xlim) > 2) {
+
+    stop("xlim must be a numeric vector of length 2",
+         call. = FALSE)
+
+  }
+
+  if (!is.numeric(xlim)) {
+
+    stop("xlim must be a numeric vector of length 2",
+         call. = FALSE)
+
+  }
+
+  if (xlim[1] < min(x$tth) | xlim[2] > max(x$tth)) {
+
+    stop("The limits defined in xlim are outside of the 2theta range of the data",
+         call. = FALSE)
+
+  }
+
+  if (missing(mode)) {
+
+    mode <- "fit"
+
+  }
+
+  if (!mode %in% c("fit", "residuals", "both")) {
+
+    stop("The mode arugment must be one of `fit`, `residuals`, or `both`",
+         call. = FALSE)
+
+  }
+
+  if(missing(interactive)) {
+    interactive <- FALSE
+  }
+
+  if(!missing(interactive) & !is.logical(interactive)) {
+    stop("The interactive arugment must be logical.",
+         call. = FALSE)
+  }
+
+  #If wavelength is missing then stop the function call
+  if (missing(wavelength)) {
+
+    stop("Provide a wavelength so that d-spacings can be calculated",
+         call. = FALSE)
+
+  }
+
+  #If wavelength = "Cu" then define it
+  if (wavelength == "Cu") {
+
+    wavelength <- 1.54056
+
+  }
+
+  #If wavelength = "Cu" then define it
+  if (wavelength == "Co") {
+
+    wavelength <- 1.78897
+
+  }
+
+  #At this point if wavelength isn't numeric then stop
+  if (!is.numeric(wavelength)) {
+
+    stop("The wavelength argument must be one of either 'Cu', 'Co', or
+         a custom numeric value",
+         call. = FALSE)
+
+  }
+
+
+  #-----------------------------------
+  #Optional grouping
+  #-----------------------------------
+
+  if (group == TRUE) {
+
+    x <- .group_patterns(x = x)
 
   }
 

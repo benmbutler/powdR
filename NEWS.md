@@ -1,27 +1,36 @@
+# powdR 1.2.5.999
+
+## New features
+* `fps_lm()` added that facilitates non-quantitative full-pattern summation by
+  linear regression, yielding an `powdRlm` object. Derived coefficients may be
+  either positive or negative, making the function particularly suitable for
+  fitting the loadings from principal component analysis.
+* `plot` method for `powdRlm` objects added.
+
 # powdR 1.2.5
 
 ## New features
-# `fps()` and `afps()` now accept diffraction data that has negative values for count
+* `fps()` and `afps()` now accept diffraction data that has negative values for count
   intensities. In such cases Rwp cannot be used as the objective function and R will
   be used as the default instead.
-# The `rwp` item in the outputs from `fps()` and `afps()` has been renamed `obj`, which
+* The `rwp` item in the outputs from `fps()` and `afps()` has been renamed `obj`, which
   contains a named vector of the values for three objective parameters: Rwp, R and
   Delta.
-# `summarise_mineralogy` now accepts two additional arguments: `r` and `delta` which are
+* `summarise_mineralogy` now accepts two additional arguments: `r` and `delta` which are
   logical parameters used to specify whether the R and Delta objective parameters,
   respectively,are included in the summary table.
 
 # powdR 1.2.4
 
 ## New features
-# `powdRlib()` now accepts a logical `check_names` argument. If `TRUE` (the default) then
+* `powdRlib()` now accepts a logical `check_names` argument. If `TRUE` (the default) then
   the names of the variables are checked to ensure that they are syntactically valid and
   are not duplicated.
 
 ## Bug fixes
-# Default value for the normalise argument in `fps()` and `afps()` is now supplied
+* Default value for the normalise argument in `fps()` and `afps()` is now supplied
   (`FALSE`)
-# `powdRlib()` now ensures that the `phases` object is a dataframe.
+* `powdRlib()` now ensures that the `phases` object is a dataframe.
 
 # powdR 1.2.3
 
