@@ -35,7 +35,9 @@ Imports:
   nnls (>= 1.4),
   shinyWidgets (>= 0.5.1),
   baseline (>= 1.2),
-  tidyr (>= 1.0.2)
+  tidyr (>= 1.0.2),
+  FactoMineR (>= 2.3),
+  factoextra (>= 1.0.7)
 Suggests:
     knitr,
     rmarkdown

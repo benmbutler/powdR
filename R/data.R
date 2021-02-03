@@ -139,3 +139,16 @@
 #' @format A list of 3 components, each comprised of two columns. Column \code{tth} specifies
 #' the 2theta axis and \code{loading} specifies the count intensities.
 "rockjock_loadings"
+
+#' Mineral concentrations of the \code{rockjock_mixtures} data
+#'
+#' A dataframe summarising the weighed mineral concentrations of the \code{rockjock_mixtures} data,
+#' all in units of weight percent.
+#'
+#' @format An 8 column dataframe, with each row detailing the composition of a sample.
+#'
+#' @author Dennis Eberl
+#' @references
+#' Eberl, D.D., 2003. User's guide to RockJock - A program for determining quantitative mineralogy from
+#' powder X-ray diffraction data. Boulder, CA.
+"rockjock_weights"

@@ -6,6 +6,12 @@
   either positive or negative, making the function particularly suitable for
   fitting the loadings from principal component analysis.
 * `plot` method for `powdRlm` objects added.
+* `multi_xrpd_align()` allows for multiple XRPD patterns to be aligned to a given
+  standard at the same time, resulting in aligned data with an altered but
+  harmonised 2theta scale.
+* `xrpd_pca()` facilitates principal component analysis of XRPD patterns. The
+  derived loading for each dimension can be fitted to a `powdRlib` reference
+  library using `fps_lm()`.
 
 # powdR 1.2.5
 
