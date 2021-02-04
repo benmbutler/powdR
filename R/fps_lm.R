@@ -121,25 +121,6 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
   #Conditions
   #---------------------------------------------------
 
-  sd0 <- which(unlist(lapply(lib$xrd, stats::sd)) == 0)
-
-  if (length(sd0) > 0) {
-
-    cat("\n-Removing", length(sd0), "phases from the library and refs argument
-        that have a standard deviation of zero")
-
-    lib <- subset(lib, refs = names(sd0), mode = "remove")
-
-    #remove those reference patterns from the refs string i they're in there
-
-    if (length(which(refs %in% names(sd0))) > 0) {
-
-    refs <- refs[-which(refs %in% names(sd0))]
-
-    }
-
-  }
-
   if (missing(p)) {
 
     p <- 1
@@ -197,6 +178,7 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
   if(missing(tth_align)) {
 
     tth_align <- c(min(smpl[[1]]), max(smpl[[1]]))
+
   }
 
   #If align is missing then set it to default
@@ -237,6 +219,9 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
 
   }
 
+
+
+
   #Create a warning message if the shift is greater than 0.5, since this can confuse the optimisation
   if (abs(align) > 0.5 & manual_align == FALSE) {
     warning("Be cautious of large 2theta shifts. These can cause issues in sample alignment.",
@@ -261,6 +246,25 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
 
   #subset lib according to the refs and force vector
   lib <- subset(lib, refs = refs, mode = "keep")
+
+  sd0 <- which(unlist(lapply(lib$xrd, stats::sd)) == 0)
+
+  if (length(sd0) > 0) {
+
+    cat("\n-Removing", length(sd0), "phases from the library and refs argument
+        that have a standard deviation of zero")
+
+    lib <- subset(lib, refs = names(sd0), mode = "remove")
+
+    #remove those reference patterns from the refs string i they're in there
+
+    if (length(which(refs %in% names(sd0))) > 0) {
+
+      refs <- refs[-which(refs %in% names(sd0))]
+
+    }
+
+  }
 
   #Make sure that the phase identified as the internal standard is contained within the reference library
   if (!std == "none" & !std %in% lib$phases$phase_id) {
@@ -364,17 +368,19 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
   #Extract the p-values
   x_p <- summary(lm_out)$coefficients[-1, 4]
 
-  if(!identical(names(x), names(lib$xrd))) {
+  names(x_p) <- names(x)
 
-    stop("The names of the coefficients do not match those in the library")
+  #if(!identical(names(x), names(lib$xrd))) {
 
-  }
+  #  stop("The names of the coefficients do not match those in the library")
 
-  if(!identical(names(x), names(x_p))) {
+  #}
 
-    stop("The names of the coefficients do not match the names of the p-values")
+  #if(!identical(names(x), names(x_p))) {
 
-  }
+  #  stop("The names of the coefficients do not match the names of the p-values")
+
+  #}
 
   while (length(which(x_p > p)) > 0) {
 
@@ -455,17 +461,19 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
     #Extract the p-values
     x_p <- summary(lm_out)$coefficients[-1, 4]
 
-    if(!identical(names(x), names(lib$xrd))) {
+    names(x_p) <- names(x)
 
-      stop("The names of the coefficients do not match those in the library")
+    #if(!identical(names(x), names(lib$xrd))) {
 
-    }
+    #  stop("The names of the coefficients do not match those in the library")
 
-    if(!identical(names(x), names(x_p))) {
+    #}
 
-      stop("The names of the coefficients do not match the names of the p-values")
+    #if(!identical(names(x), names(x_p))) {
 
-    }
+    #  stop("The names of the coefficients do not match the names of the p-values")
+
+    #}
 
     while (length(which(x_p > p)) > 0) {
 
