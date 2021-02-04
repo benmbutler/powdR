@@ -130,8 +130,13 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
 
     lib <- subset(lib, refs = names(sd0), mode = "remove")
 
-    #remove those reference patterns from the refs string
+    #remove those reference patterns from the refs string i they're in there
+
+    if (length(which(refs %in% names(sd0))) > 0) {
+
     refs <- refs[-which(refs %in% names(sd0))]
+
+    }
 
   }
 
