@@ -374,6 +374,8 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
 
   names(x_p) <- names(x)
 
+  intercept <- lm_out$coefficients[1]
+
   #if(!identical(names(x), names(lib$xrd))) {
 
   #  stop("The names of the coefficients do not match those in the library")
@@ -469,6 +471,8 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
     x_p <- summary(lm_out)$coefficients[-1, 4]
 
     names(x_p) <- names(x)
+
+    intercept <- lm_out$coefficients[1]
 
     #if(!identical(names(x), names(lib$xrd))) {
 
