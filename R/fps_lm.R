@@ -99,12 +99,16 @@ fps_lm <- function(lib, ...) {
 #' #Load the rockjock library
 #' data(rockjock)
 #'
-#' # Load the rockjock loadings data
-#' data(rockjock_loadings)
+#' #Compute the PCA and loadings
+#' x1 <- xrpd_pca(rockjock_mixtures,
+#'                mean_center = TRUE,
+#'                bin_size = 1,
+#'                root_transform = 1)
 #'
 #' \dontrun{
 #' fps_lm_out <- fps_lm(rockjock,
-#'                      smpl = rockjock_loadings$Dim.1,
+#'                      smpl = data.frame("x" = x1$loadings$tth,
+#'                                        "y" = x1$loadings$Dim.1),
 #'                      refs = rockjock$phases$phase_id,
 #'                      std = "QUARTZ",
 #'                      align = 0.3,
@@ -405,6 +409,9 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
   #Extract the p-values
   x_p <- summary(lm_out)$coefficients[-1, 4]
 
+  #Extract the intercept
+  intercept <- lm_out$coefficients[1]
+
 
   }
 
@@ -498,6 +505,9 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
       #Extract the p-values
       x_p <- summary(lm_out)$coefficients[-1, 4]
 
+      #extract the intercept
+      intercept <- lm_out$coefficients[1]
+
 
     }
 
@@ -526,7 +536,7 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
   #--------------------------------------------------------
 
   #compute fitted pattern and residuals
-  fitted_pattern <- apply(sweep(as.matrix(lib$xrd), 2, x, "*"), 1, sum)
+  fitted_pattern <- apply(sweep(as.matrix(lib$xrd), 2, x, "*"), 1, sum) + intercept
 
   resid_x <- smpl[, 2] - fitted_pattern
 

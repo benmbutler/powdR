@@ -40,12 +40,16 @@ argument.
 #Load the rockjock library
 data(rockjock)
 
-# Load the rockjock loadings data
-data(rockjock_loadings)
+#Compute the PCA and loadings
+x1 <- xrpd_pca(rockjock_mixtures,
+               mean_center = TRUE,
+               bin_size = 1,
+               root_transform = 1)
 
 \dontrun{
 fps_lm_out <- fps_lm(rockjock,
-                     smpl = rockjock_loadings$Dim.1,
+                     smpl = data.frame("x" = x1$loadings$tth,
+                                       "y" = x1$loadings$Dim.1),
                      refs = rockjock$phases$phase_id,
                      std = "QUARTZ",
                      align = 0.3,
