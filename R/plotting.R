@@ -522,8 +522,8 @@ plot.powdRafps <- function(x, wavelength, mode, xlim, interactive, ...) {
 #'
 #' @method plot powdRlm
 #' @examples
-#' #Load the rockjock library
 #' data(rockjock)
+#' data(rockjock_mixtures)
 #'
 #' #Compute the PCA and loadings
 #' x1 <- xrpd_pca(rockjock_mixtures,

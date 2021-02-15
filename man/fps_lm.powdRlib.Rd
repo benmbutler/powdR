@@ -82,8 +82,8 @@ Requires a \code{powdRlib} library of reference patterns. Mineral concentrations
 are not quantified and therefore reference intensity ratios are not required.
 }
 \examples{
-#Load the rockjock library
 data(rockjock)
+data(rockjock_mixtures)
 
 #Compute the PCA and loadings
 x1 <- xrpd_pca(rockjock_mixtures,
@@ -99,6 +99,11 @@ fps_lm_out <- fps_lm(rockjock,
                      std = "QUARTZ",
                      align = 0.3,
                      p = 0.01)
+
+plot(fps_lm_out,
+     wavelength = "Cu",
+     interactive = TRUE,
+     group = TRUE)
 
 }
 

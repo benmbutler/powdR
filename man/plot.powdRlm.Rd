@@ -37,8 +37,8 @@ plots are particularly useful and can be specified with the \code{interactive}
 argument.
 }
 \examples{
-#Load the rockjock library
 data(rockjock)
+data(rockjock_mixtures)
 
 #Compute the PCA and loadings
 x1 <- xrpd_pca(rockjock_mixtures,

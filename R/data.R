@@ -131,15 +131,6 @@
 #' powder X-ray diffraction data. Boulder, CA.
 "rockjock_mixtures"
 
-#' PCA loadings of \code{rockjock_mixtures} data
-#'
-#' A list containing 3 loadings of Dimensions 1 to 3 from principal components analysis of
-#' the \code{rockjock_mixtures} data.
-#'
-#' @format A list of 3 components, each comprised of two columns. Column \code{tth} specifies
-#' the 2theta axis and \code{loading} specifies the count intensities.
-"rockjock_loadings"
-
 #' Mineral concentrations of the \code{rockjock_mixtures} data
 #'
 #' A dataframe summarising the weighed mineral concentrations of the \code{rockjock_mixtures} data,

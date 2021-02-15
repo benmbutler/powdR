@@ -24,19 +24,28 @@
 #' \item{inputs}{a list of input arguments used in the function call}
 #'
 #' @examples
-#' #Load the rockjock library
 #' data(rockjock)
+#' data(rockjock_mixtures)
 #'
-#' # Load the rockjock loadings data
-#' data(rockjock_loadings)
+#' #Compute the PCA and loadings
+#' x1 <- xrpd_pca(rockjock_mixtures,
+#'                mean_center = TRUE,
+#'                bin_size = 1,
+#'                root_transform = 1)
 #'
 #' \dontrun{
 #' fps_lm_out <- fps_lm(rockjock,
-#'                      smpl = rockjock_loadings$Dim.1,
+#'                      smpl = data.frame("x" = x1$loadings$tth,
+#'                                        "y" = x1$loadings$Dim.1),
 #'                      refs = rockjock$phases$phase_id,
 #'                      std = "QUARTZ",
 #'                      align = 0.3,
 #'                      p = 0.01)
+#'
+#' plot(fps_lm_out,
+#'      wavelength = "Cu",
+#'      interactive = TRUE,
+#'      group = TRUE)
 #'
 #' }
 #'
@@ -96,8 +105,8 @@ fps_lm <- function(lib, ...) {
 #' \item{inputs}{a list of input arguments used in the function call}
 #'
 #' @examples
-#' #Load the rockjock library
 #' data(rockjock)
+#' data(rockjock_mixtures)
 #'
 #' #Compute the PCA and loadings
 #' x1 <- xrpd_pca(rockjock_mixtures,
@@ -113,6 +122,11 @@ fps_lm <- function(lib, ...) {
 #'                      std = "QUARTZ",
 #'                      align = 0.3,
 #'                      p = 0.01)
+#'
+#' plot(fps_lm_out,
+#'      wavelength = "Cu",
+#'      interactive = TRUE,
+#'      group = TRUE)
 #'
 #' }
 #'
@@ -393,7 +407,7 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
   #Remove the p-values > p
   remove_p <- which(x_p > p)
 
-  cat("\n-Removing coefficients with p-value less than", p)
+  cat("\n-Removing coefficients with p-value greater than", p)
 
   x <- x[-remove_p]
 
@@ -491,7 +505,7 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
       #Remove the p-values > p
       remove_p <- which(x_p > p)
 
-      cat("\n-Removing coefficients with p-value less than", p)
+      cat("\n-Removing coefficients with p-value greater than", p)
 
       x <- x[-remove_p]
 
