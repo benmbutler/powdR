@@ -10,7 +10,7 @@
 
 #Create a list of xy patterns from the xrd data
 l <- lapply(lib$xrd, function(x) data.frame("tth" = lib$tth,
-                                                 "counts" = x))
+                                            "counts" = x))
 
 #Now create a list of the shifted patterns
 l2 <- mapply(.shift_list, x = l, y = par_shift, SIMPLIFY = FALSE)
@@ -68,7 +68,19 @@ return(list("smpl" = smpl,
 
 #This should be a faster shifting version that does not optimise all coefficients at once
 #and instead JUST optimises the shifts
-.fullpat_shift_seq <- function (par, weightings, lib, smpl, obj) {
+.fullpat_shift_seq <- function (par, weightings, lib, smpl, obj, tth_fps) {
+
+  #check for excluded tth values
+  ex_tth <- which(lib$tth < tth_fps[1] | lib$tth > tth_fps[2])
+
+  if (length(ex_tth) > 0) {
+
+    #Remove the rows that are outside of tth_fps range
+    lib$xrd <- lib$xrd[-ex_tth,]
+    lib$tth <- lib$tth[-ex_tth]
+    smpl <- smpl[-ex_tth,]
+
+  }
 
   #Shift the data
   fs <- .fullpat_shift(smpl = smpl,

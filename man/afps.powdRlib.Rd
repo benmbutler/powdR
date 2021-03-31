@@ -23,6 +23,7 @@
   lod,
   amorphous,
   amorphous_lod,
+  weighting,
   ...
 )
 }
@@ -91,6 +92,13 @@ match phases present in \code{lib$phases$phase_id}.}
 \item{amorphous_lod}{Optional parameter used to exclude amorphous phases if they are below this
 specified limit (percent). Must be between 0 and 100. Default = 0.}
 
+\item{weighting}{an optional 2 column data frame specifying the 2theta values in the first
+column and a numeric weighting vector in the second column that specifies areas of the pattern
+to either emphasise (values > 1) or omit (values = 0) when minimising the objective function
+defined in the \code{obj} argument. Use this weighting parameter with caution. The default
+is simply a weighting vector where all values are 1, which hence has no effect on the computed
+objective function.}
+
 \item{...}{other arguments}
 }
 \value{
@@ -116,7 +124,7 @@ involving mineral quantification from large reference libraries.
 Applies automated full pattern summation to an XRPD
 sample to quantify phase concentrations. Requires a \code{powdRlib} library of reference
 patterns with reference intensity ratios in order to derive mineral
-concentrations.
+concentrations. Details provided in Butler and Hillier (2021).
 }
 \examples{
 #Load the minerals library
@@ -184,6 +192,9 @@ rockjock_a1s <- afps(lib = rockjock,
 }
 }
 \references{
+Butler, B. M., Hillier, S., 2021.powdR: An R package for quantitative mineralogy using full pattern
+summation of X-ray powder diffraction data. Comp. Geo. 147, 104662. doi:10.1016/j.cageo.2020.104662
+
 Bish, D.L., Post, J.E., 1989. Modern powder diffraction. Mineralogical Society of America.
 
 Chipera, S.J., Bish, D.L., 2013. Fitting Full X-Ray Diffraction Patterns for Quantitative Analysis:

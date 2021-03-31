@@ -8,7 +8,7 @@
 #' Applies automated full pattern summation to an XRPD
 #' measurement to quantify phase concentrations. Requires a \code{powdRlib} library of
 #' reference patterns with reference intensity ratios in order to derive
-#' mineral concentrations.
+#' mineral concentrations. Details provided in Butler and Hillier (2021).
 #'
 #' @param lib A \code{powdRlib} object representing the reference library. Created using the
 #' \code{powdRlib} constructor function.
@@ -92,6 +92,9 @@
 #'
 #' }
 #' @references
+#' Butler, B. M., Hillier, S., 2021.powdR: An R package for quantitative mineralogy using full pattern
+#' summation of X-ray powder diffraction data. Comp. Geo. 147, 104662. doi:10.1016/j.cageo.2020.104662
+#'
 #' Chipera, S.J., Bish, D.L., 2013. Fitting Full X-Ray Diffraction Patterns for Quantitative Analysis:
 #' A Method for Readily Quantifying Crystalline and Disordered Phases. Adv. Mater. Phys. Chem. 03, 47-53.
 #' doi:10.4236/ampc.2013.31A007
@@ -116,7 +119,7 @@ afps <- function(lib, ...) {
 #' Applies automated full pattern summation to an XRPD
 #' sample to quantify phase concentrations. Requires a \code{powdRlib} library of reference
 #' patterns with reference intensity ratios in order to derive mineral
-#' concentrations.
+#' concentrations. Details provided in Butler and Hillier (2021).
 #'
 #' @param lib A \code{powdRlib} object representing the reference library. Created using the
 #' \code{powdRlib} constructor function.
@@ -164,6 +167,12 @@ afps <- function(lib, ...) {
 #' match phases present in \code{lib$phases$phase_id}.
 #' @param amorphous_lod Optional parameter used to exclude amorphous phases if they are below this
 #' specified limit (percent). Must be between 0 and 100. Default = 0.
+#' @param weighting an optional 2 column data frame specifying the 2theta values in the first
+#' column and a numeric weighting vector in the second column that specifies areas of the pattern
+#' to either emphasise (values > 1) or omit (values = 0) when minimising the objective function
+#' defined in the \code{obj} argument. Use this weighting parameter with caution. The default
+#' is simply a weighting vector where all values are 1, which hence has no effect on the computed
+#' objective function.
 #' @param ... other arguments
 #'
 #' @return a list with components:
@@ -244,6 +253,9 @@ afps <- function(lib, ...) {
 #'
 #' }
 #' @references
+#' Butler, B. M., Hillier, S., 2021.powdR: An R package for quantitative mineralogy using full pattern
+#' summation of X-ray powder diffraction data. Comp. Geo. 147, 104662. doi:10.1016/j.cageo.2020.104662
+#'
 #' Bish, D.L., Post, J.E., 1989. Modern powder diffraction. Mineralogical Society of America.
 #'
 #' Chipera, S.J., Bish, D.L., 2013. Fitting Full X-Ray Diffraction Patterns for Quantitative Analysis:
@@ -259,7 +271,7 @@ afps <- function(lib, ...) {
 #' @export
 afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, std_conc, normalise,
                          tth_align, align, manual_align, shift,
-                         tth_fps, lod, amorphous, amorphous_lod, ...) {
+                         tth_fps, lod, amorphous, amorphous_lod, weighting, ...) {
 
 #---------------------------------------------------
 #Conditions
@@ -513,6 +525,25 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
   }
 
+  #Check the weighting data
+  if (missing(weighting)) {
+
+    weighting <- data.frame("tth" = smpl[[1]],
+                            "counts" = 1)
+
+  }
+
+  if (!is.data.frame(weighting)) {
+
+    stop("\n-Data supplied to the weighting argument must be a two column data frame.",
+         call. = FALSE)
+
+  }
+
+  #------------------------------
+  #End of conditions
+  #------------------------------
+
   #subset lib according to the refs and force vector vectors
   lib <- subset(lib, refs = c(refs, force), mode = "keep")
 
@@ -541,6 +572,12 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
     smpl <- harmonised$smpl
     lib <- harmonised$lib
+
+    #Predict weighting onto same scale
+    weighting <- stats::spline(x = weighting[[1]],
+                               y = weighting[[2]],
+                               method = "natural",
+                               xout = lib$tth)
 
   }
 
@@ -598,8 +635,18 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
                                                          xout = smpl_tth)[[2]]),
                         check.names = FALSE)
 
+  }
+
   #Replace the library tth with that of the sample
   lib$tth <- smpl_tth
+
+  if (!identical(weighting[[1]], lib$tth)) {
+
+    #Predict weighting onto same scale
+    weighting <- stats::spline(x = weighting[[1]],
+                               y = weighting[[2]],
+                               method = "natural",
+                               xout = lib$tth)
 
   }
 
@@ -608,13 +655,13 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   #----------------------------------------------------------------
 
   #### decrease 2TH scale to the range defined in the function call
-  smpl <- smpl[which(smpl$tth >= tth_fps[1] & smpl$tth <= tth_fps[2]), ]
+  #smpl <- smpl[which(smpl$tth >= tth_fps[1] & smpl$tth <= tth_fps[2]), ]
 
   #Subset the xrd dataframe too
-  lib$xrd <- lib$xrd[which(lib$tth >= tth_fps[1] & lib$tth <= tth_fps[2]), ]
+  #lib$xrd <- lib$xrd[which(lib$tth >= tth_fps[1] & lib$tth <= tth_fps[2]), ]
 
   #Replace the tth in the library with the shortened one
-  lib$tth <- smpl[, 1]
+  #lib$tth <- smpl[, 1]
 
   #if only one phase is being used, make sure it's a dataframe and named correctly
   if (is.vector(lib$xrd)) {
@@ -643,7 +690,8 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   }
 
   cat("\n-Applying non-negative least squares")
-  nnls_out <- .xrd_nnls(xrd.lib = lib, xrd.sample = smpl[, 2], force = force)
+  nnls_out <- .xrd_nnls(xrd.lib = lib, xrd.sample = smpl[, 2], force = force,
+                        tth_fps = tth_fps)
 
   lib$xrd <- nnls_out$xrd.lib
   x <- nnls_out$x
@@ -659,7 +707,9 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
         o <- stats::optim(par = x, .fullpat,
                           method = solver, pure_patterns = lib$xrd,
-                          sample_pattern = smpl[, 2], obj = obj)
+                          sample_pattern = smpl[, 2], obj = obj,
+                          tth = lib$tth, tth_fps = tth_fps,
+                          weighting = weighting[[2]])
 
         x <- o$par
 
@@ -670,8 +720,9 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
   if (min(x) < 0) {
 
-  remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
-                                solver = solver, obj = obj, force = force)
+  remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl[[2]],
+                                solver = solver, obj = obj, force = force,
+                                tth_fps = tth_fps, weighting = weighting[[2]])
 
   x <- remove_neg_out[[1]]
   lib <- remove_neg_out[[2]]
@@ -695,7 +746,8 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
     o <- stats::optim(par = x_s, .fullpat_shift_seq,
                       weightings = x,
                       method = solver, lib = lib,
-                      smpl = smpl, obj = obj)
+                      smpl = smpl, obj = obj,
+                      tth_fps = tth_fps)
 
     x_s <- o$par
 
@@ -713,6 +765,12 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
     lib <- shifted$lib
     smpl <- shifted$smpl
+
+    #Predict weighting onto same scale
+    weighting <- stats::spline(x = weighting[[1]],
+                               y = weighting[[2]],
+                               method = "natural",
+                               xout = lib$tth)
 
   #----------------------------------------------
   #Re-optimise after shifting
@@ -736,7 +794,9 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
   o <- stats::optim(par = x, .fullpat,
                     method = solver, pure_patterns = lib$xrd,
-                    sample_pattern = smpl[, 2], obj = obj)
+                    sample_pattern = smpl[, 2], obj = obj,
+                    tth = lib$tth, tth_fps = tth_fps,
+                    weighting = weighting[[2]])
 
   x <- o$par
 
@@ -744,9 +804,10 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   #Now remove negative parameters if they exist
   if (min(x) < 0) {
 
-        remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
+        remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl[[2]],
                                       solver = solver, obj = obj,
-                                      force = force)
+                                      force = force,
+                                      tth_fps = tth_fps, weighting = weighting[[2]])
 
         x <- remove_neg_out[[1]]
         lib <- remove_neg_out[[2]]
@@ -797,7 +858,9 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
   o <- stats::optim(par = x, .fullpat,
                     method = solver, pure_patterns = lib$xrd,
-                    sample_pattern = smpl[, 2], obj = obj)
+                    sample_pattern = smpl[, 2], obj = obj,
+                    tth = lib$tth, tth_fps = tth_fps,
+                    weighting = weighting[[2]])
 
   x <- o$par
 
@@ -859,9 +922,10 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
   #Remove negative parameters again because some can creep in late-on
   if (min(x) < 0) {
-  remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl,
+  remove_neg_out <- .remove_neg(x = x, lib = lib, smpl = smpl[[2]],
                                 solver = solver, obj = obj,
-                                force = force)
+                                force = force,
+                                tth_fps = tth_fps, weighting = weighting[[2]])
 
   x <- remove_neg_out[[1]]
   lib <- remove_neg_out[[2]]
@@ -911,29 +975,36 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   df <- min_concs[[1]]
   dfs <- min_concs[[2]]
 
-  #Objective parameters for results
+  #Get the index of the tth range in the function call
+  tth_index <- which(lib$tth >= tth_fps[1] | lib$tth <= tth_fps[2])
+
+  #Objective parameters for results (calculated with weighting vector)
   if (min(smpl[[2]]) < 0) {
 
-  Rwp_fit <- NA
+    Rwp_fit <- NA
 
   } else {
 
-  Rwp_fit <- sqrt(sum((1/smpl[[2]]) * ((smpl[[2]] - fitted_pattern)^2)) / sum((1/smpl[[2]]) * (smpl[[2]]^2)))
+    Rwp_fit <- rwp(measured = smpl[tth_index, 2],
+                   fitted = fitted_pattern[tth_index],
+                   weighting = weighting[[2]])
 
   }
 
-  R_fit <- sqrt(sum((smpl[[2]] - fitted_pattern)^2)/sum(smpl[[2]]^2))
+  R_fit <- r(measured = smpl[tth_index, 2],
+             fitted = fitted_pattern[tth_index],
+             weighting = weighting[[2]])
 
-  delta_fit <- sum(abs(smpl[[2]] - fitted_pattern))
+  delta_fit <- delta(measured = smpl[tth_index, 2],
+                     fitted = fitted_pattern[tth_index],
+                     weighting = weighting[[2]])
 
   #Extract the xrd data
   xrd <- data.frame(lib$xrd,
                     check.names = FALSE)
 
   #Scale them by the optimised weightings
-  for (i in 1:ncol(xrd)) {
-    xrd[,i] <- xrd[,i] * x[i]
-  }
+  xrd <- sweep(xrd, 2, x, "*")
 
   #If only 1 pattern is used in the fit, then rename it
   if (ncol(xrd) == 1) {
@@ -956,7 +1027,8 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
                  "tth_fps" = tth_fps,
                  "lod" = lod,
                  "amorphous" = amorphous,
-                 "amorphous_lod" = amorphous_lod)
+                 "amorphous_lod" = amorphous_lod,
+                 "weighting" = weighting[[2]])
 
 
   #Define a list that becomes the function output

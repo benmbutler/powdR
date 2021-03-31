@@ -4,7 +4,7 @@
 \alias{plot.powdRafps}
 \title{Plotting elements of a powdRafps object}
 \usage{
-\method{plot}{powdRafps}(x, wavelength, mode, xlim, interactive, ...)
+\method{plot}{powdRafps}(x, wavelength, mode, xlim, show_excluded, interactive, ...)
 }
 \arguments{
 \item{x}{a powdRfps object}
@@ -18,6 +18,9 @@ patterns, the residuals of the fit, or both, respectively. Default = "fit".}
 
 \item{xlim}{A numeric vector of length two providing limits of the x-axis. Defaults
 to full x-axis unless specified.}
+
+\item{show_excluded}{A logical value specifying whether the areas excluded from the
+fitting are identified in the plot as grey rectangles. Default \code{= TRUE}.}
 
 \item{interactive}{logical. If TRUE then the output will be an interactive
 ggplotly object. If FALSE then the output will be a ggplot object.}

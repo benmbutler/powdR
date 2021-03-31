@@ -1,4 +1,4 @@
-.remove_neg <- function(x, lib, smpl, solver, obj, force) {
+.remove_neg <- function(x, lib, smpl, solver, obj, force, tth_fps, weighting) {
 
   if (missing(force)) {
 
@@ -35,31 +35,14 @@ while (negpar <= 0) {
     x <- x[-omit]
   }
 
-  if (solver == "L-BFGS-B") {
-
-    cat("\n-Removing negative coefficients and reoptimising using L-BFGS-S constrained to a lower limit of zero...")
-    o <- stats::optim(par = x, .fullpat,
-                      method = solver, lower = 0, pure_patterns = lib$xrd,
-                      sample_pattern = smpl[, 2], obj = obj)
-    x <- o$par
-
-    #identify whether any parameters are negative for the next iteration
-    if (length(which(names(x) %in% force)) > 0) {
-
-      negpar <- min(x[-which(names(x) %in% force)])
-
-    } else {
-
-      negpar <- min(x)
-
-    }
-
-  } else {
 
   cat("\n-Removing negative coefficients and reoptimising...")
   o <- stats::optim(par = x, .fullpat,
                     method = solver, pure_patterns = lib$xrd,
-                    sample_pattern = smpl[, 2], obj = obj)
+                    sample_pattern = smpl, obj = obj,
+                    tth = lib$tth, tth_fps = tth_fps,
+                    weighting = weighting)
+
   x <- o$par
 
   #identify whether any parameters are negative for the next iteration
@@ -73,7 +56,6 @@ while (negpar <= 0) {
 
   }
 
-  }
 
 }
 

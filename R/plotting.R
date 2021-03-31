@@ -48,6 +48,8 @@
 #' patterns, the residuals of the fit, or both, respectively. Default = "fit".
 #' @param xlim A numeric vector of length two providing limits of the x-axis. Defaults
 #' to full x-axis unless specified.
+#' @param show_excluded A logical value specifying whether the areas excluded from the
+#' fitting are identified in the plot as grey rectangles. Default \code{= TRUE}.
 #' @param interactive logical. If TRUE then the output will be an interactive
 #' ggplotly object. If FALSE then the output will be a ggplot object.
 #' @param ... other arguments
@@ -71,7 +73,7 @@
 #' plot(fps_sand, wavelength = "Cu", interactive = TRUE)
 #' }
 #' @export
-plot.powdRfps <- function(x, wavelength, mode, xlim, interactive, ...) {
+plot.powdRfps <- function(x, wavelength, mode, xlim, show_excluded, interactive, ...) {
 
   if (missing(xlim)) {
 
@@ -109,17 +111,26 @@ plot.powdRfps <- function(x, wavelength, mode, xlim, interactive, ...) {
 
   if (!mode %in% c("fit", "residuals", "both")) {
 
-    stop("The mode arugment must be one of `fit`, `residuals`, or `both`",
+    stop("The mode argument must be one of `fit`, `residuals`, or `both`",
          call. = FALSE)
 
+  }
+
+  if(missing(show_excluded)) {
+    show_excluded <- TRUE
+  }
+
+  if(!is.logical(show_excluded)) {
+    stop("The show_excluded argument must be logical.",
+         call. = FALSE)
   }
 
   if(missing(interactive)) {
     interactive <- FALSE
   }
 
-  if(!missing(interactive) & !is.logical(interactive)) {
-    stop("The interactive arugment must be logical.",
+  if(!is.logical(interactive)) {
+    stop("The interactive argument must be logical.",
          call. = FALSE)
   }
 
@@ -205,11 +216,74 @@ plot.powdRfps <- function(x, wavelength, mode, xlim, interactive, ...) {
                                                         values = c("Residuals" = "blue")))
 
 
+  if (abs(x$inputs$tth_fps[1] - min(x$tth)) > (x$inputs$align + x$inputs$shift) &
+      show_excluded == TRUE) {
+
+    rect1 <- data.frame(xmin = min(x$tth), xmax = x$inputs$tth_fps[1],
+                        ymin = 0, ymax = max(pure_patterns_long$Counts))
+
+    rect2 <- data.frame(xmin = min(x$tth), xmax = x$inputs$tth_fps[1],
+                        ymin = min(resids$Counts), ymax = max(resids$Counts))
+
+    g1 <- suppressWarnings(g1 +
+                             ggplot2::geom_rect(data=rect1,
+                                                ggplot2::aes_(xmin = ~xmin,
+                                                              xmax = ~xmax,
+                                                              ymin = ~ymin,
+                                                              ymax = ~ymax,
+                                                              label = "Excluded from fit"),
+                                                color="grey10",
+                                                alpha=0.25))
+
+    g2 <- suppressWarnings(g2 +
+                             ggplot2::geom_rect(data=rect2,
+                                                ggplot2::aes_(xmin = ~xmin,
+                                                             xmax = ~xmax,
+                                                             ymin = ~ymin,
+                                                             ymax = ~ymax,
+                                                             label = "Excluded from fit"),
+                                                color="grey10",
+                                                alpha=0.25))
+
+  }
+
+  if (abs(x$inputs$tth_fps[1] - min(x$tth)) > (x$inputs$align + x$inputs$shift) &
+      show_excluded == TRUE) {
+
+    rect3 <- data.frame(xmin = x$inputs$tth_fps[2], xmax = max(x$tth),
+                        ymin = 0, ymax = max(pure_patterns_long$Counts))
+
+    rect4 <- data.frame(xmin = x$inputs$tth_fps[2], xmax = max(x$tth),
+                        ymin = min(resids$Counts), ymax = max(resids$Counts))
+
+    g1 <- suppressWarnings(g1 +
+                             ggplot2::geom_rect(data=rect3,
+                                                ggplot2::aes_(xmin = ~xmin,
+                                                              xmax = ~xmax,
+                                                              ymin = ~ymin,
+                                                              ymax = ~ymax,
+                                                              label = "Excluded from fit"),
+                                                color="grey10",
+                                                alpha=0.25))
+
+    g2 <- suppressWarnings(g2 +
+                             ggplot2::geom_rect(data=rect4,
+                                                ggplot2::aes_(xmin = ~xmin,
+                                                             xmax = ~xmax,
+                                                             ymin = ~ymin,
+                                                             ymax = ~ymax,
+                                                             label = "Excluded from fit"),
+                                                color="grey10",
+                                                alpha=0.25))
+
+  }
+
+
   if (interactive == TRUE) {
 
     #Convert to ggplotly
-    p1 <- plotly::ggplotly(g1, tooltip = c("x", "y", "d", "colour"))
-    p2 <- plotly::ggplotly(g2, tooltip = c("x", "y", "d", "colour"))
+    p1 <- plotly::ggplotly(g1, tooltip = c("x", "y", "d", "colour", "label"))
+    p2 <- plotly::ggplotly(g2, tooltip = c("x", "y", "d", "colour", "label"))
 
 
     if (mode == "fit") {
@@ -281,6 +355,8 @@ plot.powdRfps <- function(x, wavelength, mode, xlim, interactive, ...) {
 #' patterns, the residuals of the fit, or both, respectively. Default = "fit".
 #' @param xlim A numeric vector of length two providing limits of the x-axis. Defaults
 #' to full x-axis unless specified.
+#' @param show_excluded A logical value specifying whether the areas excluded from the
+#' fitting are identified in the plot as grey rectangles. Default \code{= TRUE}.
 #' @param interactive logical. If TRUE then the output will be an interactive
 #' ggplotly object. If FALSE then the output will be a ggplot object.
 #' @param ... other arguments
@@ -306,7 +382,7 @@ plot.powdRfps <- function(x, wavelength, mode, xlim, interactive, ...) {
 #'
 #' }
 #' @export
-plot.powdRafps <- function(x, wavelength, mode, xlim, interactive, ...) {
+plot.powdRafps <- function(x, wavelength, mode, xlim, show_excluded, interactive, ...) {
 
   if (missing(xlim)) {
 
@@ -343,9 +419,18 @@ plot.powdRafps <- function(x, wavelength, mode, xlim, interactive, ...) {
 
   if (!mode %in% c("fit", "residuals", "both")) {
 
-    stop("The mode arugment must be one of `fit`, `residuals`, or `both`",
+    stop("The mode argument must be one of `fit`, `residuals`, or `both`",
          call. = FALSE)
 
+  }
+
+  if(missing(show_excluded)) {
+    show_excluded <- TRUE
+  }
+
+  if(!is.logical(show_excluded)) {
+    stop("The show_excluded argument must be logical.",
+         call. = FALSE)
   }
 
   if(missing(interactive)) {
@@ -353,7 +438,7 @@ plot.powdRafps <- function(x, wavelength, mode, xlim, interactive, ...) {
   }
 
   if(!missing(interactive) & !is.logical(interactive)) {
-    stop("The interactive arugment must be logical.",
+    stop("The interactive argument must be logical.",
          call. = FALSE)
   }
 
@@ -439,11 +524,74 @@ plot.powdRafps <- function(x, wavelength, mode, xlim, interactive, ...) {
                                                         values = c("Residuals" = "blue")))
 
 
+  if (abs(x$inputs$tth_fps[1] - min(x$tth)) > (x$inputs$align + x$inputs$shift) &
+      show_excluded == TRUE) {
+
+    rect1 <- data.frame(xmin = min(x$tth), xmax = x$inputs$tth_fps[1],
+                        ymin = 0, ymax = max(pure_patterns_long$Counts))
+
+    rect2 <- data.frame(xmin = min(x$tth), xmax = x$inputs$tth_fps[1],
+                        ymin = min(resids$Counts), ymax = max(resids$Counts))
+
+    g1 <- suppressWarnings(g1 +
+                             ggplot2::geom_rect(data=rect1,
+                                                ggplot2::aes_(xmin = ~xmin,
+                                                              xmax = ~xmax,
+                                                              ymin = ~ymin,
+                                                              ymax = ~ymax,
+                                                              label = "Excluded from fit"),
+                                                color="grey10",
+                                                alpha=0.25))
+
+    g2 <- suppressWarnings(g2 +
+                             ggplot2::geom_rect(data=rect2,
+                                                ggplot2::aes_(xmin = ~xmin,
+                                                              xmax = ~xmax,
+                                                              ymin = ~ymin,
+                                                              ymax = ~ymax,
+                                                              label = "Excluded from fit"),
+                                                color="grey10",
+                                                alpha=0.25))
+
+  }
+
+  if (abs(x$inputs$tth_fps[1] - min(x$tth)) > (x$inputs$align + x$inputs$shift) &
+      show_excluded == TRUE) {
+
+    rect3 <- data.frame(xmin = x$inputs$tth_fps[2], xmax = max(x$tth),
+                        ymin = 0, ymax = max(pure_patterns_long$Counts))
+
+    rect4 <- data.frame(xmin = x$inputs$tth_fps[2], xmax = max(x$tth),
+                        ymin = min(resids$Counts), ymax = max(resids$Counts))
+
+    g1 <- suppressWarnings(g1 +
+                             ggplot2::geom_rect(data=rect3,
+                                                ggplot2::aes_(xmin = ~xmin,
+                                                              xmax = ~xmax,
+                                                              ymin = ~ymin,
+                                                              ymax = ~ymax,
+                                                              label = "Excluded from fit"),
+                                                color="grey10",
+                                                alpha=0.25))
+
+    g2 <- suppressWarnings(g2 +
+                             ggplot2::geom_rect(data=rect4,
+                                                ggplot2::aes_(xmin = ~xmin,
+                                                              xmax = ~xmax,
+                                                              ymin = ~ymin,
+                                                              ymax = ~ymax,
+                                                              label = "Excluded from fit"),
+                                                color="grey10",
+                                                alpha=0.25))
+
+  }
+
+
   if (interactive == TRUE) {
 
     #Convert to ggplotly
-    p1 <- plotly::ggplotly(g1, tooltip = c("x", "y", "d", "colour"))
-    p2 <- plotly::ggplotly(g2, tooltip = c("x", "y", "d", "colour"))
+    p1 <- plotly::ggplotly(g1, tooltip = c("x", "y", "d", "colour", "label"))
+    p2 <- plotly::ggplotly(g2, tooltip = c("x", "y", "d", "colour", "label"))
 
 
     if (mode == "fit") {
@@ -516,6 +664,8 @@ plot.powdRafps <- function(x, wavelength, mode, xlim, interactive, ...) {
 #' to full x-axis unless specified.
 #' @param group A logical parameter used to specify whether the plotted data are grouped
 #' according to the phase name. Default = FALSE.
+#' @param show_excluded A logical value specifying whether the areas excluded from the
+#' fitting are identified in the plot as grey rectangles. Default \code{= TRUE}.
 #' @param interactive logical. If TRUE then the output will be an interactive
 #' ggplotly object. If FALSE then the output will be a ggplot object.
 #' @param ... other arguments
@@ -547,7 +697,7 @@ plot.powdRafps <- function(x, wavelength, mode, xlim, interactive, ...) {
 #'
 #' }
 #' @export
-plot.powdRlm <- function(x, wavelength, mode, xlim, interactive, group, ...) {
+plot.powdRlm <- function(x, wavelength, mode, xlim, group, show_excluded, interactive, ...) {
 
   if (missing(xlim)) {
 
@@ -597,9 +747,18 @@ plot.powdRlm <- function(x, wavelength, mode, xlim, interactive, group, ...) {
 
   if (!mode %in% c("fit", "residuals", "both")) {
 
-    stop("The mode arugment must be one of `fit`, `residuals`, or `both`",
+    stop("The mode argument must be one of `fit`, `residuals`, or `both`",
          call. = FALSE)
 
+  }
+
+  if(missing(show_excluded)) {
+    show_excluded <- TRUE
+  }
+
+  if(!is.logical(show_excluded)) {
+    stop("The show_excluded argument must be logical.",
+         call. = FALSE)
   }
 
   if(missing(interactive)) {
@@ -607,7 +766,7 @@ plot.powdRlm <- function(x, wavelength, mode, xlim, interactive, group, ...) {
   }
 
   if(!missing(interactive) & !is.logical(interactive)) {
-    stop("The interactive arugment must be logical.",
+    stop("The interactive argument must be logical.",
          call. = FALSE)
   }
 
@@ -704,11 +863,74 @@ plot.powdRlm <- function(x, wavelength, mode, xlim, interactive, group, ...) {
                                                         values = c("Residuals" = "blue")))
 
 
+  if (abs(x$inputs$tth_fps[1] - min(x$tth)) > (x$inputs$align + x$inputs$shift) &
+      show_excluded == TRUE) {
+
+    rect1 <- data.frame(xmin = min(x$tth), xmax = x$inputs$tth_fps[1],
+                        ymin = min(pure_patterns_long$Counts), ymax = max(pure_patterns_long$Counts))
+
+    rect2 <- data.frame(xmin = min(x$tth), xmax = x$inputs$tth_fps[1],
+                        ymin = min(resids$Counts), ymax = max(resids$Counts))
+
+    g1 <- suppressWarnings(g1 +
+                             ggplot2::geom_rect(data=rect1,
+                                                ggplot2::aes_(xmin = ~xmin,
+                                                              xmax = ~xmax,
+                                                              ymin = ~ymin,
+                                                              ymax = ~ymax,
+                                                              label = "Excluded from fit"),
+                                                color="grey10",
+                                                alpha=0.25))
+
+    g2 <- suppressWarnings(g2 +
+                             ggplot2::geom_rect(data=rect2,
+                                                ggplot2::aes_(xmin = ~xmin,
+                                                             xmax = ~xmax,
+                                                             ymin = ~ymin,
+                                                             ymax = ~ymax,
+                                                             label = "Excluded from fit"),
+                                                color="grey10",
+                                                alpha=0.25))
+
+  }
+
+  if (abs(x$inputs$tth_fps[1] - min(x$tth)) > (x$inputs$align + x$inputs$shift) &
+      show_excluded == TRUE) {
+
+    rect3 <- data.frame(xmin = x$inputs$tth_fps[2], xmax = max(x$tth),
+                        ymin = min(pure_patterns_long$Counts), ymax = max(pure_patterns_long$Counts))
+
+    rect4 <- data.frame(xmin = x$inputs$tth_fps[2], xmax = max(x$tth),
+                        ymin = min(resids$Counts), ymax = max(resids$Counts))
+
+    g1 <- suppressWarnings(g1 +
+                             ggplot2::geom_rect(data=rect3,
+                                                ggplot2::aes_(xmin = ~xmin,
+                                                              xmax = ~xmax,
+                                                              ymin = ~ymin,
+                                                              ymax = ~ymax,
+                                                              label = "Excluded from fit"),
+                                                color="grey10",
+                                                alpha=0.25))
+
+    g2 <- suppressWarnings(g2 +
+                             ggplot2::geom_rect(data=rect4,
+                                                ggplot2::aes_(xmin = ~xmin,
+                                                             xmax = ~xmax,
+                                                             ymin = ~ymin,
+                                                             ymax = ~ymax,
+                                                             label = "Excluded from fit"),
+                                                color="grey10",
+                                                alpha=0.25))
+
+  }
+
+
   if (interactive == TRUE) {
 
     #Convert to ggplotly
-    p1 <- plotly::ggplotly(g1, tooltip = c("x", "y", "d", "colour"))
-    p2 <- plotly::ggplotly(g2, tooltip = c("x", "y", "d", "colour"))
+    p1 <- plotly::ggplotly(g1, tooltip = c("x", "y", "d", "colour", "label"))
+    p2 <- plotly::ggplotly(g2, tooltip = c("x", "y", "d", "colour", "label"))
 
 
     if (mode == "fit") {
@@ -848,7 +1070,7 @@ plot.powdRlib <- function(x, wavelength, refs, interactive, ...) {
   }
 
   if(!missing(interactive) & !is.logical(interactive)) {
-    stop("The interactive arugment must be logical.",
+    stop("The interactive argument must be logical.",
          call. = FALSE)
   }
 
@@ -914,7 +1136,7 @@ plot.powdRbkg <- function(x, interactive, ...) {
   }
 
   if(!missing(interactive) & !is.logical(interactive)) {
-    stop("The interactive arugment must be logical.",
+    stop("The interactive argument must be logical.",
          call. = FALSE)
   }
 

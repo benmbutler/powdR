@@ -1,8 +1,14 @@
 # powdR 1.2.5.999
 
 ## New features
+* `powdRfps` and `powdRafps` objects, derived from `fps()` and `afps()`,
+  respectively, now include data for the full 2theta range, even when discrete
+  limits are set using the `tth_fps` argument.
+* Methods `plot.powdRfps` and `plot.powdRafps` now include grey boxes for areas
+  that were excluded from the fitting process via the `tth_fps` argument. These
+  boxes can be turned off by setting the `show_excluded` argument to `FALSE`.
 * `fps_lm()` added that facilitates non-quantitative full-pattern summation by
-  linear regression, yielding an `powdRlm` object. Derived coefficients may be
+  linear regression, yielding a `powdRlm` object. Derived coefficients may be
   either positive or negative, making the function particularly suitable for
   fitting the loadings from principal component analysis.
 * `plot` method for `powdRlm` objects added.
@@ -10,8 +16,8 @@
   standard at the same time, resulting in aligned data with an altered but
   harmonised 2theta scale.
 * `xrpd_pca()` facilitates principal component analysis of XRPD patterns. The
-  derived loading for each dimension can be fitted to a `powdRlib` reference
-  library using `fps_lm()`.
+  derived loading for each dimension can be fitted to patterns within a
+  `powdRlib` reference library using `fps_lm()`.
 
 # powdR 1.2.5
 

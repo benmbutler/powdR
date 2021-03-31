@@ -34,7 +34,7 @@ summation of X-ray powder diffraction data. For more details see \code{?fps.powd
 Applies full pattern summation (Chipera & Bish, 2002, 2013; Eberl, 2003) to an XRPD
 measurement to quantify phase concentrations. Requires a \code{powdRlib} library of
 reference patterns with reference intensity ratios in order to derive
-mineral concentrations.
+mineral concentrations. Details provided in Butler and Hillier (2021).
 }
 \examples{
 #Load the minerals library
@@ -106,6 +106,9 @@ rockjock_1s <- fps(lib = rockjock,
 }
 }
 \references{
+Butler, B. M., Hillier, S., 2021.powdR: An R package for quantitative mineralogy using full pattern
+summation of X-ray powder diffraction data. Comp. Geo. 147, 104662. doi:10.1016/j.cageo.2020.104662
+
 Chipera, S.J., Bish, D.L., 2013. Fitting Full X-Ray Diffraction Patterns for Quantitative Analysis:
 A Method for Readily Quantifying Crystalline and Disordered Phases. Adv. Mater. Phys. Chem. 03, 47-53.
 doi:10.4236/ampc.2013.31A007

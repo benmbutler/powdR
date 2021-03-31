@@ -4,7 +4,7 @@
 \alias{plot.powdRlm}
 \title{Plotting elements of a powdRlm object}
 \usage{
-\method{plot}{powdRlm}(x, wavelength, mode, xlim, interactive, group, ...)
+\method{plot}{powdRlm}(x, wavelength, mode, xlim, group, show_excluded, interactive, ...)
 }
 \arguments{
 \item{x}{a powdRfps object}
@@ -19,11 +19,14 @@ patterns, the residuals of the fit, or both, respectively. Default = "fit".}
 \item{xlim}{A numeric vector of length two providing limits of the x-axis. Defaults
 to full x-axis unless specified.}
 
-\item{interactive}{logical. If TRUE then the output will be an interactive
-ggplotly object. If FALSE then the output will be a ggplot object.}
-
 \item{group}{A logical parameter used to specify whether the plotted data are grouped
 according to the phase name. Default = FALSE.}
+
+\item{show_excluded}{A logical value specifying whether the areas excluded from the
+fitting are identified in the plot as grey rectangles. Default \code{= TRUE}.}
+
+\item{interactive}{logical. If TRUE then the output will be an interactive
+ggplotly object. If FALSE then the output will be a ggplot object.}
 
 \item{...}{other arguments}
 }

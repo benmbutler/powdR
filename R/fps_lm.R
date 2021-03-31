@@ -361,13 +361,13 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
   lib$tth <- smpl_tth
 
   #### decrease 2TH scale to the range defined in the function call
-  smpl <- smpl[which(smpl$tth >= tth_fps[1] & smpl$tth <= tth_fps[2]), ]
+  #smpl <- smpl[which(smpl$tth >= tth_fps[1] & smpl$tth <= tth_fps[2]), ]
 
   #Subset the xrd dataframe too
-  lib$xrd <- lib$xrd[which(lib$tth >= tth_fps[1] & lib$tth <= tth_fps[2]), , drop = FALSE]
+  #lib$xrd <- lib$xrd[which(lib$tth >= tth_fps[1] & lib$tth <= tth_fps[2]), , drop = FALSE]
 
   #Replace the tth in the library with the shortened one
-  lib$tth <- smpl[, 1]
+  #lib$tth <- smpl[, 1]
 
 
   #-----------------------------------------------------------
@@ -377,8 +377,11 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
 
   cat("\n-Applying linear regression")
 
-  lm_out <- stats::lm(x~., data= data.frame("x" = smpl[[2]],
-                                            lib$xrd,
+  #Get the index of the values within tth_fps
+  tth_index <- which(lib$tth > tth_fps[1] & lib$tth < tth_fps[2])
+
+  lm_out <- stats::lm(x~., data= data.frame("x" = smpl[tth_index, 2],
+                                            lib$xrd[tth_index, ],
                                             check.names = FALSE))
 
   x <- lm_out$coefficients[-1]
@@ -416,8 +419,8 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
   x_p <- x_p[-remove_p]
 
   #Recompute linear regression
-  lm_out <- stats::lm(x~., data= data.frame("x" = smpl[[2]],
-                                            lib$xrd,
+  lm_out <- stats::lm(x~., data= data.frame("x" = smpl[tth_index, 2],
+                                            lib$xrd[tth_index, ],
                                             check.names = FALSE))
 
   x <- lm_out$coefficients[-1]
@@ -449,7 +452,8 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
     o <- stats::optim(par = x_s, .fullpat_shift_seq,
                       weightings = x,
                       method = "BFGS", lib = lib,
-                      smpl = smpl, obj = "R")
+                      smpl = smpl, obj = "R",
+                      tth_fps = tth_fps)
 
     x_s <- o$par
 
@@ -475,8 +479,8 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
 
     cat("\n-Re-applying linear regression after shifting")
 
-    lm_out <- stats::lm(x~., data= data.frame("x" = smpl[[2]],
-                                              lib$xrd,
+    lm_out <- stats::lm(x~., data= data.frame("x" = smpl[tth_index, 2],
+                                              lib$xrd[tth_index, ],
                                               check.names = FALSE))
 
     x <- lm_out$coefficients[-1]
@@ -514,8 +518,8 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
       x_p <- x_p[-remove_p]
 
       #Recompute linear regression
-      lm_out <- stats::lm(x~., data= data.frame("x" = smpl[[2]],
-                                                lib$xrd,
+      lm_out <- stats::lm(x~., data= data.frame("x" = smpl[tth_index, 2],
+                                                lib$xrd[tth_index, ],
                                                 check.names = FALSE))
 
       x <- lm_out$coefficients[-1]
@@ -563,9 +567,7 @@ fps_lm.powdRlib <- function(lib, smpl, harmonise, refs, std,
                     check.names = FALSE)
 
   #Scale them by the optimised weightings
-  for (i in 1:ncol(xrd)) {
-    xrd[,i] <- xrd[,i] * x[i]
-  }
+  xrd <- sweep(xrd, 2, x, "*")
 
   #If only 1 pattern is used in the fit, then rename it
   if (ncol(xrd) == 1) {
