@@ -1,6 +1,8 @@
 # powdR 1.2.5.999
 
 ## New features
+* Objective functions Delta, R and Rwp are now implemented in functions `delta()`,
+  `r()` and `rwp`, respectively.
 * `powdRfps` and `powdRafps` objects, derived from `fps()` and `afps()`,
   respectively, now include data for the full 2theta range, even when discrete
   limits are set using the `tth_fps` argument.
