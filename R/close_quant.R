@@ -1,7 +1,7 @@
 #' Close the phase concentration data within a \code{powdRfps} or
 #' \code{powdRafps} object
 #'
-#' \code{close_quant} closes the quantitative data witih a \code{powdRfps} or
+#' \code{close_quant} closes the quantitative data within a \code{powdRfps} or
 #' \code{powdRafps} object (derived from \code{fps()} and \code{afps()}, respectively) by
 #' ensuring that the composition sums to 100 percent. See \code{?close_quant.powdRfps} and
 #' \code{?close_quant.powdRafps}.
