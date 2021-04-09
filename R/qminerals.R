@@ -47,11 +47,11 @@
   return(out)
 }
 
-.qminerals2 <- function(x, xrd_lib, std, std_conc, normalise) {
+.qminerals2 <- function(x, xrd_lib, std, std_conc, closed) {
 
-  if (missing(normalise)) {
+  if (missing(closed)) {
 
-    normalise <- FALSE
+    closed <- FALSE
 
   }
 
@@ -108,7 +108,7 @@
 
   minerals$phase_order <- c(1:nrow(minerals))
 
-  if (normalise == TRUE) {
+  if (closed == TRUE) {
 
     cat("\n-Removing internal standard concentration and normalising to 100 %")
     minerals <- minerals[-which(minerals$phase_name == std_name),]

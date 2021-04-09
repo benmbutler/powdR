@@ -13,7 +13,7 @@ fps(lib, ...)
 \item{...}{Other parameters passed to methods e.g. \code{fps.powdRlib}}
 }
 \value{
-a list with components:
+a powdRfps object with components:
 \item{tth}{a vector of the 2theta scale of the fitted data}
 \item{fitted}{a vector of the fitted XRPD pattern}
 \item{measured}{a vector of the original XRPD measurement (aligned)}

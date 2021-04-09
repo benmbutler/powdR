@@ -14,7 +14,7 @@
 #' \code{powdRlib} constructor function.
 #' @param ... Other parameters passed to methods e.g. \code{afps.powdRlib}
 #'
-#' @return a list with components:
+#' @return a powdRafps object with components:
 #' \item{tth}{a vector of the 2theta scale of the fitted data}
 #' \item{fitted}{a vector of the fitted XRPD pattern}
 #' \item{measured}{a vector of the original XRPD measurement (aligned)}
@@ -144,9 +144,13 @@ afps <- function(lib, ...) {
 #' @param std_conc The concentration of the internal standard (if known) in weight percent. If
 #' unknown then use \code{std_conc = NA}, in which case it will be assumed that all phases sum
 #' to 100 percent (default).
-#' @param normalise A logical parameter to be used when the \code{std_conc} argument is defined. When
-#' \code{normalise = TRUE} the internal standard concentration is removed and the remaining phase
-#' concentrations normalised to sum to 100 percent.
+#' @param omit_std A logical parameter to be used when the \code{std_conc} argument is defined. When
+#' \code{omit_std = TRUE} the phase concentrations are recomputed to account for value supplied in
+#' \code{std_conc}. Default \code{= FALSE}.
+#' @param closed A logical parameter to be used when the \code{std_conc} argument is defined and
+#' \code{omit_std = TRUE}. When \code{closed = TRUE} the internal standard concentration is removed
+#' and the remaining phase concentrations closed to sum to 100 percent. Default \code{= FALSE}.
+#' @param normalise deprecated. Please use the \code{omit_std} and \code{closed} arguments instead.
 #' @param tth_align A vector defining the minimum and maximum 2theta values to be used during
 #' alignment (e.g. \code{c(5,65)}). If not defined, then the full range is used.
 #' @param align The maximum shift that is allowed during initial 2theta
@@ -175,7 +179,7 @@ afps <- function(lib, ...) {
 #' objective function.
 #' @param ... other arguments
 #'
-#' @return a list with components:
+#' @return a powdRafps object with components:
 #' \item{tth}{a vector of the 2theta scale of the fitted data}
 #' \item{fitted}{a vector of the fitted XRPD pattern}
 #' \item{measured}{a vector of the original XRPD measurement (aligned and harmonised)}
@@ -269,13 +273,23 @@ afps <- function(lib, ...) {
 #' Eberl, D.D., 2003. User's guide to RockJock - A program for determining quantitative mineralogy from
 #' powder X-ray diffraction data. Boulder, CA.
 #' @export
-afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, std_conc, normalise,
-                         tth_align, align, manual_align, shift,
-                         tth_fps, lod, amorphous, amorphous_lod, weighting, ...) {
+afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, std_conc,
+                          omit_std, closed, normalise, tth_align, align, manual_align,
+                          shift, tth_fps, lod, amorphous, amorphous_lod, weighting, ...) {
 
 #---------------------------------------------------
 #Conditions
 #---------------------------------------------------
+
+  if (!missing(normalise)) {
+
+    warning("\n-The normalise argument is deprecated. Please using the omit_std and
+            closed arguments instead",
+            call. = FALSE)
+
+    closed <- normalise
+
+  }
 
   #Make sure the reference library is formatted correctly:
   if (!identical(names(lib$xrd), lib$phases$phase_id)) {
@@ -355,12 +369,61 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
   }
 
 
-#Set normalise to FALSE if missing
-  if (missing(normalise)) {
+  #Set omit_std to FALSE if missing
+  if (missing(omit_std)) {
 
-    normalise <- FALSE
+    omit_std <- FALSE
 
   }
+
+  #Make sure it's logical
+  if(!is.logical(omit_std)) {
+
+    stop("\n-The omit_std argument must be logical.",
+         call. = FALSE)
+
+  }
+
+  #Set closed to FALSE if missing
+  if (missing(closed)) {
+
+    closed <- FALSE
+
+  }
+
+  if(!is.logical(closed)) {
+
+    stop("\n-The closed argument must be logical.",
+         call. = FALSE)
+
+  }
+
+  if ((omit_std == TRUE | closed == TRUE) & is.na(std_conc)) {
+
+    warning("\n-The omit_std and closed arguments will be ignored because
+            the internal standard concentration is not defined",
+            call. = FALSE)
+
+  }
+
+  #The omit_std and closed arguments should be FALSE if there's
+  #no internal standard
+  if (is.na(std_conc)) {
+
+    omit_std <- FALSE
+    closed <- FALSE
+
+  }
+
+  #Produce a warming is omit_std = FALSE and closed = TRUE
+  if (omit_std == FALSE & closed == TRUE) {
+
+    warning("\n-Although omit_std = FALSE, the internal standard will still
+            be removed from the output because closed = TRUE",
+            call. = FALSE)
+
+  }
+
 
 #If std_conc is either NA or numeric then stop
   if (!(is.numeric(std_conc) | is.na(std_conc))) {
@@ -967,13 +1030,30 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
     cat("\n-Using internal standard concentration of", std_conc, "% to compute phase concentrations")
     min_concs <- .qminerals2(x = x, xrd_lib = lib, std = std, std_conc = std_conc,
-                             normalise = normalise)
+                             closed = closed)
 
   }
 
   #Extract mineral concentrations (df) and summarised mineral concentrations (dfs)
   df <- min_concs[[1]]
   dfs <- min_concs[[2]]
+
+  if (omit_std == TRUE & closed == FALSE) {
+
+    cat("\n-Omitting internal standard from phase concentrations")
+
+    int_std <- df[which(df[[1]] == std), 2]
+
+    df <- df[-which(df[[2]] == int_std), ]
+
+    df[[4]] <- (df[[4]]/(100-std_conc)) * 100
+
+    #Same for dfs
+    dfs <- dfs[-which(dfs[[1]] == int_std), ]
+
+    dfs[[2]] <- (dfs[[2]]/(100-std_conc)) * 100
+
+  }
 
   #Get the index of the tth range in the function call
   tth_index <- which(lib$tth >= tth_fps[1] | lib$tth <= tth_fps[2])
@@ -1019,7 +1099,8 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
                  "std" = std,
                  "force" = force,
                  "std_conc" = std_conc,
-                 "normalise" = normalise,
+                 "omit_std" = omit_std,
+                 "closed" = closed,
                  "tth_align" = tth_align,
                  "align" = align,
                  "manual_align" = manual_align,

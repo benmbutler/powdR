@@ -1,6 +1,16 @@
-# powdR 1.2.5.999
+# powdR 1.3.0.999
 
 ## New features
+* `fps()` and `afps()` now accept `omit_std` and `closed` arguments which are
+  used to specify how the phase concentrations are adjusted based on the
+  internal standard.
+* The `normalise` argument of `fps()` and `afps()` is now deprecated and
+  replaced with `closed`.
+* The new `omit_std()` methods for `powdRfps` and `powdRafps` objects allows
+  for the internal standard concentration to be omitted from the output and
+  phase concentrations re-computed.
+* The new `close_quant()` methods for `powdRfps` and `powdRafps` objects allows
+  for the quantitative composition to be closed so that it sums to 100 percent.
 * Objective functions Delta, R and Rwp are now implemented in functions `delta()`,
   `r()` and `rwp`, respectively.
 * `powdRfps` and `powdRafps` objects, derived from `fps()` and `afps()`,

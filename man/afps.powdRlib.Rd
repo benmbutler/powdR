@@ -14,6 +14,8 @@
   std,
   force,
   std_conc,
+  omit_std,
+  closed,
   normalise,
   tth_align,
   align,
@@ -60,9 +62,15 @@ within the \code{lib$phases$phase_id} or \code{lib$phases$phase_name} columns.}
 unknown then use \code{std_conc = NA}, in which case it will be assumed that all phases sum
 to 100 percent (default).}
 
-\item{normalise}{A logical parameter to be used when the \code{std_conc} argument is defined. When
-\code{normalise = TRUE} the internal standard concentration is removed and the remaining phase
-concentrations normalised to sum to 100 percent.}
+\item{omit_std}{A logical parameter to be used when the \code{std_conc} argument is defined. When
+\code{omit_std = TRUE} the phase concentrations are recomputed to account for value supplied in
+\code{std_conc}. Default \code{= FALSE}.}
+
+\item{closed}{A logical parameter to be used when the \code{std_conc} argument is defined and
+\code{omit_std = TRUE}. When \code{closed = TRUE} the internal standard concentration is removed
+and the remaining phase concentrations closed to sum to 100 percent. Default \code{= FALSE}.}
+
+\item{normalise}{deprecated. Please use the \code{omit_std} and \code{closed} arguments instead.}
 
 \item{tth_align}{A vector defining the minimum and maximum 2theta values to be used during
 alignment (e.g. \code{c(5,65)}). If not defined, then the full range is used.}
@@ -102,7 +110,7 @@ objective function.}
 \item{...}{other arguments}
 }
 \value{
-a list with components:
+a powdRafps object with components:
 \item{tth}{a vector of the 2theta scale of the fitted data}
 \item{fitted}{a vector of the fitted XRPD pattern}
 \item{measured}{a vector of the original XRPD measurement (aligned and harmonised)}
