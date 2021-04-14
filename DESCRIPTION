@@ -2,7 +2,7 @@ Package: powdR
 Type: Package
 Title: Full Pattern Summation of X-Ray Powder Diffraction Data
 Version: 1.3.0.999
-Date: 2021-03-31
+Date: 2021-04-09
 Authors@R: c(
   person("Benjamin", "Butler", email = "benjamin.butler@hutton.ac.uk",
   role = c("aut", "cre")),
@@ -37,7 +37,8 @@ Imports:
   baseline (>= 1.2),
   tidyr (>= 1.0.2),
   FactoMineR (>= 2.3),
-  factoextra (>= 1.0.7)
+  factoextra (>= 1.0.7),
+  rxylib (>= 0.2.6)
 Suggests:
     knitr,
     rmarkdown

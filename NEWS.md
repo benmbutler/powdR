@@ -1,6 +1,9 @@
 # powdR 1.3.0.999
 
 ## New features
+* `extract_xy()` added, which is a wrapper for `read_xyData()` from the
+  `rxylib` package. This function extracts an xy dataframe from various
+  proprietary formats of X-ray powder diffraction data.
 * `fps()` and `afps()` now accept `omit_std` and `closed` arguments which are
   used to specify how the phase concentrations are adjusted based on the
   internal standard.
