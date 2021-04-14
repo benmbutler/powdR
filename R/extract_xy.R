@@ -11,16 +11,16 @@
 #'
 #' @examples
 #' #load example RAW file
-#' file <- system.file("extdata/D5000/D5000_1.RAW", package = "powdR")
+#' file <- system.file("extdata/D5000/RAW/D5000_1.RAW", package = "powdR")
 #' xy <- extract_xy(file)
 #'
 #' #Load multiple RAW files
-#' files <- dir(system.file("extdata/D5000", package = "powdR"),
+#' files <- dir(system.file("extdata/D5000/RAW", package = "powdR"),
 #'              full.names = TRUE)
 #' xy_list <- lapply(files, extract_xy)
 #'
 #' #name each file in the list
-#' names(xy_list) <- dir(system.file("extdata/D5000", package = "powdR"),
+#' names(xy_list) <- dir(system.file("extdata/D5000/RAW", package = "powdR"),
 #'                       full.names = FALSE)
 #'
 #' #Remove the file extensions
