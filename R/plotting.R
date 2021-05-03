@@ -1166,3 +1166,106 @@ plot.powdRbkg <- function(x, interactive, ...) {
   return(p)
 
   }
+
+
+#' Plotting a multiXY object
+#'
+#' \code{plot.multiXY} is designed to provide easy, adaptable plots
+#' of multiple XRPD patterns.
+#'
+#' Plots can be made interactive using the logical \code{interactive} argument.
+#'
+#' @param x a powdRlib object
+#' @param wavelength One of "Cu", "Co" or a custom numeric value defining the wavelength
+#' (in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
+#' of 1.54056 or 1.78897 are used, respectively.
+#' @param interactive Logical. If TRUE then the output will be an interactive
+#' ggplotly object. If FALSE then the output will be a ggplot object.
+#' @param ... other arguments
+#'
+#' @method plot multiXY
+#'
+#' @examples
+#' # Load the minerals library
+#' data(rockjock_mixtures)
+#' \dontrun{
+#' plot(as_multi_xy(rockjock_mixtures), wavelength = "Cu")
+#' plot(as_multi_xy(rockjock_mixtures), wavelength = "Cu", interactive = TRUE)
+#' }
+#' @export
+plot.multiXY <- function(x, wavelength, interactive, ...) {
+
+  #If wavelength is missing then stop the function call
+  if (missing(wavelength)) {
+
+    stop("Provide a wavelength so that d-spacings can be calculated",
+         call. = FALSE)
+
+  }
+
+  #If wavelength = "Cu" then define it
+  if (wavelength == "Cu") {
+
+    wavelength <- 1.54056
+
+  }
+
+  #If wavelength = "Cu" then define it
+  if (wavelength == "Co") {
+
+    wavelength <- 1.78897
+
+  }
+
+  #At this point if wavelength isn't numeric then stop
+  if (!is.numeric(wavelength)) {
+
+    stop("The wavelength argument must be one of either 'Cu', 'Co', or
+         a custom numeric value",
+         call. = FALSE)
+
+  }
+
+  if(missing(interactive)) {
+    interactive <- FALSE
+  }
+
+  if(!missing(interactive) & !is.logical(interactive)) {
+    stop("The interactive argument must be logical.",
+         call. = FALSE)
+  }
+
+  #Create a d vector for each item
+
+  for (i in 1:length(x)) {
+
+    x[[i]]$d <- round(wavelength/(2*sin((x[[i]]$tth/2)*pi/180)), 3)
+
+  }
+
+  #Populate each item in the list with an ID
+  for (i in 1:length(x)) {
+
+   x[[i]]$id <- names(x)[i]
+
+  }
+
+  #Now bind into long dataframe
+  x_long <- do.call(rbind, x)
+
+  p <- suppressWarnings(ggplot2::ggplot(data = x_long) +
+                          ggplot2::geom_line(ggplot2::aes_(x = ~tth, y = ~counts,
+                                                           color = ~id, d = ~d),
+                                             size = 0.15) +
+                          ggplot2::xlab("2theta") +
+                          ggplot2::ylab("Counts") +
+                          ggplot2::theme(legend.title = ggplot2::element_blank()))
+
+
+  if(interactive == TRUE) {
+    p <- plotly::ggplotly(p)
+  }
+
+  return(p)
+
+}

@@ -1,6 +1,9 @@
 # powdR 1.3.0.999
 
 ## New features
+* `as_multi_xy()` added, which creates a `multiXY` objects from a list of
+  XRPD data. `multiXY` objects can easily be plotted using the new associated
+  `plot.multiXY` method.
 * `extract_xy()` added, which is a wrapper for `read_xyData()` from the
   `rxylib` package. This function extracts an xy dataframe from various
   proprietary formats of X-ray powder diffraction data.
