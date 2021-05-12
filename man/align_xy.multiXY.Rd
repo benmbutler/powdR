@@ -4,12 +4,12 @@
 \alias{align_xy.multiXY}
 \title{Align XRPD data in a multiXY object to a given standard}
 \usage{
-\method{align_xy}{multiXY}(x, standard, xmin, xmax, xshift, ...)
+\method{align_xy}{multiXY}(x, std, xmin, xmax, xshift, ...)
 }
 \arguments{
 \item{x}{a \code{multiXY} object.}
 
-\item{standard}{a dataframe of the chosen standard that each
+\item{std}{a dataframe of the chosen standard that each
 sample is aligned to (column 1 = 2theta, column 2 = counts)}
 
 \item{xmin}{the minimum 2theta value used during alignment}
@@ -49,7 +49,7 @@ plot(soils, wavelength = "Cu",
 
 #align data
 aligned <- align_xy(soils,
-                    standard = quartz,
+                    std = quartz,
                     xmin = 10,
                     xmax = 60,
                     xshift = 0.2)

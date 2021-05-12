@@ -4,7 +4,7 @@
 #' method-specific details.
 #'
 #' @param x an \code{XY} or \code{multiXY} object.
-#' @param standard a dataframe of the chosen standard that each
+#' @param std a dataframe of the chosen standard that each
 #' sample is aligned to (column 1 = 2theta, column 2 = counts)
 #' @param xmin the minimum 2theta value used during alignment
 #' @param xmax the maximum 2theta value used during alignment
@@ -32,7 +32,7 @@
 #'
 #' #align data
 #' aligned <- align_xy(soils,
-#'                     standard = quartz,
+#'                     std = quartz,
 #'                     xmin = 10,
 #'                     xmax = 60,
 #'                     xshift = 0.2)
@@ -42,8 +42,28 @@
 #'      xlim = c(26,27),
 #'      normalise = TRUE)
 #'
+#' #Alternatively try with a single XY objects
+#'
+#' unaligned <- as_multi_xy(list("quartz" = quartz,
+#'                              "sandstone" = soils$sandstone))
+#'
+#' plot(unaligned, wav = "Cu",
+#'      xlim = c(26,27), normalise = T)
+#'
+#' sandstone_a <- align_xy(soils$sandstone,
+#'                         std = quartz,
+#'                         xmin = 10,
+#'                         xmax = 60,
+#'                         xshift = 0.3)
+#'
+#' aligned <- as_multi_xy(list("quartz" = quartz,
+#'                             "sandstone" = sandstone_a))
+#'
+#' plot(aligned, wav = "Cu",
+#'      xlim = c(26,27), normalise = T)
+#'
 #' @export
-align_xy <- function(x, standard,
+align_xy <- function(x, std,
                      xmin, xmax, xshift, ...) {
   UseMethod("align_xy")
 }
@@ -58,7 +78,7 @@ align_xy <- function(x, standard,
 #' the function harmonises the data to a single 2theta scale.
 #'
 #' @param x a \code{multiXY} object.
-#' @param standard a dataframe of the chosen standard that each
+#' @param std a dataframe of the chosen standard that each
 #' sample is aligned to (column 1 = 2theta, column 2 = counts)
 #' @param xmin the minimum 2theta value used during alignment
 #' @param xmax the maximum 2theta value used during alignment
@@ -86,7 +106,7 @@ align_xy <- function(x, standard,
 #'
 #' #align data
 #' aligned <- align_xy(soils,
-#'                     standard = quartz,
+#'                     std = quartz,
 #'                     xmin = 10,
 #'                     xmax = 60,
 #'                     xshift = 0.2)
@@ -97,7 +117,7 @@ align_xy <- function(x, standard,
 #'      normalise = TRUE)
 #'
 #' @export
-align_xy.multiXY <- function(x, standard,
+align_xy.multiXY <- function(x, std,
                              xmin, xmax,
                              xshift, ...) {
 
@@ -106,16 +126,16 @@ align_xy.multiXY <- function(x, standard,
   #-----------------------------------
 
   #Make sure the standard data is provided
-  if (missing(standard)) {
+  if (missing(std)) {
 
-    stop("Supply a dataframe for the standard comprised of the
+    stop("Supply a dataframe for the standard (std) comprised of the
          2theta axis and counts",
          call. = FALSE)
 
   }
 
   #Make sure the xmin value is defined
-  if (missing(xmin) | xmin > max(standard[[1]]) | xmin < min(standard[[1]])) {
+  if (missing(xmin) | xmin > max(std[[1]]) | xmin < min(std[[1]])) {
 
     stop("Specify a numeric value for the xmin argument that is within the
          2theta range of your standard",
@@ -124,7 +144,7 @@ align_xy.multiXY <- function(x, standard,
   }
 
   #Make sure the xmin value is defined
-  if (missing(xmax) | xmax > max(standard[[1]]) | xmax < min(standard[[1]])) {
+  if (missing(xmax) | xmax > max(std[[1]]) | xmax < min(std[[1]])) {
 
     stop("Specify a numeric value for the xmax argument that is within the
          2theta range of your standard",
@@ -164,7 +184,7 @@ align_xy.multiXY <- function(x, standard,
   for (i in 1:length(x)) {
 
     xa <- .xrd_align(smpl = x[[i]],
-                     standard = standard,
+                     standard = std,
                      xmin = xmin,
                      xmax = xmax,
                      xshift = xshift,
@@ -179,7 +199,7 @@ align_xy.multiXY <- function(x, standard,
 
   #Define the 2theta resolution that a new scale will be built upon. Based on
   #the first pattern in the list
-  tth_interval <- (max(standard[[1]]) - min(standard[[1]])) / nrow(standard)
+  tth_interval <- (max(std[[1]]) - min(std[[1]])) / nrow(std)
 
   #Create a new 2th scale based on the shifts of the data so that no NA
   #values result from the subsequent linear spline
@@ -206,6 +226,126 @@ align_xy.multiXY <- function(x, standard,
   class(xrpd_harm) <- c("multiXY", "list")
 
   return(xrpd_harm)
+
+
+}
+
+
+#' Align XRPD data in an XY object to a given standard
+#'
+#' \code{align_xy.XY} takes an XY object and aligns
+#' it to a given standard. An optimisation routine is used
+#' that computes a suitable linear shift.
+#'
+#' @param x an \code{XY} object.
+#' @param std a dataframe of the chosen standard that each
+#' sample is aligned to (column 1 = 2theta, column 2 = counts)
+#' @param xmin the minimum 2theta value used during alignment
+#' @param xmax the maximum 2theta value used during alignment
+#' @param xshift the maximum (positive and negative) 2theta shift
+#' that is allowed during alignment
+#' @param ... other arguments
+#'
+#' @return a \code{XY} object.
+#'
+#' @examples
+#' # Load soils xrd data
+#' data(soils)
+#'
+#' #Load minerals library
+#' data(minerals)
+#'
+#' #Create a standard quartz pattern to align to
+#' quartz <- data.frame(tth = minerals$tth,
+#'                      counts = minerals$xrd$QUA.1)
+#'
+#'unaligned <- as_multi_xy(list("quartz" = quartz,
+#'                              "sandstone" = soils$sandstone))
+#'
+#' plot(unaligned, wav = "Cu",
+#'      xlim = c(26,27), normalise = T)
+#'
+#' sandstone_a <- align_xy(soils$sandstone,
+#'                         std = quartz,
+#'                         xmin = 10,
+#'                         xmax = 60,
+#'                         xshift = 0.3)
+#'
+#' aligned <- as_multi_xy(list("quartz" = quartz,
+#'                             "sandstone" = sandstone_a))
+#'
+#' plot(aligned, wav = "Cu",
+#'      xlim = c(26,27), normalise = T)
+#'
+#' @export
+align_xy.XY <- function(x, std,
+                        xmin, xmax,
+                        xshift, ...) {
+
+  #-----------------------------------
+  #Conditions
+  #-----------------------------------
+
+  #Make sure the standard data is provided
+  if (missing(std)) {
+
+    stop("Supply a dataframe for the standard (std) comprised of the
+         2theta axis and counts",
+         call. = FALSE)
+
+  }
+
+  #Make sure the xmin value is defined
+  if (missing(xmin) | xmin > max(std[[1]]) | xmin < min(std[[1]])) {
+
+    stop("Specify a numeric value for the xmin argument that is within the
+         2theta range of your standard",
+         call. = FALSE)
+
+  }
+
+  #Make sure the xmin value is defined
+  if (missing(xmax) | xmax > max(std[[1]]) | xmax < min(std[[1]])) {
+
+    stop("Specify a numeric value for the xmax argument that is within the
+         2theta range of your standard",
+         call. = FALSE)
+
+  }
+
+  if (xmax <= xmin) {
+
+    stop("The value specified in xmax must exceed that of xmin",
+         call. = FALSE)
+
+  }
+
+  if (missing(xshift) | !is.numeric(xshift)) {
+
+    stop("Specify a numeric value for xshift.",
+         call. = FALSE)
+
+  }
+
+  #---------------------------------------------
+  #Alignment
+  #---------------------------------------------
+
+  #Make sure xshift is not negative
+  xshift <- abs(xshift)
+
+  xa <- .xrd_align(smpl = x,
+                   standard = std,
+                   xmin = xmin,
+                   xmax = xmax,
+                   xshift = xshift,
+                   manual = FALSE)
+
+  x <- xa$aligned
+
+  class(x) <- c("XY", "data.frame")
+
+  return(x)
 
 
 }
