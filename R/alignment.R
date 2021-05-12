@@ -1,5 +1,3 @@
-.rng_nm <- function(x){(x-min(x))/(max(x)-min(x))}
-
 .align_optim <- function(a, par, xout, std) {
 
   a1 <- a

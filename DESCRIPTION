@@ -29,6 +29,7 @@ Imports:
   plotly (>= 4.9.2.1),
   ggplot2 (>= 3.3.0),
   stats (>= 3.4.3),
+  utils (>= 3.4.3),
   ggpubr (>= 0.2.5),
   shiny (>= 1.4.0.2),
   DT (>= 0.13),

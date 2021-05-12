@@ -14,6 +14,8 @@
 #'
 #' @return a \code{powdRlib} object.
 #'
+#' @method subset powdRlib
+#'
 #' @examples
 #' #Load the minerals library
 #' data(minerals)

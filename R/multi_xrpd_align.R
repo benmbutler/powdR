@@ -13,7 +13,7 @@
 #' @param xshift the maximum (positive and negative) 2theta shift
 #' that is allowed during alignment
 #'
-#' @return a list of aligned and harmonised XRPD data
+#' @return a \code{multiXY} object of aligned and harmonised XRPD data.
 #'
 #' @examples
 #' # Load soils xrd data
@@ -26,22 +26,10 @@
 #' quartz <- data.frame(tth = minerals$tth,
 #'                      counts = minerals$xrd$QUA.1)
 #'
-#' #This function will allow for easier comparison of the peaks
-#' range01 <- function(x){(x-min(x))/(max(x)-min(x))}
-#'
 #' #Plot the main quartz peak prior to alignment (scale the counts using rng.nm)
-#' plot(x = soils$sandstone$tth,
-#'      y = range01(soils$sandstone$counts),
-#'      xlim = c(26, 27), type = "l")
-#' lines(x = soils$granite$tth,
-#'       y = range01(soils$granite$counts),
-#'       col = "red")
-#' lines(x = soils$limestone$tth,
-#'       y = range01(soils$limestone$counts),
-#'       col = "green")
-#' lines(x = quartz$tth,
-#'       y = range01(quartz$counts),
-#'       col = "blue")
+#' plot(soils, wavelength = "Cu",
+#'      xlim = c(26,27),
+#'      normalise = TRUE)
 #'
 #' #align data
 #' aligned <- multi_xrpd_align(soils,
@@ -50,18 +38,9 @@
 #'                             xmax = 60,
 #'                             xshift = 0.2)
 #' #replot data
-#' plot(x = aligned$sandstone$tth,
-#'      y = range01(aligned$sandstone$counts),
-#'      xlim = c(26, 27), type = "l")
-#' lines(x = aligned$granite$tth,
-#'       y = range01(aligned$granite$counts),
-#'       col = "red")
-#' lines(x = aligned$limestone$tth,
-#'       y = range01(aligned$limestone$counts),
-#'       col = "green")
-#' lines(x = quartz$tth,
-#'       y = range01(quartz$counts),
-#'       col = "blue")
+#' plot(aligned, wavelength = "Cu",
+#'      xlim = c(26,27),
+#'      normalise = TRUE)
 #'
 #' @export
 multi_xrpd_align <- function(x, standard, xmin, xmax, xshift) {
@@ -171,11 +150,14 @@ multi_xrpd_align <- function(x, standard, xmin, xmax, xshift) {
                                                xout = tth))
 
     names(xrpd_harm[[i]]) <- c("tth", "counts")
+    class(xrpd_harm[[i]]) <- c("XY", "data.frame")
 
   }
 
   #preserve names
   names(xrpd_harm) <- names(x)
+
+  class(xrpd_harm) <- c("multiXY", "list")
 
   return(xrpd_harm)
 

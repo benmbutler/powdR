@@ -20,7 +20,7 @@ sample is aligned to (column 1 = 2theta, column 2 = counts)}
 that is allowed during alignment}
 }
 \value{
-a list of aligned and harmonised XRPD data
+a \code{multiXY} object of aligned and harmonised XRPD data.
 }
 \description{
 \code{multi_xrpd_align} takes a list of XRPD data and aligns them
@@ -39,22 +39,10 @@ data(minerals)
 quartz <- data.frame(tth = minerals$tth,
                      counts = minerals$xrd$QUA.1)
 
-#This function will allow for easier comparison of the peaks
-range01 <- function(x){(x-min(x))/(max(x)-min(x))}
-
 #Plot the main quartz peak prior to alignment (scale the counts using rng.nm)
-plot(x = soils$sandstone$tth,
-     y = range01(soils$sandstone$counts),
-     xlim = c(26, 27), type = "l")
-lines(x = soils$granite$tth,
-      y = range01(soils$granite$counts),
-      col = "red")
-lines(x = soils$limestone$tth,
-      y = range01(soils$limestone$counts),
-      col = "green")
-lines(x = quartz$tth,
-      y = range01(quartz$counts),
-      col = "blue")
+plot(soils, wavelength = "Cu",
+     xlim = c(26,27),
+     normalise = TRUE)
 
 #align data
 aligned <- multi_xrpd_align(soils,
@@ -63,17 +51,8 @@ aligned <- multi_xrpd_align(soils,
                             xmax = 60,
                             xshift = 0.2)
 #replot data
-plot(x = aligned$sandstone$tth,
-     y = range01(aligned$sandstone$counts),
-     xlim = c(26, 27), type = "l")
-lines(x = aligned$granite$tth,
-      y = range01(aligned$granite$counts),
-      col = "red")
-lines(x = aligned$limestone$tth,
-      y = range01(aligned$limestone$counts),
-      col = "green")
-lines(x = quartz$tth,
-      y = range01(quartz$counts),
-      col = "blue")
+plot(aligned, wavelength = "Cu",
+     xlim = c(26,27),
+     normalise = TRUE)
 
 }

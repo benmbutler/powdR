@@ -19,10 +19,11 @@
 #' sandstone2$tth <- tth_transform(sandstone2$tth,
 #'                                 from = 1.54056,
 #'                                 to = 1.78897)
+#'
+#' sandstone_list <- as_multi_xy(list("sandstone" = soils$sandstone,
+#'                                    "sandstone2" = sandstone2))
 #' #plot the change
-#' plot(soils$sandstone, type = "l",
-#'      xlim = c(0, 85))
-#' lines(sandstone2, col = "red")
+#' plot(sandstone_list, wavelength = "Cu")
 #'
 #' #Alternatively convert the 2theta axis of a library
 #' data(minerals)

@@ -2,36 +2,40 @@
 % Please edit documentation in R/extract_xy.R
 \name{extract_xy}
 \alias{extract_xy}
-\title{Import and extract xy-data}
+\title{Import and extract XY data from proprietary files}
 \usage{
-extract_xy(file)
+extract_xy(files)
 }
 \arguments{
-\item{file}{path of the file to be imported. The argument accepts a URL.}
+\item{files}{path of the file(s) to be imported.}
 }
 \value{
-a dataframe with 2 columns, the first being the 2theta axis and the
-second being the count intensities.
+If only one path is supplied then a dataframe with 2 columns is returned,
+the first being the 2theta axis and the second being the count intensities. If more
+than one path is supplied then a list is returned, with each item in the list being
+a dataframe as already described.
 }
 \description{
-\code{extract_xy} is a wrapper for \code{read_xyData} of the \code{rxylib} package, which simply extracts
-the xy data from various proprietary formats of X-ray powder diffraction data using the code{xylib}
- C++ library. For more information see \code{?rxylib} and \code{?rxylib::read_xyData}.
+\code{extract_xy} is a wrapper for \code{read_xyData} of the \code{rxylib} package,
+which extracts the xy data from various proprietary formats of X-ray powder
+diffraction data using the code{xylib} C++ library. For more information see
+\code{?rxylib} and \code{?rxylib::read_xyData}.
 }
 \examples{
 #load example RAW file
 file <- system.file("extdata/D5000/RAW/D5000_1.RAW", package = "powdR")
-xy <- extract_xy(file)
+raw1 <- extract_xy(file)
 
 #Load multiple RAW files
 files <- dir(system.file("extdata/D5000/RAW", package = "powdR"),
              full.names = TRUE)
-xy_list <- lapply(files, extract_xy)
+raw_list <- extract_xy(files)
 
-#name each file in the list
-names(xy_list) <- dir(system.file("extdata/D5000/RAW", package = "powdR"),
-                      full.names = FALSE)
+class(raw_list)
 
-#Remove the file extensions
-names(xy_list) <- gsub("\\\\..*","", names(xy_list))
+\dontrun{
+plot(raw_list, wavelength = "Cu")
+plot(raw_list, wavelength = "Cu", interactive = TRUE)
+}
+
 }

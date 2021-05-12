@@ -10,13 +10,15 @@ if (is.numeric(x[[1]]) & is.numeric(x[[2]])) {
 
 }
 
+  return(check_out)
+
 }
 
 #' Create a multiXY object
 #'
 #' \code{as_multi_xy} takes a list of XRPD data and ensures that they meet
 #' various requirements to create a multiXY object. These requirements
-#' include that the data is in list format, with each items in the list
+#' include that the data is in list format, with each item in the list
 #' containing 2 columns of numeric data in a dataframe. \code{as_multi_xy}
 #' also checks that all names are unique. Once a multiXY object has been
 #' created, it can easily be plotted using the associated \code{plot.multiXY}
@@ -24,7 +26,7 @@ if (is.numeric(x[[1]]) & is.numeric(x[[2]])) {
 #'
 #' @param x a list XRPD dataframes (column 1 = 2theta, column 2 = counts)
 #'
-#' @return a multiXY object which is a list of xy dataframes.
+#' @return a multiXY object, which is a list of xy dataframes.
 #'
 #' @examples
 #' # Load soils xrd data
@@ -60,7 +62,7 @@ as_multi_xy <- function(x) {
 
   if(!length(check_xy_condition) == length(x)) {
 
-    stop("Not all items in the list contains two columns of numeric data.",
+    stop("Not all items in the list contain two columns of numeric data.",
          call. = FALSE)
 
   }
@@ -85,6 +87,7 @@ as_multi_xy <- function(x) {
   for (i in 1:length(x)) {
 
     names(x[[i]]) <- c("tth", "counts")
+    class(x[[i]]) <- c("XY", "data.frame")
 
   }
 

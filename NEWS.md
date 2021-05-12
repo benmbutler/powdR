@@ -2,11 +2,16 @@
 
 ## New features
 * `as_multi_xy()` added, which creates a `multiXY` objects from a list of
-  XRPD data. `multiXY` objects can easily be plotted using the new associated
-  `plot.multiXY` method.
+  ``XY` data frames. `multiXY` objects can easily be plotted using the new
+  associated `plot.multiXY` method, whilst `XY` objects can be plotted using
+  the associated `plot.XY` method.
+* `multi_xy_to_df()` added, which converts `multiXY` objects to data frames.
+* `interpolate()` added, which contains methods for interpolating `XY` and
+  `multiXY` objects onto a new 2theta scale.
 * `extract_xy()` added, which is a wrapper for `read_xyData()` from the
-  `rxylib` package. This function extracts an xy dataframe from various
-  proprietary formats of X-ray powder diffraction data.
+  `rxylib` package. This function extracts any number of xy dataframes from
+  various proprietary formats of X-ray powder diffraction data.
+* `read_xy()` added, which reads any number of ASCII XY files.
 * `fps()` and `afps()` now accept `omit_std` and `closed` arguments which are
   used to specify how the phase concentrations are adjusted based on the
   internal standard.

@@ -1,3 +1,22 @@
+.subset_tth_xy <- function(x, xlim) {
+
+  x <- x[which(x[[1]] >= xlim[1] & x[[1]] <= xlim[2]),]
+
+  return(x)
+
+}
+
+.rng_nm <- function(x){(x-min(x))/(max(x)-min(x))}
+
+.rng_nm_xy <- function(x) {
+
+  x <- data.frame("tth" = x[[1]],
+                  "counts" = .rng_nm(x[[2]]))
+
+  return(x)
+
+}
+
 .group_patterns <- function(x) {
 
   wpp_df <- x$weighted_pure_patterns
@@ -1175,10 +1194,14 @@ plot.powdRbkg <- function(x, interactive, ...) {
 #'
 #' Plots can be made interactive using the logical \code{interactive} argument.
 #'
-#' @param x a powdRlib object
+#' @param x a multiXY object
 #' @param wavelength One of "Cu", "Co" or a custom numeric value defining the wavelength
 #' (in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
 #' of 1.54056 or 1.78897 are used, respectively.
+#' @param xlim A numeric vector of length two providing limits of the x-axis. Defaults
+#' to full x-axis unless specified.
+#' @param normalise Logical. If TRUE then count intensities will be normalised to a
+#' minimum of zero and maximum of 1. Default \code{= FALSE}.
 #' @param interactive Logical. If TRUE then the output will be an interactive
 #' ggplotly object. If FALSE then the output will be a ggplot object.
 #' @param ... other arguments
@@ -1193,7 +1216,147 @@ plot.powdRbkg <- function(x, interactive, ...) {
 #' plot(as_multi_xy(rockjock_mixtures), wavelength = "Cu", interactive = TRUE)
 #' }
 #' @export
-plot.multiXY <- function(x, wavelength, interactive, ...) {
+plot.multiXY <- function(x, wavelength, xlim, normalise, interactive, ...) {
+
+  #If normalise is missing then set it to FALSE
+  if (missing(normalise)) {
+
+    normalise <- FALSE
+
+  }
+
+  if (!is.logical(normalise)) {
+
+    stop("The normalise argument must be logical.",
+         call. = FALSE)
+
+  }
+
+  #If wavelength is missing then stop the function call
+  if (missing(wavelength)) {
+
+    stop("Provide a wavelength so that d-spacings can be calculated",
+         call. = FALSE)
+
+  }
+
+  #If wavelength = "Cu" then define it
+  if (wavelength == "Cu") {
+
+    wavelength <- 1.54056
+
+  }
+
+  #If wavelength = "Cu" then define it
+  if (wavelength == "Co") {
+
+    wavelength <- 1.78897
+
+  }
+
+  #At this point if wavelength isn't numeric then stop
+  if (!is.numeric(wavelength)) {
+
+    stop("The wavelength argument must be one of either 'Cu', 'Co', or
+         a custom numeric value",
+         call. = FALSE)
+
+  }
+
+  if(missing(interactive)) {
+    interactive <- FALSE
+  }
+
+  if(!missing(interactive) & !is.logical(interactive)) {
+    stop("The interactive argument must be logical.",
+         call. = FALSE)
+  }
+
+  #subset based on the xlims
+  if (missing(xlim)) {
+
+    xlim <- c(min(x_long$tth), max(x_long$tth))
+
+  }
+
+  if (!is.numeric(xlim)) {
+
+    stop("xlim must be a numeric vector of length 2.",
+         call. = FALSE)
+
+  }
+
+  x <- lapply(x, .subset_tth_xy, xlim = xlim)
+
+  #Normalise counts if required
+  if (normalise == TRUE) {
+
+    x <- lapply(x, .rng_nm_xy)
+
+  }
+
+  #Create a d vector for each item
+
+  for (i in 1:length(x)) {
+
+    x[[i]]$d <- round(wavelength/(2*sin((x[[i]]$tth/2)*pi/180)), 3)
+
+  }
+
+  #Populate each item in the list with an ID
+  for (i in 1:length(x)) {
+
+   x[[i]]$id <- names(x)[i]
+
+  }
+
+  #Now bind into long dataframe
+  x_long <- do.call(rbind, x)
+
+  p <- suppressWarnings(ggplot2::ggplot(data = x_long) +
+                          ggplot2::geom_line(ggplot2::aes_(x = ~tth, y = ~counts,
+                                                           color = ~id, d = ~d),
+                                             size = 0.15) +
+                          ggplot2::xlab("2theta") +
+                          ggplot2::ylab("Counts") +
+                          ggplot2::theme(legend.title = ggplot2::element_blank()))
+
+
+  if(interactive == TRUE) {
+    p <- plotly::ggplotly(p)
+  }
+
+  return(p)
+
+}
+
+
+#' Plotting an XY object
+#'
+#' \code{plot.XY} is designed to provide easy, adaptable plots
+#' of an XRPD pattern.
+#'
+#' Plots can be made interactive using the logical \code{interactive} argument.
+#'
+#' @param x an XY object
+#' @param wavelength One of "Cu", "Co" or a custom numeric value defining the wavelength
+#' (in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
+#' of 1.54056 or 1.78897 are used, respectively.
+#' @param interactive Logical. If TRUE then the output will be an interactive
+#' ggplotly object. If FALSE then the output will be a ggplot object.
+#' @param ... other arguments
+#'
+#' @method plot XY
+#'
+#' @examples
+#' # Load the minerals library
+#' data(rockjock_mixtures)
+#' \dontrun{
+#' plot(rockjock_mixtures$Mix1, wavelength = "Cu")
+#' plot(rockjock_mixtures$Mix1, wavelength = "Cu", interactive = TRUE)
+#' }
+#' @export
+plot.XY <- function(x, wavelength, interactive, ...) {
 
   #If wavelength is missing then stop the function call
   if (missing(wavelength)) {
@@ -1237,26 +1400,13 @@ plot.multiXY <- function(x, wavelength, interactive, ...) {
 
   #Create a d vector for each item
 
-  for (i in 1:length(x)) {
+  x$d <- round(wavelength/(2*sin((x$tth/2)*pi/180)), 3)
 
-    x[[i]]$d <- round(wavelength/(2*sin((x[[i]]$tth/2)*pi/180)), 3)
-
-  }
-
-  #Populate each item in the list with an ID
-  for (i in 1:length(x)) {
-
-   x[[i]]$id <- names(x)[i]
-
-  }
-
-  #Now bind into long dataframe
-  x_long <- do.call(rbind, x)
-
-  p <- suppressWarnings(ggplot2::ggplot(data = x_long) +
+  p <- suppressWarnings(ggplot2::ggplot(data = x) +
                           ggplot2::geom_line(ggplot2::aes_(x = ~tth, y = ~counts,
-                                                           color = ~id, d = ~d),
-                                             size = 0.15) +
+                                                           d = ~d),
+                                             size = 0.15,
+                                             colour = "blue") +
                           ggplot2::xlab("2theta") +
                           ggplot2::ylab("Counts") +
                           ggplot2::theme(legend.title = ggplot2::element_blank()))

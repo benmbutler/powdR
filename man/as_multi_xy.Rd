@@ -10,12 +10,12 @@ as_multi_xy(x)
 \item{x}{a list XRPD dataframes (column 1 = 2theta, column 2 = counts)}
 }
 \value{
-a multiXY object which is a list of xy dataframes.
+a multiXY object, which is a list of xy dataframes.
 }
 \description{
 \code{as_multi_xy} takes a list of XRPD data and ensures that they meet
 various requirements to create a multiXY object. These requirements
-include that the data is in list format, with each items in the list
+include that the data is in list format, with each item in the list
 containing 2 columns of numeric data in a dataframe. \code{as_multi_xy}
 also checks that all names are unique. Once a multiXY object has been
 created, it can easily be plotted using the associated \code{plot.multiXY}
