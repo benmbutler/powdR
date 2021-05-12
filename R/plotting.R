@@ -1272,10 +1272,13 @@ plot.multiXY <- function(x, wavelength, xlim, normalise, interactive, ...) {
          call. = FALSE)
   }
 
-  #subset based on the xlims
+  #Define the xlims if not defined
   if (missing(xlim)) {
 
-    xlim <- c(min(x_long$tth), max(x_long$tth))
+    tth_min <- min(unlist(lapply(x, function(x) min(x[[1]]))))
+    tth_max <- max(unlist(lapply(x, function(x) max(x[[1]]))))
+
+    xlim <- c(tth_min, tth_max)
 
   }
 
@@ -1286,6 +1289,7 @@ plot.multiXY <- function(x, wavelength, xlim, normalise, interactive, ...) {
 
   }
 
+  #Subset based on the xlims
   x <- lapply(x, .subset_tth_xy, xlim = xlim)
 
   #Normalise counts if required

@@ -1,20 +1,18 @@
-#' Align and harmonise multiple XRPD patterns
+#' Align XRPD data to a given standard
 #'
-#' \code{multi_xrpd_align} takes a list of XRPD data and aligns them
-#' relative to a chosen standard. It uses an optimisation routine that
-#' computes a suitable linear shift. After all samples have been aligned,
-#' the function harmonises the data to a single 2theta scale.
+#' See \code{?align_xy.XY} and \code{align_xy.multiXY} for
+#' method-specific details.
 #'
-#' @param x a list of XRPD dataframes (column 1 = 2theta,
-#' column 2 = counts)
+#' @param x an \code{XY} or \code{multiXY} object.
 #' @param standard a dataframe of the chosen standard that each
 #' sample is aligned to (column 1 = 2theta, column 2 = counts)
 #' @param xmin the minimum 2theta value used during alignment
 #' @param xmax the maximum 2theta value used during alignment
 #' @param xshift the maximum (positive and negative) 2theta shift
 #' that is allowed during alignment
+#' @param ... other arguments
 #'
-#' @return a \code{multiXY} object of aligned and harmonised XRPD data.
+#' @return an \code{XY} or \code{multiXY} object.
 #'
 #' @examples
 #' # Load soils xrd data
@@ -33,36 +31,79 @@
 #'      normalise = TRUE)
 #'
 #' #align data
-#' aligned <- multi_xrpd_align(soils,
-#'                             standard = quartz,
-#'                             xmin = 10,
-#'                             xmax = 60,
-#'                             xshift = 0.2)
+#' aligned <- align_xy(soils,
+#'                     standard = quartz,
+#'                     xmin = 10,
+#'                     xmax = 60,
+#'                     xshift = 0.2)
+#'
 #' #replot data
 #' plot(aligned, wavelength = "Cu",
 #'      xlim = c(26,27),
 #'      normalise = TRUE)
 #'
 #' @export
-multi_xrpd_align <- function(x, standard, xmin, xmax, xshift) {
+align_xy <- function(x, standard,
+                     xmin, xmax, xshift, ...) {
+  UseMethod("align_xy")
+}
 
-  warning("multi_xrpd_align is deprecated. Please convert your
-          data to a multiXY object using as_multi_xy(), and then
-          use xy_align() instead",
-          call. = FALSE)
+
+#' Align XRPD data in a multiXY object to a given standard
+#'
+#' \code{align_xy.multiXY} takes a multiXY object and aligns
+#' each of the XY data frames within it to a given standard.
+#' An optimisation routine is used that computes a suitable
+#' linear shift. After all samples have been aligned,
+#' the function harmonises the data to a single 2theta scale.
+#'
+#' @param x a \code{multiXY} object.
+#' @param standard a dataframe of the chosen standard that each
+#' sample is aligned to (column 1 = 2theta, column 2 = counts)
+#' @param xmin the minimum 2theta value used during alignment
+#' @param xmax the maximum 2theta value used during alignment
+#' @param xshift the maximum (positive and negative) 2theta shift
+#' that is allowed during alignment
+#' @param ... other arguments
+#'
+#' @return a \code{multiXY} object.
+#'
+#' @examples
+#' # Load soils xrd data
+#' data(soils)
+#'
+#' #Load minerals library
+#' data(minerals)
+#'
+#' #Create a standard quartz pattern to align to
+#' quartz <- data.frame(tth = minerals$tth,
+#'                      counts = minerals$xrd$QUA.1)
+#'
+#' #Plot the main quartz peak prior to alignment
+#' plot(soils, wavelength = "Cu",
+#'      xlim = c(26,27),
+#'      normalise = TRUE)
+#'
+#' #align data
+#' aligned <- align_xy(soils,
+#'                     standard = quartz,
+#'                     xmin = 10,
+#'                     xmax = 60,
+#'                     xshift = 0.2)
+#'
+#' #replot data
+#' plot(aligned, wavelength = "Cu",
+#'      xlim = c(26,27),
+#'      normalise = TRUE)
+#'
+#' @export
+align_xy.multiXY <- function(x, standard,
+                             xmin, xmax,
+                             xshift, ...) {
 
   #-----------------------------------
   #Conditions
   #-----------------------------------
-
-  #Make sure the xrpd data is present and is a list
-  if (missing(x) | !is.list(x)) {
-
-    stop("The x argument must be a list, with each item of the list being
-         a 2 column dataframe.",
-         call. = FALSE)
-
-  }
 
   #Make sure the standard data is provided
   if (missing(standard)) {
@@ -165,5 +206,6 @@ multi_xrpd_align <- function(x, standard, xmin, xmax, xshift) {
   class(xrpd_harm) <- c("multiXY", "list")
 
   return(xrpd_harm)
+
 
 }
