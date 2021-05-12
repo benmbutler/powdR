@@ -62,7 +62,7 @@ unaligned <- as_multi_xy(list("quartz" = quartz,
                              "sandstone" = soils$sandstone))
 
 plot(unaligned, wav = "Cu",
-     xlim = c(26,27), normalise = T)
+     xlim = c(26,27), normalise = TRUE)
 
 sandstone_a <- align_xy(soils$sandstone,
                         std = quartz,
@@ -74,6 +74,6 @@ aligned <- as_multi_xy(list("quartz" = quartz,
                             "sandstone" = sandstone_a))
 
 plot(aligned, wav = "Cu",
-     xlim = c(26,27), normalise = T)
+     xlim = c(26,27), normalise = TRUE)
 
 }

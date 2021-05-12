@@ -48,7 +48,7 @@
 #'                              "sandstone" = soils$sandstone))
 #'
 #' plot(unaligned, wav = "Cu",
-#'      xlim = c(26,27), normalise = T)
+#'      xlim = c(26,27), normalise = TRUE)
 #'
 #' sandstone_a <- align_xy(soils$sandstone,
 #'                         std = quartz,
@@ -60,7 +60,7 @@
 #'                             "sandstone" = sandstone_a))
 #'
 #' plot(aligned, wav = "Cu",
-#'      xlim = c(26,27), normalise = T)
+#'      xlim = c(26,27), normalise = TRUE)
 #'
 #' @export
 align_xy <- function(x, std,
@@ -263,7 +263,7 @@ align_xy.multiXY <- function(x, std,
 #'                              "sandstone" = soils$sandstone))
 #'
 #' plot(unaligned, wav = "Cu",
-#'      xlim = c(26,27), normalise = T)
+#'      xlim = c(26,27), normalise = TRUE)
 #'
 #' sandstone_a <- align_xy(soils$sandstone,
 #'                         std = quartz,
@@ -275,7 +275,7 @@ align_xy.multiXY <- function(x, std,
 #'                             "sandstone" = sandstone_a))
 #'
 #' plot(aligned, wav = "Cu",
-#'      xlim = c(26,27), normalise = T)
+#'      xlim = c(26,27), normalise = TRUE)
 #'
 #' @export
 align_xy.XY <- function(x, std,

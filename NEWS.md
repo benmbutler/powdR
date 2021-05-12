@@ -1,10 +1,14 @@
 # powdR 1.3.0.999
 
 ## New features
+* `as_xy()` added, which creates `XY` objects from dataframes that contain
+  two columns denoting 2theta and counts.
 * `as_multi_xy()` added, which creates a `multiXY` objects from a list of
   ``XY` data frames. `multiXY` objects can easily be plotted using the new
   associated `plot.multiXY` method, whilst `XY` objects can be plotted using
   the associated `plot.XY` method.
+* `align_xy()` added with associated S3 methods for aligning XRPD data within
+  `XY` and `multiXY` objects to a chosen standard.
 * `multi_xy_to_df()` added, which converts `multiXY` objects to data frames.
 * `interpolate()` added, which contains methods for interpolating `XY` and
   `multiXY` objects onto a new 2theta scale.
