@@ -1346,6 +1346,10 @@ plot.multiXY <- function(x, wavelength, xlim, normalise, interactive, ...) {
 #' @param wavelength One of "Cu", "Co" or a custom numeric value defining the wavelength
 #' (in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
 #' of 1.54056 or 1.78897 are used, respectively.
+#' @param xlim A numeric vector of length two providing limits of the x-axis. Defaults
+#' to full x-axis unless specified.
+#' @param normalise Logical. If TRUE then count intensities will be normalised to a
+#' minimum of zero and maximum of 1. Default \code{= FALSE}.
 #' @param interactive Logical. If TRUE then the output will be an interactive
 #' ggplotly object. If FALSE then the output will be a ggplot object.
 #' @param ... other arguments
@@ -1360,7 +1364,21 @@ plot.multiXY <- function(x, wavelength, xlim, normalise, interactive, ...) {
 #' plot(rockjock_mixtures$Mix1, wavelength = "Cu", interactive = TRUE)
 #' }
 #' @export
-plot.XY <- function(x, wavelength, interactive, ...) {
+plot.XY <- function(x, wavelength, xlim, normalise, interactive, ...) {
+
+  #If normalise is missing then set it to FALSE
+  if (missing(normalise)) {
+
+    normalise <- FALSE
+
+  }
+
+  if (!is.logical(normalise)) {
+
+    stop("The normalise argument must be logical.",
+         call. = FALSE)
+
+  }
 
   #If wavelength is missing then stop the function call
   if (missing(wavelength)) {
@@ -1400,6 +1418,33 @@ plot.XY <- function(x, wavelength, interactive, ...) {
   if(!missing(interactive) & !is.logical(interactive)) {
     stop("The interactive argument must be logical.",
          call. = FALSE)
+  }
+
+  #Define the xlims if not defined
+  if (missing(xlim)) {
+
+    tth_min <- min(x[[1]])
+    tth_max <- max(x[[1]])
+
+    xlim <- c(tth_min, tth_max)
+
+  }
+
+  if (!is.numeric(xlim)) {
+
+    stop("xlim must be a numeric vector of length 2.",
+         call. = FALSE)
+
+  }
+
+  #Subset based on the xlims
+  x <- .subset_tth_xy(x, xlim)
+
+  #Normalise counts if required
+  if (normalise == TRUE) {
+
+    x <- .rng_nm_xy(x)
+
   }
 
   #Create a d vector for each item

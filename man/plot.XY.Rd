@@ -4,7 +4,7 @@
 \alias{plot.XY}
 \title{Plotting an XY object}
 \usage{
-\method{plot}{XY}(x, wavelength, interactive, ...)
+\method{plot}{XY}(x, wavelength, xlim, normalise, interactive, ...)
 }
 \arguments{
 \item{x}{an XY object}
@@ -12,6 +12,12 @@
 \item{wavelength}{One of "Cu", "Co" or a custom numeric value defining the wavelength
 (in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
 of 1.54056 or 1.78897 are used, respectively.}
+
+\item{xlim}{A numeric vector of length two providing limits of the x-axis. Defaults
+to full x-axis unless specified.}
+
+\item{normalise}{Logical. If TRUE then count intensities will be normalised to a
+minimum of zero and maximum of 1. Default \code{= FALSE}.}
 
 \item{interactive}{Logical. If TRUE then the output will be an interactive
 ggplotly object. If FALSE then the output will be a ggplot object.}
