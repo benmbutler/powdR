@@ -1,5 +1,5 @@
 .remove_amorphous <- function(x, amorphous, amorphous_lod, df, lib, solver, smpl,
-                             obj) {
+                             obj, weighting, tth_fps) {
 
   if(length(amorphous) > 0) {
 
@@ -19,7 +19,9 @@
         cat("\n-Reoptimising after removing amorphous phases below amorphous_lod")
         o <- stats::optim(par = x, .fullpat,
                         method = solver, pure_patterns = lib$xrd,
-                        sample_pattern = smpl[, 2], obj = obj)
+                        sample_pattern = smpl[, 2], obj = obj,
+                        tth = lib$tth, tth_fps = tth_fps,
+                        weighting = weighting[[2]])
 
       } else {
 
@@ -27,7 +29,9 @@
             L-BFGS-B constrained to a lower limit of zero")
         o <- stats::optim(par = x, .fullpat,
                           method = solver, lower = 0, pure_patterns = lib$xrd,
-                          sample_pattern = smpl[, 2], obj = obj)
+                          sample_pattern = smpl[, 2], obj = obj,
+                          tth = lib$tth, tth_fps = tth_fps,
+                          weighting = weighting[[2]])
 
 
       }
@@ -52,7 +56,7 @@
 
 
 .remove_amorphous2 <- function(x, amorphous, amorphous_lod, df, lib, solver, smpl,
-                              obj, std, std_conc) {
+                              obj, std, std_conc, weighting, tth_fps) {
 
   if(length(amorphous) > 0) {
 
@@ -72,7 +76,9 @@
         cat("\n-Reoptimising after removing amorphous phases below amorphous_lod")
         o <- stats::optim(par = x, .fullpat,
                           method = solver, pure_patterns = lib$xrd,
-                          sample_pattern = smpl[, 2], obj = obj)
+                          sample_pattern = smpl[, 2], obj = obj,
+                          tth = lib$tth, tth_fps = tth_fps,
+                          weighting = weighting[[2]])
 
       } else {
 
@@ -80,7 +86,9 @@
             L-BFGS-B constrained to a lower limit of zero")
         o <- stats::optim(par = x, .fullpat,
                           method = solver, lower = 0, pure_patterns = lib$xrd,
-                          sample_pattern = smpl[, 2], obj = obj)
+                          sample_pattern = smpl[, 2], obj = obj,
+                          tth = lib$tth, tth_fps = tth_fps,
+                          weighting = weighting[[2]])
 
 
       }

@@ -962,7 +962,9 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
                                             lib = lib,
                                             solver = solver,
                                             smpl = smpl,
-                                            obj = obj)
+                                            obj = obj,
+                                            tth_fps = tth_fps,
+                                            weighting = weighting)
 
   } else {
 
@@ -975,7 +977,9 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
                                              smpl = smpl,
                                              obj = obj,
                                              std = std,
-                                             std_conc = std_conc)
+                                             std_conc = std_conc,
+                                             tth_fps = tth_fps,
+                                             weighting = weighting)
 
   }
 
