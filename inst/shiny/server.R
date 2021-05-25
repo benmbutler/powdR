@@ -337,7 +337,8 @@ shiny::shinyServer(function(input, output, session) {
     #Update the selectINPUT boxes in the full pattern fitting tab
     shiny::observe({
       if (class(filedata3()) == "powdRlib") {
-        refs_choices <- list("PHASE_NAMES" = as.list(paste0(filedata3()[[3]][[2]])),
+        refs_choices <- list("SELECT ALL" = as.list("Select all"),
+                             "PHASE_NAMES" = as.list(paste0(filedata3()[[3]][[2]])),
                              "PHASE IDs" = as.list(paste0(filedata3()[[3]][[2]], ": ", filedata3()[[3]][[1]])))
         #Order alphabetically
         #refs_choices[[1]] <- refs_choices[[1]][order(unlist(refs_choices[[1]]))]
@@ -346,6 +347,14 @@ shiny::shinyServer(function(input, output, session) {
         return(shiny::updateSelectInput(session, "selectPHASES_fps",
                                         choices = refs_choices,
                                         selected = NULL))
+      }
+    })
+
+    observe({
+      if ("Select all" %in% input$selectPHASES_fps) {
+        # choose all the choices _except_ "Select All"
+        selected_choices <- setdiff(paste0(filedata3()[[3]][[2]]), "Select all")
+        updateSelectInput(session, "selectPHASES_fps", selected = selected_choices)
       }
     })
 
