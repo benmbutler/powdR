@@ -1,6 +1,8 @@
 # powdR 1.3.0.999
 
 ## New features
+* A background fitting shiny app is now included that is loaded via
+  `run_bkg()`
 * `as_xy()` added, which creates `XY` objects from dataframes that contain
   two columns denoting 2theta and counts.
 * `as_multi_xy()` added, which creates a `multiXY` objects from a list of

@@ -18,11 +18,13 @@
 #'
 #' @examples
 #' data(soils)
+#' \dontrun{
 #' fit_bkg <- bkg(soils$granite)
+#' }
 #' @export
 bkg <- function(xrd, lambda, hwi, it, int) {
 
-  if (packageVersion("baseline") > "1.2.1") {
+  if (utils::packageVersion("baseline") > "1.2.1") {
 
     stop("The bkg function crashes when using baseline versions > 1.2.1.
          Please install version 1.2.1 of the baseline package from source using:

@@ -32,5 +32,7 @@ A wrapper for the \code{baseline.fillPeaks} in the \code{baseline} package.
 }
 \examples{
 data(soils)
+\dontrun{
 fit_bkg <- bkg(soils$granite)
+}
 }
