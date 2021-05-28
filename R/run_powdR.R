@@ -16,7 +16,7 @@
 #' @export
 run_powdR <- function(...) {
 
-  app_dir <- system.file(paste0("shiny/"), package = "powdR")
+  app_dir <- system.file(paste0("shiny/quant/"), package = "powdR")
   app <- shiny::runApp(app_dir, launch.browser = TRUE,  ...)
 
 }
