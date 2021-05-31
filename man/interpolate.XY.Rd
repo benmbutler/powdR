@@ -2,7 +2,7 @@
 % Please edit documentation in R/interpolate.R
 \name{interpolate.XY}
 \alias{interpolate.XY}
-\title{Interpolate an XY object to a given 2theta scale.}
+\title{Interpolate an \code{XY} object onto a given 2theta scale.}
 \usage{
 \method{interpolate}{XY}(x, new_tth, ...)
 }
@@ -17,8 +17,8 @@
 an \code{XY} object.
 }
 \description{
-\code{interpolate} takes an XY object and interpolates the
-2theta onto a new scale using a cubic spline.
+\code{interpolate} takes an \code{XY} object and interpolates the
+2theta axis onto a new scale using a cubic spline.
 }
 \examples{
 data(rockjock_mixtures)

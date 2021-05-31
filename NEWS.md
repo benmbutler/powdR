@@ -12,8 +12,10 @@
 * `align_xy()` added with associated S3 methods for aligning XRPD data within
   `XY` and `multiXY` objects to a chosen standard.
 * `multi_xy_to_df()` added, which converts `multiXY` objects to data frames.
-* `interpolate()` added, which contains methods for interpolating `XY` and
-  `multiXY` objects onto a new 2theta scale.
+* `interpolate()` added, which contains methods for interpolating `XY`,
+  `multiXY` and `powdRlib` objects onto a new 2theta scale.
+* `merge()` method added for `powdRlib` objects, which allows two `powdRlib`
+  objects to be merged into a single `powdRlib` object.
 * `extract_xy()` added, which is a wrapper for `read_xyData()` from the
   `rxylib` package. This function extracts any number of xy dataframes from
   various proprietary formats of X-ray powder diffraction data.

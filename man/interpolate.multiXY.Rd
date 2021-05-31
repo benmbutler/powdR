@@ -2,7 +2,7 @@
 % Please edit documentation in R/interpolate.R
 \name{interpolate.multiXY}
 \alias{interpolate.multiXY}
-\title{Interpolate a multiXY object to a given 2theta scale.}
+\title{Interpolate a multiXY object onto a given 2theta scale.}
 \usage{
 \method{interpolate}{multiXY}(x, new_tth, ...)
 }
@@ -17,7 +17,7 @@
 a \code{multiXY} object.
 }
 \description{
-\code{interpolate} takes a multiXY object, which may contain
+\code{interpolate} takes a \code{multiXY} object, which may contain
 XY data frames with varying 2theta scales, and interpolates all
 data frames onto the same scale using cubic splines.
 }
