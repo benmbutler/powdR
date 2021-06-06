@@ -1,9 +1,12 @@
 # powdR 1.3.0.999
 
 ## New features
+* `plot` methods for `powdRfps` and `powdRafps` objects now accept a logical
+  `group` argument. When `TRUE` this results in reference patterns being
+  plotted grouped and summed by phase name.
 * A background fitting shiny app is now included that is loaded via
   `run_bkg()`
-* `as_xy()` added, which creates `XY` objects from dataframes that contain
+* `as_xy()` added, which creates `XY` objects from data frames that contain
   two columns denoting 2theta and counts.
 * `as_multi_xy()` added, which creates a `multiXY` objects from a list of
   ``XY` data frames. `multiXY` objects can easily be plotted using the new
@@ -17,7 +20,7 @@
 * `merge()` method added for `powdRlib` objects, which allows two `powdRlib`
   objects to be merged into a single `powdRlib` object.
 * `extract_xy()` added, which is a wrapper for `read_xyData()` from the
-  `rxylib` package. This function extracts any number of xy dataframes from
+  `rxylib` package. This function extracts any number of xy data frames from
   various proprietary formats of X-ray powder diffraction data.
 * `read_xy()` added, which reads any number of ASCII XY files.
 * `fps()` and `afps()` now accept `omit_std` and `closed` arguments which are

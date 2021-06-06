@@ -65,6 +65,8 @@
 #' of 1.54056 or 1.78897 are used, respectively.
 #' @param mode One of "fit", "residuals" or "both" defining whether to plot the fitted
 #' patterns, the residuals of the fit, or both, respectively. Default = "fit".
+#' @param group A logical parameter used to specify whether the plotted data are grouped
+#' according to the phase name. Default = FALSE.
 #' @param xlim A numeric vector of length two providing limits of the x-axis. Defaults
 #' to full x-axis unless specified.
 #' @param show_excluded A logical value specifying whether the areas excluded from the
@@ -92,7 +94,21 @@
 #' plot(fps_sand, wavelength = "Cu", interactive = TRUE)
 #' }
 #' @export
-plot.powdRfps <- function(x, wavelength, mode, xlim, show_excluded, interactive, ...) {
+plot.powdRfps <- function(x, wavelength, mode, group,
+                          xlim, show_excluded, interactive, ...) {
+
+  if (missing(group)) {
+
+    group <- FALSE
+
+  }
+
+  if (!is.logical(group)) {
+
+    stop("group must be logical",
+         call. = FALSE)
+
+  }
 
   if (missing(xlim)) {
 
@@ -181,6 +197,14 @@ plot.powdRfps <- function(x, wavelength, mode, xlim, show_excluded, interactive,
     stop("The wavelength argument must be one of either 'Cu', 'Co', or
          a custom numeric value",
          call. = FALSE)
+
+  }
+
+  #Optional grouping
+
+  if (group == TRUE) {
+
+    x <- .group_patterns(x = x)
 
   }
 
@@ -372,6 +396,8 @@ plot.powdRfps <- function(x, wavelength, mode, xlim, show_excluded, interactive,
 #' of 1.54056 or 1.78897 are used, respectively.
 #' @param mode One of "fit", "residuals" or "both" defining whether to plot the fitted
 #' patterns, the residuals of the fit, or both, respectively. Default = "fit".
+#' @param group A logical parameter used to specify whether the plotted data are grouped
+#' according to the phase name. Default = FALSE.
 #' @param xlim A numeric vector of length two providing limits of the x-axis. Defaults
 #' to full x-axis unless specified.
 #' @param show_excluded A logical value specifying whether the areas excluded from the
@@ -401,7 +427,20 @@ plot.powdRfps <- function(x, wavelength, mode, xlim, show_excluded, interactive,
 #'
 #' }
 #' @export
-plot.powdRafps <- function(x, wavelength, mode, xlim, show_excluded, interactive, ...) {
+plot.powdRafps <- function(x, wavelength, mode, group, xlim, show_excluded, interactive, ...) {
+
+  if (missing(group)) {
+
+    group <- FALSE
+
+  }
+
+  if (!is.logical(group)) {
+
+    stop("group must be logical",
+         call. = FALSE)
+
+  }
 
   if (missing(xlim)) {
 
@@ -489,6 +528,14 @@ plot.powdRafps <- function(x, wavelength, mode, xlim, show_excluded, interactive
     stop("The wavelength argument must be one of either 'Cu', 'Co', or
          a custom numeric value",
          call. = FALSE)
+
+  }
+
+  #Optional grouping
+
+  if (group == TRUE) {
+
+    x <- .group_patterns(x = x)
 
   }
 
