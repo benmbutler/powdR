@@ -18,7 +18,7 @@ an \code{XY} object.
 }
 \description{
 \code{interpolate} takes an \code{XY} object and interpolates the
-2theta axis onto a new scale using a cubic spline.
+data onto a new 2theta scale using a cubic spline.
 }
 \examples{
 data(rockjock_mixtures)

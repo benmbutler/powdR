@@ -17,8 +17,10 @@ interpolate(x, new_tth, ...)
 an \code{XY} or \code{multiXY} object.
 }
 \description{
-\code{interpolate} takes an XY, multiXY or powdRlib object and the date
-onto a new 2theta scale using a cubic spline.
+\code{interpolate} takes an XY, multiXY or powdRlib object and
+interpolates the data onto a new 2theta scale using a cubic spline.
+See additional help via \code{?interpolate.XY},
+\code{?interpolate.multiXY} or \code{?interpolate.powdRlib}.
 }
 \examples{
 #Define a new 2theta scale:

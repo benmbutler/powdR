@@ -1,7 +1,9 @@
 #' Interpolate an XY, multiXY or powdRlib object to a given 2theta scale.
 #'
-#' \code{interpolate} takes an XY, multiXY or powdRlib object and the date
-#' onto a new 2theta scale using a cubic spline.
+#' \code{interpolate} takes an XY, multiXY or powdRlib object and
+#' interpolates the data onto a new 2theta scale using a cubic spline.
+#' See additional help via \code{?interpolate.XY},
+#' \code{?interpolate.multiXY} or \code{?interpolate.powdRlib}.
 #'
 #' @param x an \code{XY} or \code{multiXY} object.
 #' @param new_tth a numeric vector of the new 2theta scale.
@@ -100,7 +102,7 @@ interpolate.multiXY <- function(x, new_tth, ...) {
 #' Interpolate an \code{XY} object onto a given 2theta scale.
 #'
 #' \code{interpolate} takes an \code{XY} object and interpolates the
-#' 2theta axis onto a new scale using a cubic spline.
+#' data onto a new 2theta scale using a cubic spline.
 #'
 #' @param x an \code{XY} object.
 #' @param new_tth a numeric vector of the new 2theta scale.
