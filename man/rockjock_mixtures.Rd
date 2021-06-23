@@ -33,7 +33,7 @@ rockjock_mixtures
 A list containing 8 XRPD measurements (Cu K-alpha radiation) of synthetic mixtures
 that can be used to assess accuracy of quantitative analysis from the \code{fps()}
 and \code{afps()} functions. The mixtures contain various amounts of quartz (QUARTZ
-standard in of the \code{rockjock} library), K-feldspar (ORDERED_MICROCLINE),
+standard of the \code{rockjock} library), K-feldspar (ORDERED_MICROCLINE),
 plagioclase (LABRADORITE), kaolinite (KAOLINITE_DRY_BRANCH), dioctahedral smectite
 (MONTMORILLIONITE_WYO), illite (ILLITE_1M_RM30) and corundum (CORUNDUM).
 }
