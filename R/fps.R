@@ -631,10 +631,11 @@ if(!is.logical(omit_std)) {
 
   }
 
-  #But if obj definitely isn't needed then set it to NULL
+  #But if obj definitely isn't needed then set it to NA
   if(missing(obj) & solver == "NNLS" & shift == 0) {
 
-    obj = NULL
+    obj = NA
+
   }
 
   #Create a warning message if the shift is greater than 0.5, since this can confuse the optimisation
@@ -842,11 +843,15 @@ weighting <- stats::spline(x = weighting[[1]],
 #-----------------------------------------------------------
 
 #The optimisation can fail if negative have creeped in during interpolation
-if(min(smpl[[2]]) < 0 & obj == "Rwp") {
+if(min(smpl[[2]]) < 0 & !is.na(obj)) {
+
+  if (obj == "Rwp") {
 
   cat("Negative values present in interpolated data. Switching objective
           function to R instead of Rwp to avoid errors.")
   obj <- "R"
+
+  }
 
 }
 
@@ -945,11 +950,15 @@ if(shift > 0 & length(x) > 1 & solver %in% c("Nelder-Mead", "BFGS", "CG")) {
     cat("\n-Reoptimising after shifting data")
 
   #The optimisation can fail if negative have creeped in during interpolation
-  if(min(smpl[[2]]) < 0 & obj == "Rwp") {
+  if(min(smpl[[2]]) < 0 & !is.na(obj)) {
 
-    cat("Negative values present in interpolated data. Switching objective
-         function to R instead of Rwp to avoid errors.")
-    obj <- "R"
+    if (obj == "Rwp") {
+
+      cat("Negative values present in interpolated data. Switching objective
+          function to R instead of Rwp to avoid errors.")
+      obj <- "R"
+
+    }
 
   }
 
