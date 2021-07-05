@@ -143,3 +143,32 @@
 #' Eberl, D.D., 2003. User's guide to RockJock - A program for determining quantitative mineralogy from
 #' powder X-ray diffraction data. Boulder, CA.
 "rockjock_weights"
+
+#' Original codes for the \code{afsis} reference patterns
+#'
+#' A data frame detailing the original codes associated with the \code{afsis} reference
+#' patterns prior to their addition to powdR.
+#'
+#' @format An 2 column data frame. First column is the phase ID from \code{afsis$phase_id}
+#' and the second column is the original ID prior to the inclusion in powdR.
+#'
+"afsis_codes"
+
+#' Africa Soil Information Service (AfSIS) XRPD reference library
+#'
+#' A \code{powdRlib} object of 21 pure reference patterns and associated reference
+#' intensity ratios. Data were collected on a Bruker D2
+#' Phaser using Cu K-alpha radiation. All patterns have been normalised to 10,000
+#' counts and reference intensity ratios transformed so that all are relative
+#' to that of corundum, which has been set to a value of 1.0.
+#'
+#' @format A list of 3 components
+#' \describe{
+#' \item{xrd}{A dataframe of all xrd data (counts only). Column names denote the
+#' reference sample}
+#' \item{tth}{A vector of 2theta intervals of all measurements in the library}
+#' \item{phases}{A dataframe the phase ID's, names and reference intensity
+#' ratios (RIR)}
+#' }
+#'
+"afsis"

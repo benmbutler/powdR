@@ -1,6 +1,8 @@
 # powdR 1.3.0.999
 
 ## New features
+* Twenty one additional reference patterns associated for soils from the
+  Africa Soil Information Service XRPD database now added as `afsis` data.
 * `plot` methods for `powdRfps` and `powdRafps` objects now accept a logical
   `group` argument. When `TRUE` this results in reference patterns being
   plotted grouped and summed by phase name.
