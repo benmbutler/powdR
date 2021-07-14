@@ -1,0 +1,454 @@
+---
+title: "Loading and manipulating XRPD data"
+bibliography: bibliography.bib
+author: "Benjamin Butler"
+date: "`r Sys.Date()`"
+output:
+  bookdown::html_document2:
+    theme: spacelab
+    highlight: pygments
+    number_sections: true
+    toc: true
+    toc_float:
+      collapsed: false
+      smooth_scroll: false
+    anchor_sections: true
+    self_contained: true
+vignette: >
+  %\VignetteIndexEntry{Loading and manipulating XRPD data}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+<style type="text/css">
+
+body{ /* Normal  */
+      font-size: 16px;
+  }
+code.r{ /* Code block */
+    font-size: 16px;
+}
+p {line-height: 1.5em;}
+</style>
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+---
+
+This document will use **powdR** and the open-source X-ray powder diffraction (XRPD) data within it to provide reproducible examples of:
+
+1. [Loading XRPD data](#loading-data)
+2. [Plotting XRPD data](#plotting-data)
+3. [Manipulating XRPD data](#manipulating-data)
+
+---
+
+# Loading XRPD data {#loading-data}
+In order to work with XRPD data in R, it first needs to be loaded. XRPD data come in all sorts of proprietary formats (e.g. .raw, .dat and .xrdml), which can make this initial stage of loading data more complicated than it needs to be. In its most basic form, XRPD data is simply comprised of an x-axis (2θ) and y-axis (counts), and all XRPD data loaded into R throughout this documentation will take this XY form. Here, 2 ways of loading proprietary XRPD data into R will be described.
+
+## Option 1: PowDLL {#powDLL}
+The free software [PowDLL](http://users.uoi.gr/nkourkou/powdll/) offers excellent features for the conversion of different XRPD file types. PowDLL can read a large range of XRPD file types and export them in many formats that include '.xy' files. These '.xy' files are an ASCII format that simply comprises the two variables (2θ and counts) separated by a space. [This video from Phys Whiz on YouTube](https://www.youtube.com/watch?v=YUxg4-D-1Bk&feature=emb_title) illustrates the use of powDLL to create '.xy' files.
+
+Once you have your '.xy' files, they can be loaded into R using the `read_xy()` function from **powdR**. The following reproducible example uses files that are stored within **powdR** and were recorded on a Siemens D5000 using Co-Kα radiation.
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE}
+library(powdR)
+
+#Extract the path of an xy file from the powdR package
+file <- system.file("extdata/D5000/xy/D5000_1.xy", package = "powdR")
+
+#Load the file as an object called xy1
+xy1 <- read_xy(file)
+```
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE}
+#Explore the xy data
+summary(xy1)
+
+#check the class of xy data
+class(xy1)
+```
+
+Notice how the class of `xy1` is both `XY` and `data.frame`. This means that various additional methods for each of these types of object classes can be used to explore and analyse the data. These methods can be viewed using:
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE}
+methods(class = "XY")
+```
+
+which shows how functions [`align_xy()`](#alignment), [`interpolate()`](#interpolation) and [`plot()`](#plotting-data) all have methods for `XY` class objects. Help on each of these can be sourced using `?align_xy.XY`, `?interpolate.XY` and `?plot.XY`, respectively. When calling these functions it is not necessary to specify the `.XY` suffix because R will recognise the class and call the relevant method.
+
+## Option 2: Loading directly into R {#loading-directly}
+Alternatively to PowDLL, the `extract_xy()` function in the **powdR** package can extract the XY data from a wide range of proprietary XRPD files straight into R via the `xylib` C++ library implemented behind the scenes in the **rxylib** package [@rxylib].
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE}
+#Extract the path of the file from the powdR package
+file <- system.file("extdata/D5000/RAW/D5000_1.RAW", package = "powdR")
+
+#Load the file as an object called xy2
+xy2 <- extract_xy(file)
+
+#Summarise the xy data
+summary(xy2)
+
+#Check the class of xy2
+class(xy2)
+```
+
+A **word of warning** with `extract_xy()` is that it does not work with all proprietary file types. In particular, you may experience problems with Bruker '.raw' files, in which case the use of PowDLL outlined [above](#powDLL) is recommended instead.
+
+## Loading multiple files {#loading-multiple}
+The two approaches for loading XRPD data outlined above can also be used to load any number of files into R at once. `read_xy()` and `extract_xy()` will recognise cases where more than one file path is supplied and therefore load the files into a `multiXY` object.
+
+### `read_xy()`
+There are five '.xy' files stored within a directory of the **powdR** package that can be loaded into a `multiXY` object via:
+
+```{r xy_list1, message=FALSE, warning=FALSE, cache = TRUE}
+#Extract the paths of the files
+paths1 <- dir(system.file("extdata/D5000/xy", package = "powdR"),
+             full.names = TRUE)
+
+#Now read all files
+xy_list1 <- read_xy(paths1)
+
+#Check the class of xy_list1
+class(xy_list1)
+```
+
+The resulting `multiXY` object is a list of `XY` objects, with each `XY` object being a data frame comprised of the 2θ and count intensities of the XRPD data.
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE}
+#Check the class of each item within the multiXY object
+lapply(xy_list1, class)
+```
+
+Each sample within the list can be accessed using the `$` symbol. For example:
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE}
+#Summarise the data within the first sample:
+summary(xy_list1$D5000_1)
+```
+
+Alternatively, the `D5000_1` item within `xy_list1` could be accessed using `xy_list1[[1]]`. In the same way that `XY` class objects have methods associated with them, there are a number of different methods for `multiXY` objects:
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE}
+methods(class = "multiXY")
+```
+
+which include [`align_xy()`](#alignment), [`interpolate()`](interpolation), [`multi_xy_to_df()`](#to-data-frame) and [`plot`](#plotting) that are all detailed in subsequent sections.
+
+### `extract_xy()`
+In addition to the five '.xy' files loaded above, there are also five '.RAW' files stored within a separate directory of **powdR**, which can be loaded in a similar fashion using `extract_xy()`:
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE}
+#Extract the paths of the files
+paths2 <- dir(system.file("extdata/D5000/RAW", package = "powdR"),
+              full.names = TRUE)
+
+#Now read all files in the directory
+xy_list2 <- extract_xy(paths2)
+
+#Find out what the xy_list2 is
+class(xy_list2)
+```
+
+which yields `xy_list2` that is identical to `xy_list1`:
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE}
+all.equal(xy_list1, xy_list2)
+```
+
+# Plotting XRPD data {#plotting-data}
+The **powdR** package contains `plot()` methods for both `XY` and `multiXY` objects (see `?plot.XY` and `?plot.multiXY`).
+
+## Plotting `XY` objects
+An `XY` object can be plotted by:
+
+```{r p1, fig.cap = "An example figure created using the plot method for an XY object.", message=FALSE, warning=FALSE, out.width='80%', fig.asp=.75, fig.align='center', cache = TRUE}
+plot(xy1, wavelength = "Co", interactive = FALSE)
+```
+
+where `wavelength = "Co"` is required so that d-spacings can be computed and displayed when `interactive = TRUE`.
+
+## Plotting `multiXY` objects
+Often it's useful to plot more than one pattern at the same time, which can be achieved by plotting a `multiXY` object:
+
+```{r, fig.cap = "An example figure created using the plot method for a multiXY object.", message=FALSE, warning=FALSE, out.width='80%', fig.asp=.75, fig.align='center', cache = TRUE}
+plot(xy_list1, wavelength = "Co")
+```
+
+As above, adding `interactive = TRUE` to the function call will produce an interactive plot. In addition, plotting of `XY` and `multiXY` objects also allows you to alter the x-axis limits and normalise the count intensities for easier comparison of specific peaks:
+
+```{r, fig.cap = "An example figure created using the plot method for an XY object with normalised count intensities and a restricted x-axis.", message=FALSE, warning=FALSE, out.width='80%', fig.asp=.75, fig.align='center', cache = TRUE}
+plot(xy_list1, wavelength = "Co",
+     xlim = c(30, 32), normalise = TRUE)
+```
+
+## Modifying plots
+All plots shown so far are produced behind the scenes using the [**ggplot2**](https://ggplot2.tidyverse.org/) package [@ggplot2], which will already be present on your machine if you have installed **powdR**. This means that it is possible to modify the plots in different ways by adding subsequent **ggplot2** layers, each separated by `+`. For example, it's possible to add points of the quartz peak intensities extracted from a [crystal structure database](http://rruff.geo.arizona.edu/AMS/amcsd.php) using `geom_point()`, and then add a title using `ggtitle()`, followed by changing the theme using `theme_bw()`.
+
+```{r, fig.cap = "A quartz diffractogram with the locations and relative intensities of the quartz peaks identified.", message=FALSE, warning=FALSE, out.width='80%', fig.asp=.75, fig.align='center', cache = TRUE}
+#Define the relative intensities of quartz peaks
+quartz <- data.frame("tth" = c(24.22, 30.99, 42.61, 46.12,
+                               47.06, 49.62, 53.62, 58.86,
+                               64.60, 65.18, 70.79, 73.68),
+                     "intensity" = c(0.20, 1.00, 0.06, 0.06,
+                                     0.03, 0.05, 0.03, 0.11,
+                                     0.03, 0.01, 0.07, 0.03))
+
+#Load the ggplot2 package
+library(ggplot2)
+
+#Create a plot called p1
+p1 <- plot(xy1, wav = "Co", normalise = TRUE) +
+           geom_point(data = quartz, aes(x = tth, y = intensity), size = 5,
+             shape = 21, colour = "red") +
+           ggtitle("A soil with quartz peaks identified") +
+           theme_bw()
+
+p1
+```
+
+Further help on **ggplot2** is provided in [Hadley Wickham's excellent documentation](https://r4ds.had.co.nz/data-visualisation.html) on data visualization.
+
+Plots produced using **ggplot2** are static and can be exported as high quality images or pdf's. In some cases it can also be useful to produce an interactive plot, especially when minor features of XRPD data require inspection. For most plots derived from **ggplot2**, the `ggplotly()` function from the **plotly** package can be used to create such interactive plots, which will load either in RStudio or your web browser:
+
+```{r, eval = FALSE}
+library(plotly)
+
+ggplotly(p1)
+```
+
+# Manipulating XRPD data {#manipulating-data}
+At this stage we have loaded XRPD data into R and produced plots to visualise single or multiple patterns. Loading XRPD data into R opens up almost limitless capabilities for analysing and manipulating the data via the R language and the [thousands of open source packages](https://cran.r-project.org/web/packages/available_packages_by_name.html) that enhance its functionality. Here, some common forms of data manipulation will be introduced:
+
+* [Subsetting](#subsetting)
+* [Transformations](#transformations)
+* [Interpolation](#interpolation)
+* [Alignment](#alignment)
+* [Background fitting](#background)
+* [Converting to data frames](#to-data-frame)
+* [2θ transformation](#two-theta-transform)
+
+## Subsetting XRPD data {#subsetting}
+Often the analysis of XRPD data may be applied to a reduced 2θ range. This can readily be achieved in R using basic code and functions.
+
+By summarising [`xy1`](#powDLL) it can be seen that the 2θ column has a minimum of 2 and a maximum of 75 degrees.
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE}
+summary(xy1)
+```
+
+If we wanted to reduce this to the range of 10--60 degrees 2θ then we have a couple of options. First we could extract the relevant data directly using the `[,]` notation for a data frame, where values before the comma represent rows and values after the comma represent columns:
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE}
+xy1_sub <- xy1[xy1$tth >= 10 & xy2$tth <= 60, ]
+
+summary(xy1_sub)
+```
+
+This first option is quite simple, but if we wanted to apply it to a list of patterns then turning it into a function would be preferable. Here we will create a function called `subset_xrpd()`, which will be designed for data frames of XRPD data:
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE}
+subset_xrpd <- function (x, xmin, xmax) {
+  
+  x <- x[x[[1]] >= xmin & x[[1]] <= xmax, ]
+  
+  return(x)
+  
+}
+```
+
+Note that `x[[1]]` is extracting the first column of the XRPD data, whilst in the first example `x$tth` was used for the same purpose. Use of `x[[1]]` instead is a little more robust because it will work even if the column names are changed.
+
+Now that we have created a function to subset the data, it is very easy to apply it to any number of patterns using `lapply()`:
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE}
+xy_list1_sub <- lapply(xy_list1, subset_xrpd,
+                       xmin = 10, xmax = 60)
+
+#Similarly we can summarise the data in the list again
+lapply(xy_list1_sub, summary)
+```
+
+## Transformations {#transformations}
+Log and root transforms of the count intensities of XRPD data can be useful when applying data mining or machine learning methods. Following the same principles as outlined for [subsetting](#subsetting), these transformations can be applied to any number of patterns in just a few lines of code:
+
+```{r, fig.cap = "Log transformed XRPD data.", out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE, cache = TRUE}
+#Create a function for log-transforming counts
+log_xrpd <- function (x) {
+  
+  x[[2]] <- log10(x[[2]])
+  
+  return(x)
+  
+}
+
+#apply the function to a list of XRPD data
+xy_list1_log <- lapply(xy_list1,
+                       log_xrpd)
+
+#Plot the transformed data
+plot(as_multi_xy(xy_list1_log), wavelength = "Cu")
+```
+
+## Interpolation {#interpolation}
+Sometimes XRPD patterns within a given data set may contain a number of different 2θ axes due to the measurements being carried out on different instruments or on the same instrument but with a different set-up. Direct comparison of such data requires that they are interpolated onto the same 2θ axis.
+
+Here a data set containing 2 samples with different 2θ axes will be created using the `soils` and `rockjock_mixtures` data that are pre-loaded within the **powdR** package:
+
+```{r, fig.cap = "Diffractograms from two different instruments.", out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE, cache = TRUE}
+two_instruments <- as_multi_xy(list("a" = soils$granite,
+                                    "b" = rockjock_mixtures$Mix2))
+
+plot(two_instruments, wavelength = "Cu", normalise = TRUE)
+```
+
+In this example, the data within the `two_instruments` list will be interpolated onto an artificial 2θ axis called `new_tth`, which ranges from 10 to 60 degrees 2θ with a resolution of 0.02:
+
+```{r, fig.cap = "Interpolated diffractograms from two different instruments.", out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE, cache = TRUE}
+new_tth <- seq(10, 60, 0.02)
+
+two_instruments_int <- interpolate(two_instruments, new_tth)
+
+plot(two_instruments_int, wavelength = "Cu", normalise = TRUE)
+```
+
+## Alignment {#alignment}
+Peak positions in XRPD data commonly shift in response to small variations in specimen height in the instrument. Even seemingly small misalignments between peaks can hinder the analysis of XRPD data. One approach to deal with such peak shifts is to use a mineral with essentially invariant peak positions as an internal standard, resulting in well aligned data by adding or subtracting a fixed value to the 2θ axis.
+
+The **powdR** package contains functionality for aligning single or multiple patterns using the `align_xy()` function. In the following examples, samples will be aligned to a pure quartz pattern that will be loaded from the **powdR** package using `read_xy()`
+
+```{r, fig.cap = "Unaligned diffractograms.", out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE, cache = TRUE}
+#Extract the location of the quartz xy file
+quartz_file <- system.file("extdata/minerals/quartz.xy", package = "powdR")
+
+#load the file
+quartz <- read_xy(quartz_file)
+
+#Plot the main quartz peak for pure quartz and a sandstone-derived soil
+plot(as_multi_xy(list("quartz" = quartz,
+                      "sandstone" = soils$sandstone)),
+     wavelength = "Cu",
+     normalise = TRUE,
+     xlim = c(26, 27))
+```
+
+As shown in the figure above, the main quartz peaks of these two diffraction patterns do not align. This can be corrected using `align_xy()`:
+
+```{r, fig.cap = "Aligned diffractograms.", out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE, cache = TRUE}
+#Align the sandstone soil to the quartz pattern
+sandstone_aligned <- align_xy(soils$sandstone, std = quartz,
+                              xmin = 10, xmax = 60, xshift = 0.2)
+
+#Plot the main quartz peak for pure quartz and a sandstone-derived soil
+plot(as_multi_xy(list("quartz" = quartz,
+                      "sandstone aligned" = sandstone_aligned)),
+     wavelength = "Cu",
+     normalise = TRUE,
+     xlim = c(26, 27))
+```
+
+In cases where multiple patterns require alignment to a given standard, `align_xy()` can also be applied to `multiXY` objects:
+
+```{r, fig.cap = "Unaligned diffractograms in a multiXY object.", out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE, cache = TRUE}
+#Plot the unaligned soils data to show misalignments
+plot(soils, wav = "Cu",
+     xlim = c(26, 27), normalise = TRUE)
+```
+
+```{r, fig.cap = "Aligned diffractograms in a multiXY object.", out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE, cache = TRUE}
+#Align the sandstone soil to the quartz pattern
+soils_aligned <- align_xy(soils, std = quartz,
+                          xmin = 10, xmax = 60, xshift = 0.2)
+
+#Plot the main quartz peak for pure quartz and a sandstone-derived soil
+plot(soils_aligned,
+     wavelength = "Cu",
+     normalise = TRUE,
+     xlim = c(26, 27))
+```
+
+## Background fitting {#background}
+Sometimes it is beneficial to fit and subtract the background from XRPD data. To achieve this, the **powdR** package includes the `bkg()` function which uses the peak filling method implemented in the **baseline** package [@baseline]. The fitting provided by the `bkg()` function uses four adjustable parameters that each have pre-loaded defaults (see `?bkg`):
+
+```{r, fig.cap = "Fitting a background to a soil diffractogram. The y-axis is square root transformed to aid interpretation.", out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE, cache = TRUE}
+#Fit a background to the sandstone-derived soil
+granite_bkg <- bkg(soils$granite)
+
+#summarise the resulting data
+summary(granite_bkg)
+
+#Plot the data and add a square root transform to aid interpretation
+plot(granite_bkg) +
+  scale_y_sqrt()
+```
+
+It is then simple to derive a background-subtracted `XY` object:
+
+```{r, fig.cap = "Background subtracted diffractogram.", out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE, cache = TRUE}
+#Fit a background to the sandstone-derived soil
+sandstone_bkg_sub <- as_xy(data.frame("tth" = granite_bkg$tth,
+                                      "counts" = granite_bkg$counts - 
+                                                 granite_bkg$background))
+
+plot(sandstone_bkg_sub, wavelength = "Cu")
+```
+
+Sometimes the default values for the adjustable parameters (see `?bkg`) are not appropriate, and in such cases tuning of the parameters can be an iterative process. To help with this, there is a background fitting [Shiny](https://shiny.rstudio.com/) app that can be loaded from the **powdR** package using `run_bkg()`. This app will load in your default web browser and allows for the four adjustable parameters to be tuned to a given sample that is loaded into the app in '.xy' format.
+
+## Converting to data frames {#to-data-frame}
+`multiXY` objects can be converted to data frames using the `multi_xy_to_df()` function. When using this function, all samples within the `multiXY` object must be on the same 2θ axis, which can be ensured using the `interpolate()` function [outlined above](#interpolation).
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE}
+#Convert xy_list1 to a dataframe
+xy_df1 <- multi_xy_to_df(xy_list1, tth = TRUE)
+
+#Show the first 6 rows of the derived data frame
+head(xy_df1)
+```
+In cases where the 2θ column is not required, the use of `tth = FALSE` in the function call will result in only the count intensities being included in the output.
+
+## 2θ transformation {#two-theta-transform}
+Laboratory XRPD data are usually collected using either Cu or Co X-ray tubes, which each have characteristic Kα wavelengths (e.g. Cu-Kα = 1.54056 Angstroms whereas Co-Kα = 1.78897 Angstroms). These wavelengths determine the 2θ at which the conditions for diffraction are met via Bragg's Law:
+
+$$
+\begin{aligned}
+n\lambda = 2d\sin\theta
+\end{aligned}
+$$
+
+where $n$ is an integer describing the diffraction order, $\lambda$ is the wavelength (Angstroms) and $d$ is the atomic spacing (Angstroms).
+
+In some instances it can be useful to transform the 2θ axis of a given sample so that the 2θ peak positions are representative of a measurement made using a different X-ray source. This can be achieved using the `tth_transform()` function:
+
+```{r, fig.cap = "Data obtained from Co and Cu X-ray tubes prior to 2theta transformation.", out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE, cache = TRUE}
+#Create a multiXY object for this transform example
+transform_eg <- as_multi_xy(list("Co" = xy_list1$D5000_1,
+                                 "Cu" = soils$sandstone))
+
+#Plot two patterns recorded using different wavelengths
+plot(transform_eg,
+     wavelength = "Cu",
+     normalise = TRUE,
+     interactive = FALSE)
+
+#transform the 2theta of the "Co" sample to "Cu"
+transform_eg$Co$tth <- tth_transform(transform_eg$Co$tth,
+                                     from = 1.78897,
+                                     to = 1.54056)
+
+#Replot data after transformation
+plot(transform_eg,
+     wavelength = "Cu",
+     normalise = TRUE,
+     interactive = FALSE)
+```
+
+Note how prior to the 2θ transformation, the dominant peaks in each pattern (associated with quartz in both cases) do not align. After the 2θ transformation the peaks are almost aligned, with a small additional 2θ shift that could be computed using the `align_xy()` function [outlined above](#alignment). Whilst Cu and Co are the most common X-ray sources for laboratory diffractometers, `tth_transform()` can accept any numeric wavelength value.
+
+# References

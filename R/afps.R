@@ -559,6 +559,14 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
   }
 
+  #Make sure obj is one of Rwp, R or Delta
+  if (!obj %in% c("Rwp", "R", "Delta")) {
+
+    stop("\n-The obj argument must be one of 'Rwp', 'R' or 'Delta'",
+         call. = FALSE)
+
+  }
+
 #No need for a standard if these conditions are met
   if (is.na(std_conc)) {
 

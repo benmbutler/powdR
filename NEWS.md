@@ -1,6 +1,7 @@
 # powdR 1.3.0.999
 
 ## New features
+* Vignettes updated to account for all new features detailed below.
 * Twenty one additional reference patterns associated for soils from the
   Africa Soil Information Service XRPD database now added as `afsis` data.
   The phase IDs in the data have been modified for clarity, and the originals

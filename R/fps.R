@@ -676,6 +676,18 @@ if(!is.logical(omit_std)) {
 
   }
 
+  #Make sure obj is one of Rwp, R or Delta if it isn't NA
+  if (!is.na(obj)) {
+
+    if (!obj %in% c("Rwp", "R", "Delta")) {
+
+      stop("\n-The obj argument must be one of 'Rwp', 'R' or 'Delta'",
+           call. = FALSE)
+
+    }
+
+  }
+
   #If the solver is "NNLS" and shift > 0, then don't shift
   if (solver == "NNLS" & shift > 0) {
 
