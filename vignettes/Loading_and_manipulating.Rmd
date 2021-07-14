@@ -228,7 +228,6 @@ At this stage we have loaded XRPD data into R and produced plots to visualise si
 
 * [Interpolation](#interpolation)
 * [Alignment](#alignment)
-* [Background fitting](#background)
 * [Converting to data frames](#to-data-frame)
 * [2θ transformation](#two-theta-transform)
 
@@ -308,32 +307,6 @@ plot(soils_aligned,
      normalise = TRUE,
      xlim = c(26, 27))
 ```
-
-## Background fitting {#background}
-Sometimes it is beneficial to fit and subtract the background from XRPD data. To achieve this, the **powdR** package includes the `bkg()` function which uses the peak filling method implemented in the **baseline** package [@baseline]. The fitting provided by the `bkg()` function uses four adjustable parameters that each have pre-loaded defaults (see `?bkg`):
-
-```{r, fig.cap = "Fitting a background to a soil diffractogram. The y-axis is square root transformed to aid interpretation.", out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE, cache = TRUE}
-#Fit a background to the sandstone-derived soil
-granite_bkg <- bkg(soils$granite)
-
-#summarise the resulting data
-summary(granite_bkg)
-
-#Plot the data and add a square root transform to aid interpretation
-plot(granite_bkg) +
-  scale_y_sqrt()
-```
-
-It is then simple to derive a background-subtracted `XY` object:
-
-```{r, fig.cap = "Background subtracted diffractogram.", out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE, cache = TRUE}
-#Fit a background to the sandstone-derived soil
-sandstone_bkg_sub <- as_xy(data.frame("tth" = granite_bkg$tth,
-                                      "counts" = granite_bkg$counts - 
-                                                 granite_bkg$background))
-```
-
-Sometimes the default values for the adjustable parameters (see `?bkg`) are not appropriate, and in such cases tuning of the parameters can be an iterative process. To help with this, there is a background fitting [Shiny](https://shiny.rstudio.com/) app that can be loaded from the **powdR** package using `run_bkg()`. This app will load in your default web browser and allows for the four adjustable parameters to be tuned to a given sample that is loaded into the app in '.xy' format.
 
 ## Converting to data frames {#to-data-frame}
 `multiXY` objects can be converted to data frames using the `multi_xy_to_df()` function. When using this function, all samples within the `multiXY` object must be on the same 2θ axis, which can be ensured using the `interpolate()` function [outlined above](#interpolation).
