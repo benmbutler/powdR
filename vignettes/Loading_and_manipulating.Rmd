@@ -11,7 +11,7 @@ output:
     toc: true
     toc_float:
       collapsed: false
-      smooth_scroll: false
+      smooth_scroll: true
     anchor_sections: true
     self_contained: true
 vignette: >
@@ -224,77 +224,13 @@ ggplotly(p1)
 ```
 
 # Manipulating XRPD data {#manipulating-data}
-At this stage we have loaded XRPD data into R and produced plots to visualise single or multiple patterns. Loading XRPD data into R opens up almost limitless capabilities for analysing and manipulating the data via the R language and the [thousands of open source packages](https://cran.r-project.org/web/packages/available_packages_by_name.html) that enhance its functionality. Here, some common forms of data manipulation will be introduced:
+At this stage we have loaded XRPD data into R and produced plots to visualise single or multiple patterns. Loading XRPD data into R opens up almost limitless capabilities for analysing and manipulating the data via the R language and the [thousands of open source packages](https://cran.r-project.org/web/packages/available_packages_by_name.html) that enhance its functionality. Here, some useful data manipulation features of **powdR** will be introduced:
 
-* [Subsetting](#subsetting)
-* [Transformations](#transformations)
 * [Interpolation](#interpolation)
 * [Alignment](#alignment)
 * [Background fitting](#background)
 * [Converting to data frames](#to-data-frame)
 * [2θ transformation](#two-theta-transform)
-
-## Subsetting XRPD data {#subsetting}
-Often the analysis of XRPD data may be applied to a reduced 2θ range. This can readily be achieved in R using basic code and functions.
-
-By summarising [`xy1`](#powDLL) it can be seen that the 2θ column has a minimum of 2 and a maximum of 75 degrees.
-
-```{r, message=FALSE, warning=FALSE, cache = TRUE}
-summary(xy1)
-```
-
-If we wanted to reduce this to the range of 10--60 degrees 2θ then we have a couple of options. First we could extract the relevant data directly using the `[,]` notation for a data frame, where values before the comma represent rows and values after the comma represent columns:
-
-```{r, message=FALSE, warning=FALSE, cache = TRUE}
-xy1_sub <- xy1[xy1$tth >= 10 & xy2$tth <= 60, ]
-
-summary(xy1_sub)
-```
-
-This first option is quite simple, but if we wanted to apply it to a list of patterns then turning it into a function would be preferable. Here we will create a function called `subset_xrpd()`, which will be designed for data frames of XRPD data:
-
-```{r, message=FALSE, warning=FALSE, cache = TRUE}
-subset_xrpd <- function (x, xmin, xmax) {
-  
-  x <- x[x[[1]] >= xmin & x[[1]] <= xmax, ]
-  
-  return(x)
-  
-}
-```
-
-Note that `x[[1]]` is extracting the first column of the XRPD data, whilst in the first example `x$tth` was used for the same purpose. Use of `x[[1]]` instead is a little more robust because it will work even if the column names are changed.
-
-Now that we have created a function to subset the data, it is very easy to apply it to any number of patterns using `lapply()`:
-
-```{r, message=FALSE, warning=FALSE, cache = TRUE}
-xy_list1_sub <- lapply(xy_list1, subset_xrpd,
-                       xmin = 10, xmax = 60)
-
-#Similarly we can summarise the data in the list again
-lapply(xy_list1_sub, summary)
-```
-
-## Transformations {#transformations}
-Log and root transforms of the count intensities of XRPD data can be useful when applying data mining or machine learning methods. Following the same principles as outlined for [subsetting](#subsetting), these transformations can be applied to any number of patterns in just a few lines of code:
-
-```{r, fig.cap = "Log transformed XRPD data.", out.width='80%', fig.asp=.75, fig.align='center', message=FALSE, warning=FALSE, cache = TRUE}
-#Create a function for log-transforming counts
-log_xrpd <- function (x) {
-  
-  x[[2]] <- log10(x[[2]])
-  
-  return(x)
-  
-}
-
-#apply the function to a list of XRPD data
-xy_list1_log <- lapply(xy_list1,
-                       log_xrpd)
-
-#Plot the transformed data
-plot(as_multi_xy(xy_list1_log), wavelength = "Cu")
-```
 
 ## Interpolation {#interpolation}
 Sometimes XRPD patterns within a given data set may contain a number of different 2θ axes due to the measurements being carried out on different instruments or on the same instrument but with a different set-up. Direct comparison of such data requires that they are interpolated onto the same 2θ axis.
@@ -305,7 +241,7 @@ Here a data set containing 2 samples with different 2θ axes will be created usi
 two_instruments <- as_multi_xy(list("a" = soils$granite,
                                     "b" = rockjock_mixtures$Mix2))
 
-plot(two_instruments, wavelength = "Cu", normalise = TRUE)
+lapply(two_instruments, summary)
 ```
 
 In this example, the data within the `two_instruments` list will be interpolated onto an artificial 2θ axis called `new_tth`, which ranges from 10 to 60 degrees 2θ with a resolution of 0.02:
@@ -315,7 +251,7 @@ new_tth <- seq(10, 60, 0.02)
 
 two_instruments_int <- interpolate(two_instruments, new_tth)
 
-plot(two_instruments_int, wavelength = "Cu", normalise = TRUE)
+lapply(two_instruments_int, summary)
 ```
 
 ## Alignment {#alignment}
@@ -395,8 +331,6 @@ It is then simple to derive a background-subtracted `XY` object:
 sandstone_bkg_sub <- as_xy(data.frame("tth" = granite_bkg$tth,
                                       "counts" = granite_bkg$counts - 
                                                  granite_bkg$background))
-
-plot(sandstone_bkg_sub, wavelength = "Cu")
 ```
 
 Sometimes the default values for the adjustable parameters (see `?bkg`) are not appropriate, and in such cases tuning of the parameters can be an iterative process. To help with this, there is a background fitting [Shiny](https://shiny.rstudio.com/) app that can be loaded from the **powdR** package using `run_bkg()`. This app will load in your default web browser and allows for the four adjustable parameters to be tuned to a given sample that is loaded into the app in '.xy' format.

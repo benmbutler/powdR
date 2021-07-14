@@ -42,6 +42,7 @@ Imports:
   rxylib (>= 0.2.6)
 Suggests:
     knitr,
-    rmarkdown
+    rmarkdown,
+    bookdown
 RoxygenNote: 7.1.1
 VignetteBuilder: knitr

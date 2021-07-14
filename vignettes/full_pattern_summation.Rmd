@@ -11,7 +11,7 @@ output:
     toc: true
     toc_float:
       collapsed: false
-      smooth_scroll: false
+      smooth_scroll: true
     anchor_sections: true
     self_contained: true
 vignette: >
@@ -315,7 +315,7 @@ fit3_n <- fps(lib = rockjock,
 Sys.time() - a
 ```
 
-resulting in a computation time of less than one second. Whilst the use of NNLS is fast, there is a small compromise in accuracy compared to the minimisation of an objective function (see Supplementary Material in @Butler2021powdR).
+resulting in a computation time of less than half a second. Whilst the use of NNLS is fast, there is a small compromise in accuracy compared to the minimisation of an objective function [see Supplementary Material in @Butler2021powdR].
 
 ### Full pattern summation with data harmonisation
 It is usually recommended that the reference library used for full pattern summation is measured on the same instrument as the sample using an identical 2θ range and resolution. In some cases this is not feasible, and the reference library patterns may be from a different instrument to the sample. To allow for seamless use of samples and libraries from different instruments (measured using the same X-ray wavelength), `fps()` contains a logical `harmonise` argument (default `= TRUE`). When the sample and library contain non-identical 2θ axes, `harmonise = TRUE` will convert the data onto the same axis by determining the overlapping 2θ range and interpolating to the coarsest resolution available.
