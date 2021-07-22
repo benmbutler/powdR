@@ -6,6 +6,8 @@
   Africa Soil Information Service XRPD database now added as `afsis` data.
   The phase IDs in the data have been modified for clarity, and the originals
   are found in `afsis_codes` data that is also included with the package.
+* Regrouping data for the `rockjock` and `afsis` reference libraries
+  now provided in `rockjock_regroup` and `afsis_regroup`, respectively.
 * `plot` methods for `powdRfps` and `powdRafps` objects now accept a logical
   `group` argument. When `TRUE` this results in reference patterns being
   plotted grouped and summed by phase name.
@@ -14,9 +16,9 @@
 * `as_xy()` added, which creates `XY` objects from data frames that contain
   two columns denoting 2theta and counts.
 * `as_multi_xy()` added, which creates a `multiXY` objects from a list of
-  ``XY` data frames. `multiXY` objects can easily be plotted using the new
-  associated `plot.multiXY` method, whilst `XY` objects can be plotted using
-  the associated `plot.XY` method.
+  ``XY` data frames or a data frame containing data from multiple samples.
+  `multiXY` objects can easily be plotted using the new `plot.multiXY` 
+  method, whilst `XY` objects can be plotted using the `plot.XY` method.
 * `align_xy()` added with associated S3 methods for aligning XRPD data within
   `XY` and `multiXY` objects to a chosen standard.
 * `multi_xy_to_df()` added, which converts `multiXY` objects to data frames.

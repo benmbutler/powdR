@@ -172,3 +172,26 @@
 #' }
 #'
 "afsis"
+
+#' Regrouping structure for the Africa Soil Information Service (AfSIS) XRPD
+#' reference library
+#'
+#' A data frame containing an example re-grouping structure for the \code{afsis}
+#' reference library, which results in a slightly coarser description of clay
+#' minerals and Fe/Ti-(hydr)oxides in \code{powdRfps} or \code{powdRafps} objects
+#' when used with \code{regroup()}.
+#'
+#' @format A data frame
+#'
+"afsis_regroup"
+
+#' Regrouping structure for the rockjock reference library
+#'
+#' A data frame containing an example re-grouping structure for the \code{rockjock}
+#' reference library, which results in a slightly coarser description of clay
+#' minerals and Fe/Ti-(hydr)oxides in \code{powdRfps} or \code{powdRafps} objects
+#' when used with \code{regroup()}.
+#'
+#' @format A data frame
+#'
+"rockjock_regroup"
