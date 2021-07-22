@@ -308,7 +308,7 @@ plot(soils_aligned,
      xlim = c(26, 27))
 ```
 
-## Converting to data frames {#to-data-frame}
+## Converting to and from data frames {#to-data-frame}
 `multiXY` objects can be converted to data frames using the `multi_xy_to_df()` function. When using this function, all samples within the `multiXY` object must be on the same 2θ axis, which can be ensured using the `interpolate()` function [outlined above](#interpolation).
 
 ```{r, message=FALSE, warning=FALSE, cache = TRUE}
@@ -318,7 +318,15 @@ xy_df1 <- multi_xy_to_df(xy_list1, tth = TRUE)
 #Show the first 6 rows of the derived data frame
 head(xy_df1)
 ```
-In cases where the 2θ column is not required, the use of `tth = FALSE` in the function call will result in only the count intensities being included in the output.
+In cases where the 2θ column is not required, the use of `tth = FALSE` in the function call will result in only the count intensities being included in the output. Data frames that do contain the 2θ column can be converted back to `multiXY` objects using `as_multi_xy`:
+
+```{r, message=FALSE, warning=FALSE, cache = TRUE}
+#Convert xy_df1 back to a list
+back_to_list <- as_multi_xy(xy_df1)
+
+#Show that the class is now multiXY
+class(back_to_list)
+```
 
 ## 2θ transformation {#two-theta-transform}
 Laboratory XRPD data are usually collected using either Cu or Co X-ray tubes, which each have characteristic Kα wavelengths (e.g. Cu-Kα = 1.54056 Angstroms whereas Co-Kα = 1.78897 Angstroms). These wavelengths determine the 2θ at which the conditions for diffraction are met via Bragg's Law:
