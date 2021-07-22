@@ -16,36 +16,69 @@ if (is.numeric(x[[1]]) & is.numeric(x[[2]])) {
 
 #' Create a multiXY object
 #'
-#' \code{as_multi_xy} takes a list of XRPD data and ensures that they meet
-#' various requirements to create a multiXY object. These requirements
-#' include that the data is in list format, with each item in the list
-#' containing 2 columns of numeric data in a dataframe. \code{as_multi_xy}
-#' also checks that all names are unique. Once a multiXY object has been
-#' created, it can easily be plotted using the associated \code{plot.multiXY}
-#' method.
+#' \code{as_multi_xy} takes a list or data frame of XRPD data and ensures
+#' that the data meet various requirements to create a multiXY object.
+#' Once a multiXY object has been created, it can easily be plotted using
+#' the associated \code{plot.multiXY} method.
 #'
-#' @param x a list XRPD dataframes (column 1 = 2theta, column 2 = counts)
+#' @param x a list or data frame of XRPD data
+#' @param ... other arguments
 #'
-#' @return a multiXY object, which is a list of xy dataframes.
+#' @return a \code{multiXY} object.
 #'
 #' @examples
-#' # Load soils xrd data
-#' data(rockjock_mixtures)
 #'
-#' multi_xy <- as_multi_xy(rockjock_mixtures)
+#' #EXAMPLE 1
 #'
-#' class(multi_xy)
+#' #load soils data
+#' data(soils)
 #'
+#' #extract first two samples from the list
+#' soils <- soils[c(1:2)]
+#'
+#' #convert to multiXY
+#' soils <- as_multi_xy(soils)
+#'
+#' #EXAMPLE 2
+#' #load the soils data
+#' data(soils)
+#'
+#' #Convert to data frame
+#' soils_df <- multi_xy_to_df(soils,
+#'                            tth = TRUE)
+#'
+#' #Convert back to multiXY object
+#' soils2 <- as_multi_xy(soils_df)
 #' @export
-as_multi_xy <- function(x) {
+as_multi_xy <- function(x, ...) {
+  UseMethod("as_multi_xy")
+}
 
-  #Check that x is a list
-  if(!is.list(x)) {
-
-    stop("Data supplied to x must be a list of xy dataframes.",
-         call. = FALSE)
-
-  }
+#' Create a multiXY object from a list of XRPD data
+#'
+#' \code{as_multi_xy.list} takes a list of XRPD data and ensures that they meet
+#' various requirements to create a multiXY object. These requirements
+#' include that each item in the list contains 2 columns of numeric data in a
+#' data frame. \code{as_multi_xy.list} also checks that all names are unique.
+#' Once a \code{multiXY} object has been created, it can easily be plotted using
+#' the associated \code{plot.multiXY} method.
+#'
+#' @param x a list of XRPD data frames (column 1 = 2theta, column 2 = counts)
+#' @param ... other arguments
+#'
+#' @return a \code{multiXY} object.
+#'
+#' @examples
+#' #' #load soils data
+#' data(soils)
+#'
+#' #extract first two samples from the list
+#' soils <- soils[c(1:2)]
+#'
+#' #convert to multiXY
+#' soils <- as_multi_xy(soils)
+#' @export
+as_multi_xy.list <- function(x, ...) {
 
   #Check that each item in x is a dataframe
   df_condition <- which(unlist(lapply(x, is.data.frame)) == TRUE)
@@ -95,5 +128,83 @@ as_multi_xy <- function(x) {
   class(x) <- c("multiXY", "list")
 
   return(x)
+
+}
+
+#This function is needed in as_multi_xy.data.frame
+.create_xy <- function(x, y) {
+
+  out <- data.frame("tth" = x,
+                    "counts" = y)
+
+  class(out) <- c("XY", "data.frame")
+
+  return(out)
+
+}
+
+
+#' Create a multiXY object from a list of XRPD data
+#'
+#' \code{as_multi_xy.data.frame} takes a data frame of XRPD data from multiple
+#' samples and ensures that it meets various requirements to create a multiXY object.
+#' Once a \code{multiXY} object has been created, it can easily be plotted using
+#' the associated \code{plot.multiXY} method.
+#'
+#' @param x a data frame of XRPD data, with the first column as the 2theta
+#' axis and subsequent columns of count intensities.
+#' @param ... other arguments
+#'
+#' @return a \code{multiXY} object.
+#'
+#' @examples
+#' #load the soils data
+#' data(soils)
+#'
+#' #Convert to data frame
+#' soils_df <- multi_xy_to_df(soils,
+#'                            tth = TRUE)
+#'
+#' #Convert back to multiXY object
+#' soils2 <- as_multi_xy(soils_df)
+#'
+#' @export
+as_multi_xy.data.frame <- function(x, ...) {
+
+  #Check all variables are numeric
+  if (!all(unlist(lapply(x, is.numeric)))) {
+
+    stop("All variables in x must be numeric",
+         call. = FALSE)
+
+  }
+
+  #Check that there are more than two columns
+  if (ncol(x) <= 2) {
+
+    stop("At least 2 columns of count intensities are required
+         to create a multiXY object.",
+         call. = FALSE)
+
+  }
+
+  #Extract the 2theta
+  tth <- x[[1]]
+
+  #Check that the 2theta axis is valid
+  if (!all(diff(tth) >= 0)) {
+
+    stop("The data supplied in column 1 is not a valid 2theta
+         axis because it does not continually ascend.")
+
+  }
+
+  #create the list
+  l <- lapply(x[-1], .create_xy, x = tth)
+
+  class(l) <- c("multiXY", "list")
+
+  return(l)
+
 
 }

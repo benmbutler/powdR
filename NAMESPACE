@@ -3,6 +3,8 @@
 S3method(afps,powdRlib)
 S3method(align_xy,XY)
 S3method(align_xy,multiXY)
+S3method(as_multi_xy,data.frame)
+S3method(as_multi_xy,list)
 S3method(close_quant,powdRafps)
 S3method(close_quant,powdRfps)
 S3method(fps,powdRlib)

@@ -4,29 +4,43 @@
 \alias{as_multi_xy}
 \title{Create a multiXY object}
 \usage{
-as_multi_xy(x)
+as_multi_xy(x, ...)
 }
 \arguments{
-\item{x}{a list XRPD dataframes (column 1 = 2theta, column 2 = counts)}
+\item{x}{a list or data frame of XRPD data}
+
+\item{...}{other arguments}
 }
 \value{
-a multiXY object, which is a list of xy dataframes.
+a \code{multiXY} object.
 }
 \description{
-\code{as_multi_xy} takes a list of XRPD data and ensures that they meet
-various requirements to create a multiXY object. These requirements
-include that the data is in list format, with each item in the list
-containing 2 columns of numeric data in a dataframe. \code{as_multi_xy}
-also checks that all names are unique. Once a multiXY object has been
-created, it can easily be plotted using the associated \code{plot.multiXY}
-method.
+\code{as_multi_xy} takes a list or data frame of XRPD data and ensures
+that the data meet various requirements to create a multiXY object.
+Once a multiXY object has been created, it can easily be plotted using
+the associated \code{plot.multiXY} method.
 }
 \examples{
-# Load soils xrd data
-data(rockjock_mixtures)
 
-multi_xy <- as_multi_xy(rockjock_mixtures)
+#EXAMPLE 1
 
-class(multi_xy)
+#load soils data
+data(soils)
 
+#extract first two samples from the list
+soils <- soils[c(1:2)]
+
+#convert to multiXY
+soils <- as_multi_xy(soils)
+
+#EXAMPLE 2
+#load the soils data
+data(soils)
+
+#Convert to data frame
+soils_df <- multi_xy_to_df(soils,
+                           tth = TRUE)
+
+#Convert back to multiXY object
+soils2 <- as_multi_xy(soils_df)
 }
