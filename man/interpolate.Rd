@@ -18,7 +18,7 @@ an \code{XY} or \code{multiXY} object.
 }
 \description{
 \code{interpolate} takes an XY, multiXY or powdRlib object and
-interpolates the data onto a new 2theta scale using a cubic spline.
+interpolates the data onto a new 2theta scale using a natural spline.
 See additional help via \code{?interpolate.XY},
 \code{?interpolate.multiXY} or \code{?interpolate.powdRlib}.
 }
@@ -27,9 +27,13 @@ See additional help via \code{?interpolate.XY},
 data(rockjock_mixtures)
 tth <- seq(10, 60, 0.04)
 
-#interpolate list of data onto new scale
+#interpolate multiXY object of data onto new scale
 i1 <- interpolate(rockjock_mixtures, new_tth = tth)
 
-#interpolate single pattern onto new scale
+#interpolate XY object onto new scale
 i2 <- interpolate(rockjock_mixtures$Mix1, new_tth = tth)
+
+#interpolate powdRlib object onto new scale
+i3 <- interpolate(minerals, new_tth = tth)
+
 }

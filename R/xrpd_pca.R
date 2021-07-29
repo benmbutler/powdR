@@ -63,9 +63,10 @@
 #' Applies data pre-treatment and principal components analysis to XRPD data based
 #' based on the protocols detailed in Butler et al. (2020).
 #'
-#' @param x A list of XRPD data, where each item in the list is a 2 column
-#' dataframe defining the x (2theta) and y (counts) axis of each measurement.
-#' Each item in the list must have a name corresponding to the sample ID.
+#' @param x A multiXY list containing the XRPD data, where each item in the
+#' list is a 2 column XY dataframe defining the x (2theta) and y (counts)
+#' axes of each measurement. Each item in the list must have a name corresponding
+#' to a unique sample ID.
 #' @param mean_center A logical argument defining whether mean centering
 #' is applied to the XRPD data (default \code{= TRUE}).
 #' @param bin_size An integer between 1 and 10 defining whether to bin the

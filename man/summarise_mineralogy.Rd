@@ -29,7 +29,7 @@ in the output. This provides an objective measure of the difference between the 
 and measured patterns.}
 }
 \value{
-a dataframe
+A data frame
 }
 \description{
 \code{summarise_mineralogy} creates a summary table of quantified mineral

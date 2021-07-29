@@ -7,10 +7,10 @@
 run_powdR(...)
 }
 \arguments{
-\item{...}{further arguments to pass to \code{\link[shiny]{runApp}}}
+\item{...}{further arguments to pass to \code{shiny::runApp}}
 }
 \description{
-A wrapper for \code{\link[shiny]{runApp}} to start the Shiny app for \code{powdR}.
+A wrapper for \code{shiny::runApp} to start the Shiny app for \code{powdR}.
 }
 \examples{
 

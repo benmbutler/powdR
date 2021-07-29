@@ -1,9 +1,9 @@
 #' Run the background fitting shiny app
 #'
-#' A wrapper for \code{\link[shiny]{runApp}} to start the \code{powdR}
+#' A wrapper for \code{shiny::runApp} to start the \code{powdR}
 #' background fitting Shiny app.
 #'
-#' @param ... further arguments to pass to \code{\link[shiny]{runApp}}
+#' @param ... further arguments to pass to \code{shiny::runApp}
 #'
 #' @examples
 #'

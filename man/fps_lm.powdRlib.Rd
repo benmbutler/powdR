@@ -26,11 +26,11 @@
 \item{smpl}{A data frame. First column is 2theta, second column is counts}
 
 \item{harmonise}{logical parameter defining whether to harmonise the \code{lib} and \code{smpl}.
-Default = \code{TRUE}. Harmonises to the intersecting 2theta range at the coarsest resolution
-available using natural splines.}
+Default = \code{TRUE}. When \code{TRUE} the function harmonises the \code{lib} and \code{smpl}
+data to the intersecting 2theta range at the coarsest resolution available using natural splines.}
 
-\item{refs}{A character string of reference pattern ID's or names from the specified library.
-The ID's or names supplied must be present within the \code{lib$phases$phase_id} or
+\item{refs}{A character string of reference pattern IDs or names from the specified library.
+The IDs or names supplied must be present within the \code{lib$phases$phase_id} or
 \code{lib$phases$phase_name} columns. If missing from the function call then all phases in
 the reference library will be used.}
 
@@ -58,13 +58,13 @@ in degrees 2theta, that is allowed during the shifting of selected phases. Defau
 Any reference patterns with a p-value greater than this value will be omitted from the
 linear regression and results recomputed. Must be greater than 0.000001 but no greater than 1.}
 
-\item{...}{other arguments}
+\item{...}{Other arguments}
 }
 \value{
-a list with components:
+a powdRlm object with components:
 \item{tth}{a vector of the 2theta scale of the fitted data}
-\item{fitted}{a vector of the fitted XRPD pattern}
-\item{measured}{a vector of the original XRPD measurement (aligned)}
+\item{fitted}{a vector of the count intensities of the fitted XRPD pattern}
+\item{measured}{a vector of the original count intensities of the XRPD measurement (aligned)}
 \item{residuals}{a vector of the residuals (fitted vs measured)}
 \item{phases}{a dataframe of the phases used to produce the fitted pattern and their concentrations}
 \item{phases_grouped}{the phases dataframe grouped by phase_name and concentrations summed}
@@ -75,7 +75,8 @@ All patterns have been weighted according to the coefficients used in the fit}
 }
 \description{
 \code{fps_lm.powdRlib} returns a simple fit of a given pattern using linear regression,
-where coefficients may be either positive or negative.
+where coefficients may be either positive or negative. Does not return quantitative
+data. For quantitative results use \code{fps} or \code{afps}.
 }
 \details{
 Requires a \code{powdRlib} library of reference patterns. Mineral concentrations

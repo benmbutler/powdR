@@ -3,31 +3,26 @@
 \docType{data}
 \name{minerals_phases}
 \alias{minerals_phases}
-\title{A table of associated data for the minerals_xrd table, which can be be combined with a
-xrd data table to create a \code{powdRlib} object when using the
-\code{powdRlib} constructor function. Use the same layout to create custom reference
-libraries.}
+\title{Example phases table for a reference library}
 \format{
-A 3 column dataframe
+A 3 column data frame consisting of:
 \describe{
-The first column is a character string defining the unique mineral ID's that
+\item{phase_id}{A string defining the unique phase IDs that
 should match those defined as column names of the minerals table
-(e.g. \code{minerals_xrd}).
-
-The second column is a character string defining the mineral group that each
-reference pattern belongs to.
-
-The third column is a numeric vector defining the reference intensity ratios
-of each reference pattern.
+(e.g. \code{minerals_xrd}).}
+\item{phase_name}{A string defining the mineral group that each
+reference pattern belongs to.}
+\item{rir}{A vector defining the reference intensity ratios
+of each reference pattern.}
 }
 }
 \usage{
 minerals_phases
 }
 \description{
-A table of associated data for the minerals_xrd table, which can be be combined with a
-xrd data table to create a \code{powdRlib} object when using the
-\code{powdRlib} constructor function. Use the same layout to create custom reference
-libraries.
+A data frame of associated phase information for the \code{minerals_xrd} data.
+Together these two data frames can be combined with the \code{powdRlib} constructor
+function to create an example reference library (see \code{?powdRlib}). Use the same
+layout to create custom reference libraries.
 }
 \keyword{datasets}

@@ -5,12 +5,12 @@
 \alias{rockjock}
 \title{RockJock reference library}
 \format{
-A list of 3 components
+A powdRlib object of 3 components
 \describe{
-\item{xrd}{A dataframe of all xrd data (counts only). Column names denote the
-reference sample}
-\item{tth}{A vector of 2theta intervals of all measurements in the library}
-\item{phases}{A dataframe the phase ID's, names and reference intensity
+\item{xrd}{A dataframe of all the count intensities of all reference patterns. Column names denote the
+unique phase ID of each reference pattern}
+\item{tth}{A vector of the 2theta scale for all reference patterns in the library}
+\item{phases}{A dataframe the phase IDs, names and reference intensity
 ratios (RIR)}
 }
 }

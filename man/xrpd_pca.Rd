@@ -7,9 +7,10 @@
 xrpd_pca(x, mean_center, bin_size, root_transform, components)
 }
 \arguments{
-\item{x}{A list of XRPD data, where each item in the list is a 2 column
-dataframe defining the x (2theta) and y (counts) axis of each measurement.
-Each item in the list must have a name corresponding to the sample ID.}
+\item{x}{A multiXY list containing the XRPD data, where each item in the
+list is a 2 column XY dataframe defining the x (2theta) and y (counts)
+axes of each measurement. Each item in the list must have a name corresponding
+to a unique sample ID.}
 
 \item{mean_center}{A logical argument defining whether mean centering
 is applied to the XRPD data (default \code{= TRUE}).}

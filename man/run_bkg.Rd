@@ -7,10 +7,10 @@
 run_bkg(...)
 }
 \arguments{
-\item{...}{further arguments to pass to \code{\link[shiny]{runApp}}}
+\item{...}{further arguments to pass to \code{shiny::runApp}}
 }
 \description{
-A wrapper for \code{\link[shiny]{runApp}} to start the \code{powdR}
+A wrapper for \code{shiny::runApp} to start the \code{powdR}
 background fitting Shiny app.
 }
 \examples{

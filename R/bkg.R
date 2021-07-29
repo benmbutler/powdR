@@ -11,15 +11,16 @@
 #' @param it Number of iterations in suppression loop. Default = 50.
 #' @param int Number of buckets to divide the data into. Default = \code{round(nrow(xrd)/4)}.
 #'
-#' @return a list of 3 vectors
+#' @return a powdRbkg object consisting of of 3 vectors
 #' \item{tth}{The 2theta axis of the measurement}
 #' \item{counts}{The count intensities of the measurement}
-#' \item{background}{The fitted background}
+#' \item{background}{The count intensities of the fitted background}
 #'
 #' @examples
 #' data(soils)
 #' \dontrun{
 #' fit_bkg <- bkg(soils$granite)
+#' plot(bkg)
 #' }
 #' @export
 bkg <- function(xrd, lambda, hwi, it, int) {

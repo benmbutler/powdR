@@ -4,16 +4,64 @@
 \alias{fps_lm}
 \title{Full pattern summation using linear regression}
 \usage{
-fps_lm(lib, ...)
+fps_lm(
+  lib,
+  smpl,
+  harmonise,
+  refs,
+  std,
+  tth_align,
+  align,
+  manual_align,
+  tth_fps,
+  shift,
+  p,
+  ...
+)
 }
 \arguments{
 \item{lib}{A \code{powdRlib} object representing the reference library. Created using the
 \code{powdRlib} constructor function.}
 
-\item{...}{Other parameters passed to methods e.g. \code{fps_lm.powdRlib}}
+\item{smpl}{A data frame. First column is 2theta, second column is counts}
+
+\item{harmonise}{logical parameter defining whether to harmonise the \code{lib} and \code{smpl}.
+Default = \code{TRUE}. When \code{TRUE} the function harmonises the \code{lib} and \code{smpl}
+data to the intersecting 2theta range at the coarsest resolution available using natural splines.}
+
+\item{refs}{A character string of reference pattern IDs or names from the specified library.
+The IDs or names supplied must be present within the \code{lib$phases$phase_id} or
+\code{lib$phases$phase_name} columns. If missing from the function call then all phases in
+the reference library will be used.}
+
+\item{std}{The phase ID (e.g. "QUA.1") to be used as internal
+standard. Must match an ID provided in the \code{refs} parameter.}
+
+\item{tth_align}{A vector defining the minimum and maximum 2theta values to be used during
+alignment (e.g. \code{c(5,65)}). If not defined, then the full range is used.}
+
+\item{align}{The maximum shift that is allowed during initial 2theta
+alignment (degrees). Default = 0.1.}
+
+\item{manual_align}{A logical operator denoting whether to optimise the alignment within the
+negative/position 2theta range defined in the \code{align} argument, or to use the specified
+value of the \code{align} argument for alignment of the sample to the standards. Default
+= \code{FALSE}, i.e. alignment is optimised.}
+
+\item{tth_fps}{A vector defining the minimum and maximum 2theta values to be used during
+full pattern summation (e.g. \code{c(5,65)}). If not defined, then the full range is used.}
+
+\item{shift}{A single numeric value denoting the maximum (positive or negative) shift,
+in degrees 2theta, that is allowed during the shifting of selected phases. Default = 0.}
+
+\item{p}{a numeric parameter between 0 and 1 specifying the p-value limit for coefficients.
+Any reference patterns with a p-value greater than this value will be omitted from the
+linear regression and results recomputed. Must be greater than 0.000001 but no greater than 1.}
+
+\item{...}{Other arguments}
 }
 \value{
-a list with components:
+a powdRlm object with components:
 \item{tth}{a vector of the 2theta scale of the fitted data}
 \item{fitted}{a vector of the fitted XRPD pattern}
 \item{measured}{a vector of the original XRPD measurement (aligned)}
@@ -27,8 +75,8 @@ All patterns have been weighted according to the coefficients used in the fit}
 }
 \description{
 \code{fps_lm} returns a simple fit of a given pattern using linear regression,
-where coefficients may be either positive or negative. For more details see
-\code{?fps_lm.powdRlib}.
+where coefficients may be either positive or negative. Does not return quantitative
+data. For quantitative results use \code{fps} or \code{afps}.
 }
 \details{
 Requires a \code{powdRlib} library of reference patterns. Mineral concentrations

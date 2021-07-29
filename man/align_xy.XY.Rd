@@ -22,7 +22,7 @@ that is allowed during alignment}
 \item{...}{other arguments}
 }
 \value{
-a \code{XY} object.
+an \code{XY} object.
 }
 \description{
 \code{align_xy.XY} takes an XY object and aligns

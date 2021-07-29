@@ -5,14 +5,14 @@
 #' that the user wishes to either keep or remove.
 #'
 #' @param x a \code{powdRlib} object.
-#' @param refs a string of the phase ID's or names of reference patterns to be subset. The ID's
+#' @param refs a string of the phase IDs or names of reference patterns to be subset. The ID's
 #' or names supplied must be present within the \code{lib$phases$phase_id} or
 #' \code{lib$phases$phase_name} columns.
-#' @param mode denotes whether the phase ID's or names defined in the \code{refs} argument are
+#' @param mode denotes whether the phase IDs or names defined in the \code{refs} argument are
 #' retained (\code{"keep"}) or removed (\code{"remove"}).
 #' @param ... other arguments
 #'
-#' @return a \code{powdRlib} object.
+#' @return A \code{powdRlib} object.
 #'
 #' @method subset powdRlib
 #'

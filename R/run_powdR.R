@@ -1,8 +1,8 @@
 #' Run the powdR shiny app
 #'
-#' A wrapper for \code{\link[shiny]{runApp}} to start the Shiny app for \code{powdR}.
+#' A wrapper for \code{shiny::runApp} to start the Shiny app for \code{powdR}.
 #'
-#' @param ... further arguments to pass to \code{\link[shiny]{runApp}}
+#' @param ... further arguments to pass to \code{shiny::runApp}
 #'
 #' @examples
 #'

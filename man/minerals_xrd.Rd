@@ -3,10 +3,7 @@
 \docType{data}
 \name{minerals_xrd}
 \alias{minerals_xrd}
-\title{A table of 14 reference patterns and their corresponding two theta scale that can
-be combined with the \code{minerals_phases} table to create a \code{powdRlib} object when using
-the \code{powdRlib} constructor function. Use the same layout to create custom
-reference libraries.}
+\title{Example xrd table for a reference library}
 \format{
 A dataframe
 \describe{
@@ -20,7 +17,7 @@ minerals_xrd
 }
 \description{
 A table of 14 reference patterns and their corresponding two theta scale that can
-be combined with the \code{minerals_phases} table to create a \code{powdRlib} object when using
+be combined with the \code{minerals_phases} table to create a \code{powdRlib} object using
 the \code{powdRlib} constructor function. Use the same layout to create custom
 reference libraries.
 }

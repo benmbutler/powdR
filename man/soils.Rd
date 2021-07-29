@@ -5,8 +5,8 @@
 \alias{soils}
 \title{Example soil XRPD data}
 \format{
-A list of 3 dataframes (named according to rock type),
-with each dataframe containing two columns of:
+A multiXY list of 3 XY dataframes (named according to parent material type),
+with each XY dataframe containing two columns of:
 \describe{
 \item{tth}{The 2theta measurement intervals}
 \item{counts}{The count intensities}

@@ -67,8 +67,8 @@
 #' patterns, the residuals of the fit, or both, respectively. Default = "fit".
 #' @param group A logical parameter used to specify whether the plotted data are grouped
 #' according to the phase name. Default = FALSE.
-#' @param xlim A numeric vector of length two providing limits of the x-axis. Defaults
-#' to full x-axis unless specified.
+#' @param xlim A numeric vector providing limits of the x-axis (E.g. \code{c(10, 60)}).
+#' Defaults to full x-axis unless specified.
 #' @param show_excluded A logical value specifying whether the areas excluded from the
 #' fitting are identified in the plot as grey rectangles. Default \code{= TRUE}.
 #' @param interactive logical. If TRUE then the output will be an interactive
@@ -390,7 +390,7 @@ plot.powdRfps <- function(x, wavelength, mode, group,
 #' plots are particularly useful and can be specified with the \code{interactive}
 #' argument.
 #'
-#' @param x a powdRfps object
+#' @param x a powdRafps object
 #' @param wavelength One of "Cu", "Co" or a custom numeric value defining the wavelength
 #' (in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
 #' of 1.54056 or 1.78897 are used, respectively.
@@ -398,8 +398,8 @@ plot.powdRfps <- function(x, wavelength, mode, group,
 #' patterns, the residuals of the fit, or both, respectively. Default = "fit".
 #' @param group A logical parameter used to specify whether the plotted data are grouped
 #' according to the phase name. Default = FALSE.
-#' @param xlim A numeric vector of length two providing limits of the x-axis. Defaults
-#' to full x-axis unless specified.
+#' @param xlim A numeric vector providing limits of the x-axis (E.g. \code{c(10, 60)}).
+#' Defaults to full x-axis unless specified.
 #' @param show_excluded A logical value specifying whether the areas excluded from the
 #' fitting are identified in the plot as grey rectangles. Default \code{= TRUE}.
 #' @param interactive logical. If TRUE then the output will be an interactive
@@ -720,14 +720,14 @@ plot.powdRafps <- function(x, wavelength, mode, group, xlim, show_excluded, inte
 #' plots are particularly useful and can be specified with the \code{interactive}
 #' argument.
 #'
-#' @param x a powdRfps object
+#' @param x a powdRlm object
 #' @param wavelength One of "Cu", "Co" or a custom numeric value defining the wavelength
 #' (in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
 #' of 1.54056 or 1.78897 are used, respectively.
 #' @param mode One of "fit", "residuals" or "both" defining whether to plot the fitted
 #' patterns, the residuals of the fit, or both, respectively. Default = "fit".
-#' @param xlim A numeric vector of length two providing limits of the x-axis. Defaults
-#' to full x-axis unless specified.
+#' @param xlim A numeric vector providing limits of the x-axis (E.g. \code{c(10, 60)}).
+#' Defaults to full x-axis unless specified.
 #' @param group A logical parameter used to specify whether the plotted data are grouped
 #' according to the phase name. Default = FALSE.
 #' @param show_excluded A logical value specifying whether the areas excluded from the
@@ -1180,7 +1180,7 @@ plot.powdRlib <- function(x, wavelength, refs, interactive, ...) {
 #' The only mandatory argument is x, which must be a powdRbkg object. Plots can
 #' be made interactive using the logical \code{interactive} argument.
 #'
-#' @param x a powdRlib object
+#' @param x a powdRbkg object
 #' @param interactive Logical. If TRUE then the output will be an interactive
 #' ggplotly object. If FALSE then the output will be a ggplot object.
 #' @param ... other arguments
@@ -1245,8 +1245,8 @@ plot.powdRbkg <- function(x, interactive, ...) {
 #' @param wavelength One of "Cu", "Co" or a custom numeric value defining the wavelength
 #' (in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
 #' of 1.54056 or 1.78897 are used, respectively.
-#' @param xlim A numeric vector of length two providing limits of the x-axis. Defaults
-#' to full x-axis unless specified.
+#' @param xlim A numeric vector providing limits of the x-axis (E.g. \code{c(10, 60)}).
+#' Defaults to full x-axis unless specified.
 #' @param normalise Logical. If TRUE then count intensities will be normalised to a
 #' minimum of zero and maximum of 1. Default \code{= FALSE}.
 #' @param interactive Logical. If TRUE then the output will be an interactive
@@ -1393,8 +1393,8 @@ plot.multiXY <- function(x, wavelength, xlim, normalise, interactive, ...) {
 #' @param wavelength One of "Cu", "Co" or a custom numeric value defining the wavelength
 #' (in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
 #' of 1.54056 or 1.78897 are used, respectively.
-#' @param xlim A numeric vector of length two providing limits of the x-axis. Defaults
-#' to full x-axis unless specified.
+#' @param xlim A numeric vector providing limits of the x-axis (E.g. \code{c(10, 60)}).
+#' Defaults to full x-axis unless specified.
 #' @param normalise Logical. If TRUE then count intensities will be normalised to a
 #' minimum of zero and maximum of 1. Default \code{= FALSE}.
 #' @param interactive Logical. If TRUE then the output will be an interactive

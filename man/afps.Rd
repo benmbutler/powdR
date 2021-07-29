@@ -4,22 +4,119 @@
 \alias{afps}
 \title{Automated full pattern summation}
 \usage{
-afps(lib, ...)
+afps(
+  lib,
+  smpl,
+  harmonise,
+  solver,
+  obj,
+  refs,
+  std,
+  force,
+  std_conc,
+  omit_std,
+  closed,
+  normalise,
+  tth_align,
+  align,
+  manual_align,
+  shift,
+  tth_fps,
+  lod,
+  amorphous,
+  amorphous_lod,
+  weighting,
+  ...
+)
 }
 \arguments{
 \item{lib}{A \code{powdRlib} object representing the reference library. Created using the
 \code{powdRlib} constructor function.}
+
+\item{smpl}{A data frame. First column is 2theta, second column is counts}
+
+\item{harmonise}{logical parameter defining whether to harmonise the \code{lib} and \code{smpl}.
+Default = \code{TRUE}. Harmonises to the intersecting 2theta range at the coarsest resolution
+available using natural splines.}
+
+\item{solver}{The optimisation routine to be used. One of \code{"BFGS", "Nelder-Mead",
+or "CG"}. Default = \code{"BFGS"}.}
+
+\item{obj}{The objective function to minimise. One of \code{"Delta", "R", "Rwp"}.
+Default = \code{"Rwp"}. See Chipera and Bish (2002) and page 247 of Bish and Post (1989)
+for definitions of these functions.}
+
+\item{refs}{A character string of reference pattern IDs or names from the specified library.
+The IDs or names supplied must be present within the \code{lib$phases$phase_id} or
+\code{lib$phases$phase_name} columns. If missing from the function call then all phases in
+the reference library will be used.}
+
+\item{std}{The phase ID (e.g. "QUA.1") to be used as internal
+standard. Must match an ID provided in the \code{refs} parameter.}
+
+\item{force}{An optional string of phase ID's or names specifying which phases should be forced to
+remain throughout the automated full pattern summation. The ID's or names supplied must be present
+within the \code{lib$phases$phase_id} or \code{lib$phases$phase_name} columns.}
+
+\item{std_conc}{The concentration of the internal standard (if known) in weight percent. If
+unknown then either omit the argument from the function call of use \code{std_conc = NA}, in which
+case it will be assumed that all phases sum to 100 percent (default).}
+
+\item{omit_std}{A logical parameter to be used when the \code{std_conc} argument is defined. When
+\code{omit_std = TRUE} the phase concentrations are recomputed to account for value supplied in
+\code{std_conc}. Default \code{= FALSE}.}
+
+\item{closed}{A logical parameter to be used when the \code{std_conc} argument is defined and
+\code{omit_std = TRUE}. When \code{closed = TRUE} the internal standard concentration is removed
+and the remaining phase concentrations closed to sum to 100 percent. Default \code{= FALSE}.}
+
+\item{normalise}{deprecated. Please use the \code{omit_std} and \code{closed} arguments instead.}
+
+\item{tth_align}{A vector defining the minimum and maximum 2theta values to be used during
+alignment (e.g. \code{c(5,65)}). If not defined, then the full range is used.}
+
+\item{align}{The maximum shift that is allowed during initial 2theta
+alignment (degrees). Default = 0.1.}
+
+\item{manual_align}{A logical operator denoting whether to optimise the alignment within the
+negative/position 2theta range defined in the \code{align} argument, or to use the specified
+value of the \code{align} argument for alignment of the sample to the standards. Default
+= \code{FALSE}, i.e. alignment is optimised.}
+
+\item{shift}{A single numeric value denoting the maximum (positive or negative) shift,
+in degrees 2theta, that is allowed during the shifting of selected phases. Default = 0.}
+
+\item{tth_fps}{A vector defining the minimum and maximum 2theta values to be used during
+automated full pattern summation (e.g. \code{c(5,65)}). If not defined, then the full range is used.}
+
+\item{lod}{Optional parameter used to define the limit of detection (in weight percent) of the internal standard
+(i.e. the phase provided in the \code{std} argument). The \code{lod} value is used to estimate the lod of other
+phases during the fitting process and hence remove reference patterns that are considered below detection limit.
+Default = 0.1. If \code{lod = 0} then limits of detection are not computed.}
+
+\item{amorphous}{A character string of any phase IDs that should be treated as amorphous. These must
+match phases present in \code{lib$phases$phase_id}.}
+
+\item{amorphous_lod}{Optional parameter used to exclude amorphous phases if they are below this
+specified limit (percent). Must be between 0 and 100. Default = 0.}
+
+\item{weighting}{an optional 2 column data frame specifying the 2theta values in the first
+column and a numeric weighting vector in the second column that specifies areas of the pattern
+to either emphasise (values > 1) or omit (values = 0) when minimising the objective function
+defined in the \code{obj} argument. Use this weighting parameter with caution. The default
+is simply a weighting vector where all values are 1, which hence has no effect on the computed
+objective function.}
 
 \item{...}{Other parameters passed to methods e.g. \code{afps.powdRlib}}
 }
 \value{
 a powdRafps object with components:
 \item{tth}{a vector of the 2theta scale of the fitted data}
-\item{fitted}{a vector of the fitted XRPD pattern}
-\item{measured}{a vector of the original XRPD measurement (aligned)}
-\item{residuals}{a vector of the residuals (fitted vs measured)}
+\item{fitted}{a vector of the count intensities of fitted XRPD pattern}
+\item{measured}{a vector of the count intensities of original XRPD measurement (aligned)}
+\item{residuals}{a vector of the residuals (measured minus fitted)}
 \item{phases}{a dataframe of the phases used to produce the fitted pattern}
-\item{phases_grouped}{the phases dataframe grouped by phase_name and summed}
+\item{phases_grouped}{the phases dataframe grouped and summed by phase_name}
 \item{obj}{named vector of the objective parameters summarising the quality of the fit}
 \item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 All patterns have been weighted according to the coefficients used in the fit}
@@ -29,8 +126,7 @@ All patterns have been weighted according to the coefficients used in the fit}
 \description{
 \code{afps} returns estimates of phase concentrations using automated full pattern
 summation of X-ray powder diffraction data. It is designed for high-throughput cases
-involving mineral quantification from large reference libraries. For more details
-see \code{?afps.powdRlib}.
+involving mineral quantification from large reference libraries.
 }
 \details{
 Applies automated full pattern summation to an XRPD

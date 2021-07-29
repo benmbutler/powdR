@@ -10,10 +10,10 @@ as_xy(x)
 \item{x}{a data frame (column 1 = 2theta, column 2 = counts)}
 }
 \value{
-an XY object that is also a data frame.
+an XY object.
 }
 \description{
-\code{as_xy} takes a data frame of xy XRPD data and ensures that it
+\code{as_xy} takes a data frame of XY XRPD data and ensures that it
 meets the criteria for an XY object. These requirements
 include that the data contains 2 columns of numeric data in a dataframe.
 Once an XY object has been created, it can easily be plotted using the

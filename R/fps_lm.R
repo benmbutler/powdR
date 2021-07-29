@@ -1,17 +1,42 @@
 #' Full pattern summation using linear regression
 #'
 #' \code{fps_lm} returns a simple fit of a given pattern using linear regression,
-#' where coefficients may be either positive or negative. For more details see
-#' \code{?fps_lm.powdRlib}.
+#' where coefficients may be either positive or negative. Does not return quantitative
+#' data. For quantitative results use \code{fps} or \code{afps}.
 #'
 #' Requires a \code{powdRlib} library of reference patterns. Mineral concentrations
 #' are not quantified and therefore reference intensity ratios are not required.
 #'
 #' @param lib A \code{powdRlib} object representing the reference library. Created using the
 #' \code{powdRlib} constructor function.
-#' @param ... Other parameters passed to methods e.g. \code{fps_lm.powdRlib}
+#' @param smpl A data frame. First column is 2theta, second column is counts
+#' @param harmonise logical parameter defining whether to harmonise the \code{lib} and \code{smpl}.
+#' Default = \code{TRUE}. When \code{TRUE} the function harmonises the \code{lib} and \code{smpl}
+#' data to the intersecting 2theta range at the coarsest resolution available using natural splines.
+#' @param refs A character string of reference pattern IDs or names from the specified library.
+#' The IDs or names supplied must be present within the \code{lib$phases$phase_id} or
+#' \code{lib$phases$phase_name} columns. If missing from the function call then all phases in
+#' the reference library will be used.
+#' @param std The phase ID (e.g. "QUA.1") to be used as internal
+#' standard. Must match an ID provided in the \code{refs} parameter.
+#' @param tth_align A vector defining the minimum and maximum 2theta values to be used during
+#' alignment (e.g. \code{c(5,65)}). If not defined, then the full range is used.
+#' @param align The maximum shift that is allowed during initial 2theta
+#' alignment (degrees). Default = 0.1.
+#' @param manual_align A logical operator denoting whether to optimise the alignment within the
+#' negative/position 2theta range defined in the \code{align} argument, or to use the specified
+#' value of the \code{align} argument for alignment of the sample to the standards. Default
+#' = \code{FALSE}, i.e. alignment is optimised.
+#' @param tth_fps A vector defining the minimum and maximum 2theta values to be used during
+#' full pattern summation (e.g. \code{c(5,65)}). If not defined, then the full range is used.
+#' @param shift A single numeric value denoting the maximum (positive or negative) shift,
+#' in degrees 2theta, that is allowed during the shifting of selected phases. Default = 0.
+#' @param p a numeric parameter between 0 and 1 specifying the p-value limit for coefficients.
+#' Any reference patterns with a p-value greater than this value will be omitted from the
+#' linear regression and results recomputed. Must be greater than 0.000001 but no greater than 1.
+#' @param ... Other arguments
 #'
-#' @return a list with components:
+#' @return a powdRlm object with components:
 #' \item{tth}{a vector of the 2theta scale of the fitted data}
 #' \item{fitted}{a vector of the fitted XRPD pattern}
 #' \item{measured}{a vector of the original XRPD measurement (aligned)}
@@ -50,7 +75,9 @@
 #' }
 #'
 #' @export
-fps_lm <- function(lib, ...) {
+fps_lm <- function(lib, smpl, harmonise, refs, std,
+                   tth_align, align, manual_align,
+                   tth_fps, shift, p, ...) {
   UseMethod("fps_lm")
 }
 
@@ -58,7 +85,8 @@ fps_lm <- function(lib, ...) {
 #' Full pattern summation using linear regression
 #'
 #' \code{fps_lm.powdRlib} returns a simple fit of a given pattern using linear regression,
-#' where coefficients may be either positive or negative.
+#' where coefficients may be either positive or negative. Does not return quantitative
+#' data. For quantitative results use \code{fps} or \code{afps}.
 #'
 #' Requires a \code{powdRlib} library of reference patterns. Mineral concentrations
 #' are not quantified and therefore reference intensity ratios are not required.
@@ -67,10 +95,10 @@ fps_lm <- function(lib, ...) {
 #' \code{powdRlib} constructor function.
 #' @param smpl A data frame. First column is 2theta, second column is counts
 #' @param harmonise logical parameter defining whether to harmonise the \code{lib} and \code{smpl}.
-#' Default = \code{TRUE}. Harmonises to the intersecting 2theta range at the coarsest resolution
-#' available using natural splines.
-#' @param refs A character string of reference pattern ID's or names from the specified library.
-#' The ID's or names supplied must be present within the \code{lib$phases$phase_id} or
+#' Default = \code{TRUE}. When \code{TRUE} the function harmonises the \code{lib} and \code{smpl}
+#' data to the intersecting 2theta range at the coarsest resolution available using natural splines.
+#' @param refs A character string of reference pattern IDs or names from the specified library.
+#' The IDs or names supplied must be present within the \code{lib$phases$phase_id} or
 #' \code{lib$phases$phase_name} columns. If missing from the function call then all phases in
 #' the reference library will be used.
 #' @param std The phase ID (e.g. "QUA.1") to be used as internal
@@ -90,12 +118,12 @@ fps_lm <- function(lib, ...) {
 #' @param p a numeric parameter between 0 and 1 specifying the p-value limit for coefficients.
 #' Any reference patterns with a p-value greater than this value will be omitted from the
 #' linear regression and results recomputed. Must be greater than 0.000001 but no greater than 1.
-#' @param ... other arguments
+#' @param ... Other arguments
 #'
-#' @return a list with components:
+#' @return a powdRlm object with components:
 #' \item{tth}{a vector of the 2theta scale of the fitted data}
-#' \item{fitted}{a vector of the fitted XRPD pattern}
-#' \item{measured}{a vector of the original XRPD measurement (aligned)}
+#' \item{fitted}{a vector of the count intensities of the fitted XRPD pattern}
+#' \item{measured}{a vector of the original count intensities of the XRPD measurement (aligned)}
 #' \item{residuals}{a vector of the residuals (fitted vs measured)}
 #' \item{phases}{a dataframe of the phases used to produce the fitted pattern and their concentrations}
 #' \item{phases_grouped}{the phases dataframe grouped by phase_name and concentrations summed}

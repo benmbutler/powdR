@@ -17,8 +17,8 @@
 a \code{powdRlib} object.
 }
 \description{
-\code{merge.powdRlib} allows two \code{powdRlib} objects to be merged
-into a single powdRlib object.
+\code{merge.powdRlib} allows two \code{powdRlib} objects (which must have) the
+same 2theta scale) to be merged into a single powdRlib object.
 }
 \examples{
 #Load the minerals library

@@ -13,8 +13,8 @@
 (in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
 of 1.54056 or 1.78897 are used, respectively.}
 
-\item{xlim}{A numeric vector of length two providing limits of the x-axis. Defaults
-to full x-axis unless specified.}
+\item{xlim}{A numeric vector providing limits of the x-axis (E.g. \code{c(10, 60)}).
+Defaults to full x-axis unless specified.}
 
 \item{normalise}{Logical. If TRUE then count intensities will be normalised to a
 minimum of zero and maximum of 1. Default \code{= FALSE}.}

@@ -6,7 +6,9 @@
 \title{Regrouping structure for the Africa Soil Information Service (AfSIS) XRPD
 reference library}
 \format{
-A data frame
+A data frame. First column contains the phase IDs present in
+\code{afsis$phases$phase_id}. Second column contains the phase names that
+constitute the regrouping structure.
 }
 \usage{
 afsis_regroup

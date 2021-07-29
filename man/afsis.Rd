@@ -5,12 +5,12 @@
 \alias{afsis}
 \title{Africa Soil Information Service (AfSIS) XRPD reference library}
 \format{
-A list of 3 components
+A powdRlib object of 3 components
 \describe{
-\item{xrd}{A dataframe of all xrd data (counts only). Column names denote the
-reference sample}
-\item{tth}{A vector of 2theta intervals of all measurements in the library}
-\item{phases}{A dataframe the phase ID's, names and reference intensity
+\item{xrd}{A dataframe of all the count intensities of all reference patterns. Column names denote the
+unique phase ID of each reference pattern}
+\item{tth}{A vector of the 2theta scale for all reference patterns in the library}
+\item{phases}{A dataframe the phase IDs, names and reference intensity
 ratios (RIR)}
 }
 }
@@ -19,9 +19,9 @@ afsis
 }
 \description{
 A \code{powdRlib} object of 21 pure reference patterns and associated reference
-intensity ratios. Data were collected on a Bruker D2
+intensity ratios for a range of common soil minerals. Data were collected on a Bruker D2
 Phaser using Cu K-alpha radiation. All patterns have been normalised to 10,000
 counts and reference intensity ratios transformed so that all are relative
-to that of corundum, which has been set to a value of 1.0.
+to that of corundum.
 }
 \keyword{datasets}

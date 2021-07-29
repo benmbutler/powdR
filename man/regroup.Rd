@@ -14,13 +14,13 @@ regroup(x, ...)
 \value{
 a \code{powdRfps} or \code{powdRafps} object with components:
 \item{tth}{a vector of the 2theta scale of the fitted data}
-\item{fitted}{a vector of the fitted XRPD pattern}
-\item{measured}{a vector of the original XRPD measurement (aligned)}
-\item{residuals}{a vector of the residuals (fitted vs measured)}
+\item{fitted}{a vector of the count intensities of fitted XRPD pattern}
+\item{measured}{a vector of the count intensities of original XRPD measurement (aligned)}
+\item{residuals}{a vector of the residuals (measured minus fitted)}
 \item{phases}{a dataframe of the phases used to produce the fitted pattern}
-\item{phases_grouped}{the phases dataframe regrouped according to the supplied data}
-\item{rwp}{the Rwp of the fitted vs measured pattern}
-\item{weighted_pure_patterns}{a data frame of reference patterns used to produce the fitted pattern.
+\item{phases_grouped}{the phases dataframe grouped and summed by phase_name}
+\item{obj}{named vector of the objective parameters summarising the quality of the fit}
+\item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 All patterns have been weighted according to the coefficients used in the fit}
 \item{coefficients}{a named vector of coefficients used to produce the fitted pattern}
 \item{inputs}{a list of input arguments used in the function call}

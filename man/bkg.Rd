@@ -19,10 +19,10 @@ is the 2theta scale, second column is count intensities}
 \item{int}{Number of buckets to divide the data into. Default = \code{round(nrow(xrd)/4)}.}
 }
 \value{
-a list of 3 vectors
+a powdRbkg object consisting of of 3 vectors
 \item{tth}{The 2theta axis of the measurement}
 \item{counts}{The count intensities of the measurement}
-\item{background}{The fitted background}
+\item{background}{The count intensities of the fitted background}
 }
 \description{
 \code{bkg} fits a background to X-Ray Powder Diffraction data
@@ -34,5 +34,6 @@ A wrapper for the \code{baseline.fillPeaks} in the \code{baseline} package.
 data(soils)
 \dontrun{
 fit_bkg <- bkg(soils$granite)
+plot(bkg)
 }
 }

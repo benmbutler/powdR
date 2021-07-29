@@ -20,7 +20,7 @@
 #' in the output. This provides an objective measure of the difference between the fitted
 #' and measured patterns.
 #'
-#' @return a dataframe
+#' @return A data frame
 #'
 #' @examples
 #' data(minerals)

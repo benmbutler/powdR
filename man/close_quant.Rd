@@ -16,10 +16,10 @@ close_quant(x, ...)
 a \code{powdRfps} or \code{powdRafps} object with components:
 \item{tth}{a vector of the 2theta scale of the fitted data}
 \item{fitted}{a vector of the fitted XRPD pattern}
-\item{measured}{a vector of the original XRPD measurement (aligned)}
+\item{measured}{a vector of the original XRPD measurement (aligned and harmonised)}
 \item{residuals}{a vector of the residuals (fitted vs measured)}
-\item{phases}{a dataframe of the phases used to produce the fitted pattern}
-\item{phases_grouped}{the phases dataframe grouped by phase_name and summed}
+\item{phases}{a dataframe of the phases used to produce the fitted pattern and their concentrations}
+\item{phases_grouped}{the phases dataframe grouped by phase_name and concentrations summed}
 \item{obj}{named vector of the objective parameters summarising the quality of the fit}
 \item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 All patterns have been weighted according to the coefficients used in the fit}
@@ -29,7 +29,7 @@ All patterns have been weighted according to the coefficients used in the fit}
 \description{
 \code{close_quant} closes the quantitative data within a \code{powdRfps} or
 \code{powdRafps} object (derived from \code{fps()} and \code{afps()}, respectively) by
-ensuring that the composition sums to 100 percent. See \code{?close_quant.powdRfps} and
+ensuring that the composition sums to 100 percent. See also \code{?close_quant.powdRfps} and
 \code{?close_quant.powdRafps}.
 }
 \examples{
@@ -49,7 +49,11 @@ rockjock_1 <- fps(lib = rockjock,
                  align = 0.3,
                  std_conc = 20)
 
+sum(rockjock_1$phases$phase_percent)
+
 rockjock_1c <- close_quant(rockjock_1)
+
+sum(rockjock_1c$phases$phase_percent)
 
 rockjock_a1 <- afps(lib = rockjock,
                     smpl = rockjock_mixtures$Mix1,
@@ -58,7 +62,11 @@ rockjock_a1 <- afps(lib = rockjock,
                     lod = 1,
                     std_conc = 20)
 
+sum(rockjock_a1$phases$phase_percent)
+
 rockjock_a1c <- close_quant(rockjock_a1)
+
+sum(rockjock_a1c$phases$phase_percent)
 
 }
 }

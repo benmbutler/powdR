@@ -5,7 +5,7 @@
 #'
 #' @param x an \code{XY} or \code{multiXY} object.
 #' @param std a dataframe of the chosen standard that each
-#' sample is aligned to (column 1 = 2theta, column 2 = counts)
+#' sample will be aligned to (column 1 = 2theta, column 2 = counts)
 #' @param xmin the minimum 2theta value used during alignment
 #' @param xmax the maximum 2theta value used during alignment
 #' @param xshift the maximum (positive and negative) 2theta shift
@@ -42,7 +42,7 @@
 #'      xlim = c(26,27),
 #'      normalise = TRUE)
 #'
-#' #Alternatively try with a single XY objects
+#' #Alternatively try with a single XY object
 #'
 #' unaligned <- as_multi_xy(list("quartz" = quartz,
 #'                              "sandstone" = soils$sandstone))
@@ -79,7 +79,7 @@ align_xy <- function(x, std,
 #'
 #' @param x a \code{multiXY} object.
 #' @param std a dataframe of the chosen standard that each
-#' sample is aligned to (column 1 = 2theta, column 2 = counts)
+#' sample will be aligned to (column 1 = 2theta, column 2 = counts)
 #' @param xmin the minimum 2theta value used during alignment
 #' @param xmax the maximum 2theta value used during alignment
 #' @param xshift the maximum (positive and negative) 2theta shift
@@ -246,7 +246,7 @@ align_xy.multiXY <- function(x, std,
 #' that is allowed during alignment
 #' @param ... other arguments
 #'
-#' @return a \code{XY} object.
+#' @return an \code{XY} object.
 #'
 #' @examples
 #' # Load soils xrd data

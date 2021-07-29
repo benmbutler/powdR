@@ -5,15 +5,15 @@
 #'
 #' @param files path of the file(s) to be imported.
 #' @param header a logical value indicating whether the file contains the names
-#' of the variables as its first line. Default = \code{TRUE}.
+#' of the variables as its first line. Default = \code{FALSE}.
 #' @param sep the field separator character. Values on each line of the file
 #' are separated by this character. Default = \code{" "}, indicating space
 #' separated format.
 #'
-#' @return If only one path is supplied then a dataframe with 2 columns is
-#' returned, the first being the 2theta axis and the second being the count
-#' intensities. If more than one path is supplied then a list is returned,
-#' with each item in the list being a dataframe as already described.
+#' @return If only one path is supplied then an XY data frame with 2 columns is returned,
+#' the first being the 2theta axis and the second being the count intensities. If more
+#' than one path is supplied then a multiXY list is returned, with each item in the list being
+#' an XY data frame as already described.
 #'
 #' @examples
 #' #load example XY file

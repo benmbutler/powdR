@@ -34,35 +34,36 @@
 \item{smpl}{A data frame. First column is 2theta, second column is counts}
 
 \item{harmonise}{logical parameter defining whether to harmonise the \code{lib} and \code{smpl}.
-Default = \code{TRUE}. Harmonises to the intersecting 2theta range at the coarsest resolution
-available using natural splines.}
+Default = \code{TRUE}. When \code{TRUE} the function witll harmonise the \code{lib} and
+\code{smpl} to the intersecting 2theta range at the coarsest resolution available using
+natural splines.}
 
-\item{solver}{The optimisation routine to be used. One of \code{c("BFGS", "Nelder-Mead",
-"CG", or "NNLS")}. Default = \code{"BFGS"}.}
+\item{solver}{The optimisation routine to be used. One of \code{"BFGS", "Nelder-Mead",
+"CG", "NNLS"}. Default = \code{"BFGS"}.}
 
 \item{obj}{The objective function to minimise when "BFGS", "Nelder-Mead",
-or "CG" are used as the `solver` argument. One of \code{c("Delta", "R", "Rwp")}.
+or "CG" are used as the \code{solver} argument. One of \code{"Delta", "R", "Rwp"}.
 Default = \code{"Rwp"}. See Chipera and Bish (2002) and page 247 of Bish and Post (1989)
 for definitions of these functions.}
 
-\item{refs}{A character string of reference pattern ID's or names from the specified library.
-The ID's or names supplied must be present within the \code{lib$phases$phase_id} or
+\item{refs}{A character string of reference pattern IDs or names from the specified library.
+The IDs or names supplied must be present within the \code{lib$phases$phase_id} or
 \code{lib$phases$phase_name} columns. If missing from the function call then all phases in
 the reference library will be used.}
 
-\item{std}{The phase ID (e.g. "QUA.1") to be used as internal
+\item{std}{The phase ID (e.g. "QUA.1") to be used as an internal
 standard. Must match an ID provided in the \code{refs} parameter.}
 
-\item{force}{An optional string of phase ID's or names specifying which phases should be forced to
-remain throughout the automated full pattern summation. The ID's or names supplied must be present
+\item{force}{An optional string of phase IDs or names specifying which phases should be forced to
+remain throughout the automated full pattern summation. The IDs or names supplied must be present
 within the \code{lib$phases$phase_id} or \code{lib$phases$phase_name} columns.}
 
 \item{std_conc}{The concentration of the internal standard (if known) in weight percent. If
-unknown then use \code{std_conc = NA} (default), in which case it will be assumed that all phases sum
-to 100 percent.}
+unknown then omit the argument from the function call or use \code{std_conc = NA} (default),
+n which case it will be assumed that all phases sum to 100 percent.}
 
 \item{omit_std}{A logical parameter to be used when the \code{std_conc} argument is defined. When
-\code{omit_std = TRUE} the phase concentrations are recomputed to account for value supplied in
+\code{omit_std = TRUE} the phase concentrations are recomputed to account for the value supplied in
 \code{std_conc}. Default \code{= FALSE}.}
 
 \item{normalise}{deprecated. Please use the \code{omit_std} and \code{closed} arguments instead.}
@@ -86,7 +87,7 @@ value of the \code{align} argument for alignment of the sample to the standards.
 full pattern summation (e.g. \code{c(5,65)}). If not defined, then the full range is used.}
 
 \item{shift}{A single numeric value denoting the maximum (positive or negative) shift,
-in degrees 2theta, that is allowed during the shifting of selected phases. Default = 0.}
+in degrees 2theta, that is allowed during the shifting of reference patterns. Default = 0.}
 
 \item{remove_trace}{A single numeric value representing the limit for the concentration
 of trace phases to be retained, i.e. any mineral with an estimated concentration below
@@ -105,8 +106,8 @@ objective function.}
 a powdRfps object with components:
 \item{tth}{a vector of the 2theta scale of the fitted data}
 \item{fitted}{a vector of the fitted XRPD pattern}
-\item{measured}{a vector of the original XRPD measurement (aligned)}
-\item{residuals}{a vector of the residuals (fitted vs measured)}
+\item{measured}{a vector of the original XRPD measurement (aligned and harmonised)}
+\item{residuals}{a vector of the residuals (measured minus fitted)}
 \item{phases}{a dataframe of the phases used to produce the fitted pattern and their concentrations}
 \item{phases_grouped}{the phases dataframe grouped by phase_name and concentrations summed}
 \item{obj}{named vector of the objective parameters summarising the quality of the fit}

@@ -12,8 +12,8 @@
 #' supplied in \code{xrd_table} are syntactically valid variable names and are not
 #' duplicated. Default = \code{TRUE}.
 #'
-#' @return a list with components:
-#' \item{xrd}{a data frame of reference patterns}
+#' @return a powdRlib object with components:
+#' \item{xrd}{a data frame of the count intensities of the reference patterns}
 #' \item{tth}{a vector of the 2theta axis}
 #' \item{phases}{a 3 column data frame of the IDs, names and reference
 #' intensity ratios of the reference pattern}

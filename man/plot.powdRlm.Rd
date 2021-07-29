@@ -7,7 +7,7 @@
 \method{plot}{powdRlm}(x, wavelength, mode, xlim, group, show_excluded, interactive, ...)
 }
 \arguments{
-\item{x}{a powdRfps object}
+\item{x}{a powdRlm object}
 
 \item{wavelength}{One of "Cu", "Co" or a custom numeric value defining the wavelength
 (in Angstroms). Used to compute d-spacings.When "Cu" or "Co" are supplied, wavelengths
@@ -16,8 +16,8 @@ of 1.54056 or 1.78897 are used, respectively.}
 \item{mode}{One of "fit", "residuals" or "both" defining whether to plot the fitted
 patterns, the residuals of the fit, or both, respectively. Default = "fit".}
 
-\item{xlim}{A numeric vector of length two providing limits of the x-axis. Defaults
-to full x-axis unless specified.}
+\item{xlim}{A numeric vector providing limits of the x-axis (E.g. \code{c(10, 60)}).
+Defaults to full x-axis unless specified.}
 
 \item{group}{A logical parameter used to specify whether the plotted data are grouped
 according to the phase name. Default = FALSE.}

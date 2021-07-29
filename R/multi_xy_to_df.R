@@ -33,7 +33,7 @@
 #' first column. Default \code{= TRUE}.
 #' @param ... other arguments
 #'
-#' @return a \code{data.frame}.
+#' @return A \code{data.frame}.
 #'
 #' @examples
 #' #Load the minerals library
@@ -56,7 +56,7 @@ multi_xy_to_df <- function(x, tth, ...) {
 #' first column. Default \code{= TRUE}.
 #' @param ... other arguments
 #'
-#' @return a \code{data.frame}.
+#' @return A \code{data.frame}.
 #'
 #' @examples
 #' #Load the minerals library

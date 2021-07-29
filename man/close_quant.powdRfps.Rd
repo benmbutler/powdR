@@ -15,7 +15,7 @@
 a \code{powdRfps} object with components:
 \item{tth}{a vector of the 2theta scale of the fitted data}
 \item{fitted}{a vector of the fitted XRPD pattern}
-\item{measured}{a vector of the original XRPD measurement (aligned)}
+\item{measured}{a vector of the original XRPD measurement (aligned and harmonised)}
 \item{residuals}{a vector of the residuals (fitted vs measured)}
 \item{phases}{a dataframe of the phases used to produce the fitted pattern and their concentrations}
 \item{phases_grouped}{the phases dataframe grouped by phase_name and concentrations summed}
@@ -46,7 +46,11 @@ rockjock_1 <- fps(lib = rockjock,
                  align = 0.3,
                  std_conc = 20)
 
+sum(rockjock_1$phases$phase_percent)
+
 rockjock_1c<- close_quant(rockjock_1)
+
+sum(rockjock_1c$phases$phase_percent)
 
 }
 }

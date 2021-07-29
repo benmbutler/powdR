@@ -5,8 +5,9 @@
 \alias{rockjock_mixtures}
 \title{RockJock synthetic mixtures}
 \format{
-A list of 8 components, each comprised of two columns. Column \code{tth} specifies
-the 2theta axis and \code{counts} specifies the count intensities
+A multiXY list of 8 components, each comprised of two columns. Column \code{tth} specifies
+the 2theta axis and \code{counts} specifies the count intensities. The mixtures have to following
+compositions that are also tabulated in the \code{rockjock_weights} data.
 \describe{
 \item{Mix1}{Contains: 4 \% K-feldspar, 20 \% plagioclase, 12 \% kaolinite, 36 \% dioctahedral
 smectite, 8 \% illite and 20 \% corundum.}
@@ -30,7 +31,7 @@ smectite, 40 \% illite and 20 \% corundum.}
 rockjock_mixtures
 }
 \description{
-A list containing 8 XRPD measurements (Cu K-alpha radiation) of synthetic mixtures
+A multiXY list containing 8 XRPD measurements (Cu K-alpha radiation) of synthetic mixtures
 that can be used to assess accuracy of quantitative analysis from the \code{fps()}
 and \code{afps()} functions. The mixtures contain various amounts of quartz (QUARTZ
 standard of the \code{rockjock} library), K-feldspar (ORDERED_MICROCLINE),

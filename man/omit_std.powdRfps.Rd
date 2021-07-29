@@ -15,8 +15,8 @@
 a \code{powdRfps} object with components:
 \item{tth}{a vector of the 2theta scale of the fitted data}
 \item{fitted}{a vector of the fitted XRPD pattern}
-\item{measured}{a vector of the original XRPD measurement (aligned)}
-\item{residuals}{a vector of the residuals (fitted vs measured)}
+\item{measured}{a vector of the original XRPD measurement (aligned and harmonised)}
+\item{residuals}{a vector of the residuals (measured minus fitted)}
 \item{phases}{a dataframe of the phases used to produce the fitted pattern and their concentrations}
 \item{phases_grouped}{the phases dataframe grouped by phase_name and concentrations summed}
 \item{obj}{named vector of the objective parameters summarising the quality of the fit}

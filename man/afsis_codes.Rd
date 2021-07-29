@@ -5,8 +5,8 @@
 \alias{afsis_codes}
 \title{Original codes for the \code{afsis} reference patterns}
 \format{
-An 2 column data frame. First column is the phase ID from \code{afsis$phase_id}
-and the second column is the original ID prior to the inclusion in powdR.
+An 2 column data frame. First column contains the phase IDs from \code{afsis$phase_id}
+and the second column the original IDs prior to the inclusion in powdR.
 }
 \usage{
 afsis_codes

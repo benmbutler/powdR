@@ -10,17 +10,17 @@ read_xy(files, header, sep)
 \item{files}{path of the file(s) to be imported.}
 
 \item{header}{a logical value indicating whether the file contains the names
-of the variables as its first line. Default = \code{TRUE}.}
+of the variables as its first line. Default = \code{FALSE}.}
 
 \item{sep}{the field separator character. Values on each line of the file
 are separated by this character. Default = \code{" "}, indicating space
 separated format.}
 }
 \value{
-If only one path is supplied then a dataframe with 2 columns is
-returned, the first being the 2theta axis and the second being the count
-intensities. If more than one path is supplied then a list is returned,
-with each item in the list being a dataframe as already described.
+If only one path is supplied then an XY data frame with 2 columns is returned,
+the first being the 2theta axis and the second being the count intensities. If more
+than one path is supplied then a multiXY list is returned, with each item in the list being
+an XY data frame as already described.
 }
 \description{
 \code{read_xy} is a wrapper for \code{read.csv} that is designed for space separated XRPD

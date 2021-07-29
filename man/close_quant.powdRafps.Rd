@@ -15,7 +15,7 @@
 a \code{powdRafps} object with components:
 \item{tth}{a vector of the 2theta scale of the fitted data}
 \item{fitted}{a vector of the fitted XRPD pattern}
-\item{measured}{a vector of the original XRPD measurement (aligned)}
+\item{measured}{a vector of the original XRPD measurement (aligned and harmonised)}
 \item{residuals}{a vector of the residuals (fitted vs measured)}
 \item{phases}{a dataframe of the phases used to produce the fitted pattern and their concentrations}
 \item{phases_grouped}{the phases dataframe grouped by phase_name and concentrations summed}
@@ -41,7 +41,11 @@ rockjock_a1 <- afps(lib = rockjock,
                     lod = 1,
                     std_conc = 20)
 
+sum(rockjock_a1$phases$phase_percent)
+
 rockjock_a1c <- close_quant(rockjock_a1)
+
+sum(rockjock_a1c$phases$phase_percent)
 
 }
 }

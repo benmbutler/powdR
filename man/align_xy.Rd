@@ -10,7 +10,7 @@ align_xy(x, std, xmin, xmax, xshift, ...)
 \item{x}{an \code{XY} or \code{multiXY} object.}
 
 \item{std}{a dataframe of the chosen standard that each
-sample is aligned to (column 1 = 2theta, column 2 = counts)}
+sample will be aligned to (column 1 = 2theta, column 2 = counts)}
 
 \item{xmin}{the minimum 2theta value used during alignment}
 
@@ -56,7 +56,7 @@ plot(aligned, wavelength = "Cu",
      xlim = c(26,27),
      normalise = TRUE)
 
-#Alternatively try with a single XY objects
+#Alternatively try with a single XY object
 
 unaligned <- as_multi_xy(list("quartz" = quartz,
                              "sandstone" = soils$sandstone))

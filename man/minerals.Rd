@@ -5,12 +5,12 @@
 \alias{minerals}
 \title{An example powdRlib reference library}
 \format{
-A list of 3
+A powdRlib object of 3 components
 \describe{
-\item{xrd}{A dataframe of all xrd data (counts only). Column names denote the
-reference sample}
-\item{tth}{A vector of 2theta intervals of all measurements in the library}
-\item{phases}{A dataframe the phase ID's, names and reference intensity
+\item{xrd}{A dataframe of all the count intensities of all reference patterns. Column names denote the
+unique phase ID of each reference pattern}
+\item{tth}{A vector of the 2theta scale for all reference patterns in the library}
+\item{phases}{A dataframe the phase IDs, names and reference intensity
 ratios (RIR)}
 }
 }
@@ -19,8 +19,9 @@ minerals
 }
 \description{
 This \code{powdRlib} object, built using the \code{powdRlib} constructor function,
-contains a range of measured XRPD data (Cu K-alpha radiation) along with their reference
-intensity ratios. The library can be used with the \code{soils} example data for full
-pattern summation.
+contains a range of measured XRPD data (collected using Cu K-alpha radiation) along with
+their reference intensity ratios. The library is designed for simple examples only and
+can be used with the \code{soils} data for relatively fast tests of \code{fps} and
+\code{afps}.
 }
 \keyword{datasets}

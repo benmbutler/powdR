@@ -15,7 +15,7 @@ first column. Default \code{= TRUE}.}
 \item{...}{other arguments}
 }
 \value{
-a \code{data.frame}.
+A \code{data.frame}.
 }
 \description{
 \code{multi_xy_to_df.multiXY} converts multiXY objects to a column-wise data frame.

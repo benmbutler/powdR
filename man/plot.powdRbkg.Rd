@@ -7,7 +7,7 @@
 \method{plot}{powdRbkg}(x, interactive, ...)
 }
 \arguments{
-\item{x}{a powdRlib object}
+\item{x}{a powdRbkg object}
 
 \item{interactive}{Logical. If TRUE then the output will be an interactive
 ggplotly object. If FALSE then the output will be a ggplot object.}

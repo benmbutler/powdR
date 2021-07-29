@@ -6,7 +6,7 @@
 \title{Example regrouping structure for the \code{minerals} data}
 \format{
 A 2 column data frame.
-\describe{First column contains the unique phase ID's of all phases
+\describe{First column contains the unique phase IDs of all phases
 in the \code{minerals} data. Second column contains the grouping structure for the data
 (Non-clay, Clay or Amorphous).}
 }

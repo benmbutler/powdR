@@ -16,10 +16,10 @@ omit_std(x, ...)
 a \code{powdRfps} or \code{powdRafps} object with components:
 \item{tth}{a vector of the 2theta scale of the fitted data}
 \item{fitted}{a vector of the fitted XRPD pattern}
-\item{measured}{a vector of the original XRPD measurement (aligned)}
-\item{residuals}{a vector of the residuals (fitted vs measured)}
-\item{phases}{a dataframe of the phases used to produce the fitted pattern}
-\item{phases_grouped}{the phases dataframe grouped by phase_name and summed}
+\item{measured}{a vector of the original XRPD measurement (aligned and harmonised)}
+\item{residuals}{a vector of the residuals (measured minus fitted)}
+\item{phases}{a dataframe of the phases used to produce the fitted pattern and their concentrations}
+\item{phases_grouped}{the phases dataframe grouped by phase_name and concentrations summed}
 \item{obj}{named vector of the objective parameters summarising the quality of the fit}
 \item{weighted_pure_patterns}{a dataframe of reference patterns used to produce the fitted pattern.
 All patterns have been weighted according to the coefficients used in the fit}
@@ -30,7 +30,7 @@ All patterns have been weighted according to the coefficients used in the fit}
 \code{omit_std} adjusts phase concentrations in a \code{powdRfps} or \code{powdRafps} object
 (derived from \code{fps()} and \code{afps()}, respectively) by removing the concentrations of
 the internal standard. Relevant information for the calculation is automatically
- extracted from\code{x$inputs$std} and \code{x$inputs$std_conc}. For more information see
+ extracted from \code{x$inputs$std} and \code{x$inputs$std_conc}. For more information see
  \code{?omit_std.powdRfps} and \code{omit_std.powdRafps}.
 }
 \examples{

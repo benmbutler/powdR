@@ -2,8 +2,8 @@
 #'
 #' 3 soil samples from different parent materials measured by XRPD (Cu K-alpha radiation)
 #'
-#' @format A list of 3 dataframes (named according to rock type),
-#' with each dataframe containing two columns of:
+#' @format A multiXY list of 3 XY dataframes (named according to parent material type),
+#' with each XY dataframe containing two columns of:
 #' \describe{
 #' \item{tth}{The 2theta measurement intervals}
 #' \item{counts}{The count intensities}
@@ -13,16 +13,17 @@
 #' An example powdRlib reference library
 #'
 #' This \code{powdRlib} object, built using the \code{powdRlib} constructor function,
-#' contains a range of measured XRPD data (Cu K-alpha radiation) along with their reference
-#' intensity ratios. The library can be used with the \code{soils} example data for full
-#' pattern summation.
+#' contains a range of measured XRPD data (collected using Cu K-alpha radiation) along with
+#' their reference intensity ratios. The library is designed for simple examples only and
+#' can be used with the \code{soils} data for relatively fast tests of \code{fps} and
+#' \code{afps}.
 #'
-#' @format A list of 3
+#' @format A powdRlib object of 3 components
 #' \describe{
-#' \item{xrd}{A dataframe of all xrd data (counts only). Column names denote the
-#' reference sample}
-#' \item{tth}{A vector of 2theta intervals of all measurements in the library}
-#' \item{phases}{A dataframe the phase ID's, names and reference intensity
+#' \item{xrd}{A dataframe of all the count intensities of all reference patterns. Column names denote the
+#' unique phase ID of each reference pattern}
+#' \item{tth}{A vector of the 2theta scale for all reference patterns in the library}
+#' \item{phases}{A dataframe the phase IDs, names and reference intensity
 #' ratios (RIR)}
 #' }
 "minerals"
@@ -31,13 +32,15 @@
 #' Example regrouping structure for the \code{minerals} data
 #'
 #' @format A 2 column data frame.
-#' \describe{First column contains the unique phase ID's of all phases
+#' \describe{First column contains the unique phase IDs of all phases
 #' in the \code{minerals} data. Second column contains the grouping structure for the data
 #' (Non-clay, Clay or Amorphous).}
 "minerals_regroup_structure"
 
+#' Example xrd table for a reference library
+#'
 #' A table of 14 reference patterns and their corresponding two theta scale that can
-#' be combined with the \code{minerals_phases} table to create a \code{powdRlib} object when using
+#' be combined with the \code{minerals_phases} table to create a \code{powdRlib} object using
 #' the \code{powdRlib} constructor function. Use the same layout to create custom
 #' reference libraries.
 #'
@@ -49,22 +52,22 @@
 #' }
 "minerals_xrd"
 
-#' A table of associated data for the minerals_xrd table, which can be be combined with a
-#' xrd data table to create a \code{powdRlib} object when using the
-#' \code{powdRlib} constructor function. Use the same layout to create custom reference
-#' libraries.
+#' Example phases table for a reference library
 #'
-#' @format A 3 column dataframe
+#' A data frame of associated phase information for the \code{minerals_xrd} data.
+#' Together these two data frames can be combined with the \code{powdRlib} constructor
+#' function to create an example reference library (see \code{?powdRlib}). Use the same
+#' layout to create custom reference libraries.
+#'
+#' @format A 3 column data frame consisting of:
 #' \describe{
-#' The first column is a character string defining the unique mineral ID's that
+#' \item{phase_id}{A string defining the unique phase IDs that
 #' should match those defined as column names of the minerals table
-#' (e.g. \code{minerals_xrd}).
-#'
-#' The second column is a character string defining the mineral group that each
-#' reference pattern belongs to.
-#'
-#' The third column is a numeric vector defining the reference intensity ratios
-#' of each reference pattern.
+#' (e.g. \code{minerals_xrd}).}
+#' \item{phase_name}{A string defining the mineral group that each
+#' reference pattern belongs to.}
+#' \item{rir}{A vector defining the reference intensity ratios
+#' of each reference pattern.}
 #' }
 "minerals_phases"
 
@@ -80,12 +83,12 @@
 #' concentrations are available in the \code{rockjock_mixtures} data. See
 #' \code{?rockjock_mixtures}.
 #'
-#' @format A list of 3 components
+#' @format A powdRlib object of 3 components
 #' \describe{
-#' \item{xrd}{A dataframe of all xrd data (counts only). Column names denote the
-#' reference sample}
-#' \item{tth}{A vector of 2theta intervals of all measurements in the library}
-#' \item{phases}{A dataframe the phase ID's, names and reference intensity
+#' \item{xrd}{A dataframe of all the count intensities of all reference patterns. Column names denote the
+#' unique phase ID of each reference pattern}
+#' \item{tth}{A vector of the 2theta scale for all reference patterns in the library}
+#' \item{phases}{A dataframe the phase IDs, names and reference intensity
 #' ratios (RIR)}
 #' }
 #'
@@ -97,15 +100,16 @@
 
 #' RockJock synthetic mixtures
 #'
-#' A list containing 8 XRPD measurements (Cu K-alpha radiation) of synthetic mixtures
+#' A multiXY list containing 8 XRPD measurements (Cu K-alpha radiation) of synthetic mixtures
 #' that can be used to assess accuracy of quantitative analysis from the \code{fps()}
 #' and \code{afps()} functions. The mixtures contain various amounts of quartz (QUARTZ
 #' standard of the \code{rockjock} library), K-feldspar (ORDERED_MICROCLINE),
 #' plagioclase (LABRADORITE), kaolinite (KAOLINITE_DRY_BRANCH), dioctahedral smectite
 #' (MONTMORILLIONITE_WYO), illite (ILLITE_1M_RM30) and corundum (CORUNDUM).
 #'
-#' @format A list of 8 components, each comprised of two columns. Column \code{tth} specifies
-#' the 2theta axis and \code{counts} specifies the count intensities
+#' @format A multiXY list of 8 components, each comprised of two columns. Column \code{tth} specifies
+#' the 2theta axis and \code{counts} specifies the count intensities. The mixtures have to following
+#' compositions that are also tabulated in the \code{rockjock_weights} data.
 #' \describe{
 #' \item{Mix1}{Contains: 4 \% K-feldspar, 20 \% plagioclase, 12 \% kaolinite, 36 \% dioctahedral
 #' smectite, 8 \% illite and 20 \% corundum.}
@@ -149,25 +153,25 @@
 #' A data frame detailing the original codes associated with the \code{afsis} reference
 #' patterns prior to their addition to powdR.
 #'
-#' @format An 2 column data frame. First column is the phase ID from \code{afsis$phase_id}
-#' and the second column is the original ID prior to the inclusion in powdR.
+#' @format An 2 column data frame. First column contains the phase IDs from \code{afsis$phase_id}
+#' and the second column the original IDs prior to the inclusion in powdR.
 #'
 "afsis_codes"
 
 #' Africa Soil Information Service (AfSIS) XRPD reference library
 #'
 #' A \code{powdRlib} object of 21 pure reference patterns and associated reference
-#' intensity ratios. Data were collected on a Bruker D2
+#' intensity ratios for a range of common soil minerals. Data were collected on a Bruker D2
 #' Phaser using Cu K-alpha radiation. All patterns have been normalised to 10,000
 #' counts and reference intensity ratios transformed so that all are relative
-#' to that of corundum, which has been set to a value of 1.0.
+#' to that of corundum.
 #'
-#' @format A list of 3 components
+#' @format A powdRlib object of 3 components
 #' \describe{
-#' \item{xrd}{A dataframe of all xrd data (counts only). Column names denote the
-#' reference sample}
-#' \item{tth}{A vector of 2theta intervals of all measurements in the library}
-#' \item{phases}{A dataframe the phase ID's, names and reference intensity
+#' \item{xrd}{A dataframe of all the count intensities of all reference patterns. Column names denote the
+#' unique phase ID of each reference pattern}
+#' \item{tth}{A vector of the 2theta scale for all reference patterns in the library}
+#' \item{phases}{A dataframe the phase IDs, names and reference intensity
 #' ratios (RIR)}
 #' }
 #'
@@ -181,7 +185,9 @@
 #' minerals and Fe/Ti-(hydr)oxides in \code{powdRfps} or \code{powdRafps} objects
 #' when used with \code{regroup()}.
 #'
-#' @format A data frame
+#' @format A data frame. First column contains the phase IDs present in
+#' \code{afsis$phases$phase_id}. Second column contains the phase names that
+#' constitute the regrouping structure.
 #'
 "afsis_regroup"
 

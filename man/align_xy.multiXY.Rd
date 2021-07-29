@@ -10,7 +10,7 @@
 \item{x}{a \code{multiXY} object.}
 
 \item{std}{a dataframe of the chosen standard that each
-sample is aligned to (column 1 = 2theta, column 2 = counts)}
+sample will be aligned to (column 1 = 2theta, column 2 = counts)}
 
 \item{xmin}{the minimum 2theta value used during alignment}
 

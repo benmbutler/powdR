@@ -1,7 +1,7 @@
 #' Merge two powdRlib objects
 #'
-#' \code{merge.powdRlib} allows two \code{powdRlib} objects to be merged
-#' into a single powdRlib object.
+#' \code{merge.powdRlib} allows two \code{powdRlib} objects (which must have) the
+#' same 2theta scale) to be merged into a single powdRlib object.
 #'
 #' @param x a \code{powdRlib} object.
 #' @param y a \code{powdRlib} object
