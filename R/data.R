@@ -35,7 +35,7 @@
 #' \describe{First column contains the unique phase IDs of all phases
 #' in the \code{minerals} data. Second column contains the grouping structure for the data
 #' (Non-clay, Clay or Amorphous).}
-"minerals_regroup_structure"
+"minerals_regroup"
 
 #' Example xrd table for a reference library
 #'
@@ -185,9 +185,14 @@
 #' minerals and Fe/Ti-(hydr)oxides in \code{powdRfps} or \code{powdRafps} objects
 #' when used with \code{regroup()}.
 #'
-#' @format A data frame. First column contains the phase IDs present in
-#' \code{afsis$phases$phase_id}. Second column contains the phase names that
-#' constitute the regrouping structure.
+#' @format A data frame with three columns:
+#' \describe{
+#' \item{phase_id}{the phase IDs present in \code{afsis$phases$phase_id}}.
+#' \item{phase_name_grouped}{The phase names that constitute the first
+#' regrouping structure.}
+#' \item{phase_name_grouped2}{The phase names that constitute the second
+#' regrouping structure}
+#' }
 #'
 "afsis_regroup"
 
@@ -198,6 +203,13 @@
 #' minerals and Fe/Ti-(hydr)oxides in \code{powdRfps} or \code{powdRafps} objects
 #' when used with \code{regroup()}.
 #'
-#' @format A data frame
+#' @format A data frame with three columns:
+#' \describe{
+#' \item{phase_id}{the phase IDs present in \code{afsis$phases$phase_id}}.
+#' \item{phase_name_grouped}{The phase names that constitute the first
+#' regrouping structure.}
+#' \item{phase_name_grouped2}{The phase names that constitute the second
+#' regrouping structure}
+#' }
 #'
 "rockjock_regroup"

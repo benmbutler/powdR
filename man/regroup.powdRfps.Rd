@@ -46,7 +46,7 @@ data(minerals)
 data(soils)
 
 #Load the regrouping structure
-data(minerals_regroup_structure)
+data(minerals_regroup)
 
 \dontrun{
 fps_sandstone <- fps(lib = minerals,
@@ -56,7 +56,7 @@ fps_sandstone <- fps(lib = minerals,
                      align = 0.2)
 
 fps_sandstone_regrouped <- regroup(fps_sandstone,
-                                   minerals_regroup_structure)
+                                   minerals_regroup)
 
 fps_sandstone_regrouped$phases_grouped
 

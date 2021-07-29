@@ -5,7 +5,14 @@
 \alias{rockjock_regroup}
 \title{Regrouping structure for the rockjock reference library}
 \format{
-A data frame
+A data frame with three columns:
+\describe{
+\item{phase_id}{the phase IDs present in \code{afsis$phases$phase_id}}.
+\item{phase_name_grouped}{The phase names that constitute the first
+regrouping structure.}
+\item{phase_name_grouped2}{The phase names that constitute the second
+regrouping structure}
+}
 }
 \usage{
 rockjock_regroup

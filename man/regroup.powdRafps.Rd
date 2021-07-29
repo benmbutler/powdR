@@ -46,7 +46,7 @@ data(minerals)
 data(soils)
 
 #Load the regrouping structure
-data(minerals_regroup_structure)
+data(minerals_regroup)
 
 \dontrun{
 afps_sandstone <- afps(lib = minerals,
@@ -58,7 +58,7 @@ afps_sandstone <- afps(lib = minerals,
                        amorphous_lod = 1)
 
 afps_sandstone_regrouped <- regroup(afps_sandstone,
-                                    minerals_regroup_structure)
+                                    minerals_regroup)
 
 afps_sandstone_regrouped$phases_grouped
 }
