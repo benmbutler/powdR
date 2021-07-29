@@ -391,25 +391,15 @@ a_fit1$phases
 #Extract the phase IDs for the regrouping structure
 rg_id <- a_fit1$phases$phase_id
 
-#Create a new grouping structure for those IDs
-rg_name <- c("Non-clay", #CORUNDUM
-             "Non-clay", #QUARTZ
-             "Non-clay", #ORDERED_MICROCLINE
-             "Non-clay", #ORTHOCLASE
-             "Non-clay", #ALBITE_CLEAVELANDITE
-             "Non-clay", #ANDESINE
-             "Non-clay", #LABRADORITE
-             "Non-clay", #ANORTHITE
-              "Clay", #ORD_KAOLINITE
-              "Clay" #CA_MONTMORILLONITE
-              )
 
-#Create a data frame from that structure
-rg_str <- data.frame("phase_id" = rg_id,
-                     "phase_name" = rg_name)
+#Load the rockjock regrouping structure
+data(rockjock_regroup)
 
-#Regroup the data in a_fit1
-a_fit1_rg <- regroup(a_fit1, rg_str)
+#View the first 6 rows
+head(rockjock_regroup)
+
+#Regroup the data in a_fit1 using the coarsest description
+a_fit1_rg <- regroup(a_fit1, rockjock_regroup[c(1,3)])
 
 #Check the regrouped data
 a_fit1_rg$phases_grouped
