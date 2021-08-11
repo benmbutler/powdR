@@ -218,7 +218,7 @@ p1
 
 Further help on **ggplot2** is provided in [Hadley Wickham's excellent documentation](https://r4ds.had.co.nz/data-visualisation.html) on data visualization.
 
-Plots produced using **ggplot2** are static and can be exported as high quality images or pdf's. In some cases it can also be useful to produce an interactive plot, especially when minor features of XRPD data require inspection. For most plots derived from **ggplot2**, the `ggplotly()` function from the **plotly** package can be used to create such interactive plots, which will load either in RStudio or your web browser:
+Plots produced using **ggplot2** are static and can be exported as high quality images or pdfs. In some cases it can also be useful to produce an interactive plot, especially when minor features of XRPD data require inspection. For most plots derived from **ggplot2**, the `ggplotly()` function from the **plotly** package can be used to create such interactive plots, which will load either in RStudio or your web browser:
 
 ```{r, eval = FALSE}
 library(plotly)

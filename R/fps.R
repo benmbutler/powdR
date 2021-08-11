@@ -127,7 +127,7 @@
 #' \code{powdRlib} constructor function.
 #' @param smpl A data frame. First column is 2theta, second column is counts
 #' @param harmonise logical parameter defining whether to harmonise the \code{lib} and \code{smpl}.
-#' Default = \code{TRUE}. When \code{TRUE} the function witll harmonise the \code{lib} and
+#' Default = \code{TRUE}. When \code{TRUE} the function will harmonise the \code{lib} and
 #' \code{smpl} to the intersecting 2theta range at the coarsest resolution available using
 #' natural splines.
 #' @param solver The optimisation routine to be used. One of \code{"BFGS", "Nelder-Mead",
@@ -294,7 +294,7 @@ fps <- function(lib, smpl, harmonise, solver, obj, refs, std, force, std_conc, o
 #' \code{powdRlib} constructor function.
 #' @param smpl A data frame. First column is 2theta, second column is counts
 #' @param harmonise logical parameter defining whether to harmonise the \code{lib} and \code{smpl}.
-#' Default = \code{TRUE}. When \code{TRUE} the function witll harmonise the \code{lib} and
+#' Default = \code{TRUE}. When \code{TRUE} the function will harmonise the \code{lib} and
 #' \code{smpl} to the intersecting 2theta range at the coarsest resolution available using
 #' natural splines.
 #' @param solver The optimisation routine to be used. One of \code{"BFGS", "Nelder-Mead",
