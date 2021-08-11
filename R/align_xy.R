@@ -21,6 +21,7 @@
 #' #Load minerals library
 #' data(minerals)
 #'
+#' \dontrun{
 #' #Create a standard quartz pattern to align to
 #' quartz <- data.frame(tth = minerals$tth,
 #'                      counts = minerals$xrd$QUA.1)
@@ -62,6 +63,8 @@
 #' plot(aligned, wav = "Cu",
 #'      xlim = c(26,27), normalise = TRUE)
 #'
+#' }
+#'
 #' @export
 align_xy <- function(x, std,
                      xmin, xmax, xshift, ...) {
@@ -95,6 +98,7 @@ align_xy <- function(x, std,
 #' #Load minerals library
 #' data(minerals)
 #'
+#' \dontrun{
 #' #Create a standard quartz pattern to align to
 #' quartz <- data.frame(tth = minerals$tth,
 #'                      counts = minerals$xrd$QUA.1)
@@ -115,6 +119,8 @@ align_xy <- function(x, std,
 #' plot(aligned, wavelength = "Cu",
 #'      xlim = c(26,27),
 #'      normalise = TRUE)
+#'
+#' }
 #'
 #' @export
 align_xy.multiXY <- function(x, std,
@@ -255,12 +261,14 @@ align_xy.multiXY <- function(x, std,
 #' #Load minerals library
 #' data(minerals)
 #'
+#' \dontrun{
+#'
 #' #Create a standard quartz pattern to align to
 #' quartz <- data.frame(tth = minerals$tth,
 #'                      counts = minerals$xrd$QUA.1)
 #'
-#'unaligned <- as_multi_xy(list("quartz" = quartz,
-#'                              "sandstone" = soils$sandstone))
+#' unaligned <- as_multi_xy(list("quartz" = quartz,
+#'                               "sandstone" = soils$sandstone))
 #'
 #' plot(unaligned, wav = "Cu",
 #'      xlim = c(26,27), normalise = TRUE)
@@ -276,6 +284,8 @@ align_xy.multiXY <- function(x, std,
 #'
 #' plot(aligned, wav = "Cu",
 #'      xlim = c(26,27), normalise = TRUE)
+#'
+#' }
 #'
 #' @export
 align_xy.XY <- function(x, std,

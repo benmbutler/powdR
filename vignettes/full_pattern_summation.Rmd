@@ -1,8 +1,6 @@
 ---
 title: "Full pattern summation of XRPD data"
 bibliography: bibliography.bib
-author: "Benjamin Butler"
-date: "`r Sys.Date()`"
 output:
   bookdown::html_document2:
     theme: spacelab
@@ -46,13 +44,16 @@ One of the most powerful properties of XRPD data is that the intensities of crys
 
 Of the approaches available for quantitative XRPD analysis, the simple Reference Intensity Ratio (RIR) method has consistently proven accurate. A RIR is a measure of the diffracting power of a phase relative to that of a standard (most often corundum, Al~2~O~3~), usually measured in a 50:50 mixture by weight. The RIR of a detectable phase within a mixture is required for its quantification.
 
-A given diffractogram can be modeled as the sum of pure diffractograms for all detectable phases, each scaled by different amounts (scaling factors). By combining these scaling factors with RIRs, phase concentrations can be calculated. Hereafter this approach is referred to as **full pattern summation**. Full pattern summation is particularly suitable for mixtures containing crystalline mineral components in combination with disordered and/or X-ray amorphous phases (e.g. soil).
+A given diffractogram can be modeled as the sum of pure diffractograms for all detectable phases, each scaled by different amounts (scaling factors). By combining these scaling factors with RIRs, phase concentrations can be calculated. Hereafter this approach is referred to as full pattern summation. Full pattern summation is particularly suitable for mixtures containing crystalline mineral components in combination with disordered and/or X-ray amorphous phases (e.g. soil), and further details on its implementation in **powdR** are provided in @Butler2021powdR.
 
 ---
 
 # Full pattern summation with **powdR**
 
 ## The `powdRlib` object {#powdRlib}
+
+<p align="center"><iframe src="https://www.youtube.com/embed/3XorZfqAKo4" height="315" width="560" style="border: 1px solid #464646;" allowfullscreen="" allow="autoplay" data-external="1"></iframe></p>
+
 A key component of the full pattern summation functions within **powdR** is the library of reference patterns. These are stored within a `powdRlib` object created from two basic components using the `powdRlib()` constructor function. The first component, specified via the `xrd_table` argument of `powdRlib()`, is a data frame of the count intensities of the reference patterns, with their 2θ axis as the first column. The column for a given reference pattern must be named using a unique identifier (a phase ID). An example of such a format is provided in the `minerals_xrd` data:
 
 ```{r, message = FALSE, warning = FALSE, cache = TRUE}
@@ -175,6 +176,9 @@ rockjock_afsis <- merge(rockjock, afsis)
 ```
 
 ## Full pattern summation with `fps()`
+
+<p align="center"><iframe src="https://www.youtube.com/embed/ua4YxTRwOOA" height="315" width="560" style="border: 1px solid #464646;" allowfullscreen="" allow="autoplay" data-external="1"></iframe></p>
+
 Once you have a `powdRlib` reference library and diffractogram(s) loaded into R, you have everything needed for quantitative analysis via full pattern summation.  Full pattern summation in **powdR** is provided via the `fps()` function, whilst an automated version is provided in [`afps()`](#afps). Details on these functions are provided in @Butler2021rc and @Butler2021powdR.
 
 `fps()` is specifically applied to `powdRlib` objects, and accepts a wide range of arguments that are detailed in the package documentation (see `?fps.powdRlib`). Here the [`rockjock` and `rockjock_mixtures` data](#rockjock) will be used to demonstrate the main features of `fps()` and the various ways in which it can be used.
@@ -342,6 +346,9 @@ fit4$phases
 ```
 
 ## Automated full pattern summation {#afps}
+
+<p align="center"><iframe src="https://www.youtube.com/embed/B7W5zXnlrGU" height="315" width="560" style="border: 1px solid #464646;" allowfullscreen="" allow="autoplay" data-external="1"></iframe></p>
+
 The selection of suitable reference patterns for full pattern summation can often be challenging and time consuming. An attempt to automate this process is provided in the `afps()` function, which can select appropriate reference patterns from a reference library and subsequently exclude reference patterns based on limit of detection estimates. Such an approach is considered particularly advantageous when quantifying high-throughput XRPD datasets that display considerable mineralogical variation such as the [Reynolds Cup](https://www.clays.org/reynolds/) [@Butler2021rc].
 
 All of the principles and arguments outlined above for the `fps()` function also apply to the use of `afps()`. However, there are a few additional arguments for `afps()` that need to be defined:
@@ -407,6 +414,9 @@ a_fit1_rg$phases_grouped
 
 
 # Plotting `powdRfps` and `powdRafps` objects
+
+<p align="center"><iframe src="https://www.youtube.com/embed/XEw-KHov2mI" height="315" width="560" style="border: 1px solid #464646;" allowfullscreen="" allow="autoplay" data-external="1"></iframe></p>
+
 Plotting results `powdRfps` and `powdRafps` objects, derived from `fps()` and `afps()`, respectively, is achieved using `plot()` (see `?plot.powdRfps` and `?plot.powdRafps`).
 
 ```{r, fig.cap = "Example output from plotting a powdRfps or powdRafps object.", message = FALSE, warning = FALSE, fig.align='center', cache = TRUE}
@@ -440,6 +450,8 @@ plot(a_fit1, wavelength = "Cu",
 ```
 
 # Quantifying multiple samples
+
+<p align="center"><iframe src="https://www.youtube.com/embed/baUcGgkdzZM" height="315" width="560" style="border: 1px solid #464646;" allowfullscreen="" allow="autoplay" data-external="1"></iframe></p>
 
 ## `lapply()`
 The simplest way to quantify multiple samples via either `fps()` and `afps()` is by wrapping either of the functions in `lapply()` and supplying a list of diffractograms. The following example wraps the `fps()` function in `lapply` and applies the function to the first three items within the `rockjock_mixtures` data.
@@ -536,6 +548,6 @@ All above examples showcase the use of R code to carry out full pattern summatio
 5. **Results Viewer/Editor:** Allows for results from previously saved `powdRfps` and `powdRafps` objects to be viewed and edited via addition or removal of reference patterns.
 6. **Help** Provides a series of video tutorials (via YouTube) detailing the use of the **powdR** Shiny application.
 
-More help on the **powdR** Shiny app can be found in [this video tutorial](https://www.youtube.com/watch?v=dDd6cr8kpTc&feature=emb_title).
+<p align="center"><iframe src="https://www.youtube.com/embed/dDd6cr8kpTc" height="315" width="560" style="border: 1px solid #464646;" allowfullscreen="" allow="autoplay" data-external="1"></iframe></p>
 
 # References

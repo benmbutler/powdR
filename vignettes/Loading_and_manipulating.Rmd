@@ -1,8 +1,6 @@
 ---
 title: "Loading and manipulating XRPD data"
 bibliography: bibliography.bib
-author: "Benjamin Butler"
-date: "`r Sys.Date()`"
 output:
   bookdown::html_document2:
     theme: spacelab
@@ -13,7 +11,6 @@ output:
       collapsed: false
       smooth_scroll: true
     anchor_sections: true
-    self_contained: true
 vignette: >
   %\VignetteIndexEntry{Loading and manipulating XRPD data}
   %\VignetteEngine{knitr::rmarkdown}
@@ -49,6 +46,9 @@ This document will use **powdR** and the open-source X-ray powder diffraction (X
 ---
 
 # Loading XRPD data {#loading-data}
+
+<p align="center"><iframe src="https://www.youtube.com/embed/0nO9fb0lcPQ" height="315" width="560" style="border: 1px solid #464646;" allowfullscreen="" allow="autoplay" data-external="1"></iframe></p>
+
 In order to work with XRPD data in R, it first needs to be loaded. XRPD data come in all sorts of proprietary formats (e.g. .raw, .dat and .xrdml), which can make this initial stage of loading data more complicated than it needs to be. In its most basic form, XRPD data is simply comprised of an x-axis (2θ) and y-axis (counts), and all XRPD data loaded into R throughout this documentation will take this XY form. Here, 2 ways of loading proprietary XRPD data into R will be described.
 
 ## Option 1: PowDLL {#powDLL}
@@ -163,6 +163,9 @@ all.equal(xy_list1, xy_list2)
 ```
 
 # Plotting XRPD data {#plotting-data}
+
+<p align="center"><iframe src="https://www.youtube.com/embed/XF3SaqeOAy0" height="315" width="560" style="border: 1px solid #464646;" allowfullscreen="" allow="autoplay" data-external="1"></iframe></p>
+
 The **powdR** package contains `plot()` methods for both `XY` and `multiXY` objects (see `?plot.XY` and `?plot.multiXY`).
 
 ## Plotting `XY` objects
@@ -224,6 +227,9 @@ ggplotly(p1)
 ```
 
 # Manipulating XRPD data {#manipulating-data}
+
+<p align="center"><iframe src="https://www.youtube.com/embed/pV8SdWDxMLQ" height="315" width="560" style="border: 1px solid #464646;" allowfullscreen="" allow="autoplay" data-external="1"></iframe></p>
+
 At this stage we have loaded XRPD data into R and produced plots to visualise single or multiple patterns. Loading XRPD data into R opens up almost limitless capabilities for analysing and manipulating the data via the R language and the [thousands of open source packages](https://cran.r-project.org/web/packages/available_packages_by_name.html) that enhance its functionality. Here, some useful data manipulation features of **powdR** will be introduced:
 
 * [Interpolation](#interpolation)

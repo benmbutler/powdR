@@ -4,7 +4,7 @@ powdR: Full Pattern Summation of X-Ray Powder Diffraction Data
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 
 [![Build
-Status](https://travis-ci.org/benmbutler/powdR.svg?branch=master)](https://travis-ci.org/benmbutler/powdR)
+Status](https://travis-ci.com/benmbutler/powdR.svg?branch=master)](https://travis-ci.com/benmbutler/powdR)
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/powdR)](https://CRAN.R-project.org/package=powdR)
 [![Total\_Downloads](https://cranlogs.r-pkg.org/badges/grand-total/powdR)](https://cran.r-project.org/package=powdR)
 
@@ -72,12 +72,12 @@ q <-  fps(lib = minerals,
 #Inspect the phase concentrations (summarised by name)
 q$phases_grouped
 #>       phase_name phase_percent
-#> 1         Illite        1.3290
-#> 2     K-feldspar        1.3020
-#> 3      Kaolinite        1.3697
-#> 4 Organic-Matter       41.1591
-#> 5    Plagioclase        1.1632
-#> 6         Quartz       53.6769
+#> 1         Quartz       53.6918
+#> 2     K-feldspar        1.3184
+#> 3    Plagioclase        1.1637
+#> 4         Illite        1.3515
+#> 5      Kaolinite        1.3697
+#> 6 Organic-Matter       41.1049
 
 #Inspect the quantification
 plot(q, wavelength = "Cu")
@@ -115,31 +115,32 @@ Edge internet browser.**
 
 ## References
 
-<div id="refs" class="references">
+<div id="refs" class="references csl-bib-body hanging-indent">
 
-<div id="ref-Chipera2002">
+<div id="ref-Chipera2002" class="csl-entry">
 
-Chipera, Steve J., and David L. Bish. 2002. “FULLPAT: A full-pattern
-quantitative analysis program for X-ray powder diffraction using
-measured and calculated patterns.” *Journal of Applied Crystallography*
-35 (6): 744–49. <https://doi.org/10.1107/S0021889802017405>.
-
-</div>
-
-<div id="ref-Chipera2013">
-
-———. 2013. “Fitting Full X-Ray Diffraction Patterns for Quantitative
-Analysis: A Method for Readily Quantifying Crystalline and Disordered
-Phases.” *Advances in Materials Physics and Chemistry* 03 (01): 47–53.
-<https://doi.org/10.4236/ampc.2013.31A007>.
+Chipera, Steve J., and David L. Bish. 2002. “<span
+class="nocase">FULLPAT: A full-pattern quantitative analysis program for
+X-ray powder diffraction using measured and calculated patterns</span>.”
+*Journal of Applied Crystallography* 35 (6): 744–49.
+<https://doi.org/10.1107/S0021889802017405>.
 
 </div>
 
-<div id="ref-Eberl2003">
+<div id="ref-Chipera2013" class="csl-entry">
 
-Eberl, D. D. 2003. “User’s guide to ROCKJOCK - A program for determining
-quantitative mineralogy from powder X-ray diffraction data.” Boulder,
-CA: USGS.
+———. 2013. “<span class="nocase">Fitting Full X-Ray Diffraction Patterns
+for Quantitative Analysis: A Method for Readily Quantifying Crystalline
+and Disordered Phases</span>.” *Advances in Materials Physics and
+Chemistry* 03 (01): 47–53. <https://doi.org/10.4236/ampc.2013.31A007>.
+
+</div>
+
+<div id="ref-Eberl2003" class="csl-entry">
+
+Eberl, D. D. 2003. “<span class="nocase">User’s guide to ROCKJOCK - A
+program for determining quantitative mineralogy from powder X-ray
+diffraction data</span>.” Boulder, CA: USGS.
 
 </div>
 

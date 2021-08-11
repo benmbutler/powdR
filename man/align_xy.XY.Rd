@@ -36,12 +36,14 @@ data(soils)
 #Load minerals library
 data(minerals)
 
+\dontrun{
+
 #Create a standard quartz pattern to align to
 quartz <- data.frame(tth = minerals$tth,
                      counts = minerals$xrd$QUA.1)
 
 unaligned <- as_multi_xy(list("quartz" = quartz,
-                             "sandstone" = soils$sandstone))
+                              "sandstone" = soils$sandstone))
 
 plot(unaligned, wav = "Cu",
      xlim = c(26,27), normalise = TRUE)
@@ -57,5 +59,7 @@ aligned <- as_multi_xy(list("quartz" = quartz,
 
 plot(aligned, wav = "Cu",
      xlim = c(26,27), normalise = TRUE)
+
+}
 
 }
