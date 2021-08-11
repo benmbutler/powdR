@@ -139,7 +139,7 @@ Alternatively, the `D5000_1` item within `xy_list1` could be accessed using `xy_
 methods(class = "multiXY")
 ```
 
-which include [`align_xy()`](#alignment), [`interpolate()`](interpolation), [`multi_xy_to_df()`](#to-data-frame) and [`plot`](#plotting) that are all detailed in subsequent sections.
+which include [`align_xy()`](#alignment), [`interpolate()`](#interpolation), [`multi_xy_to_df()`](#to-data-frame) and [`plot`](#plotting) that are all detailed in subsequent sections.
 
 ### `extract_xy()`
 In addition to the five '.xy' files loaded above, there are also five '.RAW' files stored within a separate directory of **powdR**, which can be loaded in a similar fashion using `extract_xy()`:
