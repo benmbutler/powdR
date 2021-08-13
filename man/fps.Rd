@@ -34,7 +34,7 @@ fps(
 \item{smpl}{A data frame. First column is 2theta, second column is counts}
 
 \item{harmonise}{logical parameter defining whether to harmonise the \code{lib} and \code{smpl}.
-Default = \code{TRUE}. When \code{TRUE} the function witll harmonise the \code{lib} and
+Default = \code{TRUE}. When \code{TRUE} the function will harmonise the \code{lib} and
 \code{smpl} to the intersecting 2theta range at the coarsest resolution available using
 natural splines.}
 

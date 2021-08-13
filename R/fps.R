@@ -579,7 +579,7 @@ if(!is.logical(omit_std)) {
 
   }
 
- #Produce a warming is omit_std = FALSE and closed = TRUE
+ #Produce a warming if omit_std = FALSE and closed = TRUE
   if (omit_std == FALSE & closed == TRUE) {
 
     warning("\n-Although omit_std = FALSE, the internal standard will still
@@ -1111,14 +1111,16 @@ if (omit_std == TRUE & closed == FALSE) {
 
   cat("\n-Omitting internal standard from phase concentrations")
 
+  #Get the phase name of the internal standard
   int_std <- df[which(df[[1]] == std), 2]
 
-  df <- df[-which(df[[2]] == int_std), ]
+  #Set any value associated with the internal standard to NA
+  df[[4]][which(df[[2]] == int_std)] <- NA
 
   df[[4]] <- (df[[4]]/(100-std_conc)) * 100
 
   #Same for dfs
-  dfs <- dfs[-which(dfs[[1]] == int_std), ]
+  dfs[[2]][which(dfs[[1]] == int_std)] <- NA
 
   dfs[[2]] <- (dfs[[2]]/(100-std_conc)) * 100
 

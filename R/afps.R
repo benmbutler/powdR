@@ -1111,12 +1111,13 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
     int_std <- df[which(df[[1]] == std), 2]
 
-    df <- df[-which(df[[2]] == int_std), ]
+    #Set any value associated with the internal standard to NA
+    df[[4]][which(df[[2]] == int_std)] <- NA
 
     df[[4]] <- (df[[4]]/(100-std_conc)) * 100
 
     #Same for dfs
-    dfs <- dfs[-which(dfs[[1]] == int_std), ]
+    dfs[[2]][which(dfs[[1]] == int_std)] <- NA
 
     dfs[[2]] <- (dfs[[2]]/(100-std_conc)) * 100
 

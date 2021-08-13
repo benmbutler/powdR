@@ -112,16 +112,16 @@ close_quant <- function(x, ...) {
 #' @export
 close_quant.powdRfps <- function(x, ...) {
 
-  if (sum(x$phases$phase_percent) == 100) {
+  if (sum(x$phases$phase_percent, na.rm = TRUE) == 100) {
 
     stop("The phase concentration data already sum to 100 percent.",
          call. = FALSE)
 
   }
 
-  x$phases$phase_percent <- (x$phases$phase_percent/sum(x$phases$phase_percent)) * 100
+  x$phases$phase_percent <- (x$phases$phase_percent/sum(x$phases$phase_percent, na.rm = TRUE)) * 100
   x$phases_grouped$phase_percent <- (x$phases_grouped$phase_percent/
-                                       sum(x$phases_grouped$phase_percent)) * 100
+                                       sum(x$phases_grouped$phase_percent, na.rm = TRUE)) * 100
 
   x$inputs$closed <- TRUE
 
@@ -172,16 +172,16 @@ close_quant.powdRfps <- function(x, ...) {
 #' @export
 close_quant.powdRafps <- function(x, ...) {
 
-  if (sum(x$phases$phase_percent) == 100) {
+  if (sum(x$phases$phase_percent, na.rm = TRUE) == 100) {
 
     stop("The phase concentration data already sum to 100 percent.",
          call. = FALSE)
 
   }
 
-  x$phases$phase_percent <- (x$phases$phase_percent/sum(x$phases$phase_percent)) * 100
+  x$phases$phase_percent <- (x$phases$phase_percent/sum(x$phases$phase_percent, na.rm = TRUE)) * 100
   x$phases_grouped$phase_percent <- (x$phases_grouped$phase_percent/
-                                       sum(x$phases_grouped$phase_percent)) * 100
+                                       sum(x$phases_grouped$phase_percent, na.rm = TRUE)) * 100
 
   x$inputs$closed <- TRUE
 

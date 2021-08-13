@@ -131,8 +131,8 @@ omit_std.powdRfps <- function(x, ...) {
 
   std_conc <- x$inputs$std_conc
 
-  x$phases <- x$phases[-which(x$phases$phase_name == std_name), ]
-  x$phases_grouped <- x$phases_grouped[-which(x$phases_grouped$phase_name == std_name), ]
+  x$phases$phase_percent[which(x$phases$phase_name == std_name)] <- NA
+  x$phases_grouped$phase_percent[which(x$phases_grouped$phase_name == std_name)] <- NA
 
   x$phases$phase_percent <- (x$phases$phase_percent/(100-std_conc)) * 100
   x$phases_grouped$phase_percent <- (x$phases_grouped$phase_percent/(100-std_conc)) * 100
@@ -212,8 +212,8 @@ omit_std.powdRafps <- function(x, ...) {
 
   std_conc <- x$inputs$std_conc
 
-  x$phases <- x$phases[-which(x$phases$phase_name == std_name), ]
-  x$phases_grouped <- x$phases_grouped[-which(x$phases_grouped$phase_name == std_name), ]
+  x$phases$phase_percent[which(x$phases$phase_name == std_name)] <- NA
+  x$phases_grouped$phase_percent[which(x$phases_grouped$phase_name == std_name)] <- NA
 
   x$phases$phase_percent <- (x$phases$phase_percent/(100-std_conc)) * 100
   x$phases_grouped$phase_percent <- (x$phases_grouped$phase_percent/(100-std_conc)) * 100

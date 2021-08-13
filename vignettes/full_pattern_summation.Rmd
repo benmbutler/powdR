@@ -200,7 +200,7 @@ data(rockjock_mixtures)
 fit1 <- fps(lib = rockjock,
             smpl = rockjock_mixtures$Mix5,
             refs = c("ORDERED_MICROCLINE",
-                     "LABRADORITE",
+                     "Plagioclase",
                      "KAOLINITE_DRY_BRANCH",
                      "MONTMORILLONITE_WYO",
                      "CORUNDUM",
@@ -230,28 +230,7 @@ fit1$phases_grouped
 Further, notice that when the concentration of the internal standard is specified then the phase concentrations do not necessarily sum to 100 %:
 
 ```{r, message = FALSE, warning = FALSE, cache = TRUE}
-sum(fit1$phases$phase_percent)
-```
-
-Unlike other software where only certain phases can be used as an internal standard, any phase can be defined in **powdR**. For example, the `rockjock_mixtures$Mix5` sample contains 20 % quartz (see `data(rockjock_weights)`), thus adding `"QUARTZ"` as the `std` argument results in this reference pattern becoming the internal standard instead.
-
-```{r, message = FALSE, warning = FALSE, cache = TRUE}
-fit2 <- fps(lib = rockjock,
-            smpl = rockjock_mixtures$Mix5,
-            refs = c("ORDERED_MICROCLINE",
-                     "LABRADORITE",
-                     "KAOLINITE_DRY_BRANCH",
-                     "MONTMORILLONITE_WYO",
-                     "CORUNDUM",
-                     "QUARTZ"),
-            std = "QUARTZ",
-            std_conc = 20,
-            omit_std = TRUE,
-            align = 0.3)
-
-fit2$phases
-
-sum(fit2$phases$phase_percent)
+sum(fit1$phases$phase_percent, na.rm = TRUE)
 ```
 
 It's also possible to "close" the mineral composition so that the weight percentages sum to 100. This can be achieved in two ways:
@@ -262,24 +241,23 @@ It's also possible to "close" the mineral composition so that the weight percent
 For example, the phase composition in `fit2` created above can be closed using:
 
 ```{r, message = FALSE, warning = FALSE, cache = TRUE}
-fit2c <- close_quant(fit2)
+fit1c <- close_quant(fit1)
 
-sum(fit2c$phases$phase_percent)
+sum(fit1c$phases$phase_percent, na.rm = TRUE)
 ```
 
 ### Full pattern summation **without** an internal standard
 In cases where an internal standard is not added to a sample, phase quantification can be achieved by assuming that all detectable phases can be identified and that they sum to 100 weight %. By setting the `std_conc` argument of `fps()` to `NA`, or leaving it out of the function call, it will be assumed that the sample has been prepared without an internal standard and the phase concentrations computed accordingly.
 
 ```{r, message = FALSE, warning = FALSE, cache = TRUE}
-fit3 <- fps(lib = rockjock,
+fit2 <- fps(lib = rockjock,
             smpl = rockjock_mixtures$Mix5,
             refs = c("ORDERED_MICROCLINE",
-                     "LABRADORITE",
+                     "Plagioclase",
                      "KAOLINITE_DRY_BRANCH",
                      "MONTMORILLONITE_WYO",
                      "CORUNDUM",
                      "QUARTZ"),
-            std_conc = NA,
             std = "CORUNDUM",
             align = 0.3)
 ```
@@ -287,13 +265,13 @@ fit3 <- fps(lib = rockjock,
 In this case the phase specified in the `std` argument is only used for 2θ alignment, and is always included in the computed phase concentrations.
 
 ```{r, message = FALSE, warning = FALSE, cache = TRUE}
-fit3$phases
+fit2$phases
 ```
 
 Furthermore, the phase concentrations computed using this approach will always sum to 100 %.
 
 ```{r, message = FALSE, warning = FALSE, cache = TRUE}
-sum(fit3$phases$phase_percent)
+sum(fit2$phases$phase_percent)
 ```
 
 ### Non-negative least squares
@@ -303,10 +281,10 @@ The fitted patterns resulting from full pattern summation are most commonly deri
 #Create a timestamp
 a <- Sys.time()
 
-fit3_n <- fps(lib = rockjock,
+fit2_n <- fps(lib = rockjock,
               smpl = rockjock_mixtures$Mix5,
               refs = c("ORDERED_MICROCLINE",
-                       "LABRADORITE",
+                       "Plagioclase",
                        "KAOLINITE_DRY_BRANCH",
                        "MONTMORILLONITE_WYO",
                        "CORUNDUM",
@@ -320,30 +298,6 @@ Sys.time() - a
 ```
 
 resulting in a computation time of less than half a second. Whilst the use of NNLS is fast, there is a small compromise in accuracy compared to the minimisation of an objective function [see Supplementary Material in @Butler2021powdR].
-
-### Full pattern summation with data harmonisation
-It is usually recommended that the reference library used for full pattern summation is measured on the same instrument as the sample using an identical 2θ range and resolution. In some cases this is not feasible, and the reference library patterns may be from a different instrument to the sample. To allow for seamless use of samples and libraries from different instruments (measured using the same X-ray wavelength), `fps()` contains a logical `harmonise` argument (default `= TRUE`). When the sample and library contain non-identical 2θ axes, `harmonise = TRUE` will convert the data onto the same axis by determining the overlapping 2θ range and interpolating to the coarsest resolution available.
-
-```{r, message = FALSE, warning = FALSE, cache = TRUE}
-#Create a sample with a shorter 2theta axis than the library
-Mix5_short <- subset(rockjock_mixtures$Mix5, tth > 10 & tth < 55)
-
-#Reduce the resolution by selecting only odd rows of the data
-Mix5_short <- Mix5_short[seq(1, nrow(Mix5_short), 2),]
-
-fit4 <- fps(lib = rockjock,
-            smpl = Mix5_short,
-            refs = c("ORDERED_MICROCLINE",
-                     "LABRADORITE",
-                     "KAOLINITE_DRY_BRANCH",
-                     "MONTMORILLONITE_WYO",
-                     "CORUNDUM",
-                     "QUARTZ"),
-            std = "CORUNDUM",
-            align = 0.3)
-
-fit4$phases
-```
 
 ## Automated full pattern summation {#afps}
 
@@ -360,25 +314,13 @@ All of the principles and arguments outlined above for the `fps()` function also
 
 Here the `rockjock` library, containing 169 reference patterns, will be used to quantify one of the samples in the `rockjock_mixtures` data. Note that when using `afps()`, omission of the `refs` argument in the function call will automatically result in all phases from the reference library being used in the fitting process.
 
-```{r, message = FALSE, warning = FALSE, cache = TRUE}
+```{r, eval = FALSE, message = FALSE, warning = FALSE, cache = TRUE}
 #Produce the fit
 a_fit1 <- afps(lib = rockjock,
-             smpl = rockjock_mixtures$Mix5,
-             std = "CORUNDUM",
-             align = 0.3,
-             lod = 1)
-```
-
-Once computed, `afps()` produces a `powdRafps` object, which is a bundle of data in list format that contains the outputs (see `?afps.powdRlib`). When large libraries such a `rockjock` are used to quantify a given sample, the resulting output is likely contain several different reference patterns for a given phase, for example:
-
-```{r, message = FALSE, warning = FALSE, cache = TRUE}
-table(a_fit1$phases$phase_name)
-```
-
-illustrates that the resulting output contains 2 reference patterns for K-feldspar, 4 patterns for plagioclase, and 1 pattern for each of the other phases selected by `afps()`. This information is grouped together and summed in the `phases_grouped` data frame within the `powdRafps` object:
-
-```{r, message = FALSE, warning = FALSE, cache = TRUE}
-a_fit1$phases_grouped
+               smpl = rockjock_mixtures$Mix5,
+               std = "CORUNDUM",
+               align = 0.3,
+               lod = 1)
 ```
 
 ## Additional `fps()` and `afps()` functionality
@@ -392,12 +334,8 @@ This shifting process is designed to correct for small linear differences in the
 Occasionally it can be useful to apply a different grouping structure to the phases quantified within a `powdRfps` or `powdRafps` object. This can be achieved using the `regroup` function (see `?regroup.powdRfps` and `?regroup.powdRafps`):
 
 ```{r, message = FALSE, warning = FALSE, cache = TRUE}
-#View the phases of the a_fit1 output
-a_fit1$phases
-
-#Extract the phase IDs for the regrouping structure
-rg_id <- a_fit1$phases$phase_id
-
+#View the phases of the fit1 output
+fit1$phases
 
 #Load the rockjock regrouping structure
 data(rockjock_regroup)
@@ -406,10 +344,10 @@ data(rockjock_regroup)
 head(rockjock_regroup)
 
 #Regroup the data in a_fit1 using the coarsest description
-a_fit1_rg <- regroup(a_fit1, rockjock_regroup[c(1,3)])
+fit1_rg <- regroup(fit1, rockjock_regroup[c(1,3)])
 
 #Check the regrouped data
-a_fit1_rg$phases_grouped
+fit1_rg$phases_grouped
 ```
 
 
@@ -420,7 +358,7 @@ a_fit1_rg$phases_grouped
 Plotting results `powdRfps` and `powdRafps` objects, derived from `fps()` and `afps()`, respectively, is achieved using `plot()` (see `?plot.powdRfps` and `?plot.powdRafps`).
 
 ```{r, fig.cap = "Example output from plotting a powdRfps or powdRafps object.", message = FALSE, warning = FALSE, fig.align='center', cache = TRUE}
-plot(a_fit1, wavelength = "Cu", interactive = FALSE)
+plot(fit1, wavelength = "Cu", interactive = FALSE)
 ```
 
 When plotting `powdRfps` or `powdRafps` objects the wavelength must be defined because it is required to compute d-spacings that are shown when `interactive = TRUE`.
@@ -428,7 +366,7 @@ When plotting `powdRfps` or `powdRafps` objects the wavelength must be defined b
 In addition to above, plotting for `powdRfps` and `powdRafps` objects can be further adjusted by the `group`, `mode` and `xlim` arguments. When the `group` argument is set to `TRUE`, the patterns within the fit are grouped and summed according to phase names, which can help simplify the plot:
 
 ```{r, fig.cap = "Plotting a powdRfps or powdRafps object with the reference patterns grouped.", message = FALSE, warning = FALSE, fig.align='center', cache = TRUE}
-plot(a_fit1, wavelength = "Cu",
+plot(fit1, wavelength = "Cu",
      group = TRUE,
      interactive = FALSE)
 ```
@@ -436,7 +374,7 @@ plot(a_fit1, wavelength = "Cu",
 The `mode` argument can be one of `"fit"` (the default), `"residuals"` or `"both"`, for example:
 
 ```{r, fig.cap = "Plotting the residuals of a powdRfps or powdRafps object.", message = FALSE, warning = FALSE, fig.align='center', cache = TRUE}
-plot(a_fit1, wavelength = "Cu",
+plot(fit1, wavelength = "Cu",
      mode = "residuals",
      interactive = FALSE)
 ```
@@ -444,7 +382,7 @@ plot(a_fit1, wavelength = "Cu",
 or alternatively both the fit and residuals can be plotted using `mode = "both"` and the 2θ axis restricted using the `xlim` argument:
 
 ```{r, fig.cap = "Plotting both the fit and residuals of a powdRfps or powdRafps object.", message = FALSE, warning = FALSE, fig.align='center', cache = TRUE}
-plot(a_fit1, wavelength = "Cu",
+plot(fit1, wavelength = "Cu",
      mode = "both", xlim = c(20,30),
      interactive = FALSE)
 ```
@@ -457,29 +395,30 @@ plot(a_fit1, wavelength = "Cu",
 The simplest way to quantify multiple samples via either `fps()` and `afps()` is by wrapping either of the functions in `lapply()` and supplying a list of diffractograms. The following example wraps the `fps()` function in `lapply` and applies the function to the first three items within the `rockjock_mixtures` data.
 
 ```{r, message = FALSE, warning = FALSE, cache = TRUE}
-multi_fit <- lapply(rockjock_mixtures[1:3], fps,
+multi_fit <- lapply(rockjock_mixtures[1:2], fps,
                     lib = rockjock,
                     std = "CORUNDUM",
                     refs = c("ORDERED_MICROCLINE",
-                             "LABRADORITE",
+                             "Plagioclase",
                              "KAOLINITE_DRY_BRANCH",
                              "MONTMORILLONITE_WYO",
                              "ILLITE_1M_RM30",
                              "CORUNDUM",
                              "QUARTZ"),
-                    align = 0.3)
+                    align = 0.3,
+                    std_conc = 20,
+                    omit_std = TRUE)
 ```
 
 When using `lapply` in this way, the names of the items within the list or `multiXY` object supplied to the function are inherited by the output:
 
 ```{r, message = FALSE, warning = FALSE, cache = TRUE}
-names(rockjock_mixtures[1:3])
-
-names(multi_fit)
+identical(names(rockjock_mixtures[1:2]),
+          names(multi_fit))
 ```
 
 ## Parallel processing
-Whilst `lapply` is a simple way to quantify multiple samples, the computation remains restricted to a single core. Computation time can be reduced many-fold by allowing different cores of your machine to process one sample at a time, which can be achieved using the `doParallel` and `foreach` packages:
+Whilst `lapply` is a simple way to quantify multiple samples, the computation remains restricted to a single core. Computation time can be reduced many-fold by allowing different cores of your machine to process one sample at a time, which can be achieved using the `doParallel` and `foreach` packages, for example:
 
 ```{r, eval = FALSE}
 #Install the foreach and doParallel package
@@ -498,7 +437,7 @@ cl <- makeCluster(UseCores-1)
 registerDoParallel(cl)
 
 #Use foreach loop and %dopar% to compute in parallel
-multi_fit <- foreach(i = 1:3) %dopar%
+multi_fit <- foreach(i = 1:2) %dopar%
   (powdR::fps(lib = rockjock,
                smpl = rockjock_mixtures[[i]],
                std = "CORUNDUM",
@@ -512,7 +451,7 @@ multi_fit <- foreach(i = 1:3) %dopar%
                align = 0.3))
 
 #name the items in the aquant_parallel list
-names(multi_fit) <- names(rockjock_mixtures)[1:3]
+names(multi_fit) <- names(rockjock_mixtures)[1:2]
 
 #stop the cluster
 stopCluster(cl)
