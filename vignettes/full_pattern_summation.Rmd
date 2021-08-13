@@ -177,7 +177,7 @@ rockjock_afsis <- merge(rockjock, afsis)
 
 ## Full pattern summation with `fps()`
 
-<p align="center"><iframe src="https://www.youtube.com/embed/ua4YxTRwOOA" height="315" width="560" style="border: 1px solid #464646;" allowfullscreen="" allow="autoplay" data-external="1"></iframe></p>
+<p align="center"><iframe src="https://www.youtube.com/embed/5PdRaLmJumE" height="315" width="560" style="border: 1px solid #464646;" allowfullscreen="" allow="autoplay" data-external="1"></iframe></p>
 
 Once you have a `powdRlib` reference library and diffractogram(s) loaded into R, you have everything needed for quantitative analysis via full pattern summation.  Full pattern summation in **powdR** is provided via the `fps()` function, whilst an automated version is provided in [`afps()`](#afps). Details on these functions are provided in @Butler2021rc and @Butler2021powdR.
 
