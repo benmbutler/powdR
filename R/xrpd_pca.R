@@ -245,6 +245,8 @@ xrpd_pca <- function(x, mean_center, bin_size,
 
   #Extract coordinates
   coords <- .extract_coords(pca)
+  #reset rownames
+  rownames(coords) <- NULL
 
   #Extract loadings
   loadings <- .extract_loadings(pca)
