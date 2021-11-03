@@ -65,6 +65,8 @@
 #' defined in the \code{obj} argument. Use this weighting parameter with caution. The default
 #' is simply a weighting vector where all values are 1, which hence has no effect on the computed
 #' objective function.
+#' @param skip_nnls an optional logical argument defining whether the non-negative least squares (NNLS)
+#' step is skipped. Default \code{= FALSE}, in which case NNLS is used.
 #' @param ... Other parameters passed to methods e.g. \code{afps.powdRlib}
 #'
 #' @return a powdRafps object with components:
@@ -161,7 +163,7 @@
 #' @export
 afps <- function(lib, smpl, harmonise, solver, obj, refs, std, force, std_conc,
                  omit_std, closed, normalise, tth_align, align, manual_align,
-                 shift, tth_fps, lod, amorphous, amorphous_lod, weighting, ...) {
+                 shift, tth_fps, lod, amorphous, amorphous_lod, weighting, skip_nnls, ...) {
   UseMethod("afps")
 }
 
@@ -232,6 +234,8 @@ afps <- function(lib, smpl, harmonise, solver, obj, refs, std, force, std_conc,
 #' defined in the \code{obj} argument. Use this weighting parameter with caution. The default
 #' is simply a weighting vector where all values are 1, which hence has no effect on the computed
 #' objective function.
+#' @param skip_nnls an optional logical argument defining whether the non-negative least squares (NNLS)
+#' step is skipped. Default \code{= FALSE}, in which case NNLS is used.
 #' @param ... other arguments
 #'
 #' @return a powdRafps object with components:
@@ -330,11 +334,24 @@ afps <- function(lib, smpl, harmonise, solver, obj, refs, std, force, std_conc,
 #' @export
 afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, std_conc,
                           omit_std, closed, normalise, tth_align, align, manual_align,
-                          shift, tth_fps, lod, amorphous, amorphous_lod, weighting, ...) {
+                          shift, tth_fps, lod, amorphous, amorphous_lod, weighting, skip_nnls, ...) {
 
 #---------------------------------------------------
 #Conditions
 #---------------------------------------------------
+
+  if (missing(skip_nnls)) {
+
+    skip_nnls <- FALSE
+
+  }
+
+  if (!is.logical(skip_nnls)) {
+
+    stop("The skip_nnls argument must be logical.",
+         call. = FALSE)
+
+  }
 
   if (!missing(normalise)) {
 
@@ -815,12 +832,16 @@ afps.powdRlib <- function(lib, smpl, harmonise, solver, obj, refs, std, force, s
 
   }
 
+  if (skip_nnls == FALSE) {
+
   cat("\n-Applying non-negative least squares")
   nnls_out <- .xrd_nnls(xrd.lib = lib, xrd.sample = smpl[, 2], force = force,
                         tth_fps = tth_fps)
 
   lib$xrd <- nnls_out$xrd.lib
   x <- nnls_out$x
+
+  }
 
   #--------------------------------------------
   #Initial Optimisation

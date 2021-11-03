@@ -26,6 +26,7 @@ afps(
   amorphous,
   amorphous_lod,
   weighting,
+  skip_nnls,
   ...
 )
 }
@@ -106,6 +107,9 @@ to either emphasise (values > 1) or omit (values = 0) when minimising the object
 defined in the \code{obj} argument. Use this weighting parameter with caution. The default
 is simply a weighting vector where all values are 1, which hence has no effect on the computed
 objective function.}
+
+\item{skip_nnls}{an optional logical argument defining whether the non-negative least squares (NNLS)
+step is skipped. Default \code{= FALSE}, in which case NNLS is used.}
 
 \item{...}{Other parameters passed to methods e.g. \code{afps.powdRlib}}
 }
