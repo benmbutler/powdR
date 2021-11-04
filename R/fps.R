@@ -47,7 +47,7 @@
   if (length(ex_tth) > 0) {
 
     #Remove the rows that are outside of tth_fps range
-    pure_patterns <- pure_patterns[-ex_tth,]
+    pure_patterns <- pure_patterns[-ex_tth, , drop = FALSE]
     sample_pattern <- sample_pattern[-ex_tth]
     weighting <- weighting[-ex_tth]
 
