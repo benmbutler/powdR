@@ -54,36 +54,36 @@
   }
 
   #if only 1 pattern is being fitted:
-  if (length(par) == 1) {
+  #if (length(par) == 1) {
 
-    #calculate fitted pattern
-    s_mix <- par * pure_patterns
+  #  #calculate fitted pattern
+  #  s_mix <- par * pure_patterns
 
-    #objective functions
-    if(obj == "Delta") {
-      d <- delta(measured = sample_pattern,
-                 fitted = s_mix,
-                 weighting = weighting)
-    }
+  #  #objective functions
+  #  if(obj == "Delta") {
+  #    d <- delta(measured = sample_pattern,
+  #               fitted = s_mix,
+  #               weighting = weighting)
+  #  }
 
-    if(obj == "R") {
-      d <- r(measured = sample_pattern,
-             fitted = s_mix,
-             weighting = weighting)
-    }
+  #  if(obj == "R") {
+  #    d <- r(measured = sample_pattern,
+  #           fitted = s_mix,
+  #           weighting = weighting)
+  #  }
 
-    if(obj == "Rwp") {
-      d <-  rwp(measured = sample_pattern,
-                fitted = s_mix,
-                weighting = weighting)
-    }
+  #  if(obj == "Rwp") {
+  #    d <-  rwp(measured = sample_pattern,
+  #              fitted = s_mix,
+  #              weighting = weighting)
+  #  }
 
-    return(d)
+  #  return(d)
 
-  }
+  #}
 
   #if more than 1 pattern is being fitted
-  if (length(par) > 1) {
+  #if (length(par) > 1) {
 
     #This calculates the fitted pattern
     s_mix <- apply(sweep(pure_patterns, 2, par, "*"),
@@ -109,7 +109,7 @@
     }
 
     return(d)
-  }
+  #}
 }
 
 
