@@ -1,5 +1,9 @@
 # powdR 1.3.0.999
 
+## Bug fixes
+* Bug that stopped `fps()` from running properly when only one pattern was 
+  supplied now fixed.
+
 ## New features
 * The `afps()` function now accepts a logical `skip_nnls` argument. When
   `skip_nnls = TRUE`, the non-negative least squares part of phase selection
