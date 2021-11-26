@@ -5,6 +5,9 @@
   supplied now fixed.
 
 ## New features
+* Added to `tabulate_lod()` function with methods of `powdRfps` and `powdRafps`
+  objects. Tabulates limit of detection estimates for all quantified phases in
+  a given sample.
 * The `afps()` function now accepts a logical `skip_nnls` argument. When
   `skip_nnls = TRUE`, the non-negative least squares part of phase selection
   is skipped.
