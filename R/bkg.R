@@ -25,10 +25,10 @@
 #' @export
 bkg <- function(xrd, lambda, hwi, it, int) {
 
-  if (utils::packageVersion("baseline") > "1.2.1") {
+  if (utils::packageVersion("baseline") > "1.4.1") {
 
-    stop("The bkg function crashes when using baseline versions > 1.2.1.
-         Please install version 1.2.1 of the baseline package from source using:
+    stop("The bkg function crashes when using baseline versions > 1.4.1.
+         Please install version 1.4.1 of the baseline package from source using:
          install.packages('http://cran.r-project.org/src/contrib/Archive/baseline/baseline_1.2-1.tar.gz',
          repos=NULL, type='source')")
 

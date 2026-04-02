@@ -151,7 +151,7 @@ if (type == "summary") {
 
 if (type == "all")  {
 
-  mineralogy <- lapply(x, function(y) y$phases[c(1,4)])
+  mineralogy <- lapply(x, function(y) y$phases[, c("phase_id","phase_percent")])
 
 } else {
 
@@ -196,6 +196,7 @@ mineralogy[[i]]$sample_id <- names(mineralogy)[i]
 }
 
 mineralogy_long <- do.call(rbind, mineralogy)
+
 
 #phase_name needs to become the column names, and phase_percent fills the cells
 mineralogy_wide <- tidyr::spread(mineralogy_long, "phase", "percent")
